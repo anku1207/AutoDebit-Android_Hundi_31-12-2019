@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_awesome_toolbar"
+        android:layout_height="50dp"
+        android:layout_width="match_parent"
+        android:background="@color/appbar">
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/rof_backbutton"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:id="@+id/back_activity_button"
+            android:tint="@color/white"
+
+
+            />
+
+        <LinearLayout
+            android:id="@+id/saveshipmenticonintop"
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:background="@color/appbar"
+            android:orientation="vertical"
+            android:layout_gravity="end"
+            android:layout_marginRight="10dp"
+            android:padding="@dimen/pin_content_layout_padding">
+
+
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="15dp"
+                android:tint="@color/white"
+                android:paddingBottom="0dp"/>
+
+        </LinearLayout>
+        <TextView
+            android:layout_centerInParent="true"
+            android:layout_height="match_parent"
+            android:layout_width="fill_parent"
+            android:textAlignment="center"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:text="Add Credit Card"
+            android:textStyle="bold"
+            android:textSize="20dp"
+            android:id="@+id/title"
+            android:textColor="@color/white"
+            android:fontFamily="@font/poppinsbold"
+
+            />
+    </android.support.v7.widget.Toolbar>
+     <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+           >
+
+                <WebView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/webview"
+                    >
+
+                </WebView>
+
+         <LinearLayout
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:orientation="vertical"
+             android:id="@+id/orderlayout"
+             android:layout_margin="30dp"
+             android:visibility="gone">
+
+             <LinearLayout
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:orientation="horizontal">
+                 <TextView
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:text="Mandate Successfully Approved "
+                     android:paddingTop="30dp"
+                     android:layout_gravity="center"
+                     android:textAlignment="center"
+                     android:textSize="19dp"
+                     android:fontFamily="@font/poppinslight"
+                     android:textColor="@color/black"
+                     android:id="@+id/text1"
+                     />
+             </LinearLayout>
+
+
+
+             <LinearLayout
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:orientation="horizontal">
+                 <TextView
+                     android:layout_width="0dp"
+                     android:layout_weight="1"
+                     android:layout_height="wrap_content"
+                     android:text="Transaction Id:"
+                     android:paddingTop="30dp"
+                     android:layout_gravity="center"
+                     android:textSize="19dp"
+                     android:gravity="end"
+                     android:fontFamily="@font/poppinslight"
+                     android:textColor="@color/black"
+                     />
+                 <TextView
+                     android:layout_width="0dp"
+                     android:layout_weight=".5"
+                     android:layout_height="wrap_content"
+                     android:text=""
+                     android:paddingTop="30dp"
+                     android:layout_gravity="end"
+                     android:gravity="end"
+                     android:textSize="19dp"
+                     android:fontFamily="@font/poppinslight"
+                     android:textColor="@color/black"
+                     android:id="@+id/text2"
+                     android:layout_marginRight="50dp"
+                     />
+             </LinearLayout>
+             <LinearLayout
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:orientation="horizontal">
+                 <TextView
+                     android:layout_width="0dp"
+                     android:layout_weight="1"
+                     android:layout_height="wrap_content"
+                     android:text="Amount :"
+                     android:paddingTop="30dp"
+                     android:layout_gravity="center"
+                     android:gravity="end"
+                     android:textSize="19dp"
+                     android:fontFamily="@font/poppinslight"
+                     android:textColor="@color/black"
+                     />
+                 <TextView
+                     android:layout_width="0dp"
+                     android:layout_weight=".5"
+                     android:layout_height="wrap_content"
+                     android:text=""
+                     android:paddingTop="30dp"
+                     android:layout_gravity="end"
+                     android:gravity="end"
+                     android:textSize="19dp"
+                     android:fontFamily="@font/poppinslight"
+                     android:textColor="@color/black"
+                     android:layout_marginRight="50dp"
+                     android:id="@+id/text3"
+                     />
+             </LinearLayout>
+
+             <Button
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:id="@+id/continuebtn"
+                 android:text="Continue"
+                 android:layout_gravity="center"
+                 android:layout_marginBottom="30dp"
+                 android:layout_marginTop="30dp"
+                 android:background="@drawable/cornerbutton"
+                 android:textColor="@color/white"
+                 />
+         </LinearLayout>
+
+
+
+
+     </LinearLayout>
+
+</LinearLayout>

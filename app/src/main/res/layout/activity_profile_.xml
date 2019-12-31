@@ -1,0 +1,639 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+
+
+
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".Activity.Home"
+    android:background="@color/activitybackground"
+    android:orientation="vertical">
+
+
+
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="56dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:orientation="vertical">
+
+
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_awesome_toolbar"
+        android:layout_height="50dp"
+        android:layout_width="match_parent"
+        android:background="@color/appbar"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:contentInsetRight="0dp"
+        app:contentInsetEnd="0dp"
+
+        >
+
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/rof_backbutton"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:scaleType="center"
+            android:id="@+id/back_activity_button"
+            android:tint="@color/white"
+            android:layout_gravity="start"
+            android:paddingLeft="10dp"
+
+
+            />
+            <LinearLayout
+                android:id="@+id/saveshipmenticonintop"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:orientation="vertical"
+                android:layout_gravity="end"
+                android:layout_marginRight="10dp"
+               >
+
+
+                <ImageView
+
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:id="@+id/profileedit"
+                    android:tint="@color/white"/>
+
+            </LinearLayout>
+            <TextView
+                android:layout_centerInParent="true"
+                android:layout_height="match_parent"
+                android:layout_width="fill_parent"
+                android:textAlignment="center"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:text="MY PROFILE"
+                android:textStyle="bold"
+                android:textSize="20dp"
+                android:id="@+id/title"
+                android:textColor="@color/white"
+                android:fontFamily="@font/poppinsbold"
+
+                />
+        </android.support.v7.widget.Toolbar>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:fillViewport="true"
+            android:isScrollContainer="true">
+
+
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:orientation="vertical"
+                tools:context=".androidFragment.Profile">
+
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal">
+
+                    <RelativeLayout
+                        android:id="@+id/rv"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+
+                        >
+
+                       <!-- <ImageButton
+                            android:id="@+id/imageView1"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
+                            android:background="@drawable/circle_shape"
+                            android:padding="20dp"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/ava_user" />
+-->
+
+                        <ProgressBar
+                            android:id="@+id/progressBar"
+                            style="?android:attr/progressBarStyleSmall"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:visibility="gone"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginTop="20dp"
+                            android:layout_marginBottom="20dp"/>
+
+                        <com.uav.autodebit.override.CircularImageView
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
+                            android:id="@+id/imageView1"
+                            android:scaleType="centerCrop"/>
+
+
+
+                        <ImageView
+                            android:id="@+id/imgFloating"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentBottom="true"
+                            android:layout_marginRight="24dp"
+                            android:layout_marginBottom="5dp"
+                            android:background="@drawable/circle_shape"
+                            android:elevation="5dp"
+                            android:padding="2dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/addicon"
+                            android:tint="@color/appbar" />
+                    </RelativeLayout>
+
+
+                </LinearLayout>
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/poppinsbold"
+                    android:gravity="center"
+                    android:id="@+id/usename"
+                    android:text="customer name"
+                    android:textSize="15dp"
+
+                    >
+
+                </TextView>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/poppinsmedium"
+                    android:gravity="center"
+                    android:text="Pan number"
+                    android:textSize="15dp"
+                    android:id="@+id/pannumber">
+
+                </TextView>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".1"
+
+                        />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/poppinslight"
+                        android:text=""
+                        android:textSize="15dp"
+                        android:id="@+id/mobileno"
+                        android:layout_gravity="center_vertical"/>
+
+                    <ImageView
+                        android:layout_width="1dp"
+                        android:layout_height="15dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight=".1"
+                        android:scaleType="fitEnd"
+                        android:layout_marginRight="15dp"
+
+                        android:id="@+id/mobileverify"
+                      />
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".1"
+
+
+                        />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/poppinslight"
+                        android:text=""
+                        android:textSize="15dp"
+                        android:id="@+id/email"
+                        android:layout_gravity="center_vertical"/>
+
+                    <ImageView
+                        android:layout_width="1dp"
+                        android:layout_height="15dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight=".1"
+                        android:scaleType="fitEnd"
+
+                        android:layout_marginRight="15dp"
+                        android:id="@+id/emailverify"
+                        />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".1"
+
+                        />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/poppinslight"
+                        android:text=""
+                        android:textSize="15dp"
+                        android:id="@+id/address"
+                        android:layout_gravity="center_vertical"/>
+
+                    <ImageView
+                        android:layout_width="1dp"
+                        android:layout_height="15dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight=".1"
+                        android:scaleType="fitEnd"
+
+                        android:layout_marginRight="15dp"
+                        android:id="@+id/addressverify"
+                       />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".1"
+
+                        />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/poppinslight"
+                        android:text=""
+                        android:textSize="15dp"
+                        android:id="@+id/citystate"
+                        android:layout_gravity="center_vertical"/>
+
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".1" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".1"
+
+                        />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/poppinslight"
+                        android:text=""
+                        android:textSize="15dp"
+                        android:id="@+id/pincode"
+                        android:layout_gravity="center_vertical"/>
+
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".1" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".1"
+
+                        />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/poppinslight"
+                        android:text=""
+                        android:textColor="@android:color/holo_green_dark"
+                        android:textSize="15dp"
+                        android:id="@+id/creditscore"
+                        android:layout_gravity="center_vertical"/>
+
+                    <ImageView
+                        android:layout_width="1dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight=".1"
+                        android:scaleType="fitEnd"
+                        android:src="@drawable/file_download"
+                        android:layout_marginRight="15dp"
+                        android:tint="@drawable/creditreporttext"
+                        android:id="@+id/downloadreport"
+                    />
+
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".1"
+
+                        />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Change Password"
+                        android:textSize="15dp"
+                        android:id="@+id/changepass"
+                        android:layout_gravity="center_vertical"
+                        android:fontFamily="@font/poppinslight"
+
+                        android:textColor="@drawable/text_change_color_black"
+                        />
+
+                    <ImageView
+                        android:layout_width="1dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight=".1"
+                        android:scaleType="fitEnd"
+                        android:layout_marginRight="15dp"
+                        android:tint="@drawable/creditreporttext"
+                        />
+
+
+                </LinearLayout>
+
+
+
+
+
+
+
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".1"
+                        android:src="@drawable/bankicon"
+                        android:tint="@color/appbar" />
+
+                    <TextView
+                        android:layout_width="10dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/poppinsbold"
+                        android:text="Bank Account"
+                        android:textSize="15dp"
+
+                        />
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_weight=".3"
+                        android:scaleType="fitEnd"
+                        android:src="@drawable/addicon"
+                        android:id="@+id/more_bankadd"
+                        />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".1"
+                        android:tint="@color/appbar" />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/bankrecycler"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+
+                        >
+
+                    </android.support.v7.widget.RecyclerView>
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".1"
+                        android:src="@drawable/bankicon"
+                        android:tint="@color/appbar" />
+
+                    <TextView
+                        android:layout_width="10dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/poppinsbold"
+                        android:text="Services Activated"
+                        android:textSize="15dp"
+
+                        />
+
+                    <LinearLayout
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight=".3">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_weight=".3"
+                            android:scaleType="fitEnd"
+                            android:src="@drawable/addicon"
+                            android:id="@+id/more_service"/>
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="10dp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".1"
+                        android:tint="@color/appbar" />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/servicerecycler"
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                        >
+
+                    </android.support.v7.widget.RecyclerView>
+
+                   <!-- <ImageView
+                        android:layout_width="1dp"
+                        android:layout_height="15dp"
+                        android:layout_gravity="center"
+                        android:layout_weight=".3"
+                        android:scaleType="fitEnd"
+                         />-->
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+        </ScrollView>
+        </LinearLayout>
+
+
+
+   <android.support.design.widget.BottomNavigationView
+        android:id="@+id/navigation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
+        android:background="?android:attr/windowBackground"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:menu="@menu/navigation"
+        app:labelVisibilityMode="labeled"
+        app:itemTextColor="@color/defaultTextColor"
+        app:itemIconTint="@color/bottom_nav_color"
+        />
+
+</android.support.constraint.ConstraintLayout>

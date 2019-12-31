@@ -1,0 +1,620 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    >
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.uav.autodebit.Activity.MainActivity"
+    android:orientation="vertical"
+    android:layout_marginRight="20dp"
+    android:layout_marginLeft="20dp">
+
+
+
+
+
+    <RadioGroup
+        android:id="@+id/rg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="15dp"
+        >
+        <RadioButton
+            android:id="@+id/passwordlogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sign In"
+            android:paddingRight="15dp"
+            />
+        <RadioButton
+            android:id="@+id/otplogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sign In VIA OTP"
+            android:paddingRight="15dp"
+            />
+        <RadioButton
+            android:id="@+id/forgetpassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Forgot Password"
+            android:paddingRight="15dp"
+            />
+        <RadioButton
+            android:id="@+id/signup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sign Up"
+            android:paddingRight="15dp"
+            />
+    </RadioGroup>
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="20dp">
+
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            tools:context=".activity.Booking"
+
+            android:id="@+id/loginpasswordlayout1"
+            >
+
+
+
+            <LinearLayout
+                style="@style/inputRow">
+
+                <ImageView
+                    android:src="@drawable/ava_user"
+                    style="@style/inputIcons"
+
+                    />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp"
+                        android:layout_marginLeft="20dp"
+                        android:text="User-Name"
+                        android:textSize="15dp"
+                        android:tint="#afd3d3d3" />
+
+                    <EditText
+                        android:id="@+id/username"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:background="@drawable/edittext_bottom_line"
+                        android:paddingBottom="10dp"
+                        android:paddingTop="5dp"
+
+                        />
+                </LinearLayout>
+
+
+            </LinearLayout>
+            <LinearLayout
+                style="@style/inputRow"
+                >
+                <ImageView
+                    android:src="@drawable/ava_pin"
+                    style="@style/inputIcons"
+                    />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp"
+                        android:layout_marginLeft="20dp"
+                        android:text="Password"
+                        android:textSize="15dp"
+                        android:tint="#afd3d3d3" />
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="17dp"
+                        android:background="@drawable/edittext_bottom_line">
+
+
+                        <EditText
+                            android:id="@+id/password"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="1dp"
+                            android:layout_marginRight="30dp"
+                            android:background="@null"
+                            android:imeOptions="actionSearch"
+                            android:inputType="textPassword"
+
+                            />
+
+
+                        <ImageButton
+
+                            android:id="@+id/showpassbtn"
+                            android:layout_width="35dp"
+                            android:layout_height="30dp"
+                            android:layout_gravity="right"
+                            android:background="?android:attr/selectableItemBackground"
+                            android:src="@drawable/ava_showpin" />
+
+
+                    </FrameLayout>
+
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+            <Button
+                android:layout_width="match_parent"
+                android:layout_marginBottom="10dp"
+                android:layout_height="45dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:textAlignment="center"
+                android:id="@+id/loginbtn"
+                android:background="@color/colorPrimary"
+                android:text="Login"
+                android:textColor="@color/white"
+                android:textSize="15dp"
+
+                />
+        </LinearLayout>
+
+
+
+
+
+
+
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                tools:context=".activity.Booking"
+
+                android:id="@+id/signuplayout1"
+                >
+
+
+
+                <LinearLayout
+                    style="@style/inputRow">
+
+                    <ImageView
+                        android:src="@drawable/email"
+                        style="@style/inputIcons"
+
+                        />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="20dp"
+                            android:layout_marginLeft="20dp"
+                            android:text="Email "
+                            android:textSize="15dp"
+                            android:tint="#afd3d3d3" />
+
+
+
+                        <EditText
+                            android:id="@+id/emilsignup"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="5dp"
+                            android:layout_marginLeft="20dp"
+                            android:background="@drawable/edittext_bottom_line"
+                            android:paddingBottom="10dp"
+
+                            />
+                        <TextView
+                            android:id="@+id/validemail"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:visibility="gone"
+                            android:textColor="#B80202"
+                           />
+                    </LinearLayout>
+
+
+                </LinearLayout>
+                <LinearLayout
+                    style="@style/inputRow">
+
+                    <ImageView
+                        android:src="@drawable/mobile"
+                        style="@style/inputIcons"
+
+                        />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="20dp"
+                            android:layout_marginLeft="20dp"
+                            android:text="Mobile Number"
+                            android:textSize="15dp"
+
+                            android:tint="#afd3d3d3" />
+
+
+                        <EditText
+                            android:id="@+id/signmobile"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:paddingBottom="10dp"
+                            android:paddingTop="5dp"
+                            android:maxLength="10"
+                            android:inputType="number"
+                            android:background="@drawable/edittext_bottom_line"
+                            />
+                        <TextView
+                            android:id="@+id/validemobile"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:visibility="gone"
+                            android:textColor="#B80202"
+                            />
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_marginBottom="10dp"
+                    android:layout_height="45dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="20dp"
+                    android:textAlignment="center"
+                    android:id="@+id/signupbtn"
+                    android:background="@color/colorPrimary"
+                    android:text="Sign Up"
+                    android:textColor="@color/white"
+                    android:textSize="15dp"
+
+                    />
+            </LinearLayout>
+
+
+
+
+
+
+
+
+
+
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                tools:context=".activity.Booking"
+                android:id="@+id/forgetlayout1"
+                >
+
+                <LinearLayout
+                    style="@style/inputRow">
+
+                    <ImageView
+                        android:src="@drawable/mobile"
+                        style="@style/inputIcons"
+
+                        />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="20dp"
+                            android:layout_marginLeft="20dp"
+                            android:text="Mobile Number / Email "
+                            android:textSize="15dp"
+                            android:tint="#afd3d3d3" />
+
+
+                        <EditText
+                            android:id="@+id/forgetmobileno"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:paddingBottom="10dp"
+                            android:paddingTop="5dp"
+                            android:inputType="number"
+                            android:maxLength="10"
+                            android:background="@drawable/edittext_bottom_line"
+                            />
+                        <TextView
+                            android:id="@+id/valideforgetmobileno"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:visibility="gone"
+                            android:textColor="#B80202"
+                            />
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_marginBottom="10dp"
+                    android:layout_height="45dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="20dp"
+                    android:textAlignment="center"
+                    android:id="@+id/forgetmobilenobtn"
+                    android:background="@color/colorPrimary"
+                    android:text="Forget Password"
+                    android:textColor="@color/white"
+                    android:textSize="15dp"
+
+                    />
+            </LinearLayout>
+
+
+
+
+
+
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                tools:context=".activity.Booking"
+                android:id="@+id/otplayout1"
+                >
+
+                <LinearLayout
+                    style="@style/inputRow">
+
+                    <ImageView
+                        android:src="@drawable/mobile"
+                        style="@style/inputIcons"
+
+                        />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="20dp"
+                            android:layout_marginLeft="20dp"
+                            android:text="Mobile Number/Email "
+                            android:textSize="15dp"
+                            android:tint="#afd3d3d3" />
+
+
+                        <EditText
+                            android:id="@+id/otpmobilenoormail"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:paddingBottom="10dp"
+                            android:paddingTop="5dp"
+                            android:background="@drawable/edittext_bottom_line"
+                            />
+                        <TextView
+                            android:id="@+id/valideotpmobileno"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:visibility="gone"
+                            android:textColor="#B80202"
+                            />
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+                <Button
+                    android:layout_width="match_parent"
+                    android:id="@+id/otploginbtn"
+                    android:layout_marginBottom="10dp"
+                    android:layout_height="45dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="20dp"
+                    android:textAlignment="center"
+
+                    android:background="@color/colorPrimary"
+                    android:textColor="@color/white"
+                    android:textSize="15dp"
+                    android:text="Login"
+
+
+                    />
+            </LinearLayout>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:id="@+id/otpverifylayout">
+
+                <LinearLayout
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+
+                   >
+
+
+                <EditText
+                    android:id="@+id/verifyotpid"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginLeft="20dp"
+                    android:paddingTop="5dp"
+                    android:inputType="number"
+                    android:maxLength="6"
+                    android:background="@drawable/edittext_bottom_line"
+                    android:hint="Mobile OTP"
+
+                    />
+                <TextView
+                    android:id="@+id/valideverifyotpid"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:visibility="gone"
+                    android:textColor="#B80202"
+                    />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                <Button
+                    android:layout_width="150dp"
+                    android:id="@+id/otpverifybtn"
+                    android:layout_marginBottom="10dp"
+                    android:layout_height="45dp"
+
+                    android:textAlignment="center"
+                    android:background="@color/colorPrimary"
+                    android:textColor="@color/white"
+                    android:textSize="15dp"
+                    android:text="Verify"
+                    android:tag="verify"
+                   android:layout_marginLeft="10dp"
+
+                     />
+                </LinearLayout>
+
+
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:id="@+id/otpEmailverifylayout">
+
+                <LinearLayout
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+
+                    >
+
+
+                    <EditText
+                        android:id="@+id/verifyemailid"
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:layout_marginLeft="20dp"
+                        android:paddingTop="5dp"
+                        android:inputType="number"
+                        android:maxLength="6"
+                        android:background="@drawable/edittext_bottom_line"
+                        android:hint="Email OTP"
+
+                        />
+                    <TextView
+                        android:id="@+id/valideverifyemailid"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:visibility="gone"
+                        android:textColor="#B80202"
+                        />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <Button
+                        android:layout_width="150dp"
+                        android:id="@+id/emailverifybtn"
+                        android:layout_marginBottom="10dp"
+                        android:layout_height="45dp"
+
+                        android:textAlignment="center"
+                        android:background="@color/colorPrimary"
+                        android:textColor="@color/white"
+                        android:textSize="15dp"
+                        android:text="Verify"
+                        android:tag="verify"
+                        android:layout_marginLeft="10dp"
+
+                        />
+                </LinearLayout>
+          </LinearLayout>
+
+
+
+        </LinearLayout>
+
+
+</LinearLayout>
+</ScrollView>

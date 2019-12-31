@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="90dp"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:id="@+id/layout_servicesgallery"
+    android:gravity="center"
+    android:foreground="?android:selectableItemBackground"
+    >
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="90dp"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:gravity="center"
+        >
+        <ImageView
+            android:id="@+id/serviceactive"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_toRightOf="@+id/id_index_gallery_item_image"
+            android:layout_marginRight="-5dp"
+            android:background="@drawable/util_default_indicator"
+            android:visibility="gone"
+            />
+        <ImageView
+            android:id="@+id/id_index_gallery_item_image"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+
+            android:scaleType="centerCrop"
+            android:src="@drawable/power_service"
+            android:gravity="center"
+            />
+    </RelativeLayout>
+    <com.uav.autodebit.override.UAVTextView
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:id="@+id/id_index_gallery_item_text"
+        android:scaleType="center"
+        android:textAlignment="center"
+        android:text="text"
+        android:layout_below="@+id/id_index_gallery_item_image"
+        android:gravity="center"
+
+        />
+
+
+</LinearLayout>

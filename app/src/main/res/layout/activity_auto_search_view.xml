@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.uav.autodebit.Activity.PanVerification"
+    android:orientation="vertical"
+    >
+
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_awesome_toolbar"
+        android:layout_height="50dp"
+        android:layout_width="match_parent"
+        android:background="@color/appbar">
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/rof_backbutton"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:id="@+id/back_activity_button"
+            android:tint="@color/white"
+
+            />
+
+        <LinearLayout
+            android:id="@+id/saveshipmenticonintop"
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:background="@color/appbar"
+            android:orientation="vertical"
+            android:layout_gravity="end"
+            android:layout_marginRight="10dp"
+            android:padding="@dimen/pin_content_layout_padding">
+
+
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="15dp"
+                android:tint="@color/white"
+                android:paddingBottom="0dp"/>
+
+        </LinearLayout>
+        <TextView
+            android:layout_centerInParent="true"
+            android:layout_height="match_parent"
+            android:layout_width="fill_parent"
+            android:textAlignment="center"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:text="Search"
+            android:textStyle="bold"
+            android:textSize="20dp"
+            android:id="@+id/title"
+            android:textColor="@color/white"
+            android:fontFamily="@font/poppinslight"
+
+            />
+    </android.support.v7.widget.Toolbar>
+
+
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="10dp"
+            tools:context=".activity.AutoSearchView"
+
+
+            >
+
+            <EditText
+                android:id="@+id/searchEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edittext_round_border"
+                android:drawableLeft="@drawable/search"
+                android:ems="10"
+                android:drawableTint="@color/appbar"
+
+                />
+
+
+            <TextView
+                android:id="@+id/noresult"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:textSize="50dp"
+                android:textAlignment="center"
+                android:gravity="center"
+                android:padding="30dp"
+                android:layout_margin="10dp"
+                android:text="No Results"
+                android:textColor="@color/appbar"/>
+
+
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                >
+
+
+                <ListView
+                    android:id="@+id/autosearch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:divider="@null"
+                    android:dividerHeight="0dp"
+
+                    >
+
+
+                </ListView>
+
+
+
+                <ProgressBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:id="@+id/progressBar"
+                    android:layout_centerInParent="true"
+                    />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+</LinearLayout>

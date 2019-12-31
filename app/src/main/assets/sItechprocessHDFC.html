@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Checkout Demo</title>
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1"  />
+    <script src="https://www.tecprocesssolution.com/proto/p2m/client/lib/jquery.min.js" type="text/javascript"></script>
+</head>
+
+<body>
+<script type="text/javascript" src="https://www.tecprocesssolution.com/proto/P2M/server/lib/checkout.js"></script>
+<script type="text/javascript">
+        $(document).ready(function() {
+
+            function handleResponse(res) {
+                if (typeof res != 'undefined' && typeof res.paymentMethod != 'undefined' && typeof res.paymentMethod.paymentTransaction != 'undefined' && typeof res.paymentMethod.paymentTransaction.statusCode != 'undefined' && res.paymentMethod.paymentTransaction.statusCode == '0300') {
+                    // success blockd
+
+                    console.log(" success blockd");
+                } else if (typeof res != 'undefined' && typeof res.paymentMethod != 'undefined' && typeof res.paymentMethod.paymentTransaction != 'undefined' && typeof res.paymentMethod.paymentTransaction.statusCode != 'undefined' && res.paymentMethod.paymentTransaction.statusCode == '0398') {
+                    // initiated block
+                    console.log(" initiated blockd");
+                } else {
+                    // error block
+                     console.log(" error blockd");
+                }
+            };
+
+        });
+		 function loadParam(params){
+		        console.log("htmlresp"+ params);
+				var data = JSON.parse(params);
+				 var configJson = {
+                    'tarCall': false,
+                    'features': {
+                        'showPGResponseMsg': true,
+                        'enableNewWindowFlow': true,    //for hybrid applications please disable this by passing false
+                        'enableExpressPay':true,
+                        'siDetailsAtMerchantEnd': true,
+                        'enableSI':true
+                    },
+                    'consumerData':data
+                }
+                 console.log("resphtml"+configJson);;
+		        $.pnCheckout(configJson);
+                if(configJson.features.enableNewWindowFlow){
+                    pnCheckoutShared.openNewWindow();
+                }
+			}
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,435 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.uav.autodebit.Activity.PanVerification"
+    android:orientation="vertical"
+    >
+
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_awesome_toolbar"
+        android:layout_height="50dp"
+        android:layout_width="match_parent"
+        android:background="@color/appbar"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:contentInsetRight="0dp"
+        app:contentInsetEnd="0dp"
+
+        >
+
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/rof_backbutton"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:scaleType="center"
+            android:id="@+id/back_activity_button1"
+            android:tint="@color/white"
+            android:layout_gravity="start"
+            android:paddingLeft="10dp"
+            android:visibility="gone"
+
+
+            />
+
+        <LinearLayout
+            android:id="@+id/saveshipmenticonintop"
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:background="@color/appbar"
+            android:orientation="vertical"
+            android:layout_gravity="end"
+            android:padding="@dimen/pin_content_layout_padding">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="15dp"
+                android:tint="@color/white"
+                android:paddingBottom="0dp"/>
+
+        </LinearLayout>
+        <TextView
+            android:layout_centerInParent="true"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:textAlignment="center"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:text="Verify PAN Card"
+            android:textStyle="bold"
+            android:textSize="20dp"
+            android:id="@+id/title"
+            android:textColor="@color/white"
+            android:fontFamily="@font/poppinsbold"
+
+            />
+    </android.support.v7.widget.Toolbar>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp">
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Please enter your PAN Card detail for Verification"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="30dp"
+                android:layout_gravity="center"
+                android:textAlignment="center"
+                android:textSize="19dp"
+                android:fontFamily="@font/poppinslight"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:id="@+id/textview"/>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardElevation="7dp"
+                android:layout_margin="10dp"
+                app:cardCornerRadius="15dp"
+                >
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/pannumbericon"
+                    android:backgroundTint="@color/white"
+                    android:hint="PAN NUMBER"
+                    android:drawablePadding="10dp"
+                    android:singleLine="true"
+                    android:layout_marginLeft="10dp"
+                    android:id="@+id/pannumber"
+                    android:maxLength="10"
+                    android:fontFamily="@font/poppinslight"
+                    android:inputType="textCapCharacters"
+                    android:text=""
+                    android:digits="@string/PanNumberDigits"
+                    android:maxLines="1"
+
+                    />
+            </android.support.v7.widget.CardView>
+
+
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardElevation="7dp"
+                android:layout_margin="10dp"
+                app:cardCornerRadius="15dp"
+                >
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/usericon"
+                    android:backgroundTint="@color/white"
+                    android:hint="First Name as on PAN"
+                    android:drawablePadding="10dp"
+                    android:singleLine="true"
+                    android:layout_marginLeft="10dp"
+                    android:id="@+id/username"
+                    android:maxLength="25"
+                    android:inputType="textCapWords"
+                    android:fontFamily="@font/poppinslight"
+                    android:text=""
+                    android:maxLines="1"
+                    android:digits="@string/NameDigits"
+
+                    />
+            </android.support.v7.widget.CardView>
+
+
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardElevation="7dp"
+                android:layout_margin="10dp"
+                app:cardCornerRadius="15dp"
+                >
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/usericon"
+                    android:backgroundTint="@color/white"
+                    android:hint="Middle Name"
+                    android:drawablePadding="10dp"
+                    android:singleLine="true"
+                    android:layout_marginLeft="10dp"
+                    android:id="@+id/middlename"
+                    android:maxLength="25"
+                    android:inputType="textCapWords"
+                    android:fontFamily="@font/poppinslight"
+                    android:text=""
+                    android:maxLines="1"
+                    android:digits="@string/NameDigits"
+                    />
+            </android.support.v7.widget.CardView>
+
+
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardElevation="7dp"
+                android:layout_margin="10dp"
+                app:cardCornerRadius="15dp"
+                >
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/usericon"
+                    android:backgroundTint="@color/white"
+                    android:hint="Last Name"
+                    android:drawablePadding="10dp"
+                    android:singleLine="true"
+                    android:layout_marginLeft="10dp"
+                    android:id="@+id/lastname"
+                    android:maxLength="25"
+                    android:inputType="textCapWords"
+                    android:fontFamily="@font/poppinslight"
+                    android:text=""
+                    android:maxLines="1"
+                    android:digits="@string/NameDigits"
+                    />
+            </android.support.v7.widget.CardView>
+
+
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    app:cardElevation="7dp"
+                    android:layout_margin="10dp"
+                    app:cardCornerRadius="15dp"
+                    >
+                    <EditText
+                        android:editable="false"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@drawable/dateicon"
+                        android:backgroundTint="@color/white"
+                        android:hint="Date of Birth"
+                        android:drawablePadding="10dp"
+                        android:singleLine="true"
+                        android:layout_marginLeft="10dp"
+                        android:id="@+id/date"
+                        android:fontFamily="@font/poppinslight"
+                        />
+                </android.support.v7.widget.CardView>
+
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    app:cardElevation="7dp"
+                    android:layout_margin="10dp"
+                    app:cardCornerRadius="15dp"
+
+                    >
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@drawable/pin"
+                        android:backgroundTint="@color/white"
+                        android:hint="PIN"
+                        android:drawablePadding="10dp"
+                        android:singleLine="true"
+                        android:layout_marginLeft="10dp"
+                        android:id="@+id/pin"
+                        android:maxLength="6"
+                        android:fontFamily="@font/poppinslight"
+                        android:text=""
+                        android:digits="@string/NumberDigits"
+                        />
+                </android.support.v7.widget.CardView>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    app:cardElevation="7dp"
+                    android:layout_margin="10dp"
+                    app:cardCornerRadius="15dp"
+                    >
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@drawable/pin"
+                        android:backgroundTint="@color/white"
+                        android:hint="City"
+                        android:drawablePadding="10dp"
+                        android:singleLine="true"
+                        android:layout_marginLeft="10dp"
+                        android:id="@+id/city"
+                        android:fontFamily="@font/poppinslight"
+                        />
+                </android.support.v7.widget.CardView>
+
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    app:cardElevation="7dp"
+                    android:layout_margin="10dp"
+                    app:cardCornerRadius="15dp"
+
+                    >
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@drawable/stateicon"
+                        android:backgroundTint="@color/white"
+                        android:hint="State"
+                        android:drawablePadding="10dp"
+                        android:singleLine="true"
+                        android:layout_marginLeft="10dp"
+                        android:id="@+id/state"
+                        android:fontFamily="@font/poppinslight"
+                        />
+                </android.support.v7.widget.CardView>
+            </LinearLayout>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardElevation="7dp"
+                android:layout_margin="10dp"
+                app:cardCornerRadius="15dp"
+                >
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/address"
+                    android:backgroundTint="@color/white"
+                    android:hint="Permanent Address"
+                    android:drawablePadding="10dp"
+                    android:singleLine="true"
+                    android:layout_marginLeft="10dp"
+                    android:id="@+id/permanentaddress"
+                    android:fontFamily="@font/poppinslight"
+                    android:text=""
+                    />
+            </android.support.v7.widget.CardView>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:orientation="horizontal"
+                android:layout_gravity="right"
+                android:gravity="right"
+                android:layout_marginRight="20dp"
+                android:textAlignment="center"
+                >
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:id="@+id/addressimage"/>
+
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+
+                    android:src="@drawable/attachicon" />
+
+                <TextView
+                    android:id="@+id/attachaddress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:text="Attach Address Proof"
+                    android:layout_marginLeft="2dp"
+                    android:fontFamily="@font/poppinsmedium"
+
+                    />
+            </LinearLayout>
+
+
+
+
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardElevation="7dp"
+                android:layout_margin="10dp"
+                app:cardCornerRadius="15dp"
+                >
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/mobile"
+                    android:backgroundTint="@color/white"
+                    android:hint="Mobile Number"
+                    android:drawablePadding="10dp"
+                    android:singleLine="true"
+                    android:layout_marginLeft="10dp"
+                    android:id="@+id/mobileno"
+                    android:maxLength="10"
+                    android:fontFamily="@font/poppinslight"
+                    android:inputType="number|textVisiblePassword"
+                    android:text=""
+                    android:digits="@string/NumberDigits"
+                    android:maxLines="1"
+
+                    />
+            </android.support.v7.widget.CardView>
+
+
+
+
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/update"
+                android:text="verify"
+                android:layout_marginBottom="30dp"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/cornerbutton"
+                android:textColor="@color/white"
+                />
+
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+
+</LinearLayout>

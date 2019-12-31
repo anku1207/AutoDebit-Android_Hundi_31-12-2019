@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        tools:context="com.uav.autodebit.Activity.Login"
+        android:background="@drawable/backgroundcolor"
+        >
+
+
+
+
+    <ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:paddingTop="50dp"
+       >
+
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:src="@drawable/autodebitlogonew"
+            android:id="@+id/logo"
+            android:layout_gravity="center"
+            />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Create a new account!"
+            android:layout_gravity="center"
+            android:textColor="@color/white"
+            android:fontFamily="@font/poppinslight"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+
+            />
+
+
+
+        <EditText
+            android:id="@+id/username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:backgroundTint="@color/white"
+            android:hint="Name as on Pan Card"
+            android:digits="@string/NameDigits"
+            android:inputType="textCapWords"
+            android:maxLines="1"
+            android:paddingTop="15px"
+            android:paddingBottom="20dp"
+            android:textColor="@color/white"
+            android:maxLength="64"
+
+            style="@style/AutodebitTextHintAppearanceWhitecol"
+            />
+        <EditText
+            android:id="@+id/useremail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:backgroundTint="@color/white"
+            android:hint="Email"
+            android:inputType="text"
+            android:maxLines="1"
+            android:paddingTop="15px"
+            android:paddingBottom="20dp"
+            android:textColor="@color/white"
+            android:maxLength="256"
+            style="@style/AutodebitTextHintAppearanceWhitecol"
+            />
+        <EditText
+            android:id="@+id/userphone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:backgroundTint="@color/white"
+            android:hint="Phone Number"
+            android:inputType="number|textVisiblePassword"
+            android:maxLength="10"
+            android:maxLines="1"
+            android:paddingTop="15px"
+            android:paddingBottom="20dp"
+            android:textColor="@color/white"
+            android:digits="@string/NumberDigits"
+            style="@style/AutodebitTextHintAppearanceWhitecol"
+            />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/otpgeneratebtn"
+            android:text="Generate OTP"
+            android:layout_marginBottom="30dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/cornerbutton"
+            android:textColor="@color/white"
+            android:textAllCaps="false"
+
+            />
+    </LinearLayout>
+    </ScrollView>
+
+
+</LinearLayout>

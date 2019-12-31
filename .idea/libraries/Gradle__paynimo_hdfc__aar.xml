@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: paynimo_hdfc:@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/paynimo_hdfc.aar/91f574eeb27ddc555e30e78b16384acb/jars/libs/paynimo_v3.8_uat.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/paynimo_hdfc.aar/91f574eeb27ddc555e30e78b16384acb/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/paynimo_hdfc.aar/91f574eeb27ddc555e30e78b16384acb/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

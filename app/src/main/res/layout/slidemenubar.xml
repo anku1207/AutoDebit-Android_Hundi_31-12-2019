@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+  >
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/edittext_bottom_line">
+
+
+        <ImageView
+            android:id="@+id/menulayout"
+            android:src="@drawable/autodebitlogo"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+
+            android:textAlignment="viewStart"
+
+            android:padding="10dp"
+            />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textAlignment="textEnd"
+            android:layout_gravity="end"
+            android:gravity="end"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/closemenuactivity"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:paddingEnd="10dp"
+                android:src="@drawable/paynimo_cancel_icon"
+                android:gravity="end"
+                android:fontFamily="@font/poppinsextrabold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="bottom"
+                android:text="Logout"
+                android:id="@+id/logoutbtn"
+                android:fontFamily="@font/poppinsbold"
+                android:layout_marginRight="10dp"
+                android:textSize="15dp"/>
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+
+        android:background="@drawable/edittext_bottom_line">
+
+
+        <TextView
+            android:id="@+id/mainwallet"
+            android:text="Wallet Balance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="10dp"
+            android:textColor="@drawable/slidemenutextcolor"
+            />
+        <TextView
+            android:id="@+id/Mango"
+            android:text="-----"
+            android:textAlignment="textEnd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.3"
+            android:padding="10dp"/>
+
+    </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Profile"
+            android:padding="10dp"
+            android:id="@+id/profile"
+            android:background="@drawable/edittext_bottom_line"
+            android:textColor="@drawable/slidemenutextcolor"/>
+
+
+
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:background="@drawable/edittext_bottom_line"
+            >
+
+            <TextView
+                android:id="@+id/service"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Services"
+                android:padding="10dp"
+                android:textColor="@drawable/slidemenutextcolor"/>
+
+            <TextView
+                android:id="@+id/linked"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/service"
+                android:layout_alignStart="@+id/service"
+                android:layout_marginStart="26dp"
+                android:text="Linked"
+
+                android:textColor="@drawable/slidemenutextcolor"
+                />
+            <TextView
+                android:id="@+id/all"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/linked"
+                android:layout_alignStart="@+id/service"
+                android:layout_marginStart="26dp"
+                android:text="All"
+                android:paddingTop="5dp"
+                android:paddingBottom="10dp"
+                android:textColor="@drawable/slidemenutextcolor"
+                />
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:background="@drawable/edittext_bottom_line"
+            >
+
+            <TextView
+                android:padding="10dp"
+                android:id="@+id/transactions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Transactions"
+                android:textColor="@drawable/slidemenutextcolor"
+                />
+
+            <TextView
+                android:id="@+id/wallet"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/transactions"
+                android:layout_alignStart="@+id/transactions"
+                android:layout_marginStart="26dp"
+                android:text="Wallet"
+                android:textColor="@drawable/slidemenutextcolor"
+                />
+            <TextView
+                android:id="@+id/regular"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/wallet"
+                android:layout_alignStart="@+id/transactions"
+                android:layout_marginStart="26dp"
+                android:text="Regular"
+                android:paddingTop="5dp"
+                android:paddingBottom="10dp"
+                android:textColor="@drawable/slidemenutextcolor"
+                />
+
+
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="De-link Services"
+            android:padding="10dp"
+            android:id="@+id/delinkservice"
+            android:background="@drawable/edittext_bottom_line"
+            android:textColor="@drawable/slidemenutextcolor"
+            />
+
+
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:background="@drawable/edittext_bottom_line"
+            >
+
+            <TextView
+                android:padding="10dp"
+                android:id="@+id/help"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Help"
+                android:textColor="@drawable/slidemenutextcolor"
+                />
+
+            <TextView
+                android:id="@+id/faqs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/help"
+                android:layout_alignStart="@+id/help"
+                android:layout_marginStart="26dp"
+                android:text="FAQs"
+                android:textColor="@drawable/slidemenutextcolor"
+                />
+            <TextView
+                android:id="@+id/reportbug"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/faqs"
+                android:layout_alignStart="@+id/help"
+                android:layout_marginStart="26dp"
+                android:text="Report Bug"
+                android:paddingTop="5dp"
+                android:paddingBottom="10dp"
+                android:textColor="@drawable/slidemenutextcolor"
+                />
+        </RelativeLayout>
+
+
+
+        <TextView
+            android:id="@+id/condition"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/tram_and_condition"
+            android:padding="10dp"
+            android:background="@drawable/edittext_bottom_line"
+            android:textColor="@drawable/slidemenutextcolor"
+            />
+
+        <TextView
+            android:id="@+id/setting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Settings"
+            android:padding="10dp"
+            android:background="@drawable/edittext_bottom_line"
+            android:textColor="@drawable/slidemenutextcolor"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+
+            android:background="@drawable/edittext_bottom_line">
+
+            <TextView
+                android:padding="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Follow Us"
+                android:textColor="@drawable/slidemenutextcolor"
+                />
+
+            <ImageView
+                android:padding="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/mobile"
+                android:layout_marginLeft="20dp"/>
+            <ImageView
+                android:padding="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/mobile"
+                android:layout_marginLeft="10dp"/>
+
+            <ImageView
+                android:padding="10dp"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/mobile"
+                android:layout_marginLeft="10dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+
+            android:background="@drawable/edittext_bottom_line">
+
+            <ImageView
+                android:padding="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/search"
+
+               />
+
+            <EditText
+                android:layout_margin="10dp"
+                android:layout_width="200dp"
+                android:paddingLeft="10dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/edittext_bg"/>
+
+        </LinearLayout>
+
+
+
+
+
+
+    </LinearLayout>
+
+</ScrollView>
+
+
+
+
+
+
+
+
+
+
+
+
+</LinearLayout>

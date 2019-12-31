@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "486722371010",
+    "firebase_url": "https://autope-e1c48.firebaseio.com",
+    "project_id": "autope-e1c48",
+    "storage_bucket": "autope-e1c48.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:486722371010:android:3f4da9b1041d304412aa5b",
+        "android_client_info": {
+          "package_name": "com.uav.autodebit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "486722371010-mlbnnbj6m7a58fe8mnkjg79tchiusofs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.uav.autodebit",
+            "certificate_hash": "938c561f96b925c13c78303023b677b2a3adee13"
+          }
+        },
+        {
+          "client_id": "486722371010-7u4o5b4es05vldjp083mmqh8bfak733v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDGyyGkbifJaWJ5SuaU81C-DnFwG8CBumQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "486722371010-7u4o5b4es05vldjp083mmqh8bfak733v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

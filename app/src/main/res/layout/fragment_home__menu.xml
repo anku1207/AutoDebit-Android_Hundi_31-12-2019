@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:fillViewport="true"
+        android:isScrollContainer="true"
+        android:id="@+id/scrollView"
+       >
+
+        <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/activitybackground"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/image"/>
+
+            <RelativeLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="225dp"
+                android:orientation="vertical">
+
+
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/viewPager"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                  />
+
+            <!--    <TextView
+                    android:id="@+id/textview"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="sdfsdfsdf"
+
+                    android:background="#3ad40fde"
+                    />
+-->                <android.support.design.widget.TabLayout
+                    android:id="@+id/indicator"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerInParent="true"
+                    app:tabBackground="@drawable/banner_indicator_selector"
+                    app:tabGravity="center"
+                    app:tabIndicatorHeight="0dp" />
+            </RelativeLayout>
+
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/serviceborder"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_gravity="right"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="0dp"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/allservice"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/addicon"
+                        android:visibility="gone"/>
+                </LinearLayout>
+
+                <HorizontalScrollView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="10dp"
+                    android:orientation="horizontal"
+                    android:scrollbars="none">
+
+                    <LinearLayout
+                        android:id="@+id/id_servicegallery"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:orientation="horizontal"></LinearLayout>
+                </HorizontalScrollView>
+
+            </LinearLayout>
+
+
+            <RelativeLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/serviceborder"
+                android:orientation="vertical"
+                android:paddingBottom="10dp"
+
+                android:layout_marginBottom="10dp">
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bottomlineborder"
+                    android:paddingBottom="10dp"
+                    android:paddingTop="10dp"
+
+                    android:textAlignment="center"
+                    android:id="@+id/utilityservice"
+                    android:text="Pay your Utility Bills Seamlessly!"
+                    android:gravity="center_vertical"
+                    />
+
+
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:src="@drawable/addicon"
+                    android:scaleType="centerCrop"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_alignRight="@+id/utilityservice"
+                    android:id="@+id/allutilityservice"
+                    android:visibility="gone"/>
+
+               <!-- <GridView
+                    android:id="@+id/gv"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:animationCache="false"
+                    android:background="#D8D5D5"
+                    android:scrollbars="none"
+                    android:gravity="center"
+                    android:horizontalSpacing="1dp"
+                    android:numColumns="4"
+                    android:paddingEnd="-1.5dp"
+                    android:stretchMode="columnWidth"
+                    android:verticalSpacing="1dp" />-->
+
+
+                <android.support.v7.widget.RecyclerView
+                    android:layout_below="@+id/utilityservice"
+                    android:id="@+id/recyclerview"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:background="@color/activitybackground"
+                    >
+
+                </android.support.v7.widget.RecyclerView>
+            </RelativeLayout>
+
+        </LinearLayout>
+
+
+    </android.support.v4.widget.NestedScrollView>
+</LinearLayout>

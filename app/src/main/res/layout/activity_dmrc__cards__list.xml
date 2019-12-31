@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activity.DMRC_Cards_List"
+    android:orientation="vertical">
+
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_awesome_toolbar"
+        android:layout_height="50dp"
+        android:layout_width="match_parent"
+        android:background="@color/appbar"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:contentInsetRight="0dp"
+        app:contentInsetEnd="0dp"
+
+        >
+
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/rof_backbutton"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:scaleType="center"
+            android:id="@+id/back_activity_button"
+            android:tint="@color/white"
+            android:layout_gravity="start"
+            android:paddingLeft="10dp"
+
+
+            />
+
+        <LinearLayout
+            android:id="@+id/saveshipmenticonintop"
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:background="@color/appbar"
+            android:orientation="vertical"
+            android:layout_gravity="end"
+            android:padding="@dimen/pin_content_layout_padding">
+
+
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="15dp"
+                android:tint="@color/white"
+                android:paddingBottom="0dp"/>
+
+        </LinearLayout>
+        <TextView
+            android:layout_centerInParent="true"
+            android:layout_height="match_parent"
+            android:layout_width="fill_parent"
+            android:textAlignment="center"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:text="DMRC"
+            android:textStyle="bold"
+            android:textSize="20dp"
+            android:id="@+id/title"
+            android:textColor="@color/white"
+            android:fontFamily="@font/poppinsbold"
+
+            />
+    </android.support.v7.widget.Toolbar>
+
+
+
+
+    <RelativeLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+
+        <RelativeLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:orientation="vertical"
+            android:id="@+id/textbtnlayout"
+            >
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/viewPager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <android.support.design.widget.TabLayout
+                android:id="@+id/indicator"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerInParent="true"
+                app:tabBackground="@drawable/banner_indicator_selector"
+                app:tabGravity="center"
+                app:tabIndicatorHeight="0dp" />
+        </RelativeLayout>
+
+
+
+
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/recyclerview"
+            android:layout_below="@id/textbtnlayout"
+            >
+        </android.support.v7.widget.RecyclerView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_alignParentBottom="true"
+            >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:id="@+id/addoncard"
+                android:gravity="left|fill_vertical"
+                android:layout_marginTop="5dp"
+                android:background="@color/white"
+                android:fontFamily="@font/poppinssemibold"
+                android:textColor="@drawable/text_change_color_blue"
+                android:paddingLeft="10dp"
+                android:layout_marginBottom="5dp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="Card Delivery Status"
+                android:background="@color/white"
+                android:gravity="left|fill_vertical"
+                android:fontFamily="@font/poppinssemibold"
+                android:textColor="@drawable/text_change_color_blue"
+                android:paddingLeft="10dp"
+                android:id="@+id/deliverystatus"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="5dp"/>
+
+        </LinearLayout>
+
+
+
+    </RelativeLayout>
+
+
+
+
+
+
+</LinearLayout>

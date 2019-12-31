@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#40A7E8</color>
+    <color name="colorAccent">#40A7E8</color>
+
+    <color name="white">#fffeff</color>
+    <color name="errorColor">#c2c8da</color>
+
+    <color name="appbar">#40A7E8</color>
+
+    <color name="black">#000</color>
+    <color name="activitybackground">#F4F4F4</color>
+
+    <color name="serviceactive">#64DD17</color>
+
+    <!--<color name="btncolor">#1666A1</color>-->
+   <color name="btncolor">#1666A1</color>
+
+
+    <color name="grey">#B7464545</color>
+
+    <color name="blue">#1666A1</color>
+    <color name="disabledTextColor">#80000000</color>
+
+
+
+
+
+</resources>

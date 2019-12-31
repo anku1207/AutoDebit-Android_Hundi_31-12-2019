@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/pin_content_layout"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+     >
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_awesome_toolbar"
+        android:layout_height="50dp"
+        android:layout_width="match_parent"
+        android:background="@color/appbar">
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@drawable/rof_backbutton"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:id="@+id/back_activity_button"
+            android:tint="@color/white"
+            />
+        <LinearLayout
+            android:id="@+id/saveshipmenticonintop"
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:background="@color/appbar"
+            android:orientation="vertical"
+            android:layout_gravity="end"
+            android:layout_marginRight="10dp"
+            android:padding="@dimen/pin_content_layout_padding">
+
+
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="15dp"
+                android:tint="@color/white"
+                android:paddingBottom="0dp"/>
+
+        </LinearLayout>
+        <TextView
+            android:layout_centerInParent="true"
+            android:layout_height="match_parent"
+            android:layout_width="fill_parent"
+            android:textAlignment="center"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:text="OTP Verification"
+            android:textStyle="bold"
+            android:textSize="20dp"
+            android:id="@+id/title"
+            android:textColor="@color/white"
+
+            />
+    </android.support.v7.widget.Toolbar>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="20dp"
+        android:id="@+id/mobileotplayout"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+       >
+
+
+
+
+
+    <TextView android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/phone_pin_label_text"
+        android:textStyle="bold"
+        android:gravity="center_horizontal"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/pin_label_margin" />
+
+    <LinearLayout android:id="@+id/phone_pin_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+        android:layout_gravity="center_horizontal">
+
+        <EditText android:id="@+id/phone_pin_first_edittext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/pin_content_desc"
+            style="@style/pin_edittext_style" />
+
+        <EditText android:id="@+id/phone_pin_second_edittext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/pin_content_desc"
+            style="@style/pin_edittext_style" />
+
+        <EditText android:id="@+id/phone_pin_third_edittext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/pin_content_desc"
+            style="@style/pin_edittext_style" />
+
+        <EditText android:id="@+id/phone_pin_forth_edittext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/pin_content_desc"
+            style="@style/pin_edittext_style" />
+    </LinearLayout>
+
+
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/phonepinverifybtn"
+            android:text="verify"
+            android:tag="verify"
+            android:layout_gravity="center"
+            android:layout_marginBottom="80dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/cornerbutton"
+            android:textColor="@color/white"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="20dp"
+        android:id="@+id/emailotplayout"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+      >
+
+
+    <TextView android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/email_pin_label_text"
+        android:textStyle="bold"
+        android:gravity="center_horizontal"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/pin_label_margin" />
+
+    <LinearLayout android:id="@+id/email_pin_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+        android:layout_gravity="center_horizontal">
+
+        <EditText android:id="@+id/email_pin_first_edittext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/pin_content_desc"
+            style="@style/pin_edittext_style" />
+
+        <EditText android:id="@+id/email_pin_second_edittext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/pin_content_desc"
+            style="@style/pin_edittext_style" />
+
+        <EditText android:id="@+id/email_pin_third_edittext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/pin_content_desc"
+            style="@style/pin_edittext_style" />
+
+        <EditText android:id="@+id/email_pin_forth_edittext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/pin_content_desc"
+            style="@style/pin_edittext_style" />
+    </LinearLayout>
+
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/emailpinverifybtn"
+            android:text="verify"
+            android:tag="verify"
+            android:layout_gravity="center"
+            android:layout_marginBottom="80dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/cornerbutton"
+            android:textColor="@color/white"
+            />
+
+
+    </LinearLayout>
+
+
+
+</LinearLayout>

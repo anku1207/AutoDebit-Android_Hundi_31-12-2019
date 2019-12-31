@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="js/jquery.js"></script>
+
+	<style>
+		.loader {
+		  border: 5px solid #f3f3f3;
+		  border-radius: 50%;
+		  border-top: 5px solid #3498db;
+		  width: 30px;
+		  height: 30px;
+		  -webkit-animation: spin 2s linear infinite; /* Safari */
+		  animation: spin 2s linear infinite;
+		   position: fixed;
+		  z-index: 3;
+
+		  overflow: visible;
+		  margin: auto;
+		  top: 0;
+		  left: 0;
+		  bottom: 0;
+		  right: 0;
+		}
+
+		#overlay {
+			  position: fixed;
+			  display: block;
+			  width: 100%;
+			  height: 100%;
+			  top: 0;
+			  left: 0;
+			  right: 0;
+			  bottom: 0;
+			  background-color: rgba(0,0,0,0.5);
+			  z-index: 2;
+			  cursor: pointer;
+			  pointer-events: none;
+
+  		}
+
+
+		/* Safari */
+		@-webkit-keyframes spin {
+		  0% { -webkit-transform: rotate(0deg); }
+		  100% { -webkit-transform: rotate(360deg); }
+		}
+
+		@keyframes spin {
+		  0% { transform: rotate(0deg); }
+		  100% { transform: rotate(360deg); }
+		}
+</style>
+
+</head>
+
+<body>
+<form method="post"	action="" id="formid">
+
+	<div class="loader"></div>
+	<div id="overlay" onclick="off()"></div>
+	<!-- Above url is for Testing purpose please use Production URL which is shared by PGhelpdesk team -->
+	<input type="hidden" name="timezone" value="IST" />
+	<!-- Set Time zone as IST -->
+	<input type="hidden" name="authenticateTransaction" value="true" />
+	<table>
+		<tr>
+			<td>
+				<input size="50" type="hidden" name="txntype"  id="txntype"/>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<input size="50" type="hidden" name="txndatetime"  id="txndatetime"/>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<input size="50" type="hidden" name="hash"  id="hash"/>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<input size="50" type="hidden" name="currency"  id="currency"/>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<input size="50" type="hidden" name="mode"  id="mode"/>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<input size="50" type="hidden" name="storename"  id="storename"/>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<input size="50" type="hidden" name="chargetotal"  id="chargetotal"/>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<input size="50" type="hidden" name="sharedsecret"  id="sharedsecret"/>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<input size="50" type="hidden" name="language"  id="language"/>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<input id="merchantTransactionId" name="merchantTransactionId" size="20" type="hidden">
+			</td>
+		</tr>
+		<input type="hidden" name="responseSuccessURL"  id="responseSuccessURL"/>
+		<input type="hidden" name="responseFailURL"  id="responseFailURL"/>
+		<tr>
+			<!--<td colspan="2" align="center"><input type="hidden" name ="submitBtn" value="Submit This Form"></td>-->
+		</tr>
+		<input type="hidden" name="hash_algorithm" value="SHA1"/>
+	</table>
+</form>
+
+
+<script>
+    function loadParam(params){
+        var data = JSON.parse(params);
+
+        $("#formid").attr('action', data.url);
+        $("#txntype").val(data.txntype);
+        $("#txndatetime").val(data.txndatetime);
+        $("#hash").val(data.hash);
+        $("#currency").val(data.currency);
+        $("#mode").val(data.mode);
+        $("#chargetotal").val(data.chargetotal);
+        $("#storename").val(data.storename);
+        $("#sharedsecret").val(data.sharedsecret);
+        $("#language").val(data.language);
+        $("#merchantTransactionId").val(data.merchantTransactionId);
+        $("#responseSuccessURL").val(data.successUrl);
+        $("#responseFailURL").val(data.failUrl);
+		$("#formid").submit();
+
+
+         console.log("resp"+data.storename);
+    }
+
+
+</script>
+
+</body>
+</html>
