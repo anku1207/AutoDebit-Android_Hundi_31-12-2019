@@ -5,19 +5,23 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.PorterDuff;
+import android.graphics.Typeface;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.text.Editable;
 import android.text.Html;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -27,19 +31,29 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.uav.autodebit.BO.Electricity_BillBO;
+import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.R;
 import com.uav.autodebit.override.UAVEditText;
+import com.uav.autodebit.override.UAVProgressDialog;
 import com.uav.autodebit.permission.Session;
+import com.uav.autodebit.util.BackgroundAsyncService;
+import com.uav.autodebit.util.BackgroundServiceInterface;
 import com.uav.autodebit.util.DialogInterface;
 import com.uav.autodebit.util.Utility;
+import com.uav.autodebit.vo.ConnectionVO;
+import com.uav.autodebit.vo.CustomerVO;
 import com.uav.autodebit.vo.DataAdapterVO;
 import com.uav.autodebit.vo.OxigenQuestionsVO;
+import com.uav.autodebit.volley.VolleyResponseListener;
+import com.uav.autodebit.volley.VolleyUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class LandlineBill extends AppCompatActivity implements View.OnClickListener {
@@ -50,31 +64,43 @@ public class LandlineBill extends AppCompatActivity implements View.OnClickListe
     TextView fetchbill;
     CardView amountlayout;
 
-    LinearLayout dynamicCardViewContainer;
+    LinearLayout dynamicCardViewContainer , fetchbilllayout;
 
     List<OxigenQuestionsVO> questionsVOS= new ArrayList<OxigenQuestionsVO>();
+    CardView fetchbillcard;
+
+    boolean valid=true;
+    String operatorListDate;
+    UAVProgressDialog pd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_landline_bill);
         getSupportActionBar().hide();
+
+        operatorListDate=null;
+        pd=new UAVProgressDialog(this);
+
         amount=findViewById(R.id.amount);
         back_activity_button=findViewById(R.id.back_activity_button1);
+
+        amount.setEnabled(false);
 
         proceed=findViewById(R.id.proceed);
         fetchbill=findViewById(R.id.fetchbill);
         amountlayout=findViewById(R.id.amountlayout);
         operator=findViewById(R.id.operator);
         dynamicCardViewContainer =findViewById(R.id.dynamiccards);
+        fetchbilllayout=findViewById(R.id.fetchbilllayout);
+
+        fetchbillcard =findViewById(R.id.fetchbillcard);
 
         amountlayout.setVisibility(View.GONE);
-
 
         back_activity_button.setOnClickListener(this);
         proceed.setOnClickListener(this);
         fetchbill.setOnClickListener(this);
-
 
         operator.setClickable(false);
 
@@ -82,13 +108,29 @@ public class LandlineBill extends AppCompatActivity implements View.OnClickListe
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if(MotionEvent.ACTION_UP == motionEvent.getAction()) {
+                    operator.setEnabled(false);
                     //startActivity(new Intent(Mobile_Prepaid_Recharge_Service.this,Listview_With_Image.class));
-                    Intent intent =new Intent(LandlineBill.this, Listview_With_Image.class);
-                    Gson gson = new Gson();
-                    String data = gson.toJson(getDataList());
-                    intent.putExtra("datalist", data);
-                    intent.putExtra("title","Landline Operator");
-                    startActivityForResult(intent,100);
+                    BackgroundAsyncService backgroundAsyncService = new BackgroundAsyncService(pd,true, new BackgroundServiceInterface() {
+                        @Override
+                        public void doInBackGround() {
+
+                            Gson gson = new Gson();
+                            operatorListDate = gson.toJson(getDataList());
+
+                            //manoj
+
+                        }
+                        @Override
+                        public void doPostExecute() {
+                            Intent intent =new Intent(LandlineBill.this, Listview_With_Image.class);
+                            intent.putExtra("datalist", operatorListDate);
+                            intent.putExtra("title","Operator");
+                            startActivityForResult(intent,100);
+
+
+                        }
+                    });
+                    backgroundAsyncService.execute();
                 }
                 return false;
             }
@@ -107,8 +149,8 @@ public class LandlineBill extends AppCompatActivity implements View.OnClickListe
                 JSONObject object =jsonArray.getJSONObject(i);
                 dataAdapterVO.setText(object.getString("name"));
                 dataAdapterVO.setQuestionsData(object.getString("questionsData"));
-                // dataAdapterVO.setImagename(object.getString("serviceName").toLowerCase());
-                dataAdapterVO.setAssociatedValue(object.getString("serviceName"));
+                dataAdapterVO.setImageUrl(object.has("imageUrl") ?object.getString("imageUrl"):null);
+                dataAdapterVO.setAssociatedValue(object.getString("service"));
                 datalist.add(dataAdapterVO);
             }
         } catch (JSONException e) {
@@ -122,9 +164,12 @@ public class LandlineBill extends AppCompatActivity implements View.OnClickListe
         super.onActivityResult(requestCode, resultCode, data);
 
         try{
+            operator.setEnabled(true);
+
             if(resultCode==RESULT_OK){
                 switch (requestCode) {
                     case 100:
+
                         operatorname =data.getStringExtra("operatorname");
                         operatorcode=data.getStringExtra("operator");
 
@@ -137,13 +182,12 @@ public class LandlineBill extends AppCompatActivity implements View.OnClickListe
 
                         operator.setError(null);
                         amount.setError(null);
-                        //Remove dynamic cards from the layout and arraylist
 
-                        if(dynamicCardViewContainer.getChildCount()>0)
-                            dynamicCardViewContainer.removeAllViews();
+                        //Remove dynamic cards from the layout and arraylist
+                        if(dynamicCardViewContainer.getChildCount()>0) dynamicCardViewContainer.removeAllViews();
+                        removefetchbilllayout();
 
                         questionsVOS.clear();
-
 
                         //Create dynamic cards of edit text
                         if(dataAdapterVO.getQuestionsData() !=null){
@@ -154,10 +198,9 @@ public class LandlineBill extends AppCompatActivity implements View.OnClickListe
                                 OxigenQuestionsVO oxigenQuestionsVO = gson.fromJson(jsonObject.toString(), OxigenQuestionsVO.class);
 
                                 CardView cardView = Utility.getCardViewStyle(this);
-                                EditText et = new EditText(new ContextThemeWrapper(LandlineBill.this,R.style.edittext));
-                                et.getBackground().setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
+                                //EditText et = new EditText(new ContextThemeWrapper(this,R.style.edittext));
 
-                                et.setCompoundDrawablesWithIntrinsicBounds(R.drawable.mobile,0,0,0);
+                                EditText et = Utility.getEditText(LandlineBill.this);
                                 et.setId(View.generateViewId());
                                 et.setHint(oxigenQuestionsVO.getQuestionLabel());
                                 cardView.addView(et);
@@ -169,132 +212,256 @@ public class LandlineBill extends AppCompatActivity implements View.OnClickListe
                                 oxigenQuestionsVO.setElementId(et.getId());
                                 questionsVOS.add(oxigenQuestionsVO);
                             }
+                            EditText editText =(EditText) findViewById(questionsVOS.get(0).getElementId());
+                            editText.requestFocus();
                         }
-
                         break;
                 }
             }
         }catch (Exception e){
+            e.printStackTrace();
+            Utility.exceptionAlertDialog(LandlineBill.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
     }
 
     @Override
     public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.back_activity_button1:
+                finish();
+                break;
+            case R.id.proceed:
 
-        try {
-            switch (view.getId()){
-                case R.id.back_activity_button1:
-                    finish();
-                    break;
-                case R.id.proceed:
+                try {
+                    valid=true;
 
-                    if( validatefiled("proceed")){
+                    JSONObject dataarray=getQuestionLabelDate(true);
+                    if(!valid)return;
 
-                        JSONArray jsonArray =new JSONArray();
-                        JSONObject object;
+                    JSONObject jsonObject =new JSONObject();
+                    jsonObject.put("operatorcode",operatorcode);
+                    jsonObject.put("amount",amount.getText().toString());
+                    jsonObject.put("questionLabelDate",dataarray.toString());
 
+                    proceedRecharge(jsonObject);
 
-                        object =new JSONObject();
-                        object.put("key","Operator");
-                        object.put("value",operator.getText().toString());
-                        jsonArray.put(object);
+                }catch (Exception e){
+                    e.printStackTrace();
+                    Utility.exceptionAlertDialog(LandlineBill.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
 
-
-                        for(OxigenQuestionsVO oxigenQuestionsVO:questionsVOS){
-
-                            EditText editText =(EditText) findViewById(oxigenQuestionsVO.getElementId());
-                            editText.setError(null);
-
-                            if(editText.getText().toString().equals("")){
-
-                                editText.setError("this field is required");
+                }
 
 
-                            }else if(oxigenQuestionsVO.getMinLength()!=null && (editText.getText().toString().length() < Integer.parseInt(oxigenQuestionsVO.getMinLength()))){
-                                editText.setError(oxigenQuestionsVO.getMinLength());
-                            }else if(oxigenQuestionsVO.getMaxLength()!=null && (editText.getText().toString().length() > Integer.parseInt(oxigenQuestionsVO.getMaxLength()))){
-                                editText.setError(oxigenQuestionsVO.getMaxLength());
-                            }
+                break;
+            case R.id.fetchbill:
+                try {
+                    valid=true;
+                    JSONObject dataarray=getQuestionLabelDate(false);
+                    if(!valid)return;
+                    JSONObject jsonObject =new JSONObject();
+                    jsonObject.put("operatorcode",operatorcode);
+                    jsonObject.put("questionLabelData",dataarray.toString());
 
+                    proceedFetchBill(jsonObject);
 
-                            object =new JSONObject();
-                            object.put("key",oxigenQuestionsVO.getQuestionLabel());
-                            object.put("value",editText.getText().toString());
-                            jsonArray.put(object);
-
-                            oxigenQuestionsVO.getJsonKey();
-                            editText.getText().toString();
-                            Toast.makeText(this, ""+editText.getText().toString(), Toast.LENGTH_SHORT).show();
-                        }
-
-                        object =new JSONObject();
-                        object.put("key","Amount");
-                        object.put("value",amount.getText().toString());
-                        jsonArray.put(object);
-
-                        object =new JSONObject();
-                        object.put("key","Convenience Fee" );
-                        object.put("value","0");
-                        jsonArray.put(object);
-
-                        object =new JSONObject();
-                        object.put("key","Total" );
-                        object.put("value",amount.getText().toString());
-                        jsonArray.put(object);
-
-
-
-                        Utility.confirmationDialog(
-                                new DialogInterface() {
-                                    @Override
-                                    public void confirm(Dialog dialog) {
-                                        dialog.dismiss();
-
-                                    }
-
-                                    @Override
-                                    public void modify(Dialog dialog) {
-                                        dialog.dismiss();
-                                    }
-                                }, this, jsonArray, null,"Please Confirm Detail");
-                    }
-
-                    break;
-                case R.id.fetchbill:
-                    if( validatefiled("fetchbill")){
-                        amount.setError(null);
-                        operator.setError(null);
-
-                        Toast.makeText(this, "sdfsd", Toast.LENGTH_SHORT).show();
-                    }
-                    break;
-            }
-        }catch (Exception e){
-
+                }catch (Exception e){
+                    e.printStackTrace();
+                    Utility.exceptionAlertDialog(LandlineBill.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+                }
+                valid=true;
+                break;
         }
-
     }
 
-    public boolean validatefiled(String type){
-
-        boolean valid=true;
-        operator.setError(null);
+    private JSONObject getQuestionLabelDate(boolean fetchBill) throws Exception{
         amount.setError(null);
-        fetchbill.setVisibility(View.VISIBLE);
+        operator.setError(null);
+
+        if(fetchBill){
+            if(amount.getText().toString().equals("")){
+                amount.setError("this filed is required");
+                valid=false;
+            }
+        }
 
         if(operator.getText().toString().equals("")){
             operator.setError("this filed is required");
             valid=false;
         }
 
+        JSONObject jsonObject =new JSONObject();
 
-       if(type.equals("proceed")){
-           if(amount.getText().toString().equals("")){
-               amount.setError("this filed is required");
-               valid=false;
-           }
-       }
+        for(OxigenQuestionsVO oxigenQuestionsVO:questionsVOS){
 
-       return valid;
+            EditText editText =(EditText) findViewById(oxigenQuestionsVO.getElementId());
+            editText.clearFocus();
+            changeEdittextValue(editText);
+
+            editText.setError(null);
+            if(editText.getText().toString().equals("")){
+
+                editText.setError(  Utility.getErrorSpannableStringDynamicEditText(this, "this field is required"));
+                valid=false;
+            }else if(oxigenQuestionsVO.getMinLength()!=null && (editText.getText().toString().length() < Integer.parseInt(oxigenQuestionsVO.getMinLength()))){
+                editText.setError(oxigenQuestionsVO.getMinLength());
+                valid=false;
+            }else if(oxigenQuestionsVO.getMaxLength()!=null && (editText.getText().toString().length() > Integer.parseInt(oxigenQuestionsVO.getMaxLength()))){
+                editText.setError(oxigenQuestionsVO.getMaxLength());
+                valid=false;
+            }
+
+            jsonObject.put(oxigenQuestionsVO.getQuestionLabel(),editText.getText().toString());
+            //oxigenQuestionsVO.getJsonKey();
+            //editText.getText().toString();
+
+        }
+        return jsonObject;
+    }
+
+
+
+    public void removefetchbilllayout(){
+        if(fetchbilllayout.getChildCount()>0) {
+            fetchbilllayout.removeAllViews();
+            amount.setText("");
+            fetchbill.setVisibility(View.VISIBLE);
+            fetchbillcard.setVisibility(View.GONE);
+        }
+    }
+
+    public void changeEdittextValue(EditText editText){
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                removefetchbilllayout();
+            }
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                Log.w("onTextChanged",charSequence.toString());
+            }
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+
+    }
+
+
+    private  void proceedRecharge(JSONObject jsonObject){
+    }
+
+
+    private void proceedFetchBill(JSONObject jsonObject) throws Exception{
+
+        try {
+            Gson gson =new Gson();
+
+            HashMap<String, Object> params = new HashMap<String, Object>();
+            ConnectionVO connectionVO = Electricity_BillBO.oxiFetchBill();
+
+            params.put("volley",jsonObject.toString());
+
+            Log.w("proceedFetchBill",jsonObject.toString());
+            connectionVO.setParams(params);
+
+            VolleyUtils.makeJsonObjectRequest(LandlineBill.this,connectionVO, new VolleyResponseListener() {
+                @Override
+                public void onError(String message) {
+                }
+                @Override
+                public void onResponse(Object resp) throws JSONException {
+                    JSONObject response = (JSONObject) resp;
+                    Gson gson = new Gson();
+                    CustomerVO customerVO = gson.fromJson(response.toString(), CustomerVO.class);
+
+                    if(customerVO.getStatusCode().equals("400")){
+                        ArrayList error = (ArrayList) customerVO.getErrorMsgs();
+                        StringBuilder sb = new StringBuilder();
+                        for(int i=0; i<error.size(); i++){
+                            sb.append(error.get(i)).append("\n");
+                        }
+                        fetchbill.setVisibility(View.VISIBLE);
+                        Utility.showSingleButtonDialog(LandlineBill.this,"Error !",sb.toString(),false);
+                    }else {
+                        fetchbill.setVisibility(View.GONE);
+
+
+                        JSONArray dataArry=new JSONArray();
+                        JSONObject jsonObject1 =new JSONObject(customerVO.getAnonymousString());
+
+                        JSONObject jsonresponseInfo =jsonObject1.getJSONObject("serviceResponse").getJSONObject("responseInfo");
+
+                        if(jsonresponseInfo.getString("responseCode").equals("0")){
+                            JSONObject jsonBillerResponse =jsonObject1.getJSONObject("serviceResponse").getJSONObject("OperatorResponse").getJSONObject("BillerResponse");
+
+                            JSONObject datajson=new JSONObject();
+                            datajson.put("key","Amount");
+                            datajson.put("value",jsonBillerResponse.getString("NetAmount"));
+                            amount.setText(jsonBillerResponse.getString("NetAmount"));
+                            dataArry.put(datajson);
+
+                            datajson=new JSONObject();
+                            datajson.put("key","BillDate");
+                            datajson.put("value",jsonBillerResponse.getString("BillDate"));
+                            dataArry.put(datajson);
+
+                            datajson=new JSONObject();
+                            datajson.put("key","Customer Name");
+                            datajson.put("value",jsonBillerResponse.getString("CustomerName"));
+                            dataArry.put(datajson);
+
+                            datajson=new JSONObject();
+                            datajson.put("key","DueDate");
+                            datajson.put("value",jsonBillerResponse.getString("DueDate"));
+                            dataArry.put(datajson);
+
+                            datajson=new JSONObject();
+                            datajson.put("key","BillPeriod");
+                            datajson.put("value",jsonBillerResponse.getString("BillPeriod"));
+                            dataArry.put(datajson);
+
+                            Typeface typeface = ResourcesCompat.getFont(LandlineBill.this, R.font.poppinssemibold);
+                            for(int i=0 ;i<dataArry.length();i++){
+                                JSONObject jsonObject =dataArry.getJSONObject(i);
+
+                                LinearLayout et = new LinearLayout(new ContextThemeWrapper(LandlineBill.this,R.style.confirmation_dialog_layout));
+
+                                et.setPadding(Utility.getPixelsFromDPs(LandlineBill.this,10),Utility.getPixelsFromDPs(LandlineBill.this,10),Utility.getPixelsFromDPs(LandlineBill.this,10),Utility.getPixelsFromDPs(LandlineBill.this,10));
+
+                                TextView text = new TextView(new ContextThemeWrapper(LandlineBill.this, R.style.confirmation_dialog_filed));
+                                text.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float) 1));
+                                text.setText(jsonObject.getString("key"));
+                                text.setMaxLines(1);
+                                text.setEllipsize(TextUtils.TruncateAt.END);
+                                text.setTypeface(typeface);
+                                text.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+
+                                TextView value = new TextView(new ContextThemeWrapper(LandlineBill.this, R.style.confirmation_dialog_value));
+                                value.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,1));
+                                value.setText(jsonObject.getString("value"));
+                                value.setTypeface(typeface);
+                                value.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+                                et.addView(text);
+                                et.addView(value);
+                                fetchbilllayout.addView(et);
+                            }
+                            fetchbillcard.setVisibility(View.VISIBLE);
+                        }else if(jsonresponseInfo.getString("responseCode").equals("01")){
+                            fetchbill.setVisibility(View.VISIBLE);
+                            Utility.showSingleButtonDialogconfirmation(LandlineBill.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                                ok.dismiss();
+                            }),"Alert",jsonresponseInfo.getString("responseDescription"));
+                        }
+
+
+                    }
+                }
+            });
+        } catch (Exception e) {
+            Utility.exceptionAlertDialog(LandlineBill.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+
+        }
     }
 }

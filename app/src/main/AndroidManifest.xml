@@ -71,9 +71,6 @@
             android:name=".Activity.Bsnl_Landline_Corporate"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".Activity.Landline_Operator_List"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
             android:name=".Activity.Water"
             android:windowSoftInputMode="stateHidden"
             />
