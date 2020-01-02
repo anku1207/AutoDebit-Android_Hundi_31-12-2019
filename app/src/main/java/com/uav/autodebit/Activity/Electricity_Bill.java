@@ -119,6 +119,8 @@ public class Electricity_Bill extends AppCompatActivity  implements View.OnClick
                             Gson gson = new Gson();
                             operatorListDate = gson.toJson(getDataList());
 
+                            //manoj
+
                         }
                         @Override
                         public void doPostExecute() {
