@@ -22,6 +22,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -72,6 +73,9 @@ public class LandlineBill extends AppCompatActivity implements View.OnClickListe
     boolean valid=true;
     String operatorListDate;
     UAVProgressDialog pd;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

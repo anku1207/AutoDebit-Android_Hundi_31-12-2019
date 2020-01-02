@@ -52,11 +52,7 @@ public class Webview extends AppCompatActivity {
         getSupportActionBar().hide();
         setContentView(R.layout.activity_webview);
 
-
-
         Intent intent = getIntent();
-
-
         openWebView(intent.getStringExtra("url")); //http://d.eze.cc/r/o/0zfATRE7
 
 
@@ -121,7 +117,11 @@ public class Webview extends AppCompatActivity {
             back_activity_button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    webView.goBack();
+                    if (webView.canGoBack()) {
+                        webView.goBack();
+                    } else {
+                        finish();
+                    }
                 }
             });
 
@@ -136,13 +136,21 @@ public class Webview extends AppCompatActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if ((keyCode == KeyEvent.KEYCODE_BACK) && this.webView.canGoBack()) {
-            this.webView.goBack();
-            return true;
-        }
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            switch (keyCode) {
+                case KeyEvent.KEYCODE_BACK:
+                    if (webView.canGoBack()) {
+                        webView.goBack();
+                    } else {
+                        finish();
+                    }
+                    return true;
+            }
 
+        }
         return super.onKeyDown(keyCode, event);
     }
+
 
 
 
