@@ -181,7 +181,6 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
                 try
                 {
                     AlertDialog.Builder pictureDialog = new AlertDialog.Builder(Dmrc_Card_Request.this);
-
                     pictureDialog.setTitle("Select Action");
                     String[] pictureDialogItems = {
                             "Select photo from gallery",
@@ -224,12 +223,6 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
                 }
 
                 Utility.hideKeyboard(Dmrc_Card_Request.this);
-
-
-
-
-
-
 
 
                 final Dialog var3 = new Dialog(Dmrc_Card_Request.this);

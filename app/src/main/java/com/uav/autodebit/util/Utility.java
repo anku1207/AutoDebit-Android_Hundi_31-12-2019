@@ -37,6 +37,7 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutCompat;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.SpannableStringBuilder;
@@ -666,7 +667,6 @@ public class Utility {
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
-
         int marginInDp = (int) TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP, 10, context.getResources()
                         .getDisplayMetrics());
@@ -689,6 +689,15 @@ public class Utility {
         return ed;
     }
 
+
+    public static void getRecyclerView(Context context){
+        RecyclerView recyclerView =new RecyclerView(context);
+        LinearLayout.LayoutParams layoutparams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        recyclerView.setLayoutParams(layoutparams);
+    }
 
 
 

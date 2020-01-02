@@ -457,7 +457,9 @@ public class Home extends AppCompatActivity
 
                         Session.set_Data_Sharedprefence(Home.this,Session.CACHE_DMRC_MIN_CARD_CHARGE,dmrc_customer_cardVO.getAnonymousString());
 
-                        if(dmrc_customer_cardVO.getDmrcCustomerList().size()>0){
+
+                        //if card is empty open add dmrc card activity open
+                        if(dmrc_customer_cardVO.getDmrcCustomerList().size()<0){
                             Intent intent =new Intent(Home.this,DMRC_Cards_List.class);
 
                             intent.putExtra("dmrccard",gson.toJson(dmrc_customer_cardVO));

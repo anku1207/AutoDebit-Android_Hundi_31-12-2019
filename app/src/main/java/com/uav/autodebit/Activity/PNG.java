@@ -103,12 +103,9 @@ public class PNG extends AppCompatActivity  implements View.OnClickListener{
                     BackgroundAsyncService backgroundAsyncService = new BackgroundAsyncService(pd,true, new BackgroundServiceInterface() {
                         @Override
                         public void doInBackGround() {
-
                             Gson gson = new Gson();
                             operatorListDate = gson.toJson(getDataList());
-
                             //manoj
-
                         }
                         @Override
                         public void doPostExecute() {
@@ -132,7 +129,6 @@ public class PNG extends AppCompatActivity  implements View.OnClickListener{
         String operator= Session.getSessionByKey(PNG.this,Session.CACHE_LANDLINE_OPERATOR);
         try {
             JSONArray jsonArray =new JSONArray(operator);
-
             Log.w("dataoperator",jsonArray.toString());
             for(int i=0;i<jsonArray.length();i++){
                 DataAdapterVO dataAdapterVO = new DataAdapterVO();
