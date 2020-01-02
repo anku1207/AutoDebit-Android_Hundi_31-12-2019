@@ -73,14 +73,13 @@
         android:layout_height="match_parent">
 
 
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:layout_marginTop="50dp"
+            android:paddingTop="50dp"
             android:id="@+id/main">
 
 
@@ -112,7 +111,7 @@
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/mobile"
+                    android:drawableLeft="@drawable/operator"
                     android:backgroundTint="@color/white"
                     android:hint="Operator"
                     android:singleLine="true"
@@ -124,9 +123,6 @@
 
                     />
             </android.support.v7.widget.CardView>
-
-
-
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -152,8 +148,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     >
-
-
                     <EditText
                         android:id="@+id/amount"
                         android:layout_width="match_parent"
@@ -165,12 +159,11 @@
                         android:hint="Amount"
                         android:singleLine="true"
                         android:maxLength="10"
-                        android:inputType="number|textVisiblePassword"
+                        android:inputType="number|numberDecimal"
                         android:digits="@string/NumberDigits"
                         android:maxLines="1"
-                        android:layout_marginRight="45dp"
-                        style="@style/commonEdittextStyle"
-                        />
+                        android:layout_marginRight="60dp"
+                        style="@style/commonEdittextStyle"/>
 
                     <TextView
                         android:id="@+id/fetchbill"
@@ -184,11 +177,32 @@
                         android:text="FetchBill"
                         android:textSize="10dp"
                         android:backgroundTint="@color/white"
-                        android:textColor="@color/appbar"/>
+                        android:textColor="@color/appbar"
+                        android:padding="10dp"/>
                 </RelativeLayout>
 
             </android.support.v7.widget.CardView>
 
+
+
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardElevation="7dp"
+                android:layout_margin="10dp"
+                app:cardCornerRadius="15dp"
+                android:id="@+id/fetchbillcard"
+                android:visibility="gone"
+                >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:id="@+id/fetchbilllayout">
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
 
 
             <Button
@@ -197,14 +211,35 @@
                 android:id="@+id/proceed"
                 android:text="Proceed"
                 android:layout_gravity="center"
-                android:layout_marginBottom="30dp"
+                android:layout_marginBottom="20dp"
                 android:layout_marginTop="30dp"
                 android:background="@drawable/cornerbutton"
                 android:textColor="@color/white"
-                android:layout_margin="10dp"
                 />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingLeft="20dp"
+                android:paddingEnd="20dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_marginBottom="20dp">
+
+
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="30dp"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/bbpslogo"
+                    android:layout_gravity="center"/>
+
+
+            </LinearLayout>
+
 
         </LinearLayout>
+
 
     </ScrollView>
 
