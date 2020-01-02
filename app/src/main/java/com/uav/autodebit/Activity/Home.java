@@ -142,6 +142,7 @@ public class Home extends AppCompatActivity
             activity_json.put("10","Electricity_Bill");
             activity_json.put("15","All_Service");
             activity_json.put("17","D2H");
+            activity_json.put("6","PNG");
 
             json_Service.put("L_2","PanVerification");
             json_Service.put("L_3","Credit_Score_Report");
