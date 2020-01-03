@@ -118,6 +118,8 @@ public class Home extends AppCompatActivity
         toolbar.setTitle(Utility.capitalize(customername));
         setSupportActionBar(toolbar);
 
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
 
         dialog=new ProgressDialog(Home.this);
         pd = new UAVProgressDialog(this);
@@ -459,15 +461,26 @@ public class Home extends AppCompatActivity
 
 
                         //if card is empty open add dmrc card activity open
-                        if(dmrc_customer_cardVO.getDmrcCustomerList().size()<0){
+                        if(dmrc_customer_cardVO.getDmrcCustomerList().size()>0){
+/*
                             Intent intent =new Intent(Home.this,DMRC_Cards_List.class);
-
                             intent.putExtra("dmrccard",gson.toJson(dmrc_customer_cardVO));
                             startActivity(intent);
+*/
+                            Intent intent =new Intent(Home.this,Dmrc_Card_Request.class);
+                            intent.putExtra("onetimecharges",dmrc_customer_cardVO.getAnonymousString());
+                            intent.putExtra("isdisable",false);
+                            intent.putExtra("dmrccard",gson.toJson(dmrc_customer_cardVO));
+                            startActivity(intent);
+
                         }else {
                             Intent intent =new Intent(Home.this,Dmrc_Card_Request.class);
                             intent.putExtra("onetimecharges",dmrc_customer_cardVO.getAnonymousString());
-                            intent.putExtra("isdisable",true);
+                            intent.putExtra("isdisable",false);
+
+
+                            //change
+                            intent.putExtra("dmrccard",gson.toJson(dmrc_customer_cardVO));
                             startActivity(intent);
                         }
                     }

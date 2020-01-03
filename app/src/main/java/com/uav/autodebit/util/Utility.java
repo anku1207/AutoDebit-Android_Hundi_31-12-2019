@@ -690,13 +690,23 @@ public class Utility {
     }
 
 
-    public static void getRecyclerView(Context context){
+    public static RecyclerView getRecyclerView(Context context){
         RecyclerView recyclerView =new RecyclerView(context);
         LinearLayout.LayoutParams layoutparams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
         recyclerView.setLayoutParams(layoutparams);
+        return recyclerView;
+    }
+
+
+
+    public static ImageView getImageView(Context context){
+        ImageView imageView = new ImageView(context);
+        LinearLayout.LayoutParams layoutparams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,getPixelsFromDPs(context,225));
+        imageView.setLayoutParams(layoutparams);
+        return imageView;
     }
 
 

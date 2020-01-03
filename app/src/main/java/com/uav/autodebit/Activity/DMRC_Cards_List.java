@@ -84,7 +84,6 @@ public class DMRC_Cards_List extends AppCompatActivity implements View.OnClickLi
        //listforcard= (ArrayList<DMRC_Customer_CardVO>) Utility.fromJson(getIntent().getStringExtra("dmrccard"), new TypeToken<ArrayList<DMRC_Customer_CardVO>>() { }.getType());
 
         dmrc_customer_cardVO=gson.fromJson(getIntent().getStringExtra("dmrccard"), DMRC_Customer_CardVO.class);
-
         listforcard= (ArrayList<DMRC_Customer_CardVO>) dmrc_customer_cardVO.getDmrcCustomerList();
 
         addoncard=findViewById(R.id.addoncard);
@@ -125,9 +124,7 @@ public class DMRC_Cards_List extends AppCompatActivity implements View.OnClickLi
     }
 
     public ArrayList<DMRC_Customer_CardVO> getdata(){
-
         ArrayList<DMRC_Customer_CardVO> dmrc_customer_cardVOS=new ArrayList<>();
-
         for(DMRC_Customer_CardVO dmrc_customer_cardVOS1 :listforcard ){
             DMRC_Customer_CardVO dmrc_customer_cardVO =new DMRC_Customer_CardVO();
 

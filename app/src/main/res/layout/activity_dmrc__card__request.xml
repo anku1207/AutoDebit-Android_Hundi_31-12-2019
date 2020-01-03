@@ -74,7 +74,8 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:fillViewport="true"
+        android:id="@+id/scrollView">
 
 
         <LinearLayout
@@ -88,7 +89,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:id="@+id/addcardlistlayout">
             </LinearLayout>
 
 
@@ -354,11 +356,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/verify"
-                android:text="verify"
+                android:text="Add Card"
                 android:layout_marginBottom="30dp"
                 android:layout_marginTop="30dp"
                 android:background="@drawable/cornerbutton"
                 android:textColor="@color/white"
+                android:textAllCaps="false"
                 />
 
 

@@ -84,7 +84,7 @@
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".Activity.Dmrc_Card_Request"
-            android:windowSoftInputMode="stateAlwaysHidden" />
+            android:windowSoftInputMode="stateHidden" />
         <activity android:name=".Activity.DTH_Recharge_Service" />
         <activity
             android:name=".Activity.Browse_Plan"
