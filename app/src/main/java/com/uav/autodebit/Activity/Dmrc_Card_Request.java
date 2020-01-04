@@ -46,6 +46,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
+import com.uav.autodebit.Animation.DepthTransformation;
 import com.uav.autodebit.BO.MetroBO;
 import com.uav.autodebit.BO.PinCodeBO;
 import com.uav.autodebit.BO.ServiceBO;
@@ -230,6 +231,9 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
                 tabLayout.setupWithViewPager(viewPager, false);
                 addcardlistlayout.addView(viewPager);
 
+                DepthTransformation depthTransformation = new DepthTransformation();
+                viewPager.setPageTransformer(true, depthTransformation);
+
 
                 View current = getCurrentFocus();
                 if (current != null) current.clearFocus();
@@ -245,6 +249,11 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
         addcardlistlayout.removeAllViewsInLayout();
 
         if(dmrc_customer_cardVO.getDmrcCustomerList()!=null && dmrc_customer_cardVO.getDmrcCustomerList().size()>0){
+
+            //Show Addcard btn
+            showAddCardBtn();
+
+
           /*  ArrayList<DMRC_Customer_CardVO> listforcard= (ArrayList<DMRC_Customer_CardVO>) dmrc_customer_cardVO.getDmrcCustomerList();
             recyclerView =Utility.getRecyclerView(Dmrc_Card_Request.this);
             recyclerView.setNestedScrollingEnabled(true);
@@ -253,8 +262,6 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
             getdata(listforcard);*/
 
 
-            //Show Addcard btn
-            showAddCardBtn();
 
             ArrayList<DMRC_Customer_CardVO> listforcard= (ArrayList<DMRC_Customer_CardVO>) dmrc_customer_cardVO.getDmrcCustomerList();
             viewPager=Utility.getViewPager(Dmrc_Card_Request.this);
@@ -413,6 +420,7 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
         LinearLayout linearLayout =findViewById(R.id.layoutmainBanner);
         Button button = Utility.getButton(Dmrc_Card_Request.this);
         linearLayout.addView(button);
+        scrollView.setAnimation(null);
         scrollView.setVisibility(View.GONE);
 
         button.setOnClickListener(new View.OnClickListener() {
@@ -431,11 +439,13 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
                 TranslateAnimation animate = new TranslateAnimation(
                         0,
                         0,
-                        scrollView.getHeight()+300,
+                        1000,
                         0);
                 animate.setDuration(1000);
                 animate.setFillAfter(true);
                 scrollView.startAnimation(animate);
+
+
 
 
                 Utility.removeEle(button);
