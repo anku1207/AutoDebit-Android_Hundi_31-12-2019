@@ -59,7 +59,8 @@
                     android:layout_centerInParent="true"
                     app:tabBackground="@drawable/banner_indicator_selector"
                     app:tabGravity="center"
-                    app:tabIndicatorHeight="0dp" />
+                    app:tabIndicatorHeight="0dp"
+                />
             </RelativeLayout>
 
 

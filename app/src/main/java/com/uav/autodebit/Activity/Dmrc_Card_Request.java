@@ -1,5 +1,7 @@
 package com.uav.autodebit.Activity;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -12,8 +14,10 @@ import android.graphics.Matrix;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.design.widget.TabLayout;
 import android.support.v4.content.FileProvider;
 import android.support.v4.graphics.BitmapCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,15 +25,21 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.transition.Fade;
+import android.transition.Transition;
+import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,6 +52,7 @@ import com.uav.autodebit.BO.ServiceBO;
 import com.uav.autodebit.Interface.AlertSelectDialogClick;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.R;
+import com.uav.autodebit.adpater.CustomPagerAdapter;
 import com.uav.autodebit.adpater.DMRC_List_Adpater;
 import com.uav.autodebit.adpater.ListViewItemCheckboxBaseAdapter;
 import com.uav.autodebit.constant.ApplicationConstant;
@@ -100,10 +111,11 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
 
 
     RecyclerView recyclerView;
+    ViewPager viewPager;
     ScrollView scrollView;
 
     int serviceId=2;
-
+    TabLayout tabLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,6 +138,8 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
         cardcharges=findViewById(R.id.cardcharges);
         addcardlistlayout=findViewById(R.id.addcardlistlayout);
         scrollView=findViewById(R.id.scrollView);
+
+        tabLayout =findViewById(R.id.indicator);
 
         back_activity_button1=findViewById(R.id.back_activity_button);
 
@@ -204,9 +218,18 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
             }
             @Override
             public void doPostExecute(List list) {
-                DMRC_List_Adpater dmrc_list_adpater=new DMRC_List_Adpater(Dmrc_Card_Request.this,list ,R.layout.design_dmrc_card_list);
+              /*  DMRC_List_Adpater dmrc_list_adpater=new DMRC_List_Adpater(Dmrc_Card_Request.this,list ,R.layout.design_dmrc_card_list);
                 recyclerView.setAdapter(dmrc_list_adpater);
                 addcardlistlayout.addView(recyclerView);
+*/
+
+                CustomPagerAdapter models =new CustomPagerAdapter(list,Dmrc_Card_Request.this);
+                viewPager.setAdapter(models);
+                viewPager.setPadding(0,0,0,0);
+
+                tabLayout.setupWithViewPager(viewPager, false);
+                addcardlistlayout.addView(viewPager);
+
 
                 View current = getCurrentFocus();
                 if (current != null) current.clearFocus();
@@ -222,14 +245,21 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
         addcardlistlayout.removeAllViewsInLayout();
 
         if(dmrc_customer_cardVO.getDmrcCustomerList()!=null && dmrc_customer_cardVO.getDmrcCustomerList().size()>0){
-            ArrayList<DMRC_Customer_CardVO> listforcard= (ArrayList<DMRC_Customer_CardVO>) dmrc_customer_cardVO.getDmrcCustomerList();
+          /*  ArrayList<DMRC_Customer_CardVO> listforcard= (ArrayList<DMRC_Customer_CardVO>) dmrc_customer_cardVO.getDmrcCustomerList();
             recyclerView =Utility.getRecyclerView(Dmrc_Card_Request.this);
             recyclerView.setNestedScrollingEnabled(true);
             recyclerView.setHasFixedSize(false);
             recyclerView.setLayoutManager(new LinearLayoutManager(Dmrc_Card_Request.this, LinearLayoutManager.HORIZONTAL, false));
+            getdata(listforcard);*/
+
+
+            //Show Addcard btn
+            showAddCardBtn();
+
+            ArrayList<DMRC_Customer_CardVO> listforcard= (ArrayList<DMRC_Customer_CardVO>) dmrc_customer_cardVO.getDmrcCustomerList();
+            viewPager=Utility.getViewPager(Dmrc_Card_Request.this);
+            viewPager.setOverScrollMode(View.OVER_SCROLL_NEVER);
             getdata(listforcard);
-
-
         }else{
             ImageView imageView =Utility.getImageView(Dmrc_Card_Request.this);
             imageView.setScaleType(ImageView.ScaleType.FIT_XY);
@@ -249,11 +279,6 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         scrollView.fullScroll(ScrollView.FOCUS_UP);
     }
-
-
-
-
-
 
     @Override
     public void onClick(View view) {
@@ -374,13 +399,50 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
                         }
                     }
                 });
-
                 var3.show();
                 var3.getWindow().setAttributes(lp);
 
 
                 break;
         }
+    }
+
+
+    public void showAddCardBtn(){
+
+        LinearLayout linearLayout =findViewById(R.id.layoutmainBanner);
+        Button button = Utility.getButton(Dmrc_Card_Request.this);
+        linearLayout.addView(button);
+        scrollView.setVisibility(View.GONE);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mobilenumber.setText(null);
+                customername.setText(null);
+                pin.setText(null);
+                city.setText(null);
+                state.setText(null);
+                permanentaddress.setText(null);
+
+                addressimage.setImageBitmap(null);
+                bmp=null;
+                scrollView.setVisibility(View.VISIBLE);
+                TranslateAnimation animate = new TranslateAnimation(
+                        0,
+                        0,
+                        scrollView.getHeight()+300,
+                        0);
+                animate.setDuration(1000);
+                animate.setFillAfter(true);
+                scrollView.startAnimation(animate);
+
+
+                Utility.removeEle(button);
+
+            }
+        });
+
     }
 
 

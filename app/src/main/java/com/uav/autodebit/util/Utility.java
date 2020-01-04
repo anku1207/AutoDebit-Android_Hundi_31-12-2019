@@ -31,9 +31,11 @@ import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.SystemClock;
 import android.provider.MediaStore;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutCompat;
@@ -46,12 +48,16 @@ import android.text.TextWatcher;
 import android.text.method.DigitsKeyListener;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
+import android.transition.Fade;
+import android.transition.Transition;
+import android.transition.TransitionManager;
 import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -701,13 +707,39 @@ public class Utility {
     }
 
 
+    public static ViewPager getViewPager(Context context){
+        ViewPager viewPager =new ViewPager(context);
+        LinearLayout.LayoutParams layoutparams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                getPixelsFromDPs(context,220)
+        );
+        viewPager.setLayoutParams(layoutparams);
+        return viewPager;
+    }
 
     public static ImageView getImageView(Context context){
         ImageView imageView = new ImageView(context);
-        LinearLayout.LayoutParams layoutparams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,getPixelsFromDPs(context,225));
+        LinearLayout.LayoutParams layoutparams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,getPixelsFromDPs(context,220));
         imageView.setLayoutParams(layoutparams);
         return imageView;
     }
+
+    public static Button getButton(Context context){
+        Button button =new Button(context);
+        LinearLayout.LayoutParams layoutparams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        layoutparams.gravity = Gravity.CENTER_HORIZONTAL;
+
+        button.setLayoutParams(layoutparams);
+        button.setText("Add Card");
+        button.setBackground(context.getResources().getDrawable(R.drawable.cornerbutton));
+        button.setAllCaps(false);
+        button.setTextColor(context.getResources().getColor(R.color.white));
+        return button;
+    }
+
 
 
 
@@ -1175,7 +1207,12 @@ public class Utility {
                 editText.setFocusableInTouchMode(false);
             }
         }
+    }
 
+    public static void removeEle(View ele){
+        View myView = ele;
+        ViewGroup parent = (ViewGroup) myView.getParent();
+        parent.removeView(myView);
     }
 
 

@@ -71,43 +71,64 @@
             />
     </android.support.v7.widget.Toolbar>
 
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true"
-        android:id="@+id/scrollView">
-
-
-        <LinearLayout
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/layoutmainBanner"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp">
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="220dp"
             android:orientation="vertical"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp">
-
-
+           >
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:id="@+id/addcardlistlayout">
+                android:id="@+id/addcardlistlayout"
+                >
             </LinearLayout>
+            <android.support.design.widget.TabLayout
+                android:id="@+id/indicator"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerInParent="true"
+                app:tabBackground="@drawable/banner_indicator_selector"
+                app:tabGravity="center"
+                app:tabIndicatorHeight="0dp"
+                />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fillViewport="true"
+        android:id="@+id/scrollView"
+        >
 
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Please fill this form below to apply for a new DMRC Card"
-                android:layout_marginTop="30dp"
-                android:layout_marginBottom="30dp"
                 android:layout_gravity="center"
                 android:textAlignment="center"
+                android:maxLines="1"
                 android:textSize="19dp"
                 android:fontFamily="@font/poppinslight"
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp"/>
-
 
 
 
@@ -362,6 +383,7 @@
                 android:background="@drawable/cornerbutton"
                 android:textColor="@color/white"
                 android:textAllCaps="false"
+
                 />
 
 

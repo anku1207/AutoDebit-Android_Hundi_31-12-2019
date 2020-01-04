@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="350dp"
-    android:layout_height="250dp"
+    android:layout_width="match_parent"
+    android:layout_height="220dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
-
+    android:orientation="vertical"
+    >
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="200dp"
                 android:layout_margin="10dp"
                 app:cardCornerRadius="15dp">
 
@@ -16,7 +16,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
-                    android:padding="20dp"
+                    android:padding="10dp"
                     android:id="@+id/mainlayout"
                     >
 
@@ -162,18 +162,19 @@
                                 >
 
                                 <android.support.v7.widget.CardView
-                                    android:layout_width="50dp"
-                                    android:layout_height="50dp"
+                                    android:layout_width="70dp"
+                                    android:layout_height="70dp"
                                     android:elevation="12dp"
                                     android:id="@+id/view2"
                                     app:cardCornerRadius="25dp"
                                     >
                                     <ImageView
-                                        android:layout_width="50dp"
-                                        android:layout_height="50dp"
+                                        android:layout_width="70dp"
+                                        android:layout_height="70dp"
                                         android:id="@+id/imageview"
                                         android:scaleType="centerCrop"
                                         android:src="@drawable/dmrc"
+                                        android:layout_gravity="right"
                                         />
                                 </android.support.v7.widget.CardView>
                             </LinearLayout>
