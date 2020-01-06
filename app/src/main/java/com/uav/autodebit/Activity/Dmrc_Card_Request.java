@@ -2,6 +2,7 @@ package com.uav.autodebit.Activity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -11,11 +12,18 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.design.widget.TabLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.graphics.BitmapCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -29,6 +37,7 @@ import android.transition.Fade;
 import android.transition.Transition;
 import android.transition.TransitionManager;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -231,8 +240,9 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
                 tabLayout.setupWithViewPager(viewPager, false);
                 addcardlistlayout.addView(viewPager);
 
-                DepthTransformation depthTransformation = new DepthTransformation();
-                viewPager.setPageTransformer(true, depthTransformation);
+                // add animation on viewpager
+               /* DepthTransformation depthTransformation = new DepthTransformation();
+                viewPager.setPageTransformer(true, depthTransformation);*/
 
 
                 View current = getCurrentFocus();
@@ -415,15 +425,29 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
     }
 
 
+
+
+
+
+    @SuppressLint("ResourceType")
     public void showAddCardBtn(){
 
         LinearLayout linearLayout =findViewById(R.id.layoutmainBanner);
-        Button button = Utility.getButton(Dmrc_Card_Request.this);
-        linearLayout.addView(button);
+        TextView textView = Utility.getTextView(Dmrc_Card_Request.this,"Add on Card");
+        textView.setPaintFlags(textView.getPaintFlags() |   Paint.UNDERLINE_TEXT_FLAG);
+        textView.setTextColor(getApplication().getResources().getColorStateList(R.drawable.text_change_color_blue));
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 17);
+
+        Typeface typeface = ResourcesCompat.getFont(this, R.font.poppinssemibold);
+        textView.setTypeface(typeface ,Typeface.BOLD);
+
+
+        linearLayout.addView(textView);
+
         scrollView.setAnimation(null);
         scrollView.setVisibility(View.GONE);
 
-        button.setOnClickListener(new View.OnClickListener() {
+        textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mobilenumber.setText(null);
@@ -445,10 +469,7 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
                 animate.setFillAfter(true);
                 scrollView.startAnimation(animate);
 
-
-
-
-                Utility.removeEle(button);
+                Utility.removeEle(textView);
 
             }
         });

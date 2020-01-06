@@ -236,6 +236,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
 
     @Override
     public void onClick(View view) {
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         switch (view.getId()){
             case R.id.newuser:
                 startActivity(new Intent(Login.this,User_Registration.class));

@@ -11,6 +11,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -25,6 +26,7 @@ import android.view.WindowManager;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -98,16 +100,21 @@ public class Home extends AppCompatActivity
 
     JSONObject activity_json=new JSONObject();
     JSONObject json_Service =new JSONObject();
-
-
+    NestedScrollView scrollView;
 
     @Override
     protected void onRestart() {
         super.onRestart();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        scrollView.fullScroll(ScrollView.FOCUS_UP);
     }
 
-
+    @Override
+    protected void onStart() {
+        super.onStart();
+        scrollView.fullScroll(ScrollView.FOCUS_UP);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,7 +125,7 @@ public class Home extends AppCompatActivity
         toolbar.setTitle(Utility.capitalize(customername));
         setSupportActionBar(toolbar);
 
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
 
 
         dialog=new ProgressDialog(Home.this);
@@ -181,6 +188,7 @@ public class Home extends AppCompatActivity
         profile=findViewById(R.id.profile);
         linked=findViewById(R.id.linked);
         all=findViewById(R.id.all);
+        scrollView=findViewById(R.id.scrollView);
 
 
         //19-10-2019
