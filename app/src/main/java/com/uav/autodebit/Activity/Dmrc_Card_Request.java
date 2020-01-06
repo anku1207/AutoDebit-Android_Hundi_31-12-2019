@@ -236,8 +236,8 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
                 CustomPagerAdapter models =new CustomPagerAdapter(list,Dmrc_Card_Request.this);
                 viewPager.setAdapter(models);
                 viewPager.setPadding(0,0,0,0);
-
                 tabLayout.setupWithViewPager(viewPager, false);
+                Utility.disable_Tab(tabLayout);
                 addcardlistlayout.addView(viewPager);
 
                 // add animation on viewpager
