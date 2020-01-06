@@ -122,7 +122,7 @@ public class Splash_Screen extends AppCompatActivity implements BitmapInterface 
                 loadHomeActivity();
             }
         }else {
-            Intent intent = new Intent(this, Login.class);
+            Intent intent = new Intent(this, User_Registration.class);
             startActivity(intent);
             finish();
         }
