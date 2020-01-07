@@ -317,9 +317,6 @@ public class User_Registration extends AppCompatActivity {
                     Utility.showSingleButtonDialog(User_Registration.this,"Alert",sb.toString(),false);
 
                 }else {
-                    Session.set_Data_Sharedprefence_BoolenvValue(User_Registration.this,Session.CACHE_IS_NEW_USER,false);
-
-
                     customerVO.setUserid(userphone.getText().toString().trim());
                     customerVO.setLoginType("mobile");
 
@@ -334,16 +331,14 @@ public class User_Registration extends AppCompatActivity {
 
                         Utility.showSingleButtonDialogconfirmation(User_Registration.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
                             ok.dismiss();
+
+                            Session.set_Data_Sharedprefence_BoolenvValue(User_Registration.this,Session.CACHE_IS_NEW_USER,false);
+
                             Intent intent =new Intent(User_Registration.this, Login.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             intent.putExtra("user_mobile",userphone.getText().toString());
                             startActivities(new Intent[]{intent});
                         }), "Alert", sb.toString());
-
-
-
-
-
 
                     }
                 }
@@ -371,6 +366,7 @@ public class User_Registration extends AppCompatActivity {
         if(resultCode==RESULT_OK){
             if(requestCode==100){
                 if(data!=null){
+                    Session.set_Data_Sharedprefence_BoolenvValue(User_Registration.this,Session.CACHE_IS_NEW_USER,false);
                     if( Integer.parseInt(data.getStringExtra("key"))==(CustomerStatusVO.SIGNUP_MOBILE_OTP_VERIFIED)){
                         Intent intent =new Intent(User_Registration.this,Password.class);
                         intent.putExtra("customerid",data.getStringExtra("value"));

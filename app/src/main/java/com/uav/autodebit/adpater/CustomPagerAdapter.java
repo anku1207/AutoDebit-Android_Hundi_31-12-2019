@@ -71,7 +71,9 @@ public class CustomPagerAdapter extends PagerAdapter {
             issuedate.setText("");
         }
         if(pro.getImage()!=null){
-            Picasso.with(context).load(pro.getImage()).fit()
+            Picasso.with(context)
+                    .load(pro.getImage())
+                    .fit()
                     .error(R.drawable.dmrc)
                     .placeholder(R.drawable.dmrc)
                     .into(imageview);
