@@ -17,19 +17,13 @@ public class ConfirmationDialogInterface {
         this.onCancel = onCancel;
     }
 
-
-
-
     public ConfirmationDialogInterface(OnOk onOk) {
         this.onOk = onOk;
     }
 
-
-
     public void onOk(Dialog s) {
         onOk.onOk(s);
     }
-
 
     public void onCancel(Dialog s) {
         onCancel.onCancel(s);

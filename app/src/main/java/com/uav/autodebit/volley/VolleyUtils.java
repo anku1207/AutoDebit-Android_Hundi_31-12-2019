@@ -30,6 +30,7 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.uav.autodebit.Activity.Mobile_Prepaid_Recharge_Service;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.permission.PermissionHandler;
@@ -96,7 +97,6 @@ public class VolleyUtils {
                                             atualizaApp.setContext(mctx);
                                             atualizaApp.execute("");
                                         }
-
                                     }
                                 });
                                 alertDialog.show();
@@ -104,8 +104,9 @@ public class VolleyUtils {
                             }else {
                                 listener.onResponse(response);
                             }
-                        } catch (JSONException e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
+                            Utility.exceptionAlertDialog(context,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
                         }
                     }
                 }, new Response.ErrorListener() {

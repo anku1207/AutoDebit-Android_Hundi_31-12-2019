@@ -161,10 +161,8 @@ public class Splash_Screen extends AppCompatActivity implements BitmapInterface 
                     Session.set_Data_Sharedprefence(Splash_Screen.this,Session.CACHE_LANDLINE_OPERATOR,localCacheVO.getLandline());
                     Session.set_Data_Sharedprefence(Splash_Screen.this,Session.CACHE_BROADBAND_OPERATOR,localCacheVO.getBoradBand());
                     Session.set_Data_Sharedprefence(Splash_Screen.this,Session.CACHE_WATER_OPERATOR,localCacheVO.getWater());
-
                     Session.set_Data_Sharedprefence(Splash_Screen.this,Session.CACHE_GAS_OPERATOR,localCacheVO.getGas());
                     Session.set_Data_Sharedprefence(Splash_Screen.this,Session.CACHE_ELECTRICITY_OPERATOR,localCacheVO.getElectricity());
-
                     Session.set_Data_Sharedprefence(Splash_Screen.this, Session.LOCAL_CACHE,response.toString());
 
 
@@ -172,8 +170,6 @@ public class Splash_Screen extends AppCompatActivity implements BitmapInterface 
                     //download image on first time
 
                     //managecachedata();
-
-
 
                   /*  List<BitmapVO> bitmapVOs=new ArrayList<>();
                     for(int i=0 ; i<slBannerVos.size() ; i++){

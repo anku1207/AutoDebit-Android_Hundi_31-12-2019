@@ -1,5 +1,6 @@
 package com.uav.autodebit.Activity;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
@@ -18,9 +19,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.uav.autodebit.BO.OxigenPlanBO;
+import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.override.DrawableClickListener;
@@ -28,6 +32,7 @@ import com.uav.autodebit.override.UAVEditText;
 import com.uav.autodebit.permission.PermissionHandler;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.CustomTextWatcherLengthAction;
+import com.uav.autodebit.util.DialogInterface;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerVO;
@@ -307,63 +312,116 @@ public class Mobile_Prepaid_Recharge_Service extends AppCompatActivity implement
 
 
     public void rechargeProceed(){
-        boolean valid=true;
+        try {
+            boolean valid=true;
 
-        if(mobilenumber.getText().toString().equals("")){
-            mobilenumber.setError("this filed is required");
-            valid=false;
-        }else if (!mobilenumber.getText().toString().equals("") &&  Utility.validatePattern(mobilenumber.getText().toString().trim(),ApplicationConstant.MOBILENO_VALIDATION)!=null){
-            mobilenumber.setError(Utility.validatePattern(mobilenumber.getText().toString().trim(),ApplicationConstant.MOBILENO_VALIDATION));
-            valid=false;
+            if(mobilenumber.getText().toString().equals("")){
+                mobilenumber.setError("this filed is required");
+                valid=false;
+            }else if (!mobilenumber.getText().toString().equals("") &&  Utility.validatePattern(mobilenumber.getText().toString().trim(),ApplicationConstant.MOBILENO_VALIDATION)!=null){
+                mobilenumber.setError(Utility.validatePattern(mobilenumber.getText().toString().trim(),ApplicationConstant.MOBILENO_VALIDATION));
+                valid=false;
+            }
+
+            if(operator.getText().toString().equals("")){
+                operator.setError("this filed is required");
+                valid=false;
+            }
+            if(amount.getText().toString().equals("")){
+                amount.setError("this filed is required");
+                browseplan.setVisibility(View.GONE);
+                valid=false;
+            }
+
+            if(valid){
+                String btn[]={"Cancel","Ok"};
+
+                JSONArray jsonArray =new JSONArray();
+
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("key","Operator");
+                jsonObject.put("value",operator.getText().toString());
+                jsonArray.put(jsonObject);
+
+                jsonObject = new JSONObject();
+                jsonObject.put("key","Number");
+                jsonObject.put("value",mobilenumber.getText().toString());
+                jsonArray.put(jsonObject);
+
+                jsonObject = new JSONObject();
+                jsonObject.put("key","Amount");
+                jsonObject.put("value",amount.getText().toString());
+                jsonArray.put(jsonObject);
+
+                Utility.confirmationDialog(new DialogInterface() {
+                    @Override
+                    public void confirm(Dialog dialog) {
+                        dialog.dismiss();
+                        try {
+                            proceedToRecharge();
+                        }catch (Exception e){
+                            e.printStackTrace();
+                            Utility.exceptionAlertDialog(Mobile_Prepaid_Recharge_Service.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+
+                        }
+
+
+                    }
+
+                    @Override
+                    public void modify(Dialog dialog) {
+                        dialog.dismiss();
+
+                    }
+                },Mobile_Prepaid_Recharge_Service.this,jsonArray,null,"Confirmation",btn);
+
+
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            Utility.exceptionAlertDialog(Mobile_Prepaid_Recharge_Service.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+
         }
 
-        if(operator.getText().toString().equals("")){
-            operator.setError("this filed is required");
-            valid=false;
-        }
-        if(amount.getText().toString().equals("")){
-            amount.setError("this filed is required");
-            browseplan.setVisibility(View.GONE);
-            valid=false;
-        }
+    }
 
-        if(valid){
-            HashMap<String, Object> params = new HashMap<String, Object>();
+    public void proceedToRecharge() throws Exception{
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        ConnectionVO connectionVO =OxigenPlanBO.oxiMobileRecharge();
 
-            ConnectionVO connectionVO =OxigenPlanBO.oxiMobileRecharge();
-
-            OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
-            oxigenTransactionVO.setReferenceName("mobile");
-            oxigenTransactionVO.setReferenceValue(mobilenumber.getText().toString().trim());
-            oxigenTransactionVO.setAmount(Double.parseDouble(amount.getText().toString().trim()));
-            oxigenTransactionVO.setStateRegion(regionname);
-            oxigenTransactionVO.setOperateName(operatorname);
+        OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
+        oxigenTransactionVO.setReferenceName("mobile");
+        oxigenTransactionVO.setReferenceValue(mobilenumber.getText().toString().trim());
+        oxigenTransactionVO.setAmount(Double.parseDouble(amount.getText().toString().trim()));
+        oxigenTransactionVO.setStateRegion(regionname);
+        oxigenTransactionVO.setOperateName(operatorname);
 
 
 
 
-            CustomerVO customerVO =new CustomerVO();
-            customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(Mobile_Prepaid_Recharge_Service.this)));
-            oxigenTransactionVO.setCustomer(customerVO);
+        CustomerVO customerVO =new CustomerVO();
+        customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(Mobile_Prepaid_Recharge_Service.this)));
+        oxigenTransactionVO.setCustomer(customerVO);
 
-            ServiceTypeVO serviceTypeVO =new ServiceTypeVO();
-            serviceTypeVO.setServiceTypeId(Integer.parseInt(serviceid));
-            oxigenTransactionVO.setServiceType(serviceTypeVO);
+        ServiceTypeVO serviceTypeVO =new ServiceTypeVO();
+        serviceTypeVO.setServiceTypeId(Integer.parseInt(serviceid));
+        oxigenTransactionVO.setServiceType(serviceTypeVO);
 
 
-            Gson gson=new Gson();
-            String json = gson.toJson(oxigenTransactionVO);
+        Gson gson=new Gson();
+        String json = gson.toJson(oxigenTransactionVO);
 
-            Log.w("request",json);
-            params.put("volley", json);
-            connectionVO.setParams(params);
+        Log.w("request",json);
+        params.put("volley", json);
+        connectionVO.setParams(params);
 
-            VolleyUtils.makeJsonObjectRequest(this, connectionVO, new VolleyResponseListener() {
-                @Override
-                public void onError(String message) {
-                }
-                @Override
-                public void onResponse(Object resp) throws JSONException {
+        VolleyUtils.makeJsonObjectRequest(this, connectionVO, new VolleyResponseListener() {
+            @Override
+            public void onError(String message) {
+            }
+            @Override
+            public void onResponse(Object resp) throws JSONException {
+                
                     JSONObject response = (JSONObject) resp;
                     Gson gson = new Gson();
                     OxigenTransactionVO oxigenPlanresp = gson.fromJson(response.toString(), OxigenTransactionVO.class);
@@ -377,14 +435,11 @@ public class Mobile_Prepaid_Recharge_Service extends AppCompatActivity implement
                         Utility.showSingleButtonDialog(Mobile_Prepaid_Recharge_Service.this,"Error !",stringBuffer.toString(),false);
                     }else {
                         Utility.showSingleButtonDialog(Mobile_Prepaid_Recharge_Service.this,"Success !",oxigenPlanresp.getAnonymousString(),true);;
-
                     }
-                }
-            });
 
 
-
-        }
+            }
+        });
     }
 
 
