@@ -1,16 +1,304 @@
 package com.uav.autodebit.Activity;
 
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Typeface;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
+import android.view.ContextThemeWrapper;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.uav.autodebit.BO.D2HBO;
+import com.uav.autodebit.BO.Electricity_BillBO;
+import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.R;
+import com.uav.autodebit.constant.ApplicationConstant;
+import com.uav.autodebit.permission.Session;
+import com.uav.autodebit.util.Utility;
+import com.uav.autodebit.vo.ConnectionVO;
+import com.uav.autodebit.vo.CustomerVO;
+import com.uav.autodebit.vo.D2HVO;
+import com.uav.autodebit.volley.VolleyResponseListener;
+import com.uav.autodebit.volley.VolleyUtils;
 
-public class D2H extends AppCompatActivity {
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+
+import static com.uav.autodebit.BO.ServiceBO.addBankForService;
+
+public class D2H extends AppCompatActivity implements View.OnClickListener {
+
+    EditText accountnumber;
+    Button proceed;
+    
+    Context context;
+    LinearLayout plandetailslayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dto_h);
         getSupportActionBar().hide();
+
+        context=D2H.this;
+
+        accountnumber=findViewById(R.id.accountnumber);
+        proceed=findViewById(R.id.proceed);
+        plandetailslayout=findViewById(R.id.plandetailslayout);
+
+        proceed.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.proceed:
+                getPlanDetail();
+                break;
+        }
+    }
+
+    private void getPlanDetail(){ 
+        try {
+            Gson gson =new Gson();
+
+            HashMap<String, Object> params = new HashMap<String, Object>();
+            ConnectionVO connectionVO = D2HBO.getD2HPlanDetail();
+            D2HVO d2HVO=new D2HVO();
+            d2HVO.setVcNo(accountnumber.getText().toString());
+
+            params.put("volley",gson.toJson(d2HVO));
+
+            connectionVO.setParams(params);
+
+            Log.w("request",params.toString());
+
+
+
+            VolleyUtils.makeJsonObjectRequest(context,connectionVO, new VolleyResponseListener() {
+                @Override
+                public void onError(String message) {
+                }
+                @Override
+                public void onResponse(Object resp) throws JSONException {
+                    JSONObject response = (JSONObject) resp;
+
+                    Log.w("responce",response.toString());
+                    Gson gson = new Gson();
+                    D2HVO d2HVO = gson.fromJson(response.toString(), D2HVO.class);
+
+                    if(d2HVO.getStatusCode().equals("400")){
+                        ArrayList error = (ArrayList) d2HVO.getErrorMsgs();
+                        StringBuilder sb = new StringBuilder();
+                        for(int i=0; i<error.size(); i++){
+                            sb.append(error.get(i)).append("\n");
+                        }
+                        Utility.showSingleButtonDialog(context,"Error !",sb.toString(),false);
+                    }else {
+
+                        Utility.removeEle(proceed);
+                        Utility.removeEle(accountnumber);
+
+                        JSONObject detailJson=(new JSONObject(d2HVO.getAnonymousString())).getJSONObject("Result");
+
+                        JSONArray planDetailarr= new JSONArray();
+                        JSONObject jsonObject ;
+
+                        if(detailJson.has("SubscriberName") && !detailJson.getString("SubscriberName").equals("")){
+                            jsonObject=new JSONObject();
+                            jsonObject.put("key","SubscriberName");
+                            jsonObject.put("value",detailJson.getString("SubscriberName"));
+                            planDetailarr.put(jsonObject);
+                        }
+
+                        if(detailJson.has("SwitchOffDate") && !detailJson.getString("SwitchOffDate").equals("")){
+                            jsonObject=new JSONObject();
+                            jsonObject.put("key","SwitchOffDate");
+                            jsonObject.put("value",detailJson.getString("SwitchOffDate"));
+                            planDetailarr.put(jsonObject);
+                        }
+
+                        if(detailJson.has("VCNO") && !detailJson.getString("VCNO").equals("")){
+                            jsonObject=new JSONObject();
+                            jsonObject.put("key","VCNO");
+                            jsonObject.put("value",detailJson.getString("VCNO"));
+                            planDetailarr.put(jsonObject);
+                        }
+
+                        if(detailJson.has("monthlySubscriptionAmount") && !detailJson.getString("monthlySubscriptionAmount").equals("")){
+                            jsonObject=new JSONObject();
+                            jsonObject.put("key","monthlySubscriptionAmount");
+                            jsonObject.put("value",detailJson.getString("monthlySubscriptionAmount"));
+                            planDetailarr.put(jsonObject);
+                        }
+                        if(detailJson.has("Mobileno") && !detailJson.getString("Mobileno").equals("")){
+                            jsonObject=new JSONObject();
+                            jsonObject.put("key","Mobileno");
+                            jsonObject.put("value",detailJson.getString("Mobileno"));
+                            planDetailarr.put(jsonObject);
+                        }
+                        if(detailJson.has("Emailid") && !detailJson.getString("Emailid").equals("")){
+                            jsonObject=new JSONObject();
+                            jsonObject.put("key","Emailid");
+                            jsonObject.put("value",detailJson.getString("Emailid"));
+                            planDetailarr.put(jsonObject);
+                        }
+
+
+
+                        Typeface typeface = ResourcesCompat.getFont(context, R.font.poppinssemibold);
+                        for(int i=0 ;i<planDetailarr.length();i++){
+                            JSONObject jsonObject1 =planDetailarr.getJSONObject(i);
+
+                            LinearLayout et = new LinearLayout(new ContextThemeWrapper(context,R.style.confirmation_dialog_layout));
+
+                            et.setPadding(Utility.getPixelsFromDPs(context,10),Utility.getPixelsFromDPs(context,10),Utility.getPixelsFromDPs(context,10),Utility.getPixelsFromDPs(context,10));
+
+                            TextView text = new TextView(new ContextThemeWrapper(context, R.style.confirmation_dialog_filed));
+                            text.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float) 1));
+                            text.setText(jsonObject1.getString("key"));
+                            text.setMaxLines(1);
+                            text.setEllipsize(TextUtils.TruncateAt.END);
+                            text.setTypeface(typeface);
+                            text.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
+                            text.setPadding(10,0,10,10);
+
+
+                            TextView commaText = new TextView(new ContextThemeWrapper(context, R.style.confirmation_dialog_filed));
+                            commaText.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float) .1));
+                            commaText.setText(":");
+                            commaText.setTypeface(typeface);
+                            commaText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+
+
+                            TextView value = new TextView(new ContextThemeWrapper(context, R.style.confirmation_dialog_value));
+                            value.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,1));
+                            value.setText(jsonObject1.getString("value"));
+                            value.setTypeface(typeface);
+                            value.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+                            value.setPadding(10,0,10,10);
+
+                            et.addView(text);
+                            et.addView(commaText);
+                            et.addView(value);
+                            plandetailslayout.addView(et);
+                        }
+
+
+                        LinearLayout et = new LinearLayout(new ContextThemeWrapper(context,R.style.confirmation_dialog_layout));
+
+                        et.setPadding(Utility.getPixelsFromDPs(context,10),Utility.getPixelsFromDPs(context,10),Utility.getPixelsFromDPs(context,10),Utility.getPixelsFromDPs(context,10));
+
+                        TextView text = new TextView(new ContextThemeWrapper(context, R.style.confirmation_dialog_filed));
+                        text.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,  1));
+                        text.setText("Bank Mandate");
+                        text.setMaxLines(1);
+                        text.setEllipsize(TextUtils.TruncateAt.END);
+                        text.setTypeface(typeface);
+                        text.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
+
+                        TextView commaText = new TextView(new ContextThemeWrapper(context, R.style.confirmation_dialog_filed));
+                        commaText.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float) .1));
+                        commaText.setText(":");
+                        commaText.setTypeface(typeface);
+                        commaText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+
+                        EditText editText =new EditText(context);
+                        editText.setLayoutParams(new LinearLayout.LayoutParams(0,ViewGroup.LayoutParams.WRAP_CONTENT ,(float) 1));
+                        editText.setTypeface(typeface);
+                        editText.setBackground(getApplication().getDrawable(R.drawable.edittext_round_border));
+                        editText.setTextSize(14);
+
+
+                        et.addView(text);
+                        et.addView(commaText);
+                        et.addView(editText);
+                        plandetailslayout.addView(et);
+
+                        Button button =Utility.getButton(context);
+                        button.setText("Proceed");
+                        plandetailslayout.addView(button);
+
+                        button.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                //plandetailslayout.removeAllViews();
+                                //startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(17))),ApplicationConstant.REQ_ENACH_MANDATE);
+                                addBank(button,editText.getText().toString());
+
+                            }
+                        });
+                    }
+                }
+
+            });
+        } catch (Exception e) {
+            Utility.exceptionAlertDialog(context,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+
+        }
+    }
+
+    private void addBank(Button button,String mandateAmt) {
+
+        try {
+            Gson gson =new Gson();
+
+            HashMap<String, Object> params = new HashMap<String, Object>();
+            ConnectionVO connectionVO = D2HBO.mandateAmountOverrideByServiceId();
+            CustomerVO customerVO=new CustomerVO();
+            customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(context)));
+            customerVO.setServiceId(ApplicationConstant.d2h);
+            customerVO.setAnonymousInteger(Integer.parseInt(mandateAmt));
+
+            params.put("volley",gson.toJson(customerVO));
+            connectionVO.setParams(params);
+            Log.w("request",params.toString());
+            VolleyUtils.makeJsonObjectRequest(context,connectionVO, new VolleyResponseListener() {
+                @Override
+                public void onError(String message) {
+                }
+                @Override
+                public void onResponse(Object resp) throws JSONException {
+                    JSONObject response = (JSONObject) resp;
+
+                    Log.w("responce",response.toString());
+                    Gson gson = new Gson();
+                    D2HVO d2HVO = gson.fromJson(response.toString(), D2HVO.class);
+
+                    if(d2HVO.getStatusCode().equals("400")){
+                        ArrayList error = (ArrayList) d2HVO.getErrorMsgs();
+                        StringBuilder sb = new StringBuilder();
+                        for(int i=0; i<error.size(); i++){
+                            sb.append(error.get(i)).append("\n");
+                        }
+                        Utility.showSingleButtonDialog(context,"Error !",sb.toString(),false);
+                    }else {
+
+
+                    }
+                }
+
+            });
+        } catch (Exception e) {
+            Utility.exceptionAlertDialog(context,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+
+        }
     }
 }

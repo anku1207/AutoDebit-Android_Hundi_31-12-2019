@@ -20,6 +20,7 @@ public class ApplicationConstant {
     public final static  boolean IS_PRODUCTION_ENVIRONMENT=false;
 
 
+    public static int d2h=17;
 
     public static int  REQ_ENACH_MANDATE=1003,REQ_ALLSERVICE=1004,REQ_AdditionalService_Add_More=1005;
 
@@ -113,8 +114,8 @@ public class ApplicationConstant {
            return "http://autope.in";
           //  return "http://164.52.192.45";
         }else{
-            return  "http://205.147.103.18" ;
-          // return "http://192.168.1.2";
+           // return  "http://205.147.103.18" ;
+           return "http://192.168.1.2";
         }
 
 

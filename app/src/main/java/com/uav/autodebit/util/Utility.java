@@ -730,6 +730,7 @@ public class Utility {
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
+        layoutparams.setMargins(0,30,0,30);
         layoutparams.gravity = Gravity.CENTER_HORIZONTAL;
 
         button.setLayoutParams(layoutparams);
