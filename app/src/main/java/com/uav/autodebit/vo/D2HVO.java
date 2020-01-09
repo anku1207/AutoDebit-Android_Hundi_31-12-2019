@@ -9,7 +9,7 @@ public class D2HVO   extends BaseVO implements Serializable {
     private String transactionId;
     private Double rechargeAmt ;
     private String request;
-    private String VCDetails;
+    private String vcdetails;
     private String SMSId;
     private String jsonData;
     private String vcNo;
@@ -18,6 +18,9 @@ public class D2HVO   extends BaseVO implements Serializable {
     private Long lastUpdateDate;
     private StatusVO status;
     private String subscriberName;
+
+    private String enachMandateId;
+    private Integer enachMandateAmount;
 
 
     public Integer getD2hId() {
@@ -60,12 +63,12 @@ public class D2HVO   extends BaseVO implements Serializable {
         this.request = request;
     }
 
-    public String getVCDetails() {
-        return VCDetails;
+    public String getVcdetails() {
+        return vcdetails;
     }
 
-    public void setVCDetails(String VCDetails) {
-        this.VCDetails = VCDetails;
+    public void setVcdetails(String vcdetails) {
+        this.vcdetails = vcdetails;
     }
 
     public String getSMSId() {
@@ -130,5 +133,21 @@ public class D2HVO   extends BaseVO implements Serializable {
 
     public void setSubscriberName(String subscriberName) {
         this.subscriberName = subscriberName;
+    }
+
+    public String getEnachMandateId() {
+        return enachMandateId;
+    }
+
+    public void setEnachMandateId(String enachMandateId) {
+        this.enachMandateId = enachMandateId;
+    }
+
+    public Integer getEnachMandateAmount() {
+        return enachMandateAmount;
+    }
+
+    public void setEnachMandateAmount(Integer enachMandateAmount) {
+        this.enachMandateAmount = enachMandateAmount;
     }
 }

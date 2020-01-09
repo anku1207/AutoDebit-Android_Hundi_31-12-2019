@@ -19,6 +19,15 @@ public class D2HBO implements Serializable {
         return connectionVO;
     }
 
+    public static ConnectionVO getD2HTvPostMandate() {
+        ConnectionVO connectionVO = new ConnectionVO();
+        connectionVO.setMethodName("getD2HTvPostMandate");
+        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
+        return connectionVO;
+    }
+
+
+
 
 
 }

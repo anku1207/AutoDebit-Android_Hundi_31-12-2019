@@ -317,10 +317,12 @@ public class Enach_Mandate extends AppCompatActivity{
                 JSONObject response = (JSONObject) resp;
 
                 Log.w("responsesignup",response.toString());
-                if(response.get("status").equals("fail")){
-                   // Utility.alertDialog(Enach_Mandate.this,"Alert",response.getString("errorMsg"),"Ok");
 
-                    Utility.showSingleButtonDialog(Enach_Mandate.this,"Error !",response.getString("errorMsg"),false);
+
+                if((response.has("status") && response.get("status").equals("fail")) || (response.has("statusCode") && response.get("statusCode").equals("400"))){
+                   // Utility.alertDialog(Enach_Mandate.this,"Alert",response.getString("errorMsg"),"Ok");
+                    JSONArray error =response.has("errorMsg")?response.getJSONArray("errorMsg"):response.getJSONArray("errorMsgs");
+                    Utility.showSingleButtonDialog(Enach_Mandate.this,"Error !",error.get(0).toString(),false);
                 }else {
 
                     JSONObject object = new JSONObject(response.getString("result"));
