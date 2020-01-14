@@ -19,7 +19,7 @@
         app:contentInsetRight="0dp"
         app:contentInsetEnd="0dp">
         <ImageView
-            android:id="@+id/back_activity_button1"
+            android:id="@+id/back_activity_button"
             android:layout_width="40dp"
             android:layout_height="match_parent"
             android:layout_gravity="start"

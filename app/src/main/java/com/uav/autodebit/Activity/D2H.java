@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,6 +59,8 @@ public class D2H extends AppCompatActivity implements View.OnClickListener {
     String monthlySubscriptionAmount;
     D2HVO response_D2HVO;
 
+    ImageView back_activity_button;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,8 +75,10 @@ public class D2H extends AppCompatActivity implements View.OnClickListener {
         accountnumber=findViewById(R.id.accountnumber);
         proceed=findViewById(R.id.proceed);
         plandetailslayout=findViewById(R.id.plandetailslayout);
+        back_activity_button=findViewById(R.id.back_activity_button);
 
         proceed.setOnClickListener(this);
+        back_activity_button.setOnClickListener(this);
     }
 
     @Override
@@ -81,6 +86,9 @@ public class D2H extends AppCompatActivity implements View.OnClickListener {
         switch (view.getId()){
             case R.id.proceed:
                 getPlanDetail();
+                break;
+            case R.id.back_activity_button:
+                finish();
                 break;
         }
     }
@@ -107,6 +115,7 @@ public class D2H extends AppCompatActivity implements View.OnClickListener {
                     JSONObject response = (JSONObject) resp;
 
                     Log.w("responce",response.toString());
+
                     Gson gson = new Gson();
                     response_D2HVO = gson.fromJson(response.toString(), D2HVO.class);
 
@@ -117,24 +126,18 @@ public class D2H extends AppCompatActivity implements View.OnClickListener {
                             sb.append(error.get(i)).append("\n");
                         }
                         Utility.showSingleButtonDialog(context,"Error !",sb.toString(),false);
-                    }else {
-
+                    }else{
                         if(response_D2HVO.getEnachMandateId()==null || response_D2HVO.getEnachMandateId().equals("")){
                             Utility.removeEle(proceed);
                             Utility.removeEle(accountnumber);
-
                             JSONObject detailJson=(new JSONObject(response_D2HVO.getVcdetails())).getJSONObject("Result");
-
                             JSONArray planDetailarr= new JSONArray();
                             JSONObject jsonObject ;
-
                             if(detailJson.has("SubscriberName") && !detailJson.getString("SubscriberName").equals("")){
                                 jsonObject=new JSONObject();
                                 jsonObject.put("key","SubscriberName");
                                 jsonObject.put("value",detailJson.getString("SubscriberName"));
                                 planDetailarr.put(jsonObject);
-
-
                             }
 
                             if(detailJson.has("SwitchOffDate") && !detailJson.getString("SwitchOffDate").equals("")){
@@ -172,105 +175,11 @@ public class D2H extends AppCompatActivity implements View.OnClickListener {
                                 planDetailarr.put(jsonObject);
                             }
 
+                            createLayout(planDetailarr);
 
-
-                            Typeface typeface = ResourcesCompat.getFont(context, R.font.poppinssemibold);
-                            for(int i=0 ;i<planDetailarr.length();i++){
-                                JSONObject jsonObject1 =planDetailarr.getJSONObject(i);
-
-                                LinearLayout et = new LinearLayout(new ContextThemeWrapper(context,R.style.confirmation_dialog_layout));
-
-                                et.setPadding(Utility.getPixelsFromDPs(context,10),Utility.getPixelsFromDPs(context,10),Utility.getPixelsFromDPs(context,10),Utility.getPixelsFromDPs(context,10));
-
-                                TextView text = new TextView(new ContextThemeWrapper(context, R.style.confirmation_dialog_filed));
-                                text.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float) 1));
-                                text.setText(jsonObject1.getString("key"));
-                                text.setMaxLines(1);
-                                text.setEllipsize(TextUtils.TruncateAt.END);
-                                text.setTypeface(typeface);
-                                text.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
-                                text.setPadding(10,0,10,10);
-
-
-                                TextView commaText = new TextView(new ContextThemeWrapper(context, R.style.confirmation_dialog_filed));
-                                commaText.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float) .1));
-                                commaText.setText(":");
-                                commaText.setTypeface(typeface);
-                                commaText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-
-
-
-                                TextView value = new TextView(new ContextThemeWrapper(context, R.style.confirmation_dialog_value));
-                                value.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,1));
-                                value.setText(jsonObject1.getString("value"));
-                                value.setTypeface(typeface);
-                                value.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-                                value.setPadding(10,0,10,10);
-
-                                et.addView(text);
-                                et.addView(commaText);
-                                et.addView(value);
-                                plandetailslayout.addView(et);
-                            }
-
-
-                            LinearLayout et = new LinearLayout(new ContextThemeWrapper(context,R.style.confirmation_dialog_layout));
-
-                            et.setPadding(Utility.getPixelsFromDPs(context,10),Utility.getPixelsFromDPs(context,10),Utility.getPixelsFromDPs(context,10),Utility.getPixelsFromDPs(context,10));
-
-                            TextView text = new TextView(new ContextThemeWrapper(context, R.style.confirmation_dialog_filed));
-                            text.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,  1));
-                            text.setText("Bank Mandate");
-                            text.setMaxLines(1);
-                            text.setEllipsize(TextUtils.TruncateAt.END);
-                            text.setTypeface(typeface);
-                            text.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
-
-                            TextView commaText = new TextView(new ContextThemeWrapper(context, R.style.confirmation_dialog_filed));
-                            commaText.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float) .1));
-                            commaText.setText(":");
-                            commaText.setTypeface(typeface);
-                            commaText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-
-
-                            EditText editText =new EditText(context);
-                            editText.setLayoutParams(new LinearLayout.LayoutParams(0,ViewGroup.LayoutParams.WRAP_CONTENT ,(float) 1));
-                            editText.setTypeface(typeface);
-                            editText.setBackground(getApplication().getDrawable(R.drawable.edittext_round_border));
-                            editText.setTextSize(14);
-                            editText.setInputType(InputType.TYPE_CLASS_NUMBER);
-
-                            double v=monthlySubscriptionAmount!=null?Math.ceil(Double.parseDouble(monthlySubscriptionAmount)):0.00;
-                            editText.setText((int)v+"");
-
-
-                            et.addView(text);
-                            et.addView(commaText);
-                            et.addView(editText);
-                            plandetailslayout.addView(et);
-
-                            Button button =Utility.getButton(context);
-                            button.setText("Proceed");
-                            plandetailslayout.addView(button);
-
-                            button.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    boolean valid=true;
-                                    if(editText.getText().toString().equals("")){
-                                        editText.setError(  Utility.getErrorSpannableStringDynamicEditText(context, "this field is required"));
-                                        valid=false;
-                                    }
-                                    if(valid){
-                                        if(Double.parseDouble(monthlySubscriptionAmount) > Double.parseDouble(editText.getText().toString()) ){
-                                            Utility.showSingleButtonDialog(context,"Error !","Mandate Amount Should Be Greater then or equal Rs." +Math.ceil(Double.parseDouble(monthlySubscriptionAmount)),false);
-                                        }else {
-                                            addBank(button,editText.getText().toString());
-                                        }
-                                    }
-                                }
-                            });
                         }else {
+
+                            getD2HTvPostMandate();
 
                         }
 
@@ -284,6 +193,110 @@ public class D2H extends AppCompatActivity implements View.OnClickListener {
         }
     }
 
+    private void createLayout(JSONArray planDetailarr){
+
+        try {
+
+            Typeface typeface = ResourcesCompat.getFont(context, R.font.poppinssemibold);
+            for(int i=0 ;i<planDetailarr.length();i++){
+                JSONObject jsonObject1 =planDetailarr.getJSONObject(i);
+
+                LinearLayout et = new LinearLayout(new ContextThemeWrapper(context,R.style.confirmation_dialog_layout));
+                et.setPadding(Utility.getPixelsFromDPs(context,10),Utility.getPixelsFromDPs(context,10),Utility.getPixelsFromDPs(context,10),Utility.getPixelsFromDPs(context,10));
+                TextView text = new TextView(new ContextThemeWrapper(context, R.style.confirmation_dialog_filed));
+                text.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float) 1));
+                text.setText(jsonObject1.getString("key"));
+                text.setMaxLines(1);
+                text.setEllipsize(TextUtils.TruncateAt.END);
+                text.setTypeface(typeface);
+                text.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
+                text.setPadding(10,0,10,10);
+
+
+                TextView commaText = new TextView(new ContextThemeWrapper(context, R.style.confirmation_dialog_filed));
+                commaText.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float) .1));
+                commaText.setText(":");
+                commaText.setTypeface(typeface);
+                commaText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+
+
+                TextView value = new TextView(new ContextThemeWrapper(context, R.style.confirmation_dialog_value));
+                value.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,1));
+                value.setText(jsonObject1.getString("value"));
+                value.setTypeface(typeface);
+                value.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+                value.setPadding(10,0,10,10);
+
+                et.addView(text);
+                et.addView(commaText);
+                et.addView(value);
+                plandetailslayout.addView(et);
+            }
+
+
+            LinearLayout et = new LinearLayout(new ContextThemeWrapper(context,R.style.confirmation_dialog_layout));
+            et.setPadding(Utility.getPixelsFromDPs(context,10),Utility.getPixelsFromDPs(context,10),Utility.getPixelsFromDPs(context,10),Utility.getPixelsFromDPs(context,10));
+
+            TextView text = new TextView(new ContextThemeWrapper(context, R.style.confirmation_dialog_filed));
+            text.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,  1));
+            text.setText("Bank Mandate");
+            text.setMaxLines(1);
+            text.setEllipsize(TextUtils.TruncateAt.END);
+            text.setTypeface(typeface);
+            text.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
+
+            TextView commaText = new TextView(new ContextThemeWrapper(context, R.style.confirmation_dialog_filed));
+            commaText.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float) .1));
+            commaText.setText(":");
+            commaText.setTypeface(typeface);
+            commaText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+            EditText editText =new EditText(context);
+            editText.setLayoutParams(new LinearLayout.LayoutParams(0,ViewGroup.LayoutParams.WRAP_CONTENT ,(float) 1));
+            editText.setTypeface(typeface);
+            editText.setBackground(getApplication().getDrawable(R.drawable.edittext_round_border));
+            editText.setTextSize(14);
+            editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+
+            double v=monthlySubscriptionAmount!=null?Math.ceil(Double.parseDouble(monthlySubscriptionAmount)):0.00;
+            editText.setText((int)v+"");
+
+            et.addView(text);
+            et.addView(commaText);
+            et.addView(editText);
+            plandetailslayout.addView(et);
+
+            Button button =Utility.getButton(context);
+            button.setText("Proceed");
+            plandetailslayout.addView(button);
+
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    boolean valid=true;
+                    if(editText.getText().toString().equals("")){
+                        editText.setError(  Utility.getErrorSpannableStringDynamicEditText(context, "this field is required"));
+                        valid=false;
+                    }
+                    if(valid){
+                        if(Double.parseDouble(monthlySubscriptionAmount) > Double.parseDouble(editText.getText().toString()) ){
+                            Utility.showSingleButtonDialog(context,"Error !","Mandate Amount Should Be Greater then or equal Rs." +Math.ceil(Double.parseDouble(monthlySubscriptionAmount)),false);
+                        }else {
+                            addBank(button,editText.getText().toString());
+                        }
+                    }
+                }
+            });
+
+        }catch (Exception e){
+            e.printStackTrace();
+            Utility.exceptionAlertDialog(context,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+        }
+
+
+
+    }
     private void addBank(Button button,String mandateAmt) {
 
         try {
@@ -442,7 +455,6 @@ public class D2H extends AppCompatActivity implements View.OnClickListener {
         String json = gson.toJson(d2HVO);
         params.put("volley", json);
         connectionVO.setParams(params);
-        Log.w("setBankForService",params.toString());
         VolleyUtils.makeJsonObjectRequest(this,connectionVO , new VolleyResponseListener() {
             @Override
             public void onError(String message) {
