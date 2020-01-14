@@ -86,7 +86,7 @@ public class Enach_Mandate extends AppCompatActivity{
 
     Integer customerAuthId;
 
-    boolean foractivity=false;
+    boolean foractivity=false,disAmountEdittext=false;
 
     List<String> paths = new ArrayList<String>();
 
@@ -108,6 +108,7 @@ public class Enach_Mandate extends AppCompatActivity{
 
         foractivity=getIntent().getBooleanExtra("foractivity",true);
         selectServiceIds=getIntent().getIntegerArrayListExtra("selectservice");
+        disAmountEdittext=getIntent().getBooleanExtra("disAmountEdittext",false);
 
         banklist();
 
@@ -122,6 +123,8 @@ public class Enach_Mandate extends AppCompatActivity{
         maxamount=findViewById(R.id.maxamount);
         mandatebtn=findViewById(R.id.mandatebtn);
         select_drop=findViewById(R.id.select_drop);
+
+        if(disAmountEdittext)maxamount.setEnabled(false);
 
         back_activity_button1=findViewById(R.id.back_activity_button1);
         back_activity_button1.setOnClickListener(new View.OnClickListener() {

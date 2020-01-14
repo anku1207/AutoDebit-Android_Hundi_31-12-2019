@@ -162,7 +162,6 @@ public class D2H extends AppCompatActivity implements View.OnClickListener {
                                 jsonObject.put("key","monthlySubscriptionAmount");
                                 jsonObject.put("value",detailJson.getString("monthlySubscriptionAmount"));
                                 planDetailarr.put(jsonObject);
-
                                 monthlySubscriptionAmount=detailJson.getString("monthlySubscriptionAmount");
                             }
                             if(detailJson.has("Mobileno") && !detailJson.getString("Mobileno").equals("")){
@@ -177,16 +176,10 @@ public class D2H extends AppCompatActivity implements View.OnClickListener {
                                 jsonObject.put("value",detailJson.getString("Emailid"));
                                 planDetailarr.put(jsonObject);
                             }
-
                             createLayout(planDetailarr,false,null);
-
                         }else {
-
                             getD2HTvPostMandate();
-
                         }
-
-
                     }
                 }
             });
@@ -340,7 +333,6 @@ public class D2H extends AppCompatActivity implements View.OnClickListener {
                     Gson gson = new Gson();
                     D2HVO d2HVO = gson.fromJson(response.toString(), D2HVO.class);
 
-                    Toast.makeText(D2H.this, ""+d2HVO.getStatusCode(), Toast.LENGTH_SHORT).show();
 
                     if(d2HVO.getStatusCode().equals("400")){
                         ArrayList error = (ArrayList) d2HVO.getErrorMsgs();
@@ -356,7 +348,7 @@ public class D2H extends AppCompatActivity implements View.OnClickListener {
                                 String[] buttons = {"OK"};
                                 Utility.showSingleButtonDialogconfirmation(context, new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
                                     ok.dismiss();
-                                    startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(ApplicationConstant.d2h))),ApplicationConstant.REQ_ENACH_MANDATE);
+                                    startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(ApplicationConstant.d2h))).putExtra("disAmountEdittext",true),ApplicationConstant.REQ_ENACH_MANDATE);
                                 }),"Alert",d2HVO.getErrorMsgs().get(0),buttons);
                             }else if(d2HVO.getStatusCode().equals("ap106") || d2HVO.getStatusCode().equals("ap103") || d2HVO.getStatusCode().equals("ap108")) {
                                 String[] buttons = {"New Mandate", "Choose Bank"};
@@ -387,7 +379,7 @@ public class D2H extends AppCompatActivity implements View.OnClickListener {
                                                 if (!s.equals("0")) {
                                                     setBankForService(ApplicationConstant.d2h, Integer.parseInt(Session.getCustomerId(context)), Integer.parseInt(s));
                                                 } else {
-                                                    startActivityForResult(new Intent(context, Enach_Mandate.class).putExtra("forresutl", true).putExtra("selectservice", new ArrayList<Integer>(Arrays.asList(ApplicationConstant.d2h))), ApplicationConstant.REQ_ENACH_MANDATE);
+                                                    startActivityForResult(new Intent(context, Enach_Mandate.class).putExtra("forresutl", true).putExtra("selectservice", new ArrayList<Integer>(Arrays.asList(ApplicationConstant.d2h))).putExtra("disAmountEdittext",true), ApplicationConstant.REQ_ENACH_MANDATE);
                                                 }
                                             }));
                                         } catch (Exception e) {
@@ -398,7 +390,7 @@ public class D2H extends AppCompatActivity implements View.OnClickListener {
                                     @Override
                                     public void modify(Dialog dialog) {
                                         dialog.dismiss();
-                                        startActivityForResult(new Intent(context, Enach_Mandate.class).putExtra("forresutl", true).putExtra("selectservice", new ArrayList<Integer>(Arrays.asList(ApplicationConstant.d2h))), ApplicationConstant.REQ_ENACH_MANDATE);
+                                        startActivityForResult(new Intent(context, Enach_Mandate.class).putExtra("forresutl", true).putExtra("selectservice", new ArrayList<Integer>(Arrays.asList(ApplicationConstant.d2h))).putExtra("disAmountEdittext",true), ApplicationConstant.REQ_ENACH_MANDATE);
                                     }
                                 }, context, d2HVO.getErrorMsgs().get(0), "Alert", buttons);
                             }
@@ -549,9 +541,10 @@ public class D2H extends AppCompatActivity implements View.OnClickListener {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode==RESULT_OK){
-            if(resultCode==ApplicationConstant.REQ_ENACH_MANDATE){
+            if(requestCode==ApplicationConstant.REQ_ENACH_MANDATE){
                 plandetailslayout.removeAllViews();
-                getPlanDetail();
+                double v=monthlySubscriptionAmount!=null?Math.ceil(Double.parseDouble(monthlySubscriptionAmount)):0.00;
+                addBank(null,(int)v+"");
             }
         }
     }
