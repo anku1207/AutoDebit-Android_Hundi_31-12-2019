@@ -105,6 +105,8 @@ public class Home extends AppCompatActivity
     @Override
     protected void onRestart() {
         super.onRestart();
+
+        loadDateInRecyclerView();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         scrollView.fullScroll(ScrollView.FOCUS_UP);
     }
