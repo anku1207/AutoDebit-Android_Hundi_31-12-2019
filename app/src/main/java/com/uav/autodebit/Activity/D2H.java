@@ -79,6 +79,7 @@ public class D2H extends AppCompatActivity implements View.OnClickListener {
         plandetailslayout=findViewById(R.id.plandetailslayout);
         back_activity_button=findViewById(R.id.back_activity_button);
 
+        
         proceed.setOnClickListener(this);
         back_activity_button.setOnClickListener(this);
     }
