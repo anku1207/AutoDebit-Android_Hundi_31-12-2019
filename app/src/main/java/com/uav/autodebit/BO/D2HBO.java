@@ -5,6 +5,7 @@ import com.uav.autodebit.vo.ConnectionVO;
 import java.io.Serializable;
 
 public class D2HBO implements Serializable {
+
     public static ConnectionVO getD2HPlanDetail() {
         ConnectionVO connectionVO = new ConnectionVO();
         connectionVO.setMethodName("getD2HPlanDetail");
@@ -25,9 +26,4 @@ public class D2HBO implements Serializable {
         connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
         return connectionVO;
     }
-
-
-
-
-
 }

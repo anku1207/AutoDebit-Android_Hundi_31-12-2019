@@ -31,6 +31,7 @@ import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.permission.Session;
+import com.uav.autodebit.util.DialogInterface;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerAuthServiceVO;
@@ -79,7 +80,7 @@ public class D2H extends AppCompatActivity implements View.OnClickListener {
         plandetailslayout=findViewById(R.id.plandetailslayout);
         back_activity_button=findViewById(R.id.back_activity_button);
 
-        
+
         proceed.setOnClickListener(this);
         back_activity_button.setOnClickListener(this);
     }
@@ -292,7 +293,20 @@ public class D2H extends AppCompatActivity implements View.OnClickListener {
                             if(Double.parseDouble(monthlySubscriptionAmount) > Double.parseDouble(editText.getText().toString()) ){
                                 Utility.showSingleButtonDialog(context,"Error !","Mandate Amount Should Be Greater then or equal Rs." +Math.ceil(Double.parseDouble(monthlySubscriptionAmount)),false);
                             }else {
-                                addBank(button,editText.getText().toString());
+                              //  addBank(button,editText.getText().toString());
+
+                                Utility.confirmationDialog(new DialogInterface() {
+                                    @Override
+                                    public void confirm(Dialog dialog) {
+                                        dialog.dismiss();
+                                        addBank(button,editText.getText().toString());
+                                    }
+                                    @Override
+                                    public void modify(Dialog dialog) {
+                                        dialog.dismiss();
+
+                                    }
+                                },D2H.this,planDetailarr,null,"Confirmation");
                             }
                         }
                     }
