@@ -153,7 +153,7 @@ public class DTH_Recharge_Service extends AppCompatActivity implements View.OnCl
                 dataAdapterVO.setAssociatedValue(object.getString("service"));
                 datalist.add(dataAdapterVO);
             }
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return  datalist;

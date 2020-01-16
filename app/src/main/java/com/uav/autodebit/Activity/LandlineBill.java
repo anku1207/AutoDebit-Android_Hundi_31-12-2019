@@ -408,9 +408,10 @@ public class LandlineBill extends AppCompatActivity implements View.OnClickListe
 
                             JSONObject datajson=new JSONObject();
                             datajson.put("key","Amount");
-                            datajson.put("value",jsonBillerResponse.getString("NetAmount"));
+                            datajson.put("value", jsonBillerResponse.getString("NetAmount"));
                             amount.setText(jsonBillerResponse.getString("NetAmount"));
                             dataArry.put(datajson);
+
 
                             datajson=new JSONObject();
                             datajson.put("key","BillDate");
