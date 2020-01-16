@@ -237,6 +237,10 @@ public class LandlineBill extends AppCompatActivity implements View.OnClickListe
             case R.id.proceed:
 
                 try {
+
+                    Utility.hideKeyboard(LandlineBill.this);
+
+
                     valid=true;
 
                     JSONObject dataarray=getQuestionLabelDate(true);
@@ -259,6 +263,10 @@ public class LandlineBill extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.fetchbill:
                 try {
+
+                    Utility.hideKeyboard(LandlineBill.this);
+
+
                     valid=true;
                     JSONObject dataarray=getQuestionLabelDate(false);
                     if(!valid)return;

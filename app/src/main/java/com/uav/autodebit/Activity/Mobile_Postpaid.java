@@ -23,6 +23,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.uav.autodebit.BO.OxigenPlanBO;
@@ -132,7 +133,7 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
 
                 if(!operator.getText().toString().equals("")){
                     if(operator.getError()==null){
-                        browseplan.setVisibility(View.VISIBLE);
+                        browseplan.setVisibility(View.GONE);
                     }else {
                         browseplan.setVisibility(View.GONE);
                     }
@@ -211,7 +212,7 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
                     break;
                 case 1000 :
                     amount.requestFocus();
-                    browseplan.setVisibility(View.VISIBLE);
+                    browseplan.setVisibility(View.GONE);
                     regionname=data.getStringExtra("valueName");
                     regioncode=data.getStringExtra("valueId");
                     operator.setText(operatorcode+"-"+data.getStringExtra("valueName"));
@@ -361,6 +362,7 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
             Log.w("request",json);
             params.put("volley", json);
             connectionVO.setParams(params);
+            
 
 
 /*

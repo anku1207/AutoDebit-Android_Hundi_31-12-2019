@@ -235,6 +235,9 @@ public class Electricity_Bill extends AppCompatActivity  implements View.OnClick
             case R.id.proceed:
 
                 try {
+
+                        Utility.hideKeyboard(Electricity_Bill.this);
+
                         valid=true;
 
                         JSONObject dataarray=getQuestionLabelDate(true);
@@ -257,6 +260,9 @@ public class Electricity_Bill extends AppCompatActivity  implements View.OnClick
                 break;
             case R.id.fetchbill:
                 try {
+                    Utility.hideKeyboard(Electricity_Bill.this);
+
+
                     valid=true;
                     JSONObject dataarray=getQuestionLabelDate(false);
                     if(!valid)return;
@@ -373,6 +379,8 @@ public class Electricity_Bill extends AppCompatActivity  implements View.OnClick
                 @Override
                 public void onResponse(Object resp) throws JSONException {
                     JSONObject response = (JSONObject) resp;
+
+                    Log.w("respele",response.toString());
                     Gson gson = new Gson();
                     CustomerVO customerVO = gson.fromJson(response.toString(), CustomerVO.class);
 
