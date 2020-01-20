@@ -607,15 +607,6 @@ public class Home extends AppCompatActivity
                 public void doPostExecute() {
 
                     serviceClick(Integer.parseInt(serviceId),new ServiceClick((ServiceClick.OnSuccess)(s)->{
-                      /*  try {
-                            startActivityServiceClick(Integer.parseInt(serviceId),Class.forName(getPackageName()+".Activity."+activity_json.get(serviceId)),s,selectServiceType.getMandateAmount(),view);
-                        } catch (Exception e) {
-                            if(view!=null)Utility.enableDisableView(view,true);
-                            e.printStackTrace();
-                            Utility.exceptionAlertDialog(Home.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
-
-                        }*/
-
                         startActivityServiceClick(Integer.parseInt(serviceId),activityhasmap.get(serviceId),s,selectServiceType.getMandateAmount(),view);
                     },(ServiceClick.OnError)(e)->{
                     }),view);
