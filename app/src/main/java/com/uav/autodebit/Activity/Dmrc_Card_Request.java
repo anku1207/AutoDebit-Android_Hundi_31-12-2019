@@ -167,7 +167,7 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
         dmrc_customer_cardVO = gson.fromJson(getIntent().getStringExtra("dmrccard"), DMRC_Customer_CardVO.class);
         addRequestDmrcCardBanner(dmrc_customer_cardVO);
 
-        setCustomerDetail();
+        setCustomerDetail(dmrc_customer_cardVO);
 
         back_activity_button1.setOnClickListener(this);
         attachaddress.setOnClickListener(this);
@@ -207,62 +207,15 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
         });
     }
 
-    public void getdata(ArrayList<DMRC_Customer_CardVO> listforcard){
-        BackgroundAsyncServiceGetList backgroundAsyncServiceGetList =new BackgroundAsyncServiceGetList(pd, false, new BackgroundAsyncServiceGetListInterface.BackgroundServiceInterface() {
-            @Override
-            public List doInBackGround(BackgroundAsyncServiceGetListInterface backgroundAsyncServiceGetListInterface) {
-
-                ArrayList<DMRC_Customer_CardVO> dmrc_customer_cardVOS=new ArrayList<>();
-                for(DMRC_Customer_CardVO dmrc_customer_cardVOS1 :listforcard ){
-                    DMRC_Customer_CardVO dmrc_customer_cardVO =new DMRC_Customer_CardVO();
-                    dmrc_customer_cardVO.setCustomerName(dmrc_customer_cardVOS1.getCustomerName());
-                    dmrc_customer_cardVO.setCardNo(dmrc_customer_cardVOS1.getCardNo());
-                    DmrcCardStatusVO dmrcCardStatusVO =new DmrcCardStatusVO();
-                    dmrcCardStatusVO.setStatusName(dmrc_customer_cardVOS1.getDmrccardStaus().getStatusName());
-                    dmrc_customer_cardVO.setIssueDate(dmrc_customer_cardVOS1.getIssueDate());
-                    dmrc_customer_cardVO.setDmrccardStaus(dmrcCardStatusVO);
-                    dmrc_customer_cardVO.setImage(dmrc_customer_cardVOS1.getImage());
-                    dmrc_customer_cardVOS.add(dmrc_customer_cardVO);
-                }
-               return backgroundAsyncServiceGetListInterface.doInBackGround.doInBackGround(dmrc_customer_cardVOS);
-            }
-            @Override
-            public void doPostExecute(List list) {
-              /*  DMRC_List_Adpater dmrc_list_adpater=new DMRC_List_Adpater(Dmrc_Card_Request.this,list ,R.layout.design_dmrc_card_list);
-                recyclerView.setAdapter(dmrc_list_adpater);
-                addcardlistlayout.addView(recyclerView);
-*/
-
-                CustomPagerAdapter models =new CustomPagerAdapter(list,Dmrc_Card_Request.this);
-                viewPager.setAdapter(models);
-                viewPager.setPadding(0,0,0,0);
-                tabLayout.setupWithViewPager(viewPager, false);
-                Utility.disable_Tab(tabLayout);
-                addcardlistlayout.addView(viewPager);
-
-                // add animation on viewpager
-               /* DepthTransformation depthTransformation = new DepthTransformation();
-                viewPager.setPageTransformer(true, depthTransformation);*/
-
-
-                View current = getCurrentFocus();
-                if (current != null) current.clearFocus();
-
-
-            }
-        });
-        backgroundAsyncServiceGetList.execute();
-    }
-
-
     public void addRequestDmrcCardBanner(DMRC_Customer_CardVO dmrc_customer_cardVO){
         addcardlistlayout.removeAllViewsInLayout();
 
         if(dmrc_customer_cardVO.getDmrcCustomerList()!=null && dmrc_customer_cardVO.getDmrcCustomerList().size()>0){
 
             //Show Addcard btn
-            showAddCardBtn();
-
+            if(dmrc_customer_cardVO.getDmrcid()==null){
+                showAddCardBtn();
+            }
 
           /*  ArrayList<DMRC_Customer_CardVO> listforcard= (ArrayList<DMRC_Customer_CardVO>) dmrc_customer_cardVO.getDmrcCustomerList();
             recyclerView =Utility.getRecyclerView(Dmrc_Card_Request.this);
@@ -270,7 +223,6 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
             recyclerView.setHasFixedSize(false);
             recyclerView.setLayoutManager(new LinearLayoutManager(Dmrc_Card_Request.this, LinearLayoutManager.HORIZONTAL, false));
             getdata(listforcard);*/
-
 
 
             ArrayList<DMRC_Customer_CardVO> listforcard= (ArrayList<DMRC_Customer_CardVO>) dmrc_customer_cardVO.getDmrcCustomerList();
@@ -295,6 +247,50 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
         }
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         scrollView.fullScroll(ScrollView.FOCUS_UP);
+    }
+
+    public void getdata(ArrayList<DMRC_Customer_CardVO> listforcard){
+        BackgroundAsyncServiceGetList backgroundAsyncServiceGetList =new BackgroundAsyncServiceGetList(pd, false, new BackgroundAsyncServiceGetListInterface.BackgroundServiceInterface() {
+            @Override
+            public List doInBackGround(BackgroundAsyncServiceGetListInterface backgroundAsyncServiceGetListInterface) {
+
+                ArrayList<DMRC_Customer_CardVO> dmrc_customer_cardVOS=new ArrayList<>();
+                for(DMRC_Customer_CardVO dmrc_customer_cardVOS1 :listforcard ){
+                    DMRC_Customer_CardVO dmrc_customer_cardVO =new DMRC_Customer_CardVO();
+                    dmrc_customer_cardVO.setCustomerName(dmrc_customer_cardVOS1.getCustomerName());
+                    dmrc_customer_cardVO.setCardNo(dmrc_customer_cardVOS1.getCardNo());
+                    DmrcCardStatusVO dmrcCardStatusVO =new DmrcCardStatusVO();
+                    dmrcCardStatusVO.setStatusName(dmrc_customer_cardVOS1.getDmrccardStaus().getStatusName());
+                    dmrc_customer_cardVO.setIssueDate(dmrc_customer_cardVOS1.getIssueDate());
+                    dmrc_customer_cardVO.setDmrccardStaus(dmrcCardStatusVO);
+                    dmrc_customer_cardVO.setImage(dmrc_customer_cardVOS1.getImage());
+                    dmrc_customer_cardVOS.add(dmrc_customer_cardVO);
+                }
+                return backgroundAsyncServiceGetListInterface.doInBackGround.doInBackGround(dmrc_customer_cardVOS);
+            }
+            @Override
+            public void doPostExecute(List list) {
+              /*  DMRC_List_Adpater dmrc_list_adpater=new DMRC_List_Adpater(Dmrc_Card_Request.this,list ,R.layout.design_dmrc_card_list);
+                recyclerView.setAdapter(dmrc_list_adpater);
+                addcardlistlayout.addView(recyclerView);
+*/
+
+                CustomPagerAdapter models =new CustomPagerAdapter(list,Dmrc_Card_Request.this);
+                viewPager.setAdapter(models);
+                viewPager.setPadding(0,0,0,0);
+                tabLayout.setupWithViewPager(viewPager, false);
+                Utility.disable_Tab(tabLayout);
+                addcardlistlayout.addView(viewPager);
+
+                // add animation on viewpager
+               /* DepthTransformation depthTransformation = new DepthTransformation();
+                viewPager.setPageTransformer(true, depthTransformation);*/
+
+                View current = getCurrentFocus();
+                if (current != null) current.clearFocus();
+            }
+        });
+        backgroundAsyncServiceGetList.execute();
     }
 
     @Override
@@ -450,25 +446,19 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                dmrc_customer_cardVO=new DMRC_Customer_CardVO();
                 mobilenumber.setText(null);
                 customername.setText(null);
                 pin.setText(null);
                 city.setText(null);
                 state.setText(null);
                 permanentaddress.setText(null);
-
                 addressimage.setImageBitmap(null);
-                bmp=null;
-                scrollView.setVisibility(View.VISIBLE);
-                TranslateAnimation animate = new TranslateAnimation(
-                        0,
-                        0,
-                        1000,
-                        0);
-                animate.setDuration(1000);
-                animate.setFillAfter(true);
-                scrollView.startAnimation(animate);
 
+                bmp=null;
+
+                scrollviewAnimationAndVisibility();
                 Utility.removeEle(textView);
 
             }
@@ -477,27 +467,38 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
     }
 
 
+    private void scrollviewAnimationAndVisibility(){
+        scrollView.setVisibility(View.VISIBLE);
+        TranslateAnimation animate = new TranslateAnimation(
+                0,
+                0,
+                1000,
+                0);
+        animate.setDuration(1000);
+        animate.setFillAfter(true);
+        scrollView.startAnimation(animate);
 
+    }
 
     public void saveDmrcCardInServer(){
         try {
             HashMap<String, Object> params = new HashMap<String, Object>();
             ConnectionVO connectionVO = MetroBO.saveDmarcCards();
-            DMRC_Customer_CardVO dmrc_customer_cardVO=new DMRC_Customer_CardVO();
+            DMRC_Customer_CardVO request_dmrc_customer_cardVO=new DMRC_Customer_CardVO();
             CustomerVO customerVO=new CustomerVO();
             customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(Dmrc_Card_Request.this)));
-
-            dmrc_customer_cardVO.setCustomer(customerVO);
-            dmrc_customer_cardVO.setCustomerName(customername.getText().toString());
-            dmrc_customer_cardVO.setMobileNumber(mobilenumber.getText().toString());
-            dmrc_customer_cardVO.setAddress(permanentaddress.getText().toString());
-            dmrc_customer_cardVO.setPincode(pin.getText().toString());
+            request_dmrc_customer_cardVO.setDmrcid(dmrc_customer_cardVO.getDmrcid());
+            request_dmrc_customer_cardVO.setCustomer(customerVO);
+            request_dmrc_customer_cardVO.setCustomerName(customername.getText().toString());
+            request_dmrc_customer_cardVO.setMobileNumber(mobilenumber.getText().toString());
+            request_dmrc_customer_cardVO.setAddress(permanentaddress.getText().toString());
+            request_dmrc_customer_cardVO.setPincode(pin.getText().toString());
             if(bmp!=null){
-                dmrc_customer_cardVO.setImage(stringimg);
+                request_dmrc_customer_cardVO.setImage(stringimg);
             }
             Gson gson =new Gson();
 
-            String json = gson.toJson(dmrc_customer_cardVO);
+            String json = gson.toJson(request_dmrc_customer_cardVO);
 
             params.put("volley", json);
 
@@ -651,8 +652,6 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
         permanentaddress.setError(null);
 
 
-
-
         boolean filed=true;
         if(mobilenumber.getText().toString().trim().equals("")){
             mobilenumber.setError("This filed is required");
@@ -758,29 +757,48 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
             Utility.exceptionAlertDialog(Dmrc_Card_Request.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
     }
-    public void setCustomerDetail(){
-        CustomerVO customerVO = gson.fromJson(Session.getSessionByKey(Dmrc_Card_Request.this,Session.CACHE_CUSTOMER), CustomerVO.class);
-
-
-        if(customerVO.getPanHolderName()!=null){
-            customername.setText(customerVO.getPanHolderName());
+    public void setCustomerDetail(DMRC_Customer_CardVO dmrc_customer_cardVO){
+        if(dmrc_customer_cardVO.getDmrcid()==null){
+            CustomerVO customerVO = gson.fromJson(Session.getSessionByKey(Dmrc_Card_Request.this,Session.CACHE_CUSTOMER), CustomerVO.class);
+            if(customerVO.getPanHolderName()!=null){
+                customername.setText(customerVO.getPanHolderName());
+            }
+            if(customerVO.getMobileNumber()!=null){
+                mobilenumber.setText(customerVO.getMobileNumber());
+            }
+            if(customerVO.getPincode()!=null){
+                pin.setText(customerVO.getPincode());
+            }
+            if(customerVO.getCity()!=null && customerVO.getCity().getCityName()!=null){
+                city.setText(customerVO.getCity().getCityName());
+            }
+            if(customerVO.getStateRegion()!=null && customerVO.getStateRegion().getStateRegionName()!=null){
+                state.setText(customerVO.getStateRegion().getStateRegionName());
+            }
+            if(customerVO.getAddress1()!=null){
+                permanentaddress.setText(customerVO.getAddress1());
+            }
+        }else {
+            scrollviewAnimationAndVisibility();
+            if(dmrc_customer_cardVO.getCustomerName()!=null){
+                customername.setText(dmrc_customer_cardVO.getCustomerName());
+            }
+            if(dmrc_customer_cardVO.getMobileNumber()!=null){
+                mobilenumber.setText(dmrc_customer_cardVO.getMobileNumber());
+            }
+            if(dmrc_customer_cardVO.getPincode()!=null){
+                pin.setText(dmrc_customer_cardVO.getPincode());
+            }
+            if(dmrc_customer_cardVO.getCity()!=null && dmrc_customer_cardVO.getCity().getCityName()!=null){
+                city.setText(dmrc_customer_cardVO.getCity().getCityName());
+            }
+            if(dmrc_customer_cardVO.getStateRegion()!=null && dmrc_customer_cardVO.getStateRegion().getStateRegionName()!=null){
+                state.setText(dmrc_customer_cardVO.getStateRegion().getStateRegionName());
+            }
+            if(dmrc_customer_cardVO.getAddress()!=null){
+                permanentaddress.setText(dmrc_customer_cardVO.getAddress());
+            }
         }
-        if(customerVO.getMobileNumber()!=null){
-            mobilenumber.setText(customerVO.getMobileNumber());
-        }
-        if(customerVO.getPincode()!=null){
-            pin.setText(customerVO.getPincode());
-        }
-        if(customerVO.getCity()!=null && customerVO.getCity().getCityName()!=null){
-            city.setText(customerVO.getCity().getCityName());
-        }
-        if(customerVO.getStateRegion()!=null && customerVO.getStateRegion().getStateRegionName()!=null){
-            state.setText(customerVO.getStateRegion().getStateRegionName());
-        }
-        if(customerVO.getAddress1()!=null){
-            permanentaddress.setText(customerVO.getAddress1());
-        }
-
         if(isdisable) enabledAllEle(false);
     }
 
