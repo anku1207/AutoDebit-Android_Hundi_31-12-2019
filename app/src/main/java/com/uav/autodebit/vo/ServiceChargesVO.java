@@ -6,11 +6,8 @@ public class ServiceChargesVO extends BaseVO{
     private Integer serviceChargesId;
     private ScoreBucketVO scoreBucketId;
     private ServiceTypeVO serviceTypeId;
-    private Double canvince;
     private Double amount;
     private Double gst;
-    private Double firstTimePay;
-    private Double recurring;
     private Integer frequencyDay;
     private Long   wefDate;
 
@@ -41,13 +38,6 @@ public class ServiceChargesVO extends BaseVO{
         this.serviceTypeId = serviceTypeId;
     }
 
-    public Double getCanvince() {
-        return canvince;
-    }
-
-    public void setCanvince(Double canvince) {
-        this.canvince = canvince;
-    }
 
     public Double getAmount() {
         return amount;
@@ -65,21 +55,6 @@ public class ServiceChargesVO extends BaseVO{
         this.gst = gst;
     }
 
-    public Double getFirstTimePay() {
-        return firstTimePay;
-    }
-
-    public void setFirstTimePay(Double firstTimePay) {
-        this.firstTimePay = firstTimePay;
-    }
-
-    public Double getRecurring() {
-        return recurring;
-    }
-
-    public void setRecurring(Double recurring) {
-        this.recurring = recurring;
-    }
 
     public Integer getFrequencyDay() {
         return frequencyDay;

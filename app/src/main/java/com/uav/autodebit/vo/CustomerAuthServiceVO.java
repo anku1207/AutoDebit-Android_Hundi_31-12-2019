@@ -7,7 +7,6 @@ public class CustomerAuthServiceVO extends BaseVO implements Serializable {
     private CustomerVO customer;
 
 
-
     private Integer customerAuthId;
     private AuthStatusVO authStatus;
     private String accountNumber;

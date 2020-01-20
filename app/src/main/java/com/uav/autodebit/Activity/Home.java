@@ -66,6 +66,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -98,9 +99,9 @@ public class Home extends AppCompatActivity
     public static String clickServiceId;
     ServiceTypeVO selectServiceType;
 
-    JSONObject activity_json=new JSONObject();
-    JSONObject json_Service =new JSONObject();
     NestedScrollView scrollView;
+
+    Map<String,Class> activityhasmap;
 
     @Override
     protected void onRestart() {
@@ -138,29 +139,34 @@ public class Home extends AppCompatActivity
 
         try {
 
-            activity_json.put("1","IRCTC");
-            activity_json.put("2","Dmrc_Card_Request");
-            activity_json.put("3","Hyd_Metro");
-            activity_json.put("4","Mum_Metro");
-            activity_json.put("5","Mobile_Prepaid_Recharge_Service");
-            activity_json.put("13","DTH_Recharge_Service");
-            activity_json.put("7","LandlineBill");
-            activity_json.put("8","Broadband");
-            activity_json.put("9","CreditCardBill");
-            activity_json.put("14","Mobile_Postpaid");
-            activity_json.put("12","Water");
-            activity_json.put("11","Gas_Bill");
-            activity_json.put("10","Electricity_Bill");
-            activity_json.put("15","All_Service");
-            activity_json.put("17","D2H");
-            activity_json.put("6","PNG");
+            activityhasmap=new HashMap<>();
+
+            activityhasmap.put("1",IRCTC.class);
+            activityhasmap.put("2",Dmrc_Card_Request.class);
+            activityhasmap.put("3",Hyd_Metro.class);
+            activityhasmap.put("4",Mum_Metro.class);
+            activityhasmap.put("5",Mobile_Prepaid_Recharge_Service.class);
+            activityhasmap.put("6",PNG.class);
+            activityhasmap.put("7",LandlineBill.class);
+            activityhasmap.put("8",Broadband.class);
+            activityhasmap.put("9",CreditCardBill.class);
+            activityhasmap.put("10",Electricity_Bill.class);
+            activityhasmap.put("11", Gas_Bill.class);
+            activityhasmap.put("12",Water.class);
+            activityhasmap.put("13",DTH_Recharge_Service.class);
+            activityhasmap.put("14",Mobile_Postpaid.class);
+            activityhasmap.put("15",All_Service.class);
+            activityhasmap.put("16",Uber.class);
+            activityhasmap.put("17",D2H.class);
 
 
-            json_Service.put("L_2","PanVerification");
-            json_Service.put("L_3","Credit_Score_Report");
-            json_Service.put("L_4","Enach_Mandate");
-            json_Service.put("L_5","Enach_Mandate");
-            json_Service.put("L_6","SI_First_Data");
+
+
+            activityhasmap.put("L_2",PanVerification.class);
+            activityhasmap.put("L_3",Credit_Score_Report.class);
+            activityhasmap.put("L_4",Enach_Mandate.class);
+            activityhasmap.put("L_5",Enach_Mandate.class);
+            activityhasmap.put("L_6",SI_First_Data.class);
 
 
 
@@ -601,14 +607,16 @@ public class Home extends AppCompatActivity
                 public void doPostExecute() {
 
                     serviceClick(Integer.parseInt(serviceId),new ServiceClick((ServiceClick.OnSuccess)(s)->{
-                        try {
+                      /*  try {
                             startActivityServiceClick(Integer.parseInt(serviceId),Class.forName(getPackageName()+".Activity."+activity_json.get(serviceId)),s,selectServiceType.getMandateAmount(),view);
                         } catch (Exception e) {
                             if(view!=null)Utility.enableDisableView(view,true);
                             e.printStackTrace();
                             Utility.exceptionAlertDialog(Home.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
 
-                        }
+                        }*/
+
+                        startActivityServiceClick(Integer.parseInt(serviceId),activityhasmap.get(serviceId),s,selectServiceType.getMandateAmount(),view);
                     },(ServiceClick.OnError)(e)->{
                     }),view);
                 }
@@ -742,30 +750,24 @@ public class Home extends AppCompatActivity
                         try {
                             ok.dismiss();
                             if(customerVO.getStatusCode().equals("L_2")){
-                                startActivity(new Intent(Home.this,Class.forName(getPackageName()+".Activity."+json_Service.getString("L_2"))));
+
+                                startActivity(new Intent(Home.this, activityhasmap.get("L_2")));
                                 finish();
                             }else if(customerVO.getStatusCode().equals("L_3")){
-                                startActivity(new Intent(Home.this,Class.forName(getPackageName()+".Activity."+json_Service.getString("L_3"))));
+                                startActivity(new Intent(Home.this, activityhasmap.get("L_3")));
                                 finish();
                             }else if(customerVO.getStatusCode().equals("L_4")){
-                                startActivityForResult(new Intent(Home.this,Class.forName(getPackageName()+".Activity."+json_Service.getString("L_5"))).putExtra("onactivityresult",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(serviceId))),ApplicationConstant.REQ_ENACH_MANDATE);
+                                startActivityForResult(new Intent(Home.this, activityhasmap.get("L_5")).putExtra("onactivityresult",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(serviceId))),ApplicationConstant.REQ_ENACH_MANDATE);
                             }else if(customerVO.getStatusCode().equals("L_5")){
-                                startActivityForResult(new Intent(Home.this,Class.forName(getPackageName()+".Activity."+json_Service.getString("L_5"))).putExtra("onactivityresult",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(serviceId))),ApplicationConstant.REQ_ENACH_MANDATE);
+                                startActivityForResult(new Intent(Home.this, activityhasmap.get("L_5")).putExtra("onactivityresult",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(serviceId))),ApplicationConstant.REQ_ENACH_MANDATE);
                             }else if(customerVO.getStatusCode().equals("L_6")){
-                                try {
-                                    startActivityForResult(new Intent(Home.this,Class.forName(getPackageName()+".Activity."+json_Service.getString("L_6"))).putExtra("onactivityresult",true),ApplicationConstant.REQ_AdditionalService_Add_More);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                    Utility.exceptionAlertDialog(Home.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
-
-                                }
+                                    startActivityForResult(new Intent(Home.this, activityhasmap.get("L_6")).putExtra("onactivityresult",true),ApplicationConstant.REQ_AdditionalService_Add_More);
                             }else  if(customerVO.getStatusCode().equals("ap101")){
                                 startActivityForResult(new Intent(Home.this,AdditionalService.class), ApplicationConstant.REQ_ALLSERVICE);
                             }
                         }catch (Exception e){
                             e.printStackTrace();
                             Utility.exceptionAlertDialog(Home.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
-
                         }
                     }),"Alert",customerVO.getErrorMsgs().get(0));
                 }

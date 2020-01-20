@@ -198,13 +198,11 @@ public class Webview extends AppCompatActivity {
             if(url.contains("enachResponse")) {
                 progressBar.dismiss();
 
+                Log.w("responseUrl",Utility.getQueryarray(url).toString());
                 Intent intent12 = new Intent();
                 intent12.putExtra("url",Utility.getQueryarray(url).toString());
                 setResult(RESULT_OK,intent12);
                 finish() ;
-
-
-
             }
         }
 
