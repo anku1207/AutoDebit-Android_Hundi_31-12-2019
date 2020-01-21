@@ -5,6 +5,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -138,7 +140,6 @@ public class Home extends AppCompatActivity
         level=null;
 
         try {
-
             activityhasmap=new HashMap<>();
 
             activityhasmap.put("1",IRCTC.class);
@@ -159,34 +160,29 @@ public class Home extends AppCompatActivity
             activityhasmap.put("16",Uber.class);
             activityhasmap.put("17",D2H.class);
 
-
-
-
             activityhasmap.put("L_2",PanVerification.class);
             activityhasmap.put("L_3",Credit_Score_Report.class);
             activityhasmap.put("L_4",Enach_Mandate.class);
             activityhasmap.put("L_5",Enach_Mandate.class);
             activityhasmap.put("L_6",SI_First_Data.class);
 
-
-
-       //check customer level and start activity
-        Gson gson =new Gson();
-        CustomerVO customerVO = gson.fromJson(Session.getSessionByKey(Home.this,Session.CACHE_CUSTOMER), CustomerVO.class);
-        if(customerVO.getLevel().getLevelId()<=2){
-            if(customerVO.getLevel().getLevelId()==1){
-                startActivity(new Intent(Home.this,PanVerification.class));
-                finish();
-                return;
-            }else if(customerVO.getLevel().getLevelId()==2){
-                startActivity(new Intent(Home.this,Credit_Score_Report.class));
-                finish();
-                return;
+            //check customer level and start activity
+            Gson gson =new Gson();
+            CustomerVO customerVO = gson.fromJson(Session.getSessionByKey(Home.this,Session.CACHE_CUSTOMER), CustomerVO.class);
+            if(customerVO.getLevel().getLevelId()<=2){
+                if(customerVO.getLevel().getLevelId()==1){
+                    startActivity(new Intent(Home.this,PanVerification.class));
+                    finish();
+                    return;
+                }else if(customerVO.getLevel().getLevelId()==2){
+                    startActivity(new Intent(Home.this,Credit_Score_Report.class));
+                    finish();
+                    return;
+                }
             }
-        }
 
-        // override local cache
-             overrideLocalCache(customerVO);
+            // override local cache
+            overrideLocalCache(customerVO);
         }catch (Exception e){
             e.printStackTrace();
             Utility.exceptionAlertDialog(Home.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
@@ -197,7 +193,6 @@ public class Home extends AppCompatActivity
         linked=findViewById(R.id.linked);
         all=findViewById(R.id.all);
         scrollView=findViewById(R.id.scrollView);
-
 
         //19-10-2019
         recyclerView=findViewById(R.id.recyclerview);
@@ -622,9 +617,6 @@ public class Home extends AppCompatActivity
         }
    }
 
-
-
-
     // add bank for service
     public  void serviceClick(int serviceId , ServiceClick serviceClick,View view){
         HashMap<String, Object> params = new HashMap<String, Object>();
@@ -913,6 +905,23 @@ public class Home extends AppCompatActivity
         switch (view.getId()){
 
             case R.id.mainwallet:
+
+                try {
+                     //"https://www.google.com/url?q=https://r.uber.com/FfNRcXC111&sa=D&source=hangouts&ust=1579678326585000&usg=AFQjCNHQng3tvBInLLLcnyYoVSl36iNFHQ";
+                    String uri = "https://www.amazon.in/Infinity-Glide-500-Wireless-Headphones/dp/B07W5MZY9J/ref=ac_session_sims_23_3/262-5272901-5384510?_encoding=UTF8&pd_rd_i=B07W6NDVSR&pd_rd_r=5a607169-3605-4bbd-858b-3fe49d3b2d57&pd_rd_w=RloOb&pd_rd_wg=EuSlK&pf_rd_p=a6472ab3-4fb9-4298-9be8-6a9080bff261&pf_rd_r=J4EWD6QHMA9EBX8AG94R&psc=1&refRID=J4EWD6QHMA9EBX8AG94R&th=1";
+                    //"uber://?action=setPickup&pickup=my_location";
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse(uri));
+                    startActivity(intent);
+                } catch (Exception e) {
+                    try {
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.ubercab")));
+                    } catch (android.content.ActivityNotFoundException anfe) {
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=com.ubercab")));
+                    }
+                }
+
+
                 Toast.makeText(this, "mainwallet", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.profile:

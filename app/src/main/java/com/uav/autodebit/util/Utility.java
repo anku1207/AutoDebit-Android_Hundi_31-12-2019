@@ -1225,6 +1225,17 @@ public class Utility {
         }
     }
 
+    public static boolean setErrorOnEdittext(EditText[] eleid){
+        boolean valid =true;
+        for(EditText ele:eleid){
+            if(ele.getText().toString().equals("")){
+                ele.setError("this filed is required");
+                valid=false;
+            }
+        }
+        return valid;
+    }
+
 
 
 

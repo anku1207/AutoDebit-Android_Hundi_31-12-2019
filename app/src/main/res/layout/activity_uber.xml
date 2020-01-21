@@ -19,7 +19,7 @@
         app:contentInsetRight="0dp"
         app:contentInsetEnd="0dp">
         <ImageView
-            android:id="@+id/back_activity_button1"
+            android:id="@+id/back_activity_button"
             android:layout_width="40dp"
             android:layout_height="match_parent"
             android:layout_gravity="start"
@@ -120,7 +120,6 @@
                     android:id="@+id/name"
                     android:inputType="textCapCharacters"
                     android:maxLines="1"
-                    android:cursorVisible="false"
                     style="@style/commonEdittextStyle"
                     />
             </android.support.v7.widget.CardView>
@@ -142,7 +141,6 @@
                     android:id="@+id/lname"
                     android:inputType="textCapCharacters"
                     android:maxLines="1"
-                    android:cursorVisible="false"
                     style="@style/commonEdittextStyle"
                     />
             </android.support.v7.widget.CardView>
@@ -165,7 +163,6 @@
                     android:id="@+id/email"
                     android:inputType="textCapCharacters"
                     android:maxLines="1"
-                    android:cursorVisible="false"
                     style="@style/commonEdittextStyle"
                     />
             </android.support.v7.widget.CardView>
