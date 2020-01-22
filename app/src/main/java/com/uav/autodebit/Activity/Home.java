@@ -663,14 +663,11 @@ public class Home extends AppCompatActivity
     public void startActivityServiceClick(int serviceId,Class classname,Object o,double mandateamt,View view){
         try {
             CustomerVO customerVO =(CustomerVO) o;
-
-
             if(view!=null)Utility.enableDisableView(view,true);
-
 
             Toast.makeText(Home.this, ""+customerVO.getStatusCode(), Toast.LENGTH_SHORT).show();
 
-            if(!customerVO.getStatusCode().equals("200")){
+            if(!customerVO.getStatusCode().equals("200") && !customerVO.getStatusCode().equals("ap104")){
                 if(customerVO.getStatusCode().equals("ap105") || customerVO.getStatusCode().equals("ap107") ||customerVO.getStatusCode().equals("ap102")){
                     String[] buttons = {"OK"};
                     Utility.showSingleButtonDialogconfirmation(this, new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
