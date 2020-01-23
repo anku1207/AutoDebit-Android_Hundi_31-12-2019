@@ -593,7 +593,6 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
                 DMRC_Customer_CardVO dmrc_customer_cardVO = gson.fromJson(response.toString(), DMRC_Customer_CardVO.class);
 
                 if(dmrc_customer_cardVO.getStatusCode().equals("400")){
-                    //VolleyUtils.furnishErrorMsg(  "Fail" ,response, MainActivity.this);
                     ArrayList error = (ArrayList) dmrc_customer_cardVO.getErrorMsgs();
                     StringBuilder sb = new StringBuilder();
                     for(int i=0; i<error.size(); i++){
@@ -607,6 +606,7 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
                         Session.set_Data_Sharedprefence(Dmrc_Card_Request.this,Session.CACHE_CUSTOMER,json);
                         Session.set_Data_Sharedprefence(Dmrc_Card_Request.this, Session.LOCAL_CACHE,dmrc_customer_cardVO.getCustomer().getLocalCache());
                     }
+
                     addRequestDmrcCardBanner(dmrc_customer_cardVO);
                 }
             }
