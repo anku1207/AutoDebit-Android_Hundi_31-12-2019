@@ -324,7 +324,7 @@ public class Enach_Mandate extends AppCompatActivity{
 
                 if((response.has("status") && response.get("status").equals("fail")) || (response.has("statusCode") && response.get("statusCode").equals("400"))){
                    // Utility.alertDialog(Enach_Mandate.this,"Alert",response.getString("errorMsg"),"Ok");
-                    JSONArray error =response.has("errorMsg")?response.getJSONArray("errorMsg"):response.getJSONArray("errorMsgs");
+                    JSONArray error =response.has("errorMsg")?new JSONArray().put(response.getString("errorMsg")):response.getJSONArray("errorMsgs");
                     Utility.showSingleButtonDialog(Enach_Mandate.this,"Error !",error.get(0).toString(),false);
                 }else {
 
@@ -481,7 +481,6 @@ public class Enach_Mandate extends AppCompatActivity{
                 Log.w("responsesignup",response.toString());
                 if(customerVO.getStatusCode().equals("400")){
                     //VolleyUtils.furnishErrorMsg(  "Fail" ,response, MainActivity.this);
-
                     ArrayList error = (ArrayList) customerVO.getErrorMsgs();
                     StringBuilder sb = new StringBuilder();
                     for(int i=0; i<error.size(); i++){

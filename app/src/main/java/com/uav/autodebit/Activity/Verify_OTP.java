@@ -104,13 +104,14 @@ public class Verify_OTP extends AppCompatActivity implements  TextWatcher,View.O
             if(useridtype.equals("mobile")){
                 otp_send.setText("OTP has sent on "+Utility.maskString(customerVO.getMobileNumber(),3,7,'*'));
                 startTimer(Long.parseLong(customerVO.getAnonymousString()),"mobileotp");
-
             }else if(useridtype.equals("email")){
+                otp_send.setText("OTP has sent on "+Utility.maskString(customerVO.getEmailId(),0,0,'*'));
                 startTimer(Long.parseLong(customerVO.getAnonymousString()),"emailotp");
             }
+        }catch (Exception e) {
+            e.printStackTrace();
+            Utility.exceptionAlertDialog(Verify_OTP.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
 
-        }catch (Exception e1) {
-            e1.printStackTrace();
         }
 
 

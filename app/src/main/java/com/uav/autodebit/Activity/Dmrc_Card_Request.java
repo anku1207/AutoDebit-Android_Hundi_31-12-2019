@@ -124,7 +124,7 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
     ViewPager viewPager;
     ScrollView scrollView;
 
-    int serviceId=2;
+    int serviceId=ApplicationConstant.Dmrc;
     TabLayout tabLayout;
 
     @Override
@@ -216,14 +216,12 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
             if(dmrc_customer_cardVO.getDmrcid()==null){
                 showAddCardBtn();
             }
-
-          /*  ArrayList<DMRC_Customer_CardVO> listforcard= (ArrayList<DMRC_Customer_CardVO>) dmrc_customer_cardVO.getDmrcCustomerList();
+          /*ArrayList<DMRC_Customer_CardVO> listforcard= (ArrayList<DMRC_Customer_CardVO>) dmrc_customer_cardVO.getDmrcCustomerList();
             recyclerView =Utility.getRecyclerView(Dmrc_Card_Request.this);
             recyclerView.setNestedScrollingEnabled(true);
             recyclerView.setHasFixedSize(false);
             recyclerView.setLayoutManager(new LinearLayoutManager(Dmrc_Card_Request.this, LinearLayoutManager.HORIZONTAL, false));
             getdata(listforcard);*/
-
 
             ArrayList<DMRC_Customer_CardVO> listforcard= (ArrayList<DMRC_Customer_CardVO>) dmrc_customer_cardVO.getDmrcCustomerList();
             viewPager=Utility.getViewPager(Dmrc_Card_Request.this);
@@ -301,11 +299,9 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
                 break;
 
             case R.id. attachaddress:
-
                 PermissionHandler.checkpermission(Dmrc_Card_Request.this);
                 if(!permissionstate) return;
-                try
-                {
+                try{
                     AlertDialog.Builder pictureDialog = new AlertDialog.Builder(Dmrc_Card_Request.this);
                     pictureDialog.setTitle("Select Action");
                     String[] pictureDialogItems = {
@@ -327,8 +323,7 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
                             });
                     pictureDialog.show();
                 }
-                catch(Exception e)
-                {
+                catch(Exception e){
                     Utility.exceptionAlertDialog(Dmrc_Card_Request.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
                 }
                break;
@@ -348,7 +343,6 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
                 }
 
                 Utility.hideKeyboard(Dmrc_Card_Request.this);
-
 
                 final Dialog var3 = new Dialog(Dmrc_Card_Request.this);
                 var3.requestWindowFeature(1);
@@ -381,14 +375,12 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
                         var3.dismiss();
                     }
                 });
-
                 modify.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         var3.dismiss();
                     }
                 });
-
                 next.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -415,15 +407,9 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
                 var3.show();
                 var3.getWindow().setAttributes(lp);
 
-
                 break;
         }
     }
-
-
-
-
-
 
     @SuppressLint("ResourceType")
     public void showAddCardBtn(){
@@ -436,8 +422,6 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
 
         Typeface typeface = ResourcesCompat.getFont(this, R.font.poppinssemibold);
         textView.setTypeface(typeface ,Typeface.BOLD);
-
-
         linearLayout.addView(textView);
 
         scrollView.setAnimation(null);
@@ -448,6 +432,7 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
             public void onClick(View view) {
 
                 dmrc_customer_cardVO=new DMRC_Customer_CardVO();
+
                 mobilenumber.setText(null);
                 customername.setText(null);
                 pin.setText(null);
@@ -455,17 +440,12 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
                 state.setText(null);
                 permanentaddress.setText(null);
                 addressimage.setImageBitmap(null);
-
                 bmp=null;
-
                 scrollviewAnimationAndVisibility();
                 Utility.removeEle(textView);
-
             }
         });
-
     }
-
 
     private void scrollviewAnimationAndVisibility(){
         scrollView.setVisibility(View.VISIBLE);
@@ -497,13 +477,9 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
                 request_dmrc_customer_cardVO.setImage(stringimg);
             }
             Gson gson =new Gson();
-
             String json = gson.toJson(request_dmrc_customer_cardVO);
-
             params.put("volley", json);
-
             connectionVO.setParams(params);
-
             VolleyUtils.makeJsonObjectRequest(Dmrc_Card_Request.this,connectionVO, new VolleyResponseListener() {
                 @Override
                 public void onError(String message) {
@@ -512,9 +488,7 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
                 public void onResponse(Object resp) throws JSONException {
                     JSONObject response = (JSONObject) resp;
                     Gson gson = new Gson();
-                    DMRC_Customer_CardVO dmrc_customer_cardVO = gson.fromJson(response.toString(), DMRC_Customer_CardVO.class);
-
-                    Toast.makeText(Dmrc_Card_Request.this, ""+dmrc_customer_cardVO.getStatusCode(), Toast.LENGTH_SHORT).show();
+                    dmrc_customer_cardVO = gson.fromJson(response.toString(), DMRC_Customer_CardVO.class);
 
                     if(dmrc_customer_cardVO.getStatusCode().equals("400")){
                         //VolleyUtils.furnishErrorMsg(  "Fail" ,response, MainActivity.this);
@@ -525,9 +499,7 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
                         }
                         Utility.showSingleButtonDialog(Dmrc_Card_Request.this,"Error !",sb.toString(),false);
                     }else {
-
-
-                       /* Intent intent =new Intent(Dmrc_Card_Request.this,DMRC_Cards_List.class);
+                       /*Intent intent =new Intent(Dmrc_Card_Request.this,DMRC_Cards_List.class);
                         intent.putExtra("dmrccard",gson.toJson(dmrc_customer_cardVO));
                         startActivity(intent);
                         finish();*/
@@ -566,7 +538,7 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
                                             Utility.alertselectdialog(Dmrc_Card_Request.this, "Choose from existing Bank", customerAuthServiceArry, new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess) (s) -> {
                                                 if (!s.equals("0")) {
                                                     Log.w("Home_value", s);
-                                                    setBankForService(serviceId, Integer.parseInt(Session.getCustomerId(Dmrc_Card_Request.this)), Integer.parseInt(s));
+                                                    allotDmrcCard(Integer.parseInt(s));
                                                 } else {
                                                     startActivityForResult(new Intent(Dmrc_Card_Request.this, Enach_Mandate.class).putExtra("forresutl", true).putExtra("selectservice", new ArrayList<Integer>(Arrays.asList(serviceId))), ApplicationConstant.REQ_ENACH_MANDATE);
                                                 }
@@ -584,33 +556,33 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
                                 }, Dmrc_Card_Request.this, dmrc_customer_cardVO.getErrorMsgs().get(0), "Alert", buttons);
                             }
                         }else {
-                            addRequestDmrcCardBanner(dmrc_customer_cardVO);
+                            allotDmrcCard(null);
                         }
                     }
                 }
             });
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e("error_serviceClick",e.getMessage());
             Utility.exceptionAlertDialog(Dmrc_Card_Request.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
     }
 
-    //bank list select bank for service
-    public void setBankForService( int serviceId,int customerId,int bankId){
+    public void allotDmrcCard(Integer bankId){
         HashMap<String, Object> params = new HashMap<String, Object>();
-        ConnectionVO connectionVO = ServiceBO.setBankForService();
-
+        ConnectionVO connectionVO = MetroBO.allotDmrcCard();
+        DMRC_Customer_CardVO request_dmrc_customer_cardVO=new DMRC_Customer_CardVO();
         CustomerVO customerVO=new CustomerVO();
-        customerVO.setCustomerId(customerId);
-        customerVO.setServiceId(serviceId);
-        customerVO.setAnonymousInteger(bankId);
+        customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(Dmrc_Card_Request.this)));
+        request_dmrc_customer_cardVO.setCustomer(customerVO);
+        request_dmrc_customer_cardVO.setDmrcid(dmrc_customer_cardVO.getDmrcid());
+        request_dmrc_customer_cardVO.setAnonymousInteger(bankId);
+
         Gson gson =new Gson();
-        String json = gson.toJson(customerVO);
+        String json = gson.toJson(request_dmrc_customer_cardVO);
+        Log.w("request",json);
         params.put("volley", json);
         connectionVO.setParams(params);
-        Log.w("setBankForService",params.toString());
-        VolleyUtils.makeJsonObjectRequest(this,connectionVO , new VolleyResponseListener() {
+        VolleyUtils.makeJsonObjectRequest(Dmrc_Card_Request.this,connectionVO, new VolleyResponseListener() {
             @Override
             public void onError(String message) {
             }
@@ -618,30 +590,28 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
             public void onResponse(Object resp) throws JSONException {
                 JSONObject response = (JSONObject) resp;
                 Gson gson = new Gson();
-                CustomerVO customerVO = gson.fromJson(response.toString(), CustomerVO.class);
+                DMRC_Customer_CardVO dmrc_customer_cardVO = gson.fromJson(response.toString(), DMRC_Customer_CardVO.class);
 
-                if(customerVO.getStatusCode().equals("400")){
-                    ArrayList error = (ArrayList) customerVO.getErrorMsgs();
+                if(dmrc_customer_cardVO.getStatusCode().equals("400")){
+                    //VolleyUtils.furnishErrorMsg(  "Fail" ,response, MainActivity.this);
+                    ArrayList error = (ArrayList) dmrc_customer_cardVO.getErrorMsgs();
                     StringBuilder sb = new StringBuilder();
                     for(int i=0; i<error.size(); i++){
                         sb.append(error.get(i)).append("\n");
                     }
-                    Utility.showSingleButtonDialog(Dmrc_Card_Request.this,"Alert",sb.toString(),false);
+                    Utility.showSingleButtonDialog(Dmrc_Card_Request.this,"Error !",sb.toString(),false);
                 }else {
-                    //set session customer or local cache
-                    String json = new Gson().toJson(customerVO);
-                    Session.set_Data_Sharedprefence(Dmrc_Card_Request.this,Session.CACHE_CUSTOMER,json);
-                    Session.set_Data_Sharedprefence(Dmrc_Card_Request.this, Session.LOCAL_CACHE,customerVO.getLocalCache());
-                    saveDmrcCardInServer();
+                    //update customer cache
+                    if(dmrc_customer_cardVO.getCustomer()!=null){
+                        String json = new Gson().toJson(dmrc_customer_cardVO.getCustomer());
+                        Session.set_Data_Sharedprefence(Dmrc_Card_Request.this,Session.CACHE_CUSTOMER,json);
+                        Session.set_Data_Sharedprefence(Dmrc_Card_Request.this, Session.LOCAL_CACHE,dmrc_customer_cardVO.getCustomer().getLocalCache());
+                    }
+                    addRequestDmrcCardBanner(dmrc_customer_cardVO);
                 }
             }
         });
     }
-
-
-
-
-
 
     public  boolean requiredfiled(){
         mobilenumber.setError(null);
@@ -809,27 +779,20 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
 
             try {
                 if (requestCode == REQ_IMAGE) {
-
 /*
                     String image_path=CommonUtils.compressImage(mImageUri.getPath());
                     Log.w("image_path",image_path);
-
                     File file =new File(image_path);
                     Log.w("file_length",file.length()/1024+"");
 */
-
                     bmp=Utility.decodeImageFromFiles(mImageUri.getPath(),150,150);
-
                     int imagesizeinbyte=Utility.byteSizeOf(bmp);
-
                     Log.w("image",imagesizeinbyte +"  ====   "+(imagesizeinbyte/1024) +"");
-
                     if(bmp.getWidth()>bmp.getHeight()){
                         Matrix matrix =new Matrix();
                         matrix.postRotate(90);
                         bmp= Bitmap.createBitmap(bmp,0,0,bmp.getWidth(),bmp.getHeight(),matrix,true);
                     }
-
                     imagesizeinbyte=Utility.byteSizeOf(bmp);
                     Log.w("image",imagesizeinbyte +"  ====   "+(imagesizeinbyte/1024) +"");
 
@@ -842,7 +805,7 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
                     bmp =VolleyUtils.grabImage(contentURI,Dmrc_Card_Request.this);
                     addressimage.setImageBitmap(bmp);
                 }else if(requestCode==ApplicationConstant.REQ_ENACH_MANDATE){
-                    saveDmrcCardInServer();
+                    allotDmrcCard(null);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

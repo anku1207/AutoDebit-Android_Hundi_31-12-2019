@@ -557,6 +557,8 @@ public class Home extends AppCompatActivity
         if(resultCode==RESULT_OK) {
             if (requestCode == ApplicationConstant.REQ_ENACH_MANDATE) {
                 loadDateInRecyclerView();
+
+                //show dialog after mandate
                 ArrayList<Integer> enachActServiceIds = data.getIntegerArrayListExtra("selectservice");
                 int [] showDialogServiceIds={1,2,3,4};
                 boolean showDialogValidate=false;
@@ -904,9 +906,9 @@ public class Home extends AppCompatActivity
             case R.id.mainwallet:
 
                 try {
-                     //"https://www.google.com/url?q=https://r.uber.com/FfNRcXC111&sa=D&source=hangouts&ust=1579678326585000&usg=AFQjCNHQng3tvBInLLLcnyYoVSl36iNFHQ";
-                    String uri = "https://www.amazon.in/Infinity-Glide-500-Wireless-Headphones/dp/B07W5MZY9J/ref=ac_session_sims_23_3/262-5272901-5384510?_encoding=UTF8&pd_rd_i=B07W6NDVSR&pd_rd_r=5a607169-3605-4bbd-858b-3fe49d3b2d57&pd_rd_w=RloOb&pd_rd_wg=EuSlK&pf_rd_p=a6472ab3-4fb9-4298-9be8-6a9080bff261&pf_rd_r=J4EWD6QHMA9EBX8AG94R&psc=1&refRID=J4EWD6QHMA9EBX8AG94R&th=1";
-                    //"uber://?action=setPickup&pickup=my_location";
+                    String uri ="https://r.uber.com/FfNRcXC111";
+                    //String uri = "https://www.amazon.in/Infinity-Glide-500-Wireless-Headphones/dp/B07W5MZY9J/ref=ac_session_sims_23_3/262-5272901-5384510?_encoding=UTF8&pd_rd_i=B07W6NDVSR&pd_rd_r=5a607169-3605-4bbd-858b-3fe49d3b2d57&pd_rd_w=RloOb&pd_rd_wg=EuSlK&pf_rd_p=a6472ab3-4fb9-4298-9be8-6a9080bff261&pf_rd_r=J4EWD6QHMA9EBX8AG94R&psc=1&refRID=J4EWD6QHMA9EBX8AG94R&th=1";
+                   // String uri = "uber://?action=setPickup&pickup=my_location";
                     Intent intent = new Intent(Intent.ACTION_VIEW);
                     intent.setData(Uri.parse(uri));
                     startActivity(intent);

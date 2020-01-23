@@ -19,4 +19,10 @@ public class MetroBO implements Serializable {
         connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
         return connectionVO;
     }
+    public static ConnectionVO allotDmrcCard(){
+        ConnectionVO connectionVO = new ConnectionVO();
+        connectionVO.setMethodName("allotDmrcCard");
+        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
+        return connectionVO;
+    }
 }
