@@ -1,5 +1,6 @@
 package com.uav.autodebit.Activity;
 
+import android.content.Context;
 import android.graphics.Typeface;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +12,8 @@ import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -66,7 +69,9 @@ public class History extends AppCompatActivity implements View.OnClickListener {
         getdata(new ServiceClick((ServiceClick.OnSuccess)(s)->{
             History_List_Adapter history_list_adapter=new History_List_Adapter(History.this, (List<DataAdapterVO>) s,R.layout.design_history_card_list);
             recyclerView.setAdapter(history_list_adapter);
+            runLayoutAnimation(recyclerView);
         }));
+
 
 
     }
@@ -108,7 +113,6 @@ public class History extends AppCompatActivity implements View.OnClickListener {
                           for(int i=0;i<jsonArray.length();i++) {
 
                               JSONObject jsonObject =jsonArray.getJSONObject(i);
-
                               DataAdapterVO dataAdapterVO =new DataAdapterVO();
                               dataAdapterVO.setImageUrl(jsonObject.getString("iconUrl"));
                               dataAdapterVO.setMop(jsonObject.get("Amount")+"");
@@ -134,4 +138,16 @@ public class History extends AppCompatActivity implements View.OnClickListener {
                 break;
         }
     }
+
+    private void runLayoutAnimation(final RecyclerView recyclerView) {
+        final Context context = recyclerView.getContext();
+        final LayoutAnimationController controller =
+                AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_from_bottom);
+
+        recyclerView.setLayoutAnimation(controller);
+        recyclerView.getAdapter().notifyDataSetChanged();
+        recyclerView.scheduleLayoutAnimation();
+    }
+
+
 }
