@@ -36,6 +36,13 @@ public class CustomerBO implements Serializable {
         return connectionVO;
     }
 
+    public static ConnectionVO getCustomerhistory(){
+        ConnectionVO connectionVO = new ConnectionVO();
+        connectionVO.setMethodName("getCustomerhistory");
+        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
+        return connectionVO;
+    }
+
 
 
 

@@ -877,7 +877,7 @@ public class Home extends AppCompatActivity
 
                     break;
                 case R.id.bottom_history:
-                    Toast.makeText(Home.this, "bottom_history", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(Home.this,History.class));
                     break;
                 case R.id.bottom_help:
                     startActivity(new Intent(Home.this,Help.class));

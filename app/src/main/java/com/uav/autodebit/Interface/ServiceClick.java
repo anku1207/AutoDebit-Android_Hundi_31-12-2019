@@ -10,6 +10,10 @@ public class ServiceClick {
         this.onSuccess  = onSuccess;
         this.onError = onError;
     }
+    public ServiceClick(OnSuccess onSuccess){
+        this.onSuccess  = onSuccess;
+    }
+
 
     public void onSuccess(Object s){
         onSuccess.onSuccess(s);

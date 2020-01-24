@@ -185,12 +185,6 @@ public class Profile_Activity extends AppCompatActivity implements FileDownloadI
     }
 
 
-
-
-
-
-
-
     BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener =new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -201,7 +195,7 @@ public class Profile_Activity extends AppCompatActivity implements FileDownloadI
                 case R.id.bottom_profile:
                     break;
                 case R.id.bottom_history:
-                    Toast.makeText(Profile_Activity.this, "bottom_history", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(Profile_Activity.this,History.class));
                     break;
                 case R.id.bottom_help:
                     Toast.makeText(Profile_Activity.this, "bottom_help", Toast.LENGTH_SHORT).show();

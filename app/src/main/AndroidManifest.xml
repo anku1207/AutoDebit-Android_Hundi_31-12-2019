@@ -41,7 +41,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Activity.Uber"></activity>
+        <activity android:name=".Activity.History"></activity>
+        <activity android:name=".Activity.Uber" />
         <activity android:name=".Activity.CreditCardBill" />
         <activity android:name=".Activity.ChangePassword" />
         <activity android:name=".Activity.IRCTC" />
