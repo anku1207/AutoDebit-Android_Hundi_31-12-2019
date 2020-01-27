@@ -27,7 +27,7 @@ public class History_List_Adapter  extends RecyclerView.Adapter<History_List_Ada
     List<DataAdapterVO> historyList;
     int Activityname;
 
-    int index;
+    Integer index;
 
     public History_List_Adapter(Context mctx, List<DataAdapterVO> historyList, int Activityname) {
         this.mctx = mctx;
@@ -67,21 +67,36 @@ public class History_List_Adapter  extends RecyclerView.Adapter<History_List_Ada
 
         holder.mainlayout.setTag(pro.getAmt());
 
+        holder.mainlayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+               // holder.mainlayout.setBackgroundColor(Color.parseColor("#D0D3D4"));
+                Toast.makeText(mctx, ""+view.getTag(), Toast.LENGTH_SHORT).show();
+                index=position;
+                notifyDataSetChanged();
+            }
+        });
+
+        if(index!=null && index==position){
+            holder.mainlayout.setBackgroundColor(Color.parseColor("#D0D3D4"));
+        }else {
+            holder.mainlayout.setBackgroundColor(Color.parseColor("#ffffff"));
+        }
 
 
-        holder.mainlayout.setOnTouchListener(new View.OnTouchListener() {
+
+/*        holder.mainlayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View arg0, MotionEvent arg1) {
                 if (arg1.getAction()==MotionEvent.ACTION_DOWN){
-                    holder.mainlayout.setBackgroundColor(Color.parseColor("#D0D3D4"));
 
-                    Toast.makeText(mctx, ""+arg0.getTag(), Toast.LENGTH_SHORT).show();
                 }else{
                     holder.mainlayout.setBackgroundColor(Color.parseColor("#ffffff"));
                 }
                 return true;
             }
-        });
+        });*/
     }
 
     @Override
