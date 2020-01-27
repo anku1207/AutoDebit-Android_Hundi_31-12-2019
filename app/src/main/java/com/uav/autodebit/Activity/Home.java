@@ -602,7 +602,6 @@ public class Home extends AppCompatActivity
                 }
                 @Override
                 public void doPostExecute() {
-
                     serviceClick(Integer.parseInt(serviceId),new ServiceClick((ServiceClick.OnSuccess)(s)->{
                         startActivityServiceClick(Integer.parseInt(serviceId),activityhasmap.get(serviceId),s,selectServiceType.getMandateAmount(),view);
                     },(ServiceClick.OnError)(e)->{

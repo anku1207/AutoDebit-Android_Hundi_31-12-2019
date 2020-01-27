@@ -62,9 +62,7 @@ public class History extends AppCompatActivity implements View.OnClickListener {
 
         recyclerView.setNestedScrollingEnabled(true);
         recyclerView.setHasFixedSize(false);
-
         recyclerView.setLayoutManager(new LinearLayoutManager(History.this, LinearLayoutManager.VERTICAL, false));
-
 
         getdata(new ServiceClick((ServiceClick.OnSuccess)(s)->{
             History_List_Adapter history_list_adapter=new History_List_Adapter(History.this, (List<DataAdapterVO>) s,R.layout.design_history_card_list);
@@ -72,20 +70,15 @@ public class History extends AppCompatActivity implements View.OnClickListener {
             runLayoutAnimation(recyclerView);
         }));
 
-
-
     }
 
     private void getdata(ServiceClick serviceClick) {
         ArrayList<DataAdapterVO> dataAdapterVOS=new ArrayList<>();
-
         try {
             HashMap<String, Object> params = new HashMap<String, Object>();
             ConnectionVO connectionVO = CustomerBO.getCustomerhistory();
             CustomerVO request_data =new CustomerVO();
-
             request_data.setCustomerId(Integer.parseInt(Session.getCustomerId(History.this)));
-
             Gson gson = new Gson();
             String json = gson.toJson(request_data);
             params.put("volley", json);
@@ -114,11 +107,15 @@ public class History extends AppCompatActivity implements View.OnClickListener {
 
                               JSONObject jsonObject =jsonArray.getJSONObject(i);
                               DataAdapterVO dataAdapterVO =new DataAdapterVO();
-                              dataAdapterVO.setImageUrl(jsonObject.getString("iconUrl"));
-                              dataAdapterVO.setMop(jsonObject.get("Amount")+"");
-                              dataAdapterVO.setInvoiceDate(jsonObject.getString("Date"));
-                              dataAdapterVO.setText(jsonObject.getString("ServiceName"));
-                              dataAdapterVO.setText2(jsonObject.getString("no"));
+                              dataAdapterVO.setAmt(jsonObject.get("Amount")+"");
+                              dataAdapterVO.setTxnDate(jsonObject.getString("Date"));
+                              dataAdapterVO.setServiceName(jsonObject.getString("ServiceName"));
+                              dataAdapterVO.setNumber(jsonObject.getString("no"));
+                              dataAdapterVO.setDebitDate(jsonObject.getString("debitDate"));
+                              dataAdapterVO.setStatus(jsonObject.getString("status"));
+                              dataAdapterVO.setTxnId(jsonObject.getString("txnId"));
+                              dataAdapterVO.setServiceCharge(jsonObject.get("serviceCharge")+"");
+                              dataAdapterVO.setNetAmt(jsonObject.get("netAmount")+"");
                               dataAdapterVOS.add(dataAdapterVO);
                           }
                         serviceClick.onSuccess(dataAdapterVOS);

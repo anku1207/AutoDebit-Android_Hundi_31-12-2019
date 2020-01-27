@@ -14,17 +14,13 @@ import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.google.gson.Gson;
 import com.uav.autodebit.BO.D2HBO;
-import com.uav.autodebit.BO.Electricity_BillBO;
 import com.uav.autodebit.BO.ServiceBO;
 import com.uav.autodebit.Interface.AlertSelectDialogClick;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
@@ -39,17 +35,13 @@ import com.uav.autodebit.vo.CustomerVO;
 import com.uav.autodebit.vo.D2HVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
 import com.uav.autodebit.volley.VolleyUtils;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-
-import static com.uav.autodebit.BO.ServiceBO.addBankForService;
 
 public class D2H extends AppCompatActivity implements View.OnClickListener {
 

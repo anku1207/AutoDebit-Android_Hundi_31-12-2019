@@ -36,6 +36,18 @@ public class DataAdapterVO implements Serializable {
     private String questionsData;
 
 
+    private String txnId;
+    private String discAmt;
+    private String netAmt;
+    private String amt;
+    private String serviceName;
+    private String number;
+    private String debitDate;
+    private String status;
+    private String txnDate;
+    private String serviceCharge;
+
+
     public DataAdapterVO(){
 
     }
@@ -220,5 +232,86 @@ public class DataAdapterVO implements Serializable {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+
+    public String getTxnId() {
+        return txnId;
+    }
+
+    public void setTxnId(String txnId) {
+        this.txnId = txnId;
+    }
+
+    public String getDiscAmt() {
+        return discAmt;
+    }
+
+    public void setDiscAmt(String discAmt) {
+        this.discAmt = discAmt;
+    }
+
+    public String getNetAmt() {
+        return netAmt;
+    }
+
+    public void setNetAmt(String netAmt) {
+        this.netAmt = netAmt;
+    }
+
+    public String getAmt() {
+        return amt;
+    }
+
+    public void setAmt(String amt) {
+        this.amt = amt;
+    }
+
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public String getDebitDate() {
+        return debitDate;
+    }
+
+    public void setDebitDate(String debitDate) {
+        this.debitDate = debitDate;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getTxnDate() {
+        return txnDate;
+    }
+
+    public void setTxnDate(String txnDate) {
+        this.txnDate = txnDate;
+    }
+
+    public String getServiceCharge() {
+        return serviceCharge;
+    }
+
+    public void setServiceCharge(String serviceCharge) {
+        this.serviceCharge = serviceCharge;
     }
 }
