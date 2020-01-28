@@ -44,6 +44,14 @@ public class CustomerBO implements Serializable {
     }
 
 
+    public static ConnectionVO getHistorySumarryById(){
+        ConnectionVO connectionVO = new ConnectionVO();
+        connectionVO.setMethodName("getHistorySumarryById");
+        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
+        return connectionVO;
+    }
+
+
 
 
 }

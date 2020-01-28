@@ -17,6 +17,7 @@ import android.view.animation.LayoutAnimationController;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.uav.autodebit.BO.CustomerBO;
@@ -24,9 +25,11 @@ import com.uav.autodebit.BO.Electricity_BillBO;
 import com.uav.autodebit.BO.PanCardBO;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.Interface.ServiceClick;
+import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
 import com.uav.autodebit.adpater.DMRC_List_Adpater;
 import com.uav.autodebit.adpater.History_List_Adapter;
+import com.uav.autodebit.override.TransparentProgressDialog;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.ConnectionVO;
@@ -116,6 +119,7 @@ public class History extends AppCompatActivity implements View.OnClickListener {
                               dataAdapterVO.setTxnId(jsonObject.getString("txnId"));
                               dataAdapterVO.setServiceCharge(jsonObject.get("serviceCharge")+"");
                               dataAdapterVO.setNetAmt(jsonObject.get("netAmount")+"");
+                              dataAdapterVO.setCustmerPassBookId(jsonObject.getInt("customerPassBookId"));
                               dataAdapterVOS.add(dataAdapterVO);
                           }
                         serviceClick.onSuccess(dataAdapterVOS);
@@ -144,6 +148,46 @@ public class History extends AppCompatActivity implements View.OnClickListener {
         recyclerView.setLayoutAnimation(controller);
         recyclerView.getAdapter().notifyDataSetChanged();
         recyclerView.scheduleLayoutAnimation();
+    }
+
+    public void getHistoryDetailById(Integer id , VolleyResponse volleyResponse){
+
+        try {
+            HashMap<String, Object> params = new HashMap<String, Object>();
+            ConnectionVO connectionVO = CustomerBO.getCustomerhistory();
+            CustomerVO request_data =new CustomerVO();
+            request_data.setCustomerId(Integer.parseInt(Session.getCustomerId(History.this)));
+            Gson gson = new Gson();
+            String json = gson.toJson(request_data);
+            params.put("volley", json);
+            connectionVO.setParams(params);
+
+            VolleyUtils.makeJsonObjectRequest(History.this,connectionVO, new VolleyResponseListener() {
+                @Override
+                public void onError(String message) {
+                }
+                @Override
+                public void onResponse(Object resp) throws JSONException {
+                    JSONObject response = (JSONObject) resp;
+                    Gson gson = new Gson();
+                    CustomerVO customerVO = gson.fromJson(response.toString(), CustomerVO.class);
+
+                    if(customerVO.getStatusCode().equals("400")){
+                        ArrayList error = (ArrayList) customerVO.getErrorMsgs();
+                        StringBuilder sb = new StringBuilder();
+                        for(int i=0; i<error.size(); i++){
+                            sb.append(error.get(i)).append("\n");
+                        }
+                        Utility.showSingleButtonDialog(History.this,"Error !",sb.toString(),false);
+                    }else {
+
+
+                    }
+                }
+            });
+        } catch (Exception e) {
+            Utility.exceptionAlertDialog(History.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+        }
     }
 
 

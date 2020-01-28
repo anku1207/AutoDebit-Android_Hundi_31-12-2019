@@ -1,25 +1,19 @@
 package com.uav.autodebit.adpater;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.support.v7.widget.CardView;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.squareup.picasso.Picasso;
+import com.uav.autodebit.Activity.HistorySummary;
 import com.uav.autodebit.R;
-import com.uav.autodebit.vo.DMRC_Customer_CardVO;
 import com.uav.autodebit.vo.DataAdapterVO;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 public class History_List_Adapter  extends RecyclerView.Adapter<History_List_Adapter.ProdectViewHolder>{
@@ -65,38 +59,21 @@ public class History_List_Adapter  extends RecyclerView.Adapter<History_List_Ada
         holder.status.setText(pro.getStatus());
         holder.amount.setText(pro.getAmt());
 
-        holder.mainlayout.setTag(pro.getAmt());
-
+        holder.mainlayout.setTag(pro.getCustmerPassBookId());
         holder.mainlayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-               // holder.mainlayout.setBackgroundColor(Color.parseColor("#D0D3D4"));
-                Toast.makeText(mctx, ""+view.getTag(), Toast.LENGTH_SHORT).show();
-                index=position;
-                notifyDataSetChanged();
+                /*index=position;
+                notifyDataSetChanged();*/
+                mctx.startActivity(new Intent(mctx, HistorySummary.class).putExtra("historyId",pro.getCustmerPassBookId().toString()));
             }
         });
 
-        if(index!=null && index==position){
+       /* if(index!=null && index==position){
             holder.mainlayout.setBackgroundColor(Color.parseColor("#D0D3D4"));
         }else {
             holder.mainlayout.setBackgroundColor(Color.parseColor("#ffffff"));
-        }
-
-
-
-/*        holder.mainlayout.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View arg0, MotionEvent arg1) {
-                if (arg1.getAction()==MotionEvent.ACTION_DOWN){
-
-                }else{
-                    holder.mainlayout.setBackgroundColor(Color.parseColor("#ffffff"));
-                }
-                return true;
-            }
-        });*/
+        }*/
     }
 
     @Override

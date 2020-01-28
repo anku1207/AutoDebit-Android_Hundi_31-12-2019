@@ -46,6 +46,7 @@ public class DataAdapterVO implements Serializable {
     private String status;
     private String txnDate;
     private String serviceCharge;
+    private Integer custmerPassBookId;
 
 
     public DataAdapterVO(){
@@ -313,5 +314,13 @@ public class DataAdapterVO implements Serializable {
 
     public void setServiceCharge(String serviceCharge) {
         this.serviceCharge = serviceCharge;
+    }
+
+    public Integer getCustmerPassBookId() {
+        return custmerPassBookId;
+    }
+
+    public void setCustmerPassBookId(Integer custmerPassBookId) {
+        this.custmerPassBookId = custmerPassBookId;
     }
 }
