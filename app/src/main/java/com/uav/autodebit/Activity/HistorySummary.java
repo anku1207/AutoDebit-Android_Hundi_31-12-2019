@@ -76,13 +76,10 @@ public class HistorySummary extends AppCompatActivity implements View.OnClickLis
                 Typeface typeface = ResourcesCompat.getFont(this, R.font.poppinssemibold);
 
 
-                LinearLayout.LayoutParams layoutparams = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float) 1);
+                LinearLayout.LayoutParams layoutparams ;
                 int marginInDp = (int) TypedValue.applyDimension(
                         TypedValue.COMPLEX_UNIT_DIP, 5, this.getResources()
                                 .getDisplayMetrics());
-
-                layoutparams.setMargins(0,marginInDp,0,marginInDp);
-
 
                 for(int i=0 ;i<jsonArray.length();i++){
                     JSONObject jsonObject =jsonArray.getJSONObject(i);
@@ -90,6 +87,11 @@ public class HistorySummary extends AppCompatActivity implements View.OnClickLis
                     LinearLayout et = new LinearLayout(new ContextThemeWrapper(HistorySummary.this,R.style.confirmation_dialog_layout));
 
                     TextView text = new TextView(new ContextThemeWrapper(this, R.style.confirmation_dialog_filed));
+
+                    layoutparams = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float)1 );
+
+                    layoutparams.setMargins(0,marginInDp,0,marginInDp);
+
                     text.setLayoutParams(layoutparams);
                     text.setText(jsonObject.getString("key"));
                     text.setMaxLines(1);
@@ -99,7 +101,10 @@ public class HistorySummary extends AppCompatActivity implements View.OnClickLis
 
 
                     TextView value = new TextView(new ContextThemeWrapper(this, R.style.confirmation_dialog_value));
-                    text.setLayoutParams(layoutparams);
+
+                    layoutparams = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float).5);
+                    layoutparams.setMargins(0,marginInDp,0,marginInDp);
+
                     value.setLayoutParams(layoutparams);
                     value.setText(jsonObject.getString("value"));
                     value.setTypeface(typeface);
