@@ -129,6 +129,7 @@ public class History extends AppCompatActivity implements View.OnClickListener {
                 }
             });
         } catch (Exception e) {
+            e.printStackTrace();
             Utility.exceptionAlertDialog(History.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
     }
