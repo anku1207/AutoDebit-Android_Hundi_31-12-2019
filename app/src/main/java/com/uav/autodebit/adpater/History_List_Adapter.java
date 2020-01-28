@@ -54,9 +54,9 @@ public class History_List_Adapter  extends RecyclerView.Adapter<History_List_Ada
         holder.txn_id.setText(pro.getTxnId());
         holder.date.setText(pro.getTxnDate());
         holder.service_charge.setText(pro.getServiceCharge());
-        holder.netamt.setText(mctx.getString(R.string.Rs)+" "+pro.getNetAmt());
+        holder.netamt.setText(pro.getNetAmt());
         holder.debitdate.setText(pro.getDebitDate());
-        holder.status.setText(pro.getStatus());
+        holder.status.setText("Debit Success : "+pro.getStatus());
         holder.amount.setText(pro.getAmt());
 
         holder.mainlayout.setTag(pro.getCustmerPassBookId());

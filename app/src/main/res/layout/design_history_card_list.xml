@@ -36,7 +36,7 @@
                        android:id="@+id/cardno"
                        android:layout_width="wrap_content"
                        android:layout_height="wrap_content"
-                       android:text="Card Number"
+                       android:text=""
                        android:gravity="right"
                        />
                </LinearLayout>
@@ -51,7 +51,7 @@
                        android:id="@+id/service_name"
                        android:layout_width="wrap_content"
                        android:layout_height="wrap_content"
-                       android:text="Service Name"
+                       android:text=""
                        android:gravity="right"
                        android:textStyle="bold"
                        >
@@ -165,7 +165,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="S.Charges"
+                        android:text="S.Char."
                         android:textSize="12dp"
                         android:ellipsize="end"
                         android:maxLines="1"
@@ -260,9 +260,11 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Success"
+                        android:text=""
                         android:gravity="right"
                         android:id="@+id/status"
+                        android:textStyle="bold"
+                        android:textSize="12dp"
                         >
                     </TextView>
                 </LinearLayout>

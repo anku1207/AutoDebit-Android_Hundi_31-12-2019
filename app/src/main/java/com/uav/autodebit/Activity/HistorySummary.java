@@ -67,7 +67,7 @@ public class HistorySummary extends AppCompatActivity implements View.OnClickLis
 
                 JSONObject respjsonObject  =new JSONObject(customerVO.getAnonymousString());
 
-                service_name.setText(respjsonObject.getJSONObject("data").getString("ServiceName"));
+                service_name.setText(respjsonObject.getJSONObject("data").getString("serviceName"));
                 number.setText(respjsonObject.getJSONObject("data").getString("no"));
                 order_id.setText(respjsonObject.getJSONObject("data").getString("txnId"));
 
