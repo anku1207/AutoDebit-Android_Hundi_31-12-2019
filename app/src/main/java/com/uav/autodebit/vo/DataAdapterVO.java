@@ -4,7 +4,9 @@ import org.json.JSONObject;
 
 import java.io.Serializable;
 
-public class DataAdapterVO implements Serializable {
+public class DataAdapterVO  implements Serializable {
+    private static final long serialVersionUID = 1L;
+
 
     private String text;
     private String text2;

@@ -29,6 +29,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -110,6 +111,8 @@ public class Profile_Activity extends AppCompatActivity implements FileDownloadI
     ConnectionVO customerProfileImage;
     ProgressBar progressBar;
 
+    ScrollView scrollView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,6 +139,7 @@ public class Profile_Activity extends AppCompatActivity implements FileDownloadI
         progressBar=findViewById(R.id.progressBar);
         changepass=findViewById(R.id.changepass);
         more_bankadd=findViewById(R.id.more_bankadd);
+        scrollView=findViewById(R.id.scrollView);
 
 
         back_activity_button.setOnClickListener(this);
@@ -528,10 +532,6 @@ public class Profile_Activity extends AppCompatActivity implements FileDownloadI
                 Gson gson=new Gson();
 
                 CustomerVO customerVO = gson.fromJson(response.toString(), CustomerVO.class);
-
-                setServiceAndBankList(customerVO);
-
-
                 if(customerVO.getStatusCode().equals("400")){
                     ArrayList error = (ArrayList) customerVO.getErrorMsgs();
                     StringBuilder sb = new StringBuilder();
@@ -540,7 +540,8 @@ public class Profile_Activity extends AppCompatActivity implements FileDownloadI
                     }
                     Utility.alertDialog(Profile_Activity.this,"Alert",sb.toString(),"Ok");
                 }else {
-
+                    scrollView.setVisibility(View.VISIBLE);
+                    setServiceAndBankList(customerVO);
                     usename.setText(customerVO.getName());
 
                     if(customerVO.getLevel().getLevelId()<=1){

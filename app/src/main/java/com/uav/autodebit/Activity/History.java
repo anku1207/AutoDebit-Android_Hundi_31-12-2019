@@ -112,16 +112,12 @@ public class History extends AppCompatActivity implements View.OnClickListener {
 
                               JSONObject jsonObject =jsonArray.getJSONObject(i);
                               DataAdapterVO dataAdapterVO =new DataAdapterVO();
-                              dataAdapterVO.setAmt(jsonObject.get("Amount")+"");
-                              dataAdapterVO.setTxnDate(jsonObject.getString("Date"));
-                              dataAdapterVO.setServiceName(jsonObject.getString("ServiceName"));
-                              dataAdapterVO.setNumber(jsonObject.getString("no"));
-                              dataAdapterVO.setDebitDate(jsonObject.getString("debitDate"));
-                              dataAdapterVO.setStatus(jsonObject.getString("status"));
-                              dataAdapterVO.setTxnId(jsonObject.getString("txnId"));
-                              dataAdapterVO.setServiceCharge(jsonObject.get("serviceCharge")+"");
-                              dataAdapterVO.setNetAmt(jsonObject.get("netAmount")+"");
-                              dataAdapterVO.setCustmerPassBookId(jsonObject.getInt("customerPassBookId"));
+
+                              dataAdapterVO.setServiceName(jsonObject.getJSONObject("data").getString("ServiceName"));
+                              dataAdapterVO.setNumber(jsonObject.getJSONObject("data").getString("no"));
+                              dataAdapterVO.setStatus(jsonObject.getJSONObject("data").getString("status"));
+                              dataAdapterVO.setCustmerPassBookId(jsonObject.getJSONObject("data").getInt("customerPassBookId"));
+                              dataAdapterVO.setQuestionsData(jsonObject.getJSONArray("chargesarray").toString());
                               dataAdapterVOS.add(dataAdapterVO);
                           }
                         serviceClick.onSuccess(dataAdapterVOS);

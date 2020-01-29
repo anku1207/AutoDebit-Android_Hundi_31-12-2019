@@ -2,7 +2,13 @@ package com.uav.autodebit.adpater;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +18,11 @@ import android.widget.Toast;
 
 import com.uav.autodebit.Activity.HistorySummary;
 import com.uav.autodebit.R;
+import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.DataAdapterVO;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -48,32 +58,48 @@ public class History_List_Adapter  extends RecyclerView.Adapter<History_List_Ada
     @Override
     public void onBindViewHolder(History_List_Adapter.ProdectViewHolder holder, int position) {
 
-        final DataAdapterVO pro=historyList.get(position);
-        holder.cardno.setText(pro.getNumber());
-        holder.service_name.setText(pro.getServiceName());
-        holder.txn_id.setText(pro.getTxnId());
-        holder.date.setText(pro.getTxnDate());
-        holder.service_charge.setText(pro.getServiceCharge());
-        holder.netamt.setText(pro.getNetAmt());
-        holder.debitdate.setText(pro.getDebitDate());
-        holder.status.setText("Debit Success : "+pro.getStatus());
-        holder.amount.setText(pro.getAmt());
+        try{
 
-        holder.mainlayout.setTag(pro.getCustmerPassBookId());
-        holder.mainlayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            final DataAdapterVO pro=historyList.get(position);
+            holder.cardno.setText(pro.getNumber());
+            holder.service_name.setText(pro.getServiceName());
+            holder.status.setText("Debit Success : "+pro.getStatus());
+            holder.mainlayout.setTag(pro.getCustmerPassBookId());
+
+
+            JSONArray jsonArray =new JSONArray(pro.getQuestionsData());
+
+
+            if(holder.chargeslayout.getChildCount()>0) holder.chargeslayout.removeAllViews();
+            for(int i=0;i<jsonArray.length();i++){
+                JSONObject jsonObject =jsonArray.getJSONObject(i);
+                createChargesLayout(holder.chargeslayout,jsonObject.getString("key"),jsonObject.getString("value"));
+            }
+
+
+
+
+
+            holder.mainlayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
                 /*index=position;
                 notifyDataSetChanged();*/
-                mctx.startActivity(new Intent(mctx, HistorySummary.class).putExtra("historyId",pro.getCustmerPassBookId().toString()));
-            }
-        });
+                    mctx.startActivity(new Intent(mctx, HistorySummary.class).putExtra("historyId",pro.getCustmerPassBookId().toString()));
+                }
+            });
 
        /* if(index!=null && index==position){
             holder.mainlayout.setBackgroundColor(Color.parseColor("#D0D3D4"));
         }else {
             holder.mainlayout.setBackgroundColor(Color.parseColor("#ffffff"));
         }*/
+
+        }catch (Exception e){
+
+        }
+
+
     }
 
     @Override
@@ -81,7 +107,7 @@ public class History_List_Adapter  extends RecyclerView.Adapter<History_List_Ada
         return historyList.size();
     }
     public class ProdectViewHolder extends RecyclerView.ViewHolder {
-        LinearLayout mainlayout;
+        LinearLayout mainlayout,chargeslayout;
         TextView cardno,service_name,txn_id,date,amount,service_charge,netamt,debitdate,status;
 
         public ProdectViewHolder(View itemView) {
@@ -89,15 +115,53 @@ public class History_List_Adapter  extends RecyclerView.Adapter<History_List_Ada
             mainlayout=itemView.findViewById(R.id.mainlayout);
             cardno=itemView.findViewById(R.id.cardno);
             service_name=itemView.findViewById(R.id.service_name);
-            txn_id=itemView.findViewById(R.id.txn_id);
-            date=itemView.findViewById(R.id.date);
-            service_charge=itemView.findViewById(R.id.service_charge);
-            netamt=itemView.findViewById(R.id.netamt);
-            debitdate=itemView.findViewById(R.id.debitdate);
             status=itemView.findViewById(R.id.status);
-            amount=itemView.findViewById(R.id.amount);
+            chargeslayout=itemView.findViewById(R.id.chargeslayout);
 
 
         }
     }
+
+
+    private void createChargesLayout(LinearLayout linearLayout,String key ,String Value){
+
+
+
+        LinearLayout.LayoutParams layoutparams ;
+
+
+        LinearLayout et = new LinearLayout(new ContextThemeWrapper(mctx,R.style.history_charges));
+        layoutparams = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1 );
+        et.setLayoutParams(layoutparams);
+
+        TextView text = new TextView(new ContextThemeWrapper(mctx, R.style.confirmation_dialog_filed));
+        layoutparams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0 );
+        text.setLayoutParams(layoutparams);
+        text.setText(key);
+        text.setMaxLines(1);
+        text.setEllipsize(TextUtils.TruncateAt.END);
+        text.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        text.setTextSize(12);
+        text.setTypeface(text.getTypeface(), Typeface.BOLD);
+
+
+
+        TextView value = new TextView(new ContextThemeWrapper(mctx, R.style.confirmation_dialog_value));
+        layoutparams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 5);
+
+        value.setLayoutParams(layoutparams);
+        value.setText(Value);
+        value.setMaxLines(1);
+        value.setEllipsize(TextUtils.TruncateAt.END);
+        value.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        value.setTextSize(12);
+        value.setTypeface(null);
+
+
+        et.addView(text);
+        et.addView(value);
+        linearLayout.addView(et);
+    }
+
+
 }

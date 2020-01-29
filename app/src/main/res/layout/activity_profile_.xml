@@ -101,7 +101,9 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:fillViewport="true"
-            android:isScrollContainer="true">
+            android:isScrollContainer="true"
+            android:visibility="gone"
+            android:id="@+id/scrollView">
 
 
 
