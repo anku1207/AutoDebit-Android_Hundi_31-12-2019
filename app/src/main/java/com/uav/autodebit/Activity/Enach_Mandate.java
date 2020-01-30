@@ -95,7 +95,8 @@ public class Enach_Mandate extends AppCompatActivity{
     ArrayList<Integer> selectServiceIds=new ArrayList<>();
 
 
-    Spinner select_drop;
+    Spinner select_drop,account_type;
+    JSONArray accountTypeJsonArray;
 
 
 
@@ -110,6 +111,8 @@ public class Enach_Mandate extends AppCompatActivity{
         selectServiceIds=getIntent().getIntegerArrayListExtra("selectservice");
         disAmountEdittext=getIntent().getBooleanExtra("disAmountEdittext",false);
 
+        accountTypeJsonArray=new JSONArray();
+
         banklist();
 
         customerAuthId=null;
@@ -123,6 +126,7 @@ public class Enach_Mandate extends AppCompatActivity{
         maxamount=findViewById(R.id.maxamount);
         mandatebtn=findViewById(R.id.mandatebtn);
         select_drop=findViewById(R.id.select_drop);
+        account_type=findViewById(R.id.account_type);
 
         if(disAmountEdittext)maxamount.setEnabled(false);
 
@@ -173,6 +177,26 @@ public class Enach_Mandate extends AppCompatActivity{
 
             }
         });
+
+
+        account_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                try{
+                    JSONObject jsonObject =accountTypeJsonArray.getJSONObject(i);
+                    Toast.makeText(Enach_Mandate.this, ""+jsonObject.getString("value"), Toast.LENGTH_SHORT).show();
+                }catch (Exception e){
+                    Utility.exceptionAlertDialog(Enach_Mandate.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+
+
 
 
 
@@ -350,6 +374,34 @@ public class Enach_Mandate extends AppCompatActivity{
     }
 
 
+
+    public JSONArray accountType(){
+        JSONArray jsonArray =new JSONArray();
+        try {
+            JSONObject jsonObject =new JSONObject();
+            jsonObject.put("key","Current");
+            jsonObject.put("value","current");
+            jsonArray.put(jsonObject);
+
+            jsonObject =new JSONObject();
+            jsonObject.put("key","Savings");
+            jsonObject.put("value","savings");
+            jsonArray.put(jsonObject);
+
+            jsonObject =new JSONObject();
+            jsonObject.put("key","Other");
+            jsonObject.put("value","other");
+            jsonArray.put(jsonObject);
+
+
+        }catch (Exception e){
+
+        }
+       return jsonArray;
+
+    }
+
+
     public void banklist(){
 
 
@@ -404,6 +456,24 @@ public class Enach_Mandate extends AppCompatActivity{
                             android.R.layout.simple_spinner_item,paths);
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     select_drop.setAdapter(adapter);
+
+
+                    accountTypeJsonArray =accountType();
+                    ArrayList accountList=new ArrayList();
+                    for(int i=0;i< accountType().length();i++){
+                        JSONObject object1=(accountType().getJSONObject(i));
+                        accountList.add(object1.getString("key"));
+                    }
+
+                    adapter = new ArrayAdapter<String>(Enach_Mandate.this,
+                            android.R.layout.simple_spinner_item,accountList);
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    account_type.setAdapter(adapter);
+
+
+
+
+
 
                     maxamount.setText((int)(Double.parseDouble(object.getString("minMandateAmt")))+"");
                     minamt=(int)(Double.parseDouble(object.getString("minMandateAmt")));

@@ -470,7 +470,7 @@ public class Electricity_Bill extends AppCompatActivity  implements View.OnClick
                                 fetchbilllayout.addView(et);
                             }
                             fetchbillcard.setVisibility(View.VISIBLE);
-                        }else if(jsonresponseInfo.getString("responseCode").equals("01")){
+                        }else if(jsonresponseInfo.getString("responseCode").equals("et ")){
                             fetchbill.setVisibility(View.VISIBLE);
                             Utility.showSingleButtonDialogconfirmation(Electricity_Bill.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
                                 ok.dismiss();
