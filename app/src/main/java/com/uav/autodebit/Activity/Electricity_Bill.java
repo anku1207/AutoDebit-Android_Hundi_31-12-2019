@@ -32,6 +32,7 @@ import com.uav.autodebit.BO.MetroBO;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.R;
 import com.uav.autodebit.adpater.ListViewItemCheckboxBaseAdapter;
+import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.override.UAVProgressDialog;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.BackgroundAsyncService;
@@ -44,6 +45,7 @@ import com.uav.autodebit.vo.DMRC_Customer_CardVO;
 import com.uav.autodebit.vo.DataAdapterVO;
 import com.uav.autodebit.vo.LocalCacheVO;
 import com.uav.autodebit.vo.OxigenQuestionsVO;
+import com.uav.autodebit.vo.OxigenTransactionVO;
 import com.uav.autodebit.vo.ServiceTypeVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
 import com.uav.autodebit.volley.VolleyUtils;
@@ -205,6 +207,10 @@ public class Electricity_Bill extends AppCompatActivity  implements View.OnClick
                                 EditText et = Utility.getEditText(Electricity_Bill.this);
                                 et.setId(View.generateViewId());
                                 et.setHint(oxigenQuestionsVO.getQuestionLabel());
+
+                                changeEdittextValue(et);
+
+
                                 cardView.addView(et);
                                 dynamicCardViewContainer.addView(cardView);
                                 if(oxigenQuestionsVO.getInstructions()!=null){
@@ -248,7 +254,7 @@ public class Electricity_Bill extends AppCompatActivity  implements View.OnClick
                         jsonObject.put("amount",amount.getText().toString());
                         jsonObject.put("questionLabelDate",dataarray.toString());
 
-                        proceedRecharge(jsonObject);
+                       // proceedRecharge(jsonObject);
 
                 }catch (Exception e){
                     e.printStackTrace();
@@ -262,21 +268,28 @@ public class Electricity_Bill extends AppCompatActivity  implements View.OnClick
                 try {
                     Utility.hideKeyboard(Electricity_Bill.this);
 
-
                     valid=true;
                     JSONObject dataarray=getQuestionLabelDate(false);
                     if(!valid)return;
                     JSONObject jsonObject =new JSONObject();
-                    jsonObject.put("operatorcode",operatorcode);
-                    jsonObject.put("questionLabelData",dataarray.toString());
 
-                    proceedFetchBill(jsonObject);
+                    CustomerVO customerVO =new CustomerVO();
+                    customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(Electricity_Bill.this)));
 
+                    ServiceTypeVO serviceTypeVO =new ServiceTypeVO();
+                    serviceTypeVO.setServiceId(ApplicationConstant.Electricity);
+
+                    OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
+                    oxigenTransactionVO.setOperateName(operatorcode);
+                    oxigenTransactionVO.setCustomer(customerVO);
+                    oxigenTransactionVO.setServiceType(serviceTypeVO);
+                    oxigenTransactionVO.setAnonymousString(dataarray.toString());
+
+                    proceedFetchBill(oxigenTransactionVO);
                 }catch (Exception e){
                     e.printStackTrace();
                     Utility.exceptionAlertDialog(Electricity_Bill.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
                 }
-                valid=true;
                 break;
         }
     }
@@ -303,7 +316,6 @@ public class Electricity_Bill extends AppCompatActivity  implements View.OnClick
 
             EditText editText =(EditText) findViewById(oxigenQuestionsVO.getElementId());
             editText.clearFocus();
-            changeEdittextValue(editText);
 
             editText.setError(null);
             if(editText.getText().toString().equals("")){
@@ -355,11 +367,11 @@ public class Electricity_Bill extends AppCompatActivity  implements View.OnClick
     }
 
 
-    private  void proceedRecharge(JSONObject jsonObject){
+    private  void proceedRecharge(OxigenTransactionVO oxigenTransactionVO){
     }
 
 
-    private void proceedFetchBill(JSONObject jsonObject) throws Exception{
+    private void proceedFetchBill(OxigenTransactionVO oxigenTransactionVO) throws Exception{
 
         try {
             Gson gson =new Gson();
@@ -367,9 +379,9 @@ public class Electricity_Bill extends AppCompatActivity  implements View.OnClick
             HashMap<String, Object> params = new HashMap<String, Object>();
             ConnectionVO connectionVO = Electricity_BillBO.oxiFetchBill();
 
-            params.put("volley",jsonObject.toString());
+            params.put("volley",gson.toJson(oxigenTransactionVO));
 
-            Log.w("proceedFetchBill",jsonObject.toString());
+            Log.w("proceedFetchBill",oxigenTransactionVO.toString());
             connectionVO.setParams(params);
 
             VolleyUtils.makeJsonObjectRequest(Electricity_Bill.this,connectionVO, new VolleyResponseListener() {
@@ -464,14 +476,11 @@ public class Electricity_Bill extends AppCompatActivity  implements View.OnClick
                                 ok.dismiss();
                             }),"Alert",jsonresponseInfo.getString("responseDescription"));
                         }
-
-
                     }
                 }
             });
         } catch (Exception e) {
             Utility.exceptionAlertDialog(Electricity_Bill.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
-
         }
     }
 }
