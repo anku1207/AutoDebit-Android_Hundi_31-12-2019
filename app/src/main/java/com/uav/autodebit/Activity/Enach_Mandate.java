@@ -178,7 +178,6 @@ public class Enach_Mandate extends AppCompatActivity{
             }
         });
 
-
         account_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -194,14 +193,6 @@ public class Enach_Mandate extends AppCompatActivity{
 
             }
         });
-
-
-
-
-
-
-
-
 
         maxamount.setDrawableClickListener(new DrawableClickListener() {
             @Override

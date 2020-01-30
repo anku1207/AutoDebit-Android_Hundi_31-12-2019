@@ -277,7 +277,7 @@ public class Electricity_Bill extends AppCompatActivity  implements View.OnClick
                     customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(Electricity_Bill.this)));
 
                     ServiceTypeVO serviceTypeVO =new ServiceTypeVO();
-                    serviceTypeVO.setServiceId(ApplicationConstant.Electricity);
+                    serviceTypeVO.setServiceTypeId(ApplicationConstant.Electricity);
 
                     OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
                     oxigenTransactionVO.setOperateName(operatorcode);
@@ -381,7 +381,7 @@ public class Electricity_Bill extends AppCompatActivity  implements View.OnClick
 
             params.put("volley",gson.toJson(oxigenTransactionVO));
 
-            Log.w("proceedFetchBill",oxigenTransactionVO.toString());
+            Log.w("proceedFetchBill",gson.toJson(oxigenTransactionVO));
             connectionVO.setParams(params);
 
             VolleyUtils.makeJsonObjectRequest(Electricity_Bill.this,connectionVO, new VolleyResponseListener() {
@@ -394,53 +394,25 @@ public class Electricity_Bill extends AppCompatActivity  implements View.OnClick
 
                     Log.w("respele",response.toString());
                     Gson gson = new Gson();
-                    CustomerVO customerVO = gson.fromJson(response.toString(), CustomerVO.class);
+                    OxigenTransactionVO oxigenTransactionVO = gson.fromJson(response.toString(), OxigenTransactionVO.class);
 
-                    if(customerVO.getStatusCode().equals("400")){
-                        ArrayList error = (ArrayList) customerVO.getErrorMsgs();
+                    if(oxigenTransactionVO.getStatusCode().equals("400")){
+                        ArrayList error = (ArrayList) oxigenTransactionVO.getErrorMsgs();
                         StringBuilder sb = new StringBuilder();
                         for(int i=0; i<error.size(); i++){
                             sb.append(error.get(i)).append("\n");
                         }
                         fetchbill.setVisibility(View.VISIBLE);
                         Utility.showSingleButtonDialog(Electricity_Bill.this,"Error !",sb.toString(),false);
+                    }else if(oxigenTransactionVO.getStatusCode().equals("01")){
+                        fetchbill.setVisibility(View.VISIBLE);
+                        Utility.showSingleButtonDialogconfirmation(Electricity_Bill.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                            ok.dismiss();
+                        }),"Alert",oxigenTransactionVO.getAnonymousString());
                     }else {
                         fetchbill.setVisibility(View.GONE);
 
-
-                        JSONArray dataArry=new JSONArray();
-                        JSONObject jsonObject1 =new JSONObject(customerVO.getAnonymousString());
-
-                        JSONObject jsonresponseInfo =jsonObject1.getJSONObject("serviceResponse").getJSONObject("responseInfo");
-
-                        if(jsonresponseInfo.getString("responseCode").equals("0")){
-                            JSONObject jsonBillerResponse =jsonObject1.getJSONObject("serviceResponse").getJSONObject("OperatorResponse").getJSONObject("BillerResponse");
-
-                            JSONObject datajson=new JSONObject();
-                            datajson.put("key","Amount");
-                            datajson.put("value",jsonBillerResponse.getString("NetAmount"));
-                            amount.setText(jsonBillerResponse.getString("NetAmount"));
-                            dataArry.put(datajson);
-
-                            datajson=new JSONObject();
-                            datajson.put("key","BillDate");
-                            datajson.put("value",jsonBillerResponse.getString("BillDate"));
-                            dataArry.put(datajson);
-
-                            datajson=new JSONObject();
-                            datajson.put("key","Customer Name");
-                            datajson.put("value",jsonBillerResponse.getString("CustomerName"));
-                            dataArry.put(datajson);
-
-                            datajson=new JSONObject();
-                            datajson.put("key","DueDate");
-                            datajson.put("value",jsonBillerResponse.getString("DueDate"));
-                            dataArry.put(datajson);
-
-                            datajson=new JSONObject();
-                            datajson.put("key","BillPeriod");
-                            datajson.put("value",jsonBillerResponse.getString("BillPeriod"));
-                            dataArry.put(datajson);
+                        JSONArray dataArry =new JSONArray(oxigenTransactionVO.getAnonymousString());
 
                             Typeface typeface = ResourcesCompat.getFont(Electricity_Bill.this, R.font.poppinssemibold);
                             for(int i=0 ;i<dataArry.length();i++){
@@ -470,16 +442,12 @@ public class Electricity_Bill extends AppCompatActivity  implements View.OnClick
                                 fetchbilllayout.addView(et);
                             }
                             fetchbillcard.setVisibility(View.VISIBLE);
-                        }else if(jsonresponseInfo.getString("responseCode").equals("et ")){
-                            fetchbill.setVisibility(View.VISIBLE);
-                            Utility.showSingleButtonDialogconfirmation(Electricity_Bill.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
-                                ok.dismiss();
-                            }),"Alert",jsonresponseInfo.getString("responseDescription"));
                         }
                     }
-                }
+
             });
         } catch (Exception e) {
+            e.printStackTrace();
             Utility.exceptionAlertDialog(Electricity_Bill.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
     }
