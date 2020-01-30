@@ -411,6 +411,7 @@ public class Electricity_Bill extends AppCompatActivity  implements View.OnClick
                         }),"Alert",oxigenTransactionVO.getAnonymousString());
                     }else {
                         fetchbill.setVisibility(View.GONE);
+                        amount.setText(oxigenTransactionVO.getAmount()+"");
 
                         JSONArray dataArry =new JSONArray(oxigenTransactionVO.getAnonymousString());
 
