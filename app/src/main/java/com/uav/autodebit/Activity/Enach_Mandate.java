@@ -78,7 +78,7 @@ public class Enach_Mandate extends AppCompatActivity{
     TextView textbox;
     UAVEditText maxamount;
     AutoCompleteTextView ifsc;
-    String bankshortname;
+    String bankshortname,accountTypeValue;
     String errormsz;
 
     ImageView back_activity_button1;
@@ -88,7 +88,7 @@ public class Enach_Mandate extends AppCompatActivity{
 
     boolean foractivity=false,disAmountEdittext=false;
 
-    List<String> paths = new ArrayList<String>();
+
 
     HashMap<String,String> selectbank=new HashMap<>();
 
@@ -117,6 +117,7 @@ public class Enach_Mandate extends AppCompatActivity{
 
         customerAuthId=null;
         bankshortname=null;
+        accountTypeValue=null;
 
         textbox=findViewById(R.id.textbox);
 
@@ -183,7 +184,7 @@ public class Enach_Mandate extends AppCompatActivity{
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 try{
                     JSONObject jsonObject =accountTypeJsonArray.getJSONObject(i);
-                    Toast.makeText(Enach_Mandate.this, ""+jsonObject.getString("value"), Toast.LENGTH_SHORT).show();
+                    accountTypeValue=jsonObject.getString("value");
                 }catch (Exception e){
                     Utility.exceptionAlertDialog(Enach_Mandate.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
                 }
@@ -240,6 +241,10 @@ public class Enach_Mandate extends AppCompatActivity{
                     Utility.alertDialog(Enach_Mandate.this,"Alert","Bank is not selected","Ok");
                     validation=false;
                 }
+                if( accountTypeValue==null){
+                    Utility.alertDialog(Enach_Mandate.this,"Alert","Account Type is not selected","Ok");
+                    validation=false;
+                }
                 if(!maxamount.getText().toString().equals("")  && Integer.parseInt(maxamount.getText().toString())< minamt){
                     Utility.showSingleButtonDialog(Enach_Mandate.this,"Alert",errormsz,false);
                     validation=false;
@@ -281,6 +286,11 @@ public class Enach_Mandate extends AppCompatActivity{
             object.put("value",maxamount.getText().toString());
             jsonArray.put(object);
 
+            object =new JSONObject();
+            object.put("key","Account Type");
+            object.put("value",accountTypeValue);
+            jsonArray.put(object);
+
             Utility.confirmationDialog(new DialogInterface() {
                 @Override
                 public void confirm(Dialog dialog) {
@@ -319,6 +329,7 @@ public class Enach_Mandate extends AppCompatActivity{
         params.put("accountHolderName",acholdername.getText().toString().trim());
         params.put("returnURL",localCacheVO.geteNachReturnURL());
         params.put("customerid",customerId);
+        params.put("accountType",accountTypeValue);
         connectionVO.setParams(params);
 
         Log.w("sendrequest",params.toString());
@@ -366,31 +377,7 @@ public class Enach_Mandate extends AppCompatActivity{
 
 
 
-    public JSONArray accountType(){
-        JSONArray jsonArray =new JSONArray();
-        try {
-            JSONObject jsonObject =new JSONObject();
-            jsonObject.put("key","Current");
-            jsonObject.put("value","current");
-            jsonArray.put(jsonObject);
 
-            jsonObject =new JSONObject();
-            jsonObject.put("key","Savings");
-            jsonObject.put("value","savings");
-            jsonArray.put(jsonObject);
-
-            jsonObject =new JSONObject();
-            jsonObject.put("key","Other");
-            jsonObject.put("value","other");
-            jsonArray.put(jsonObject);
-
-
-        }catch (Exception e){
-
-        }
-       return jsonArray;
-
-    }
 
 
     public void banklist(){
@@ -436,6 +423,7 @@ public class Enach_Mandate extends AppCompatActivity{
                     JSONObject object = new JSONObject(response.getString("result"));
                     JSONArray jsonArray=object.getJSONArray("data");
 
+                    List<String> paths = new ArrayList<String>();
                     for(int i=0;i<jsonArray.length();i++){
                         JSONObject object1=(jsonArray.getJSONObject(i));
                         selectbank.put(object1.getString("name"),object1.getString("id"));
@@ -449,10 +437,10 @@ public class Enach_Mandate extends AppCompatActivity{
                     select_drop.setAdapter(adapter);
 
 
-                    accountTypeJsonArray =accountType();
+                    accountTypeJsonArray =new JSONArray(response.getString("accountType"));
                     ArrayList accountList=new ArrayList();
-                    for(int i=0;i< accountType().length();i++){
-                        JSONObject object1=(accountType().getJSONObject(i));
+                    for(int i=0;i< accountTypeJsonArray.length();i++){
+                        JSONObject object1=(accountTypeJsonArray.getJSONObject(i));
                         accountList.add(object1.getString("key"));
                     }
 
@@ -460,10 +448,6 @@ public class Enach_Mandate extends AppCompatActivity{
                             android.R.layout.simple_spinner_item,accountList);
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     account_type.setAdapter(adapter);
-
-
-
-
 
 
                     maxamount.setText((int)(Double.parseDouble(object.getString("minMandateAmt")))+"");
