@@ -80,7 +80,7 @@ public class Water extends AppCompatActivity implements View.OnClickListener {
         operatorListDate=null;
         pd=new UAVProgressDialog(this);
 
-        amount.setEnabled(false);
+
 
         amount=findViewById(R.id.amount);
         back_activity_button=findViewById(R.id.back_activity_button1);
@@ -95,6 +95,7 @@ public class Water extends AppCompatActivity implements View.OnClickListener {
         oxigenTransactionVOresp=new OxigenTransactionVO();
 
         amountlayout.setVisibility(View.GONE);
+        amount.setEnabled(false);
 
         back_activity_button.setOnClickListener(this);
         proceed.setOnClickListener(this);
@@ -262,7 +263,7 @@ public class Water extends AppCompatActivity implements View.OnClickListener {
                     customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(Water.this)));
 
                     ServiceTypeVO serviceTypeVO =new ServiceTypeVO();
-                    serviceTypeVO.setServiceTypeId(ApplicationConstant.Landline);
+                    serviceTypeVO.setServiceTypeId(ApplicationConstant.Water);
 
                     OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
                     oxigenTransactionVO.setOperateName(operatorcode);
@@ -370,7 +371,7 @@ public class Water extends AppCompatActivity implements View.OnClickListener {
     }
 
 
-    private void proceedFetchBill(OxigenTransactionVO oxigenTransactionVO) throws Exception{
+    private void proceedFetchBill(OxigenTransactionVO oxigenTransactionVO){
         try {
             Gson gson =new Gson();
 
