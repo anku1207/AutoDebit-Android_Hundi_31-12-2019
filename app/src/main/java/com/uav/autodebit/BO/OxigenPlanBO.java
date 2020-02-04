@@ -33,4 +33,11 @@ public class OxigenPlanBO implements Serializable {
         return connectionVO;
     }
 
+    public static ConnectionVO oxiBillPayment() {
+        ConnectionVO connectionVO = new ConnectionVO();
+        connectionVO.setMethodName("oxiBillPayment");
+        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
+        return connectionVO;
+    }
+
 }

@@ -14,24 +14,23 @@ public class MySMSBroadCastReceiver extends BroadcastReceiver {
     {
         // Get Bundle object contained in the SMS intent passed in
         Bundle bundle = intent.getExtras();
-        SmsMessage[] smsm = null;
-        String sms_str ="";
+
 
         if (bundle != null)
         {
             // Get the SMS message
             Object[] pdus = (Object[]) bundle.get("pdus");
-            smsm = new SmsMessage[pdus.length];
-            for (int i=0; i<smsm.length; i++){
-                smsm[i] = SmsMessage.createFromPdu((byte[])pdus[i]);
 
+            for (int i=0; i<pdus.length; i++){
+                SmsMessage smsm = SmsMessage.createFromPdu((byte[])pdus[i]);
+                String sender = smsm.getDisplayOriginatingAddress();
+                String msg = smsm.getMessageBody().toString();
 
-                sms_str += smsm[i].getMessageBody().toString();
-
-                String Sender = smsm[i].getOriginatingAddress();
                 //Check here sender is yours
+                if(!sender.contains("AUTOPE")) return;
+
                 Intent smsIntent = new Intent("otp");
-                smsIntent.putExtra("message",sms_str);
+                smsIntent.putExtra("message",msg);
 
                 LocalBroadcastManager.getInstance(context).sendBroadcast(smsIntent);
 

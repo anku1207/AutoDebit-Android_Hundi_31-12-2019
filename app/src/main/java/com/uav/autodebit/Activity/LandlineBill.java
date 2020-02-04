@@ -35,6 +35,7 @@ import com.google.gson.JsonObject;
 import com.uav.autodebit.BO.Electricity_BillBO;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.R;
+import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.override.UAVEditText;
 import com.uav.autodebit.override.UAVProgressDialog;
 import com.uav.autodebit.permission.Session;
@@ -46,6 +47,8 @@ import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerVO;
 import com.uav.autodebit.vo.DataAdapterVO;
 import com.uav.autodebit.vo.OxigenQuestionsVO;
+import com.uav.autodebit.vo.OxigenTransactionVO;
+import com.uav.autodebit.vo.ServiceTypeVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
 import com.uav.autodebit.volley.VolleyUtils;
 
@@ -73,6 +76,7 @@ public class LandlineBill extends AppCompatActivity implements View.OnClickListe
     boolean valid=true;
     String operatorListDate;
     UAVProgressDialog pd;
+    OxigenTransactionVO oxigenTransactionVOresp;
 
 
 
@@ -97,8 +101,9 @@ public class LandlineBill extends AppCompatActivity implements View.OnClickListe
         operator=findViewById(R.id.operator);
         dynamicCardViewContainer =findViewById(R.id.dynamiccards);
         fetchbilllayout=findViewById(R.id.fetchbilllayout);
-
         fetchbillcard =findViewById(R.id.fetchbillcard);
+
+        oxigenTransactionVOresp=new OxigenTransactionVO();
 
         amountlayout.setVisibility(View.GONE);
 
@@ -251,7 +256,7 @@ public class LandlineBill extends AppCompatActivity implements View.OnClickListe
                     jsonObject.put("amount",amount.getText().toString());
                     jsonObject.put("questionLabelDate",dataarray.toString());
 
-                    proceedRecharge(jsonObject);
+                    proceedRecharge(oxigenTransactionVOresp);
 
                 }catch (Exception e){
                     e.printStackTrace();
@@ -266,15 +271,24 @@ public class LandlineBill extends AppCompatActivity implements View.OnClickListe
 
                     Utility.hideKeyboard(LandlineBill.this);
 
-
                     valid=true;
                     JSONObject dataarray=getQuestionLabelDate(false);
                     if(!valid)return;
                     JSONObject jsonObject =new JSONObject();
-                    jsonObject.put("operatorcode",operatorcode);
-                    jsonObject.put("questionLabelData",dataarray.toString());
 
-                    proceedFetchBill(jsonObject);
+                    CustomerVO customerVO =new CustomerVO();
+                    customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(LandlineBill.this)));
+
+                    ServiceTypeVO serviceTypeVO =new ServiceTypeVO();
+                    serviceTypeVO.setServiceTypeId(ApplicationConstant.Landline);
+
+                    OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
+                    oxigenTransactionVO.setOperateName(operatorcode);
+                    oxigenTransactionVO.setCustomer(customerVO);
+                    oxigenTransactionVO.setServiceType(serviceTypeVO);
+                    oxigenTransactionVO.setAnonymousString(dataarray.toString());
+
+                    proceedFetchBill(oxigenTransactionVO);
 
                 }catch (Exception e){
                     e.printStackTrace();
@@ -333,6 +347,7 @@ public class LandlineBill extends AppCompatActivity implements View.OnClickListe
 
 
     public void removefetchbilllayout(){
+        oxigenTransactionVOresp=new OxigenTransactionVO();
         if(fetchbilllayout.getChildCount()>0) {
             fetchbilllayout.removeAllViews();
             amount.setText("");
@@ -359,11 +374,19 @@ public class LandlineBill extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    private  void proceedRecharge(JSONObject jsonObject){
+    private  void proceedRecharge(OxigenTransactionVO oxigenTransactionVO){
+        if(oxigenTransactionVO==null || oxigenTransactionVOresp.getTypeId()==null){
+            Utility.showSingleButtonDialogconfirmation(LandlineBill.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                ok.dismiss();
+            }),"Alert","Bill fetch Id is null");
+        }else {
+            Toast.makeText(this, ""+oxigenTransactionVOresp.getTypeId(), Toast.LENGTH_SHORT).show();
+
+        }
     }
 
 
-    private void proceedFetchBill(JSONObject jsonObject) throws Exception{
+    private void proceedFetchBill(OxigenTransactionVO oxigenTransactionVO) throws Exception{
 
         try {
             Gson gson =new Gson();
@@ -371,9 +394,9 @@ public class LandlineBill extends AppCompatActivity implements View.OnClickListe
             HashMap<String, Object> params = new HashMap<String, Object>();
             ConnectionVO connectionVO = Electricity_BillBO.oxiFetchBill();
 
-            params.put("volley",jsonObject.toString());
+            params.put("volley",gson.toJson(oxigenTransactionVO));
 
-            Log.w("proceedFetchBill",jsonObject.toString());
+            Log.w("proceedFetchBill",gson.toJson(oxigenTransactionVO));
             connectionVO.setParams(params);
 
             VolleyUtils.makeJsonObjectRequest(LandlineBill.this,connectionVO, new VolleyResponseListener() {
@@ -383,98 +406,65 @@ public class LandlineBill extends AppCompatActivity implements View.OnClickListe
                 @Override
                 public void onResponse(Object resp) throws JSONException {
                     JSONObject response = (JSONObject) resp;
-                    Gson gson = new Gson();
-                    CustomerVO customerVO = gson.fromJson(response.toString(), CustomerVO.class);
 
-                    if(customerVO.getStatusCode().equals("400")){
-                        ArrayList error = (ArrayList) customerVO.getErrorMsgs();
+                    Log.w("respele",response.toString());
+                    Gson gson = new Gson();
+                    oxigenTransactionVOresp = gson.fromJson(response.toString(), OxigenTransactionVO.class);
+
+                    if(oxigenTransactionVOresp.getStatusCode().equals("400")){
+                        ArrayList error = (ArrayList) oxigenTransactionVOresp.getErrorMsgs();
                         StringBuilder sb = new StringBuilder();
                         for(int i=0; i<error.size(); i++){
                             sb.append(error.get(i)).append("\n");
                         }
                         fetchbill.setVisibility(View.VISIBLE);
                         Utility.showSingleButtonDialog(LandlineBill.this,"Error !",sb.toString(),false);
+                    }else if(oxigenTransactionVOresp.getStatusCode().equals("01")){
+                        fetchbill.setVisibility(View.VISIBLE);
+                        Utility.showSingleButtonDialogconfirmation(LandlineBill.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                            ok.dismiss();
+                        }),"Alert",oxigenTransactionVOresp.getAnonymousString());
                     }else {
                         fetchbill.setVisibility(View.GONE);
+                        amount.setText(oxigenTransactionVOresp.getAmount()+"");
+
+                        JSONArray dataArry =new JSONArray(oxigenTransactionVOresp.getAnonymousString());
+
+                        Typeface typeface = ResourcesCompat.getFont(LandlineBill.this, R.font.poppinssemibold);
+                        for(int i=0 ;i<dataArry.length();i++){
+                            JSONObject jsonObject =dataArry.getJSONObject(i);
+
+                            LinearLayout et = new LinearLayout(new ContextThemeWrapper(LandlineBill.this,R.style.confirmation_dialog_layout));
+
+                            et.setPadding(Utility.getPixelsFromDPs(LandlineBill.this,10),Utility.getPixelsFromDPs(LandlineBill.this,10),Utility.getPixelsFromDPs(LandlineBill.this,10),Utility.getPixelsFromDPs(LandlineBill.this,10));
+
+                            TextView text = new TextView(new ContextThemeWrapper(LandlineBill.this, R.style.confirmation_dialog_filed));
+                            text.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float) 1));
+                            text.setText(jsonObject.getString("key"));
+                            text.setMaxLines(1);
+                            text.setEllipsize(TextUtils.TruncateAt.END);
+                            text.setTypeface(typeface);
+                            text.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
 
-                        JSONArray dataArry=new JSONArray();
-                        JSONObject jsonObject1 =new JSONObject(customerVO.getAnonymousString());
+                            TextView value = new TextView(new ContextThemeWrapper(LandlineBill.this, R.style.confirmation_dialog_value));
+                            value.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,1));
+                            value.setText(jsonObject.getString("value"));
+                            value.setTypeface(typeface);
+                            value.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
-                        JSONObject jsonresponseInfo =jsonObject1.getJSONObject("serviceResponse").getJSONObject("responseInfo");
-
-                        if(jsonresponseInfo.getString("responseCode").equals("0")){
-                            JSONObject jsonBillerResponse =jsonObject1.getJSONObject("serviceResponse").getJSONObject("OperatorResponse").getJSONObject("BillerResponse");
-
-                            JSONObject datajson=new JSONObject();
-                            datajson.put("key","Amount");
-                            datajson.put("value", jsonBillerResponse.getString("NetAmount"));
-                            amount.setText(jsonBillerResponse.getString("NetAmount"));
-                            dataArry.put(datajson);
-
-
-                            datajson=new JSONObject();
-                            datajson.put("key","BillDate");
-                            datajson.put("value",jsonBillerResponse.getString("BillDate"));
-                            dataArry.put(datajson);
-
-                            datajson=new JSONObject();
-                            datajson.put("key","Customer Name");
-                            datajson.put("value",jsonBillerResponse.getString("CustomerName"));
-                            dataArry.put(datajson);
-
-                            datajson=new JSONObject();
-                            datajson.put("key","DueDate");
-                            datajson.put("value",jsonBillerResponse.getString("DueDate"));
-                            dataArry.put(datajson);
-
-                            datajson=new JSONObject();
-                            datajson.put("key","BillPeriod");
-                            datajson.put("value",jsonBillerResponse.getString("BillPeriod"));
-                            dataArry.put(datajson);
-
-                            Typeface typeface = ResourcesCompat.getFont(LandlineBill.this, R.font.poppinssemibold);
-                            for(int i=0 ;i<dataArry.length();i++){
-                                JSONObject jsonObject =dataArry.getJSONObject(i);
-
-                                LinearLayout et = new LinearLayout(new ContextThemeWrapper(LandlineBill.this,R.style.confirmation_dialog_layout));
-
-                                et.setPadding(Utility.getPixelsFromDPs(LandlineBill.this,10),Utility.getPixelsFromDPs(LandlineBill.this,10),Utility.getPixelsFromDPs(LandlineBill.this,10),Utility.getPixelsFromDPs(LandlineBill.this,10));
-
-                                TextView text = new TextView(new ContextThemeWrapper(LandlineBill.this, R.style.confirmation_dialog_filed));
-                                text.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float) 1));
-                                text.setText(jsonObject.getString("key"));
-                                text.setMaxLines(1);
-                                text.setEllipsize(TextUtils.TruncateAt.END);
-                                text.setTypeface(typeface);
-                                text.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-
-
-                                TextView value = new TextView(new ContextThemeWrapper(LandlineBill.this, R.style.confirmation_dialog_value));
-                                value.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,1));
-                                value.setText(jsonObject.getString("value"));
-                                value.setTypeface(typeface);
-                                value.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-
-                                et.addView(text);
-                                et.addView(value);
-                                fetchbilllayout.addView(et);
-                            }
-                            fetchbillcard.setVisibility(View.VISIBLE);
-                        }else if(jsonresponseInfo.getString("responseCode").equals("01")){
-                            fetchbill.setVisibility(View.VISIBLE);
-                            Utility.showSingleButtonDialogconfirmation(LandlineBill.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
-                                ok.dismiss();
-                            }),"Alert",jsonresponseInfo.getString("responseDescription"));
+                            et.addView(text);
+                            et.addView(value);
+                            fetchbilllayout.addView(et);
                         }
-
-
+                        fetchbillcard.setVisibility(View.VISIBLE);
                     }
                 }
+
             });
         } catch (Exception e) {
+            e.printStackTrace();
             Utility.exceptionAlertDialog(LandlineBill.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
-
         }
     }
 }
