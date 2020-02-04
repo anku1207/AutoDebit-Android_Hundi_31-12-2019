@@ -115,12 +115,15 @@
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/ava_user"
                     android:backgroundTint="@color/white"
-                    android:hint="Name"
+                    android:hint="First Name"
                     android:singleLine="true"
                     android:id="@+id/name"
-                    android:inputType="textCapCharacters"
-                    android:maxLines="1"
+                    android:text=""
                     style="@style/commonEdittextStyle"
+                    android:digits="@string/NameDigits"
+                    android:inputType="textCapWords"
+                    android:maxLines="1"
+                    android:maxLength="64"
                     />
             </android.support.v7.widget.CardView>
 
@@ -139,9 +142,11 @@
                     android:hint="Last Name"
                     android:singleLine="true"
                     android:id="@+id/lname"
-                    android:inputType="textCapCharacters"
-                    android:maxLines="1"
                     style="@style/commonEdittextStyle"
+                    android:digits="@string/NameDigits"
+                    android:inputType="textCapWords"
+                    android:maxLines="1"
+                    android:maxLength="64"
                     />
             </android.support.v7.widget.CardView>
 
@@ -161,9 +166,9 @@
                     android:hint="Email"
                     android:singleLine="true"
                     android:id="@+id/email"
-                    android:inputType="textCapCharacters"
-                    android:maxLines="1"
                     style="@style/commonEdittextStyle"
+                    android:maxLines="1"
+                    android:maxLength="256"
                     />
             </android.support.v7.widget.CardView>
 

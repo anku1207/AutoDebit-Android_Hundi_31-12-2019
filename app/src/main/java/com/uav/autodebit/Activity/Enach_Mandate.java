@@ -432,8 +432,8 @@ public class Enach_Mandate extends AppCompatActivity{
 
 
                     ArrayAdapter<String>adapter = new ArrayAdapter<String>(Enach_Mandate.this,
-                            android.R.layout.simple_spinner_item,paths);
-                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            R.layout.spinner_item,paths);
+                    adapter.setDropDownViewResource(R.layout.spinner_item);
                     select_drop.setAdapter(adapter);
 
 
@@ -445,8 +445,8 @@ public class Enach_Mandate extends AppCompatActivity{
                     }
 
                     adapter = new ArrayAdapter<String>(Enach_Mandate.this,
-                            android.R.layout.simple_spinner_item,accountList);
-                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            R.layout.spinner_item,accountList);
+                    adapter.setDropDownViewResource(R.layout.spinner_item);
                     account_type.setAdapter(adapter);
 
 
