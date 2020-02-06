@@ -15,4 +15,11 @@ public class UberBO implements Serializable {
         return connectionVO;
     }
 
+    public static ConnectionVO getUberDetails() {
+        ConnectionVO connectionVO = new ConnectionVO();
+        connectionVO.setMethodName("getUberDetails");
+        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
+        return connectionVO;
+    }
+
 }

@@ -1,5 +1,7 @@
 package com.uav.autodebit.Activity;
 
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +16,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.uav.autodebit.BO.ServiceBO;
 import com.uav.autodebit.BO.UberBO;
+import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.Utility;
@@ -37,11 +40,25 @@ public class Uber extends AppCompatActivity implements View.OnClickListener {
     LinearLayout main;
     EditText [] edittextArray;
 
+
+
+    @TargetApi(Build.VERSION_CODES.O)
+    private void disableAutofill() {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            getWindow().getDecorView().setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO_EXCLUDE_DESCENDANTS);
+        }
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_uber);
         getSupportActionBar().hide();
+
+        //disableAutoFill
+        disableAutofill();
+
         name=findViewById(R.id.name);
         email=findViewById(R.id.email);
         lastname=findViewById(R.id.lname);
@@ -54,6 +71,50 @@ public class Uber extends AppCompatActivity implements View.OnClickListener {
 
         edittextArray= new EditText[]{name, lastname, email};
 
+        getUberDetails(new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
+
+        }));
+
+
+
+
+
+    }
+
+    private void getUberDetails(VolleyResponse volleyResponse){
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        ConnectionVO connectionVO = UberBO.getUberDetails();
+
+        CustomerVO customerVO =new CustomerVO();
+        customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(Uber.this)));
+        Gson gson =new Gson();
+        String json = gson.toJson(customerVO);
+        params.put("volley", json);
+        connectionVO.setParams(params);
+        Log.w("setBankForService",params.toString());
+        VolleyUtils.makeJsonObjectRequest(this,connectionVO , new VolleyResponseListener() {
+            @Override
+            public void onError(String message) {
+            }
+            @Override
+            public void onResponse(Object resp) throws JSONException {
+                JSONObject response = (JSONObject) resp;
+                Gson gson = new Gson();
+                CustomerVO customerVO = gson.fromJson(response.toString(), CustomerVO.class);
+
+                if(customerVO.getStatusCode().equals("400")){
+                    ArrayList error = (ArrayList) customerVO.getErrorMsgs();
+                    StringBuilder sb = new StringBuilder();
+                    for(int i=0; i<error.size(); i++){
+                        sb.append(error.get(i)).append("\n");
+                    }
+                    Utility.showSingleButtonDialog(Uber.this,"Alert",sb.toString(),false);
+                }else {
+                    volleyResponse.onSuccess(customerVO);
+
+                }
+            }
+        });
     }
 
     @Override
@@ -61,7 +122,6 @@ public class Uber extends AppCompatActivity implements View.OnClickListener {
         switch (view.getId()){
             case R.id.proceed:
                 if(!Utility.setErrorOnEdittext(edittextArray))return;
-
                 uberSaveDetail();
                 break;
             case R.id.back_activity_button :

@@ -481,7 +481,7 @@ public class Utility {
             for (String param : params) {
                 JSONObject object=new JSONObject();
                 String name = param.split("=")[0];
-                String value = param.split("=")[1];
+                String  value=param.split("=").length>1?param.split("=")[1]:null;
                 object.put(name,value);
                 jsonArray.put(object);
             }
