@@ -95,6 +95,10 @@ public class Uber extends AppCompatActivity implements View.OnClickListener {
         addcardlistlayout=findViewById(R.id.addcardlistlayout);
         scrollView=findViewById(R.id.scrollView);
 
+        scrollView.setVisibility(View.GONE);
+
+        addcardlistlayout.removeAllViews();
+
         pd=new UAVProgressDialog(this);
         tabLayout =findViewById(R.id.indicator);
 
@@ -105,7 +109,13 @@ public class Uber extends AppCompatActivity implements View.OnClickListener {
 
         getUberDetails(new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
             UberVO uberVO =(UberVO)s;
+            setCustomerDetail(uberVO);
             addRequestDmrcCardBanner(uberVO);
+
+
+
+
+
 
         }));
 
@@ -119,10 +129,13 @@ public class Uber extends AppCompatActivity implements View.OnClickListener {
         HashMap<String, Object> params = new HashMap<String, Object>();
         ConnectionVO connectionVO = UberBO.getUberDetails();
 
+        UberVO uberVO =new UberVO();
+
         CustomerVO  customerVO =new CustomerVO();
         customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(Uber.this)));
-        Gson gson =new Gson();
-        String json = gson.toJson(customerVO);
+        uberVO.setCustomer(customerVO);
+
+        String json = new Gson().toJson(uberVO);
         params.put("volley", json);
         connectionVO.setParams(params);
         Log.w("setBankForService",params.toString());
@@ -155,22 +168,23 @@ public class Uber extends AppCompatActivity implements View.OnClickListener {
     public void addRequestDmrcCardBanner(UberVO uberVO){
         addcardlistlayout.removeAllViewsInLayout();
 
-        if(uberVO.getAnonymousString()!=null){
+        if(uberVO.getUberCustomerList()!=null && uberVO.getUberCustomerList().size()>0){
 
             //Show Addcard btn
             if(uberVO.getUberId()==null){
                 showAddCardBtn();
             }
 
-            ArrayList<UberVO> listforcard= (ArrayList<UberVO>) fromJson(uberVO.getAnonymousString(), new TypeToken<ArrayList<String>>() { }.getType());;
+            ArrayList<UberVO> listforcard= (ArrayList<UberVO>) uberVO.getUberCustomerList();
             viewPager=Utility.getViewPager(Uber.this);
             viewPager.setOverScrollMode(View.OVER_SCROLL_NEVER);
             getdata(listforcard);
         }else{
             ImageView imageView =Utility.getImageView(Uber.this);
             imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+
             Picasso.with(this)
-                    .load("http://205.147.103.18/autodebit/bannerimages/banner_1.png")
+                    .load(uberVO.getImage())
                     .into(imageView, new com.squareup.picasso.Callback() {
                         @Override
                         public void onSuccess() {
@@ -178,6 +192,7 @@ public class Uber extends AppCompatActivity implements View.OnClickListener {
                         }
                         @Override
                         public void onError() {
+
                         }
                     });
             addcardlistlayout.addView(imageView);
@@ -237,15 +252,15 @@ public class Uber extends AppCompatActivity implements View.OnClickListener {
             public List doInBackGround(BackgroundAsyncServiceGetListInterface backgroundAsyncServiceGetListInterface) {
 
                 ArrayList<DMRC_Customer_CardVO> dmrc_customer_cardVOS=new ArrayList<>();
-                for(UberVO dmrc_customer_cardVOS1 :listforcard ){
+                for(UberVO uberVO :listforcard ){
                     DMRC_Customer_CardVO dmrc_customer_cardVO =new DMRC_Customer_CardVO();
-                    dmrc_customer_cardVO.setCustomerName(dmrc_customer_cardVOS1.getCustomerName());
-                    dmrc_customer_cardVO.setCardNo(dmrc_customer_cardVOS1.getCardNo());
+                    dmrc_customer_cardVO.setCustomerName(uberVO.getFirstName());
+                    dmrc_customer_cardVO.setCardNo(uberVO.getLastName());
                     DmrcCardStatusVO dmrcCardStatusVO =new DmrcCardStatusVO();
-                    dmrcCardStatusVO.setStatusName(dmrc_customer_cardVOS1.getDmrccardStaus().getStatusName());
-                    dmrc_customer_cardVO.setIssueDate(dmrc_customer_cardVOS1.getIssueDate());
+                    dmrcCardStatusVO.setStatusName(null);
+                    dmrc_customer_cardVO.setIssueDate(null);
                     dmrc_customer_cardVO.setDmrccardStaus(dmrcCardStatusVO);
-                    dmrc_customer_cardVO.setImage(dmrc_customer_cardVOS1.getImage());
+
                     dmrc_customer_cardVOS.add(dmrc_customer_cardVO);
                 }
                 return backgroundAsyncServiceGetListInterface.doInBackGround.doInBackGround(dmrc_customer_cardVOS);
@@ -269,7 +284,18 @@ public class Uber extends AppCompatActivity implements View.OnClickListener {
     }
 
 
-
+    public void setCustomerDetail(UberVO uberVO){
+        scrollviewAnimationAndVisibility();
+        if(uberVO.getFirstName()!=null){
+            name.setText(uberVO.getFirstName());
+        }
+        if(uberVO.getLastName()!=null){
+            lastname.setText(uberVO.getLastName());
+        }
+        if(uberVO.getEmail()!=null){
+            email.setText(uberVO.getEmail());
+        }
+    }
 
 
     @Override

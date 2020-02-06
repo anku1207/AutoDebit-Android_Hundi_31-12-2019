@@ -61,7 +61,7 @@
             android:textAlignment="center"
             android:gravity="center"
             android:layout_gravity="center"
-            android:text="DMRC Card Request"
+            android:text="Uber"
             android:textStyle="bold"
             android:textSize="20dp"
             android:id="@+id/title"

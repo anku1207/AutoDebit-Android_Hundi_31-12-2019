@@ -1,5 +1,7 @@
 package com.uav.autodebit.vo;
 
+import java.util.List;
+
 public class UberVO extends BaseVO{
 
     private Integer uberId;
@@ -8,6 +10,7 @@ public class UberVO extends BaseVO{
     private String email ;
     private Long emailVerified;
     private CustomerVO customer;
+    private List<UberVO> uberCustomerList;
 
 
     public UberVO() {
@@ -59,5 +62,13 @@ public class UberVO extends BaseVO{
 
     public void setCustomer(CustomerVO customer) {
         this.customer = customer;
+    }
+
+    public List<UberVO> getUberCustomerList() {
+        return uberCustomerList;
+    }
+
+    public void setUberCustomerList(List<UberVO> uberCustomerList) {
+        this.uberCustomerList = uberCustomerList;
     }
 }
