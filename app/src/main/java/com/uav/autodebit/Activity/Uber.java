@@ -2,9 +2,11 @@ package com.uav.autodebit.Activity;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Build;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.ViewPager;
@@ -67,7 +69,7 @@ public class Uber extends AppCompatActivity implements View.OnClickListener {
     TabLayout tabLayout;
     UAVProgressDialog pd;
 
-
+    UberVO uberVO;
 
     @TargetApi(Build.VERSION_CODES.O)
     private void disableAutofill() {
@@ -108,21 +110,10 @@ public class Uber extends AppCompatActivity implements View.OnClickListener {
         edittextArray= new EditText[]{name, lastname, email};
 
         getUberDetails(new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
-            UberVO uberVO =(UberVO)s;
+            uberVO =(UberVO)s;
             setCustomerDetail(uberVO);
             addRequestDmrcCardBanner(uberVO);
-
-
-
-
-
-
         }));
-
-
-
-
-
     }
 
     private void getUberDetails(VolleyResponse volleyResponse){
@@ -222,6 +213,8 @@ public class Uber extends AppCompatActivity implements View.OnClickListener {
             @Override
             public void onClick(View view) {
 
+                uberVO=new UberVO();
+
                 email.setText(null);
                 name.setText(null);
                 lastname.setText(null);
@@ -312,18 +305,28 @@ public class Uber extends AppCompatActivity implements View.OnClickListener {
     }
 
     private void uberSaveDetail() {
+
+
+
+
         HashMap<String, Object> params = new HashMap<String, Object>();
         ConnectionVO connectionVO = UberBO.saveUberCustomerDetails();
 
+        UberVO uberVOrequest =new UberVO();
+
         CustomerVO customerVO =new CustomerVO();
         customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(Uber.this)));
-        customerVO.setName(name.getText().toString());
-        customerVO.setEmailId(email.getText().toString());
-        Gson gson =new Gson();
-        String json = gson.toJson(customerVO);
+        uberVOrequest.setCustomer(customerVO);
+        uberVOrequest.setFirstName(name.getText().toString());
+        uberVOrequest.setLastName(lastname.getText().toString());
+        uberVOrequest.setEmail(email.getText().toString());
+        uberVOrequest.setUberId(uberVO.getUberId());
+
+
+        String json = new Gson().toJson(uberVOrequest);
         params.put("volley", json);
         connectionVO.setParams(params);
-        Log.w("setBankForService",params.toString());
+        Log.w("uberSaveDetail",params.toString());
         VolleyUtils.makeJsonObjectRequest(this,connectionVO , new VolleyResponseListener() {
             @Override
             public void onError(String message) {
@@ -332,16 +335,27 @@ public class Uber extends AppCompatActivity implements View.OnClickListener {
             public void onResponse(Object resp) throws JSONException {
                 JSONObject response = (JSONObject) resp;
                 Gson gson = new Gson();
-                CustomerVO customerVO = gson.fromJson(response.toString(), CustomerVO.class);
+                UberVO uberVO = gson.fromJson(response.toString(), UberVO.class);
 
-                if(customerVO.getStatusCode().equals("400")){
-                    ArrayList error = (ArrayList) customerVO.getErrorMsgs();
+                if(uberVO.getStatusCode().equals("400")){
+                    ArrayList error = (ArrayList) uberVO.getErrorMsgs();
                     StringBuilder sb = new StringBuilder();
                     for(int i=0; i<error.size(); i++){
                         sb.append(error.get(i)).append("\n");
                     }
                     Utility.showSingleButtonDialog(Uber.this,"Alert",sb.toString(),false);
-                }else {
+                }else if(uberVO.getStatusCode().equals("e_1")){
+
+                    customerVO.setCustomerId(uberVO.getUberId());
+                    customerVO.setLoginType("Email");
+                    Intent intent=new Intent(Uber.this,Verify_Otp_By_Id.class);
+                    customerVO.setActionname(uberVO.getActionname());
+                    // customerVO.setAnonymousString(customerVO.getOtpExpiredMobile().toString());
+                    String json = gson.toJson(customerVO); // myObject - instance of MyObject
+                    intent.putExtra("resp",json);
+                    startActivityForResult(intent,100);
+
+                } else{
                     //set session customer or local cache
                     Toast.makeText(Uber.this, "sfsdfsdf", Toast.LENGTH_SHORT).show();
                 }
@@ -349,4 +363,14 @@ public class Uber extends AppCompatActivity implements View.OnClickListener {
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(resultCode==RESULT_OK){
+            if(requestCode==100){
+
+            }
+        }
+    }
 }
