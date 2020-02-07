@@ -377,10 +377,6 @@ public class Enach_Mandate extends AppCompatActivity{
     }
 
 
-
-
-
-
     public void banklist(){
 
 
@@ -397,8 +393,6 @@ public class Enach_Mandate extends AppCompatActivity{
         params.put("volley", json);
         connectionVO.setParams(params);
         Log.w("addBankForService",params.toString());
-
-
 
 
         VolleyUtils.makeJsonObjectRequest(this,connectionVO, new VolleyResponseListener() {
@@ -431,12 +425,10 @@ public class Enach_Mandate extends AppCompatActivity{
                         paths.add(object1.getString("name"));
                     }
 
-
                     ArrayAdapter<String>adapter = new ArrayAdapter<String>(Enach_Mandate.this,
                             R.layout.spinner_item,paths);
                     adapter.setDropDownViewResource(R.layout.spinner_item);
                     select_drop.setAdapter(adapter);
-
 
                     accountTypeJsonArray =new JSONArray(response.getString("accountType"));
                     ArrayList accountList=new ArrayList();
@@ -450,15 +442,12 @@ public class Enach_Mandate extends AppCompatActivity{
                     adapter.setDropDownViewResource(R.layout.spinner_item);
                     account_type.setAdapter(adapter);
 
-
                     maxamount.setText((int)(Double.parseDouble(object.getString("minMandateAmt")))+"");
                     minamt=(int)(Double.parseDouble(object.getString("minMandateAmt")));
                     errormsz=object.getString("minMandateAmtFailedMsg");
-
                 }
             }
         });
-
     }
 
     @Override
@@ -469,7 +458,6 @@ public class Enach_Mandate extends AppCompatActivity{
             if(requestCode==100){
 
                 if(data!=null && data.getStringExtra("url")!=null){
-
                     try {
                         JSONArray jsonArray =new JSONArray(data.getStringExtra("url"));
                         String name=(jsonArray.getJSONObject(2)).getString("mandate_id");
@@ -478,9 +466,7 @@ public class Enach_Mandate extends AppCompatActivity{
                     } catch (Exception e) {
                         e.printStackTrace();
                         Utility.exceptionAlertDialog(Enach_Mandate.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
-
                     }
-
                 }
             }
         }
@@ -490,7 +476,6 @@ public class Enach_Mandate extends AppCompatActivity{
 
 
         String customerId=Session.getCustomerId(Enach_Mandate.this);
-
         HashMap<String, Object> params = new HashMap<String, Object>();
         ConnectionVO connectionVO = MandateBO.setEnachMandateId();
 
