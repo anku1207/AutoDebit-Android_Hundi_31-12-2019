@@ -50,7 +50,7 @@ public class Verify_Otp_By_Id extends AppCompatActivity implements TextWatcher,V
     CountDownTimer emailtime = null;
     private EditText phone_pin_first_edittext,phone_pin_second_edittext,phone_pin_third_edittext,phone_pin_forth_edittext;
 
-    String useridtype,tokenId;
+    String useridtype;
     boolean resendotp=false;
 
     String methodname;
@@ -83,23 +83,17 @@ public class Verify_Otp_By_Id extends AppCompatActivity implements TextWatcher,V
 
         try {
             Intent intent = getIntent();
-            String object=intent.getStringExtra("resp");
-            Gson gson = new Gson();
-            CustomerVO customerVO = gson.fromJson(object, CustomerVO.class);
-            useridtype=customerVO.getLoginType();
-            userid=customerVO.getCustomerId();
-            methodname=customerVO.getActionname();
 
-            //28-11-2019
-            tokenId= Session.getSessionByKey(this,Session.CACHE_TOKENID);
-
+            useridtype=intent.getStringExtra("type");
+            userid=Integer.parseInt(intent.getStringExtra("id"));
+            methodname=intent.getStringExtra("action");
 
             if(useridtype.equals("mobile")){
-                otp_send.setText("OTP has sent on "+ Utility.maskString(customerVO.getMobileNumber(),3,7,'*'));
-                startTimer(Long.parseLong(customerVO.getAnonymousString()),"mobileotp");
+                otp_send.setText("OTP has sent on "+ Utility.maskString(intent.getStringExtra("opt_display"),3,7,'*'));
+                startTimer(Long.parseLong(intent.getStringExtra("time")),"mobileotp");
             }else if(useridtype.equals("email")){
-                otp_send.setText("OTP has sent on "+Utility.maskString(customerVO.getEmailId(),0,0,'*'));
-                startTimer(Long.parseLong(customerVO.getAnonymousString()),"emailotp");
+                otp_send.setText("OTP has sent on "+Utility.maskString(intent.getStringExtra("opt_display"),0,0,'*'));
+                startTimer(Long.parseLong(intent.getStringExtra("time")),"emailotp");
             }
         }catch (Exception e) {
             e.printStackTrace();
@@ -124,8 +118,6 @@ public class Verify_Otp_By_Id extends AppCompatActivity implements TextWatcher,V
                 finish();
             }
         });
-
-
 
         otpverifybtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -281,13 +273,13 @@ public class Verify_Otp_By_Id extends AppCompatActivity implements TextWatcher,V
             public void onResponse(Object resp) throws JSONException {
                 JSONObject response = (JSONObject) resp;
                 Gson gson = new Gson();
-                CustomerVO customerVO = gson.fromJson(response.toString(), CustomerVO.class);
+                OTPVO  otpvo= gson.fromJson(response.toString(), OTPVO.class);
 
 
-                if(customerVO.getStatusCode().equals("400")){
+                if(otpvo.getStatusCode().equals("400")){
                     //VolleyUtils.furnishErrorMsg(  "Fail" ,response, MainActivity.this);
 
-                    ArrayList error = (ArrayList) customerVO.getErrorMsgs();
+                    ArrayList error = (ArrayList) otpvo.getErrorMsgs();
                     StringBuilder sb = new StringBuilder();
                     for(int i=0; i<error.size(); i++){
                         sb.append(error.get(i)).append("\n");
@@ -296,33 +288,23 @@ public class Verify_Otp_By_Id extends AppCompatActivity implements TextWatcher,V
 
                     Utility.alertDialog(Verify_Otp_By_Id.this,"Alert",sb.toString(),"Ok");
                 }else {
-
-                    if(customerVO.getStatusCode().equals("440")){
-
+                    if(otpvo.getStatusCode().equals("440")){
                         resendotpbtn.setVisibility(View.VISIBLE);
-                        ArrayList error = (ArrayList) customerVO.getErrorMsgs();
+                        ArrayList error = (ArrayList) otpvo.getErrorMsgs();
                         StringBuilder sb = new StringBuilder();
                         for(int i=0; i<error.size(); i++){
                             sb.append(error.get(i)).append("\n");
                         }
-
-
-                        Utility.alertDialog(Verify_Otp_By_Id.this,"Alert",sb.toString(),"Ok");
-
+                       Utility.alertDialog(Verify_Otp_By_Id.this,"Alert",sb.toString(),"Ok");
                     }else {
                         Intent intent12 = new Intent();
-                        intent12.putExtra("key",customerVO.getStatus().getStatusId().toString());
-
-                        String json = gson.toJson(customerVO);
-                        intent12.putExtra("value",json);
+                        intent12.putExtra("msg",otpvo.getAnonymousString());
                         setResult(RESULT_OK,intent12);
                         finish() ;
                     }
-
                 }
             }
         });
-
     }
 
     public void resendotpfun(final String type,String value){

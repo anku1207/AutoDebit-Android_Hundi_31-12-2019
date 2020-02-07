@@ -165,7 +165,6 @@ public class Uber extends AppCompatActivity implements View.OnClickListener {
             if(uberVO.getUberId()==null){
                 showAddCardBtn();
             }
-
             ArrayList<UberVO> listforcard= (ArrayList<UberVO>) uberVO.getUberCustomerList();
             viewPager=Utility.getViewPager(Uber.this);
             viewPager.setOverScrollMode(View.OVER_SCROLL_NEVER);
@@ -197,15 +196,21 @@ public class Uber extends AppCompatActivity implements View.OnClickListener {
     public void showAddCardBtn(){
 
         LinearLayout linearLayout =findViewById(R.id.layoutmainBanner);
-        TextView textView = Utility.getTextView(Uber.this,"Add on Card");
+
+
+        TextView textView = Utility.getTextView(Uber.this,"Add On");
         textView.setPaintFlags(textView.getPaintFlags() |   Paint.UNDERLINE_TEXT_FLAG);
         textView.setTextColor(getApplication().getResources().getColorStateList(R.drawable.text_change_color_blue));
         textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 17);
+        textView.setId(1);
 
         Typeface typeface = ResourcesCompat.getFont(this, R.font.poppinssemibold);
         textView.setTypeface(typeface ,Typeface.BOLD);
-        linearLayout.addView(textView);
+        textView.setTag("sfdsf");
 
+        if(linearLayout.getChildCount()==1){
+            linearLayout.addView(textView);
+        }
         scrollView.setAnimation(null);
         scrollView.setVisibility(View.GONE);
 
@@ -230,7 +235,7 @@ public class Uber extends AppCompatActivity implements View.OnClickListener {
         TranslateAnimation animate = new TranslateAnimation(
                 0,
                 0,
-                1000,
+                500,
                 0);
         animate.setDuration(1000);
         animate.setFillAfter(true);
@@ -260,8 +265,6 @@ public class Uber extends AppCompatActivity implements View.OnClickListener {
             }
             @Override
             public void doPostExecute(List list) {
-
-
                 CustomPagerAdapter models =new CustomPagerAdapter(list,Uber.this);
                 viewPager.setAdapter(models);
                 viewPager.setPadding(0,0,0,0);
@@ -306,9 +309,6 @@ public class Uber extends AppCompatActivity implements View.OnClickListener {
 
     private void uberSaveDetail() {
 
-
-
-
         HashMap<String, Object> params = new HashMap<String, Object>();
         ConnectionVO connectionVO = UberBO.saveUberCustomerDetails();
 
@@ -344,20 +344,21 @@ public class Uber extends AppCompatActivity implements View.OnClickListener {
                         sb.append(error.get(i)).append("\n");
                     }
                     Utility.showSingleButtonDialog(Uber.this,"Alert",sb.toString(),false);
-                }else if(uberVO.getStatusCode().equals("e_1")){
+                }else if(uberVO.getStatusCode().equals("E_1")){
 
-                    customerVO.setCustomerId(uberVO.getUberId());
-                    customerVO.setLoginType("Email");
                     Intent intent=new Intent(Uber.this,Verify_Otp_By_Id.class);
-                    customerVO.setActionname(uberVO.getActionname());
-                    // customerVO.setAnonymousString(customerVO.getOtpExpiredMobile().toString());
-                    String json = gson.toJson(customerVO); // myObject - instance of MyObject
-                    intent.putExtra("resp",json);
+                    intent.putExtra("id",uberVO.getUberId().toString());
+                    intent.putExtra("type","Email");
+                    intent.putExtra("action",uberVO.getActionname());
+                    intent.putExtra("time",uberVO.getAnonymousString());
+                    intent.putExtra("otp_display",uberVO.getEmail());
                     startActivityForResult(intent,100);
 
                 } else{
                     //set session customer or local cache
-                    Toast.makeText(Uber.this, "sfsdfsdf", Toast.LENGTH_SHORT).show();
+                    addRequestDmrcCardBanner(uberVO);
+                    Utility.showSingleButtonDialog(Uber.this,"Alert",uberVO.getAnonymousString(),false);
+
                 }
             }
         });
@@ -367,10 +368,18 @@ public class Uber extends AppCompatActivity implements View.OnClickListener {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(resultCode==RESULT_OK){
-            if(requestCode==100){
+        getUberDetails(new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
+            uberVO =(UberVO)s;
+            setCustomerDetail(uberVO);
+            addRequestDmrcCardBanner(uberVO);
+        }));
 
+        if(resultCode==RESULT_OK){
+            if(requestCode==100 ){
+                Utility.showSingleButtonDialog(Uber.this,"Alert",data.getStringExtra("msg"),false);
             }
         }
+
     }
+
 }
