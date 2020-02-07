@@ -12,6 +12,7 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
@@ -170,6 +171,8 @@ public class Uber extends AppCompatActivity implements View.OnClickListener {
             viewPager.setOverScrollMode(View.OVER_SCROLL_NEVER);
             getdata(listforcard);
         }else{
+
+            CardView cardView =Utility.getCardViewStyle(Uber.this);
             ImageView imageView =Utility.getImageView(Uber.this);
             imageView.setScaleType(ImageView.ScaleType.FIT_XY);
 
@@ -185,7 +188,8 @@ public class Uber extends AppCompatActivity implements View.OnClickListener {
 
                         }
                     });
-            addcardlistlayout.addView(imageView);
+            cardView.addView(imageView);
+            addcardlistlayout.addView(cardView);
         }
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         scrollView.fullScroll(ScrollView.FOCUS_UP);
@@ -348,7 +352,7 @@ public class Uber extends AppCompatActivity implements View.OnClickListener {
 
                     Intent intent=new Intent(Uber.this,Verify_Otp_By_Id.class);
                     intent.putExtra("id",uberVO.getUberId().toString());
-                    intent.putExtra("type","Email");
+                    intent.putExtra("type","email");
                     intent.putExtra("action",uberVO.getActionname());
                     intent.putExtra("time",uberVO.getAnonymousString());
                     intent.putExtra("otp_display",uberVO.getEmail());

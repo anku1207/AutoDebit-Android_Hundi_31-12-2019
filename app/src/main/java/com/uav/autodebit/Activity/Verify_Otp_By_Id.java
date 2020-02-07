@@ -88,11 +88,12 @@ public class Verify_Otp_By_Id extends AppCompatActivity implements TextWatcher,V
             userid=Integer.parseInt(intent.getStringExtra("id"));
             methodname=intent.getStringExtra("action");
 
+
             if(useridtype.equals("mobile")){
-                otp_send.setText("OTP has sent on "+ Utility.maskString(intent.getStringExtra("opt_display"),3,7,'*'));
+                otp_send.setText("OTP has sent on  "+ Utility.maskString(intent.getStringExtra("otp_display"),3,7,'*'));
                 startTimer(Long.parseLong(intent.getStringExtra("time")),"mobileotp");
             }else if(useridtype.equals("email")){
-                otp_send.setText("OTP has sent on "+Utility.maskString(intent.getStringExtra("opt_display"),0,0,'*'));
+                otp_send.setText("OTP has sent on  "+Utility.maskString(intent.getStringExtra("otp_display"),0,0,'*'));
                 startTimer(Long.parseLong(intent.getStringExtra("time")),"emailotp");
             }
         }catch (Exception e) {
@@ -261,9 +262,10 @@ public class Verify_Otp_By_Id extends AppCompatActivity implements TextWatcher,V
         connectionVO.setParams(params);
         connectionVO.setMethodName(methodname);
         connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
-
         connectionVO.setParams(params);
 
+
+        Log.w("request",json);
 
         VolleyUtils.makeJsonObjectRequest(this,connectionVO , new VolleyResponseListener() {
             @Override

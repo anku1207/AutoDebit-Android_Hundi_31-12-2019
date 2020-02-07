@@ -28,6 +28,7 @@ import android.support.v4.graphics.BitmapCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -228,6 +229,7 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
             viewPager.setOverScrollMode(View.OVER_SCROLL_NEVER);
             getdata(listforcard);
         }else{
+            CardView cardView =Utility.getCardViewStyle(Dmrc_Card_Request.this);
             ImageView imageView =Utility.getImageView(Dmrc_Card_Request.this);
             imageView.setScaleType(ImageView.ScaleType.FIT_XY);
             Picasso.with(this)
@@ -241,7 +243,8 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
                         public void onError() {
                         }
                     });
-            addcardlistlayout.addView(imageView);
+            cardView.addView(imageView);
+            addcardlistlayout.addView(cardView);
         }
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         scrollView.fullScroll(ScrollView.FOCUS_UP);
