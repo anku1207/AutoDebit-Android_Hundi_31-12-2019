@@ -1,10 +1,12 @@
 package com.uav.autodebit.Activity;
 
+import android.annotation.TargetApi;
 import android.app.Dialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.v4.graphics.drawable.DrawableCompat;
@@ -63,12 +65,22 @@ public class Mobile_Prepaid_Recharge_Service extends AppCompatActivity implement
 
 
 
+    @TargetApi(Build.VERSION_CODES.O)
+    private void disableAutofill() {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            getWindow().getDecorView().setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO_EXCLUDE_DESCENDANTS);
+        }
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
         setContentView(R.layout.activity_mobile__prepaid__recharge__service);
+
+        //disable auto fill
+        disableAutofill();
 
         mobilenumber=findViewById(R.id.mobilenumber);
         operator=findViewById(R.id.operator);
@@ -434,7 +446,14 @@ public class Mobile_Prepaid_Recharge_Service extends AppCompatActivity implement
                         }
                         Utility.showSingleButtonDialog(Mobile_Prepaid_Recharge_Service.this,"Error !",stringBuffer.toString(),false);
                     }else {
-                        Utility.showSingleButtonDialog(Mobile_Prepaid_Recharge_Service.this,"Success !",oxigenPlanresp.getAnonymousString(),true);;
+                        Utility.showSingleButtonDialogconfirmation(Mobile_Prepaid_Recharge_Service.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(s)->{
+                            s.dismiss();
+                            startActivity(new Intent(Mobile_Prepaid_Recharge_Service.this,History.class));
+                            finish();
+                        },(ConfirmationDialogInterface.OnCancel)(c)->{
+                            c.dismiss();
+
+                        }),"Success !",oxigenPlanresp.getAnonymousString());;
                     }
 
 

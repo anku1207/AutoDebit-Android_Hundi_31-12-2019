@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.v4.content.res.ResourcesCompat;
@@ -13,6 +14,7 @@ import android.support.v7.widget.CardView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.format.Formatter;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.MotionEvent;
@@ -112,6 +114,7 @@ public class Electricity_Bill extends AppCompatActivity  implements View.OnClick
         fetchbill.setOnClickListener(this);
 
         operator.setClickable(false);
+
 
         operator.setOnTouchListener(new View.OnTouchListener() {
             @Override
