@@ -368,16 +368,12 @@ public class Electricity_Bill extends AppCompatActivity  implements View.OnClick
 
 
     private  void proceedRecharge(OxigenTransactionVO oxigenTransactionVO){
-
         if(oxigenTransactionVO==null || oxigenTransactionVOresp.getTypeId()==null){
             Utility.showSingleButtonDialogconfirmation(Electricity_Bill.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
                 ok.dismiss();
             }),"Alert","Bill fetch Id is null");
         }else {
-
             proceedBillPayment(oxigenTransactionVO.getTypeId());
-
-
         }
     }
 
