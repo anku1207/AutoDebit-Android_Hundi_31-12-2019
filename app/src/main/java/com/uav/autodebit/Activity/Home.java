@@ -779,7 +779,7 @@ public class Home extends AppCompatActivity
     }
 
     //bank list select bank for service
-    public void setBankForService( int serviceId,int customerId,int bankId){
+    public void setBankForService(int serviceId,int customerId,int bankId){
         HashMap<String, Object> params = new HashMap<String, Object>();
         ConnectionVO connectionVO = ServiceBO.setBankForService();
 
@@ -822,14 +822,9 @@ public class Home extends AppCompatActivity
         });
     }
 
-
-
-
-
     public void overrideLocalCache(CustomerVO customerVO){
         Session.set_Data_Sharedprefence(Home.this, Session.LOCAL_CACHE,customerVO.getLocalCache());
     }
-
 
     @Override
     public void onBackPressed() {

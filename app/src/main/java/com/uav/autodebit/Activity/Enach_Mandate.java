@@ -404,8 +404,8 @@ public class Enach_Mandate extends AppCompatActivity{
                 JSONObject response = (JSONObject) resp;
 
                 Log.w("responsesignup",response.toString());
-                if(response.get("status").equals("fail")){
-                    Utility.showSingleButtonDialog(Enach_Mandate.this,"Error !",response.getString("errorMsg"),true);
+                if( (response.has("status") && response.get("status").equals("fail")) || (response.has("statusCode") && response.get("statusCode").equals("400"))){
+                    Utility.showSingleButtonDialog(Enach_Mandate.this,"Error !",response.has("errorMsg") ?response.getString("errorMsg"):response.getJSONArray("errorMsgs").get(0).toString(),true);
 
                 }else {
 
@@ -536,10 +536,6 @@ public class Enach_Mandate extends AppCompatActivity{
                         finish();
                     }
                     finish();
-
-
-
-
                 }
             }
         });
