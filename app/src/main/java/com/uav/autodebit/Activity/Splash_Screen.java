@@ -17,6 +17,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.reflect.TypeToken;
@@ -79,6 +80,8 @@ public class Splash_Screen extends AppCompatActivity implements BitmapInterface 
             alert.setCancelable(false);
             alert.show();
         }else {
+
+
             FirebaseMessaging.getInstance().subscribeToTopic("global");
             FirebaseInstanceId.getInstance().getInstanceId()
                     .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {

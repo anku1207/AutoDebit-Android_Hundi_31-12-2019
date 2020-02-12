@@ -1,5 +1,6 @@
 package com.uav.autodebit.Activity;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -32,6 +33,9 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.gson.Gson;
 import com.uav.autodebit.BO.MetroBO;
 import com.uav.autodebit.BO.ServiceBO;
@@ -39,6 +43,7 @@ import com.uav.autodebit.Interface.AlertSelectDialogClick;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.Interface.ServiceClick;
 import com.uav.autodebit.R;
+;
 import com.uav.autodebit.adpater.BannerAdapter;
 import com.uav.autodebit.adpater.UitilityAdapter;
 import com.uav.autodebit.constant.ApplicationConstant;
@@ -347,10 +352,10 @@ public class Home extends AppCompatActivity
         List<ServiceTypeVO> mImgIds=new ArrayList<>();
         mImgIds=localCacheVO.getSerives();
         setHorizontalScrollView(mImgIds,R.id.id_servicegallery ,R.layout.services_gallery);
+
+
+
     }
-
-
-
 
     /*Banner slider*/
     private class SliderTimer extends TimerTask {

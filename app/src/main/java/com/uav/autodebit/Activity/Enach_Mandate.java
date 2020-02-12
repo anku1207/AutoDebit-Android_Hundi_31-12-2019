@@ -509,7 +509,6 @@ public class Enach_Mandate extends AppCompatActivity{
                 Gson gson = new Gson();
                 CustomerVO customerVO = gson.fromJson(response.toString(), CustomerVO.class);
 
-
                 Log.w("responsesignup",response.toString());
                 if(customerVO.getStatusCode().equals("400")){
                     //VolleyUtils.furnishErrorMsg(  "Fail" ,response, MainActivity.this);
