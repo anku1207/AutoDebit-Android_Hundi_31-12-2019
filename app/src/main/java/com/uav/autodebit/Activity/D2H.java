@@ -98,8 +98,12 @@ public class D2H extends AppCompatActivity implements View.OnClickListener {
 
             HashMap<String, Object> params = new HashMap<String, Object>();
             ConnectionVO connectionVO = D2HBO.getD2HPlanDetail();
+            CustomerVO customerVO =new CustomerVO();
+            customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(D2H.this)));
+
             D2HVO d2HVO=new D2HVO();
             d2HVO.setVcNo(accountnumber.getText().toString());
+            d2HVO.setCustomer(customerVO);
             params.put("volley",gson.toJson(d2HVO));
             connectionVO.setParams(params);
 

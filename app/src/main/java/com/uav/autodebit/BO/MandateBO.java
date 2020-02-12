@@ -42,7 +42,4 @@ public class MandateBO implements Serializable {
         return connectionVO;
 
     }
-
-
-
 }
