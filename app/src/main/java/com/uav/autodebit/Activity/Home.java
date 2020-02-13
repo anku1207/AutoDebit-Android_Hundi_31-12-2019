@@ -36,6 +36,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.google.gson.Gson;
 import com.uav.autodebit.BO.MetroBO;
 import com.uav.autodebit.BO.ServiceBO;
@@ -136,15 +137,11 @@ public class Home extends AppCompatActivity
         toolbar.setTitle(Utility.capitalize(customername));
         setSupportActionBar(toolbar);
 
-
-
-
         dialog=new ProgressDialog(Home.this);
         pd = new UAVProgressDialog(this);
 
         selectedService=null;
         level=null;
-
         try {
             activityhasmap=new HashMap<>();
 

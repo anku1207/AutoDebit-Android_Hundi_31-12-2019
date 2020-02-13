@@ -81,7 +81,6 @@ public class Splash_Screen extends AppCompatActivity implements BitmapInterface 
             alert.show();
         }else {
 
-
             FirebaseMessaging.getInstance().subscribeToTopic("global");
             FirebaseInstanceId.getInstance().getInstanceId()
                     .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
