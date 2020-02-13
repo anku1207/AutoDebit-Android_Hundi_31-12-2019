@@ -104,7 +104,6 @@ public class Mobile_Prepaid_Recharge_Service extends AppCompatActivity implement
         serviceid=intent.getStringExtra("serviceid");
 
 
-
         Drawable drawable = getResources().getDrawable(R.drawable.contacts);
         drawable = DrawableCompat.wrap(drawable);
         DrawableCompat.setTint(drawable, getResources().getColor(R.color.appbar));
@@ -452,16 +451,9 @@ public class Mobile_Prepaid_Recharge_Service extends AppCompatActivity implement
                             finish();
                         },(ConfirmationDialogInterface.OnCancel)(c)->{
                             c.dismiss();
-
                         }),"Success !",oxigenPlanresp.getAnonymousString());;
                     }
-
-
             }
         });
     }
-
-
-
-
 }
