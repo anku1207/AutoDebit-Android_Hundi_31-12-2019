@@ -437,7 +437,6 @@ public class Mobile_Prepaid_Recharge_Service extends AppCompatActivity implement
                     Gson gson = new Gson();
                     OxigenTransactionVO oxigenPlanresp = gson.fromJson(response.toString(), OxigenTransactionVO.class);
 
-
                     if(oxigenPlanresp.getStatusCode().equals("400")){
                         StringBuffer stringBuffer= new StringBuffer();
                         for(int i=0;i<oxigenPlanresp.getErrorMsgs().size();i++){
@@ -447,7 +446,7 @@ public class Mobile_Prepaid_Recharge_Service extends AppCompatActivity implement
                     }else {
                         Utility.showSingleButtonDialogconfirmation(Mobile_Prepaid_Recharge_Service.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(s)->{
                             s.dismiss();
-                            startActivity(new Intent(Mobile_Prepaid_Recharge_Service.this,History.class));
+                            startActivity(new Intent(Mobile_Prepaid_Recharge_Service.this,HistorySummary.class).putExtra("historyId",oxigenPlanresp.getAnonymousInteger().toString()));
                             finish();
                         },(ConfirmationDialogInterface.OnCancel)(c)->{
                             c.dismiss();

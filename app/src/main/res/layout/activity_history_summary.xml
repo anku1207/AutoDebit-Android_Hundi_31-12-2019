@@ -137,8 +137,16 @@
                   android:layout_height="50dp"
                   android:layout_gravity="right"
                   android:id="@+id/service_Icon">
-
               </ImageView>
+
+              <TextView
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:padding="10dp"
+                  android:textColor="@color/black"
+                  android:textSize="15dp"
+                  android:id="@+id/status">
+              </TextView>
           </LinearLayout>
 
       </LinearLayout>

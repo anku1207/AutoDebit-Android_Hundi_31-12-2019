@@ -37,8 +37,9 @@ import java.util.HashMap;
 
 public class HistorySummary extends AppCompatActivity implements View.OnClickListener {
     LinearLayout main,payment_detail_Layout;
-    TextView service_name,number,order_id;
+    TextView service_name,number,order_id,status;
     ImageView service_Icon,back_activity_button;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +54,8 @@ public class HistorySummary extends AppCompatActivity implements View.OnClickLis
         service_Icon=findViewById(R.id.service_Icon);
         payment_detail_Layout=findViewById(R.id.payment_detail_Layout);
         back_activity_button=findViewById(R.id.back_activity_button);
+        status=findViewById(R.id.status);
+
         back_activity_button.setOnClickListener(this);
 
         String historyId=getIntent().getStringExtra("historyId");
@@ -70,6 +73,7 @@ public class HistorySummary extends AppCompatActivity implements View.OnClickLis
                 service_name.setText(respjsonObject.getJSONObject("data").getString("serviceName"));
                 number.setText(respjsonObject.getJSONObject("data").getString("no"));
                 order_id.setText(respjsonObject.getJSONObject("data").getString("txnId"));
+                status.setText(respjsonObject.getString("status"));
 
                 JSONArray jsonArray =respjsonObject.getJSONArray("chargesarray");
 
@@ -123,9 +127,6 @@ public class HistorySummary extends AppCompatActivity implements View.OnClickLis
 
     private void getHistorySummaryById(String id, VolleyResponse volleyResponse) {
         try {
-
-
-
             HashMap<String, Object> params = new HashMap<String, Object>();
             ConnectionVO connectionVO = CustomerBO.getHistorySumarryById();
             CustomerVO request_data =new CustomerVO();
