@@ -68,7 +68,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:id="@+id/main"
-        android:visibility="gone"
+        android:visibility="visible"
         >
 
       <LinearLayout
@@ -130,20 +130,22 @@
               android:layout_width="0dp"
               android:layout_height="wrap_content"
               android:layout_weight=".3"
-              android:orientation="vertical">
+              android:orientation="vertical"
+              android:layout_gravity="right"
+              android:gravity="right">
 
               <ImageView
                   android:layout_width="50dp"
                   android:layout_height="50dp"
-                  android:layout_gravity="right"
-                  android:id="@+id/service_Icon">
+                  android:id="@+id/service_Icon"
+                  >
               </ImageView>
 
               <TextView
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
                   android:text=""
-                  android:textSize="16dp"
+                  android:textSize="12dp"
                   android:ellipsize="end"
                   android:maxLines="1"
                   android:textAlignment="textEnd"
