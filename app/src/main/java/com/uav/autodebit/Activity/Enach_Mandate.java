@@ -474,7 +474,6 @@ public class Enach_Mandate extends AppCompatActivity{
 
     private void setEnachMandateId(String id){
 
-
         String customerId=Session.getCustomerId(Enach_Mandate.this);
         HashMap<String, Object> params = new HashMap<String, Object>();
         ConnectionVO connectionVO = MandateBO.setEnachMandateId();
@@ -492,7 +491,6 @@ public class Enach_Mandate extends AppCompatActivity{
 
         Log.w("resp",json);
         params.put("volley", json);
-
 
         connectionVO.setParams(params);
 
