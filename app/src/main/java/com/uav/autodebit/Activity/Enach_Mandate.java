@@ -460,9 +460,9 @@ public class Enach_Mandate extends AppCompatActivity{
                 if(data!=null && data.getStringExtra("url")!=null){
                     try {
                         JSONArray jsonArray =new JSONArray(data.getStringExtra("url"));
-                        String name=(jsonArray.getJSONObject(2)).getString("mandate_id");
+                        String name=(jsonArray.getJSONObject(2)).getString("source_id");
                         Log.w("mandateid",jsonArray.toString());
-                        setEnachMandateId((jsonArray.getJSONObject(2)).getString("mandate_id"));
+                        setEnachMandateId((jsonArray.getJSONObject(2)).getString("source_id"));
                     } catch (Exception e) {
                         e.printStackTrace();
                         Utility.exceptionAlertDialog(Enach_Mandate.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));

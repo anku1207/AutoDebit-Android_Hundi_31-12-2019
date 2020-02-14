@@ -142,10 +142,16 @@
               <TextView
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:padding="10dp"
+                  android:text=""
+                  android:textSize="16dp"
+                  android:ellipsize="end"
+                  android:maxLines="1"
+                  android:textAlignment="textEnd"
+                  android:textStyle="bold"
+                  android:layout_marginBottom="5dp"
                   android:textColor="@color/black"
-                  android:textSize="15dp"
-                  android:id="@+id/status">
+                  android:id="@+id/status"
+                  >
               </TextView>
           </LinearLayout>
 

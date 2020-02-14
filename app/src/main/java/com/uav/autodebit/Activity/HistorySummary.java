@@ -1,5 +1,6 @@
 package com.uav.autodebit.Activity;
 
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -25,6 +26,7 @@ import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerVO;
 import com.uav.autodebit.vo.DataAdapterVO;
+import com.uav.autodebit.vo.StatusVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
 import com.uav.autodebit.volley.VolleyUtils;
 
@@ -39,6 +41,7 @@ public class HistorySummary extends AppCompatActivity implements View.OnClickLis
     LinearLayout main,payment_detail_Layout;
     TextView service_name,number,order_id,status;
     ImageView service_Icon,back_activity_button;
+    HashMap<Integer,JSONObject> colorhash;
 
 
     @Override
@@ -60,6 +63,34 @@ public class HistorySummary extends AppCompatActivity implements View.OnClickLis
 
         String historyId=getIntent().getStringExtra("historyId");
 
+        try {
+           colorhash=new HashMap<>();
+
+            JSONObject jsonObject =new JSONObject();
+            jsonObject.put("color","#ff0000");
+            jsonObject.put("name","panding");
+            colorhash.put(StatusVO.PENDING,jsonObject);
+
+            jsonObject =new JSONObject();
+            jsonObject.put("color","#00b300");
+            jsonObject.put("name","success");
+            colorhash.put(StatusVO.SUCCESSFULL,jsonObject);
+
+            jsonObject =new JSONObject();
+            jsonObject.put("color","#00b300");
+            jsonObject.put("name","");
+            colorhash.put(0,jsonObject);
+
+
+
+        }catch (Exception e){
+            e.printStackTrace();
+            Utility.exceptionAlertDialog(HistorySummary.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+
+        }
+
+
+
         getHistorySummaryById(historyId,new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
             try {
                 main.setVisibility(View.VISIBLE);
@@ -73,7 +104,10 @@ public class HistorySummary extends AppCompatActivity implements View.OnClickLis
                 service_name.setText(respjsonObject.getJSONObject("data").getString("serviceName"));
                 number.setText(respjsonObject.getJSONObject("data").getString("no"));
                 order_id.setText(respjsonObject.getJSONObject("data").getString("txnId"));
-                status.setText(respjsonObject.getString("status"));
+
+                JSONObject  jsonObject1 =colorhash.get(respjsonObject.getJSONObject("data").getInt("status"));
+                status.setText(jsonObject1.getString("name"));
+                status.setTextColor(Color.parseColor(jsonObject1.getString("color")));
 
                 JSONArray jsonArray =respjsonObject.getJSONArray("chargesarray");
 
