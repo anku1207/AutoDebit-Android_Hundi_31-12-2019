@@ -33,6 +33,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.uav.autodebit.BO.Electricity_BillBO;
+import com.uav.autodebit.BO.OxigenPlanBO;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
@@ -202,8 +203,6 @@ public class LandlineBill extends AppCompatActivity implements View.OnClickListe
                             fetchbill.setVisibility(View.GONE);
                             amount.setEnabled(true);
                         }
-
-
 
                         //Remove dynamic cards from the layout and arraylist
                         if(dynamicCardViewContainer.getChildCount()>0) dynamicCardViewContainer.removeAllViews();
@@ -393,11 +392,50 @@ public class LandlineBill extends AppCompatActivity implements View.OnClickListe
                 ok.dismiss();
             }),"Alert","Bill fetch Id is null");
         }else {
-            Toast.makeText(this, ""+oxigenTransactionVOresp.getTypeId(), Toast.LENGTH_SHORT).show();
+            proceedBillPayment(oxigenTransactionVO.getTypeId());
 
         }
     }
 
+
+    private void proceedBillPayment(int typeId) {
+
+        try {
+            HashMap<String, Object> params = new HashMap<String, Object>();
+            ConnectionVO connectionVO = OxigenPlanBO.oxiBillPayment();
+            OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
+            oxigenTransactionVO.setTypeId(typeId);
+            params.put("volley",new Gson().toJson(oxigenTransactionVO));
+            connectionVO.setParams(params);
+
+            Log.w("resop",new Gson().toJson(oxigenTransactionVO));
+            VolleyUtils.makeJsonObjectRequest(LandlineBill.this,connectionVO, new VolleyResponseListener() {
+                @Override
+                public void onError(String message) {
+                }
+                @Override
+                public void onResponse(Object resp) {
+                    JSONObject response = (JSONObject) resp;
+
+                    oxigenTransactionVOresp = new Gson().fromJson(response.toString(), OxigenTransactionVO.class);
+                    if(oxigenTransactionVOresp.getStatusCode().equals("400")){
+                        ArrayList error = (ArrayList) oxigenTransactionVOresp.getErrorMsgs();
+                        StringBuilder sb = new StringBuilder();
+                        for(int i=0; i<error.size(); i++){
+                            sb.append(error.get(i)).append("\n");
+                        }
+                        Utility.showSingleButtonDialog(LandlineBill.this,"Error !",sb.toString(),false);
+                    }else {
+                        startActivity(new Intent(LandlineBill.this,History.class));
+                        finish();
+                    }
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+            Utility.exceptionAlertDialog(LandlineBill.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+        }
+    }
 
     private void proceedFetchBill(OxigenTransactionVO oxigenTransactionVO) throws Exception{
 
