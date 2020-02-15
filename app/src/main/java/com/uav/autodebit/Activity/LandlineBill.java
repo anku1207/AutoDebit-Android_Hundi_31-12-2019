@@ -254,20 +254,11 @@ public class LandlineBill extends AppCompatActivity implements View.OnClickListe
             case R.id.proceed:
 
                 try {
-
                     Utility.hideKeyboard(LandlineBill.this);
 
-
                     valid=true;
-
                     JSONObject dataarray=getQuestionLabelDate(true);
                     if(!valid)return;
-
-                    JSONObject jsonObject =new JSONObject();
-                    jsonObject.put("operatorcode",operatorcode);
-                    jsonObject.put("amount",amount.getText().toString());
-                    jsonObject.put("questionLabelDate",dataarray.toString());
-
                     proceedRecharge(oxigenTransactionVOresp);
 
                 }catch (Exception e){
