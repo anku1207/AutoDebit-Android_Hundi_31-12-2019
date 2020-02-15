@@ -23,6 +23,7 @@ public class LocalCacheVO implements Serializable {
     private String uitiyServiceHomePage;
     private String dmrc;
 
+
     private String eNachReturnURL;
     public LocalCacheVO(){
 

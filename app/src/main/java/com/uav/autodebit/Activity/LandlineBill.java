@@ -160,6 +160,7 @@ public class LandlineBill extends AppCompatActivity implements View.OnClickListe
                 dataAdapterVO.setQuestionsData(object.getString("questionsData"));
                 dataAdapterVO.setImageUrl(object.has("imageUrl") ?object.getString("imageUrl"):null);
                 dataAdapterVO.setAssociatedValue(object.getString("service"));
+                dataAdapterVO.setIsbillFetch(object.getString("isbillFetch"));
                 datalist.add(dataAdapterVO);
             }
         } catch (JSONException e) {
@@ -191,6 +192,18 @@ public class LandlineBill extends AppCompatActivity implements View.OnClickListe
 
                         operator.setError(null);
                         amount.setError(null);
+
+
+                        //add fetch bill btn
+                        if (dataAdapterVO.getIsbillFetch().equals("1")) {
+                            fetchbill.setVisibility(View.VISIBLE);
+                            amount.setEnabled(false);
+                        } else {
+                            fetchbill.setVisibility(View.GONE);
+                            amount.setEnabled(true);
+                        }
+
+
 
                         //Remove dynamic cards from the layout and arraylist
                         if(dynamicCardViewContainer.getChildCount()>0) dynamicCardViewContainer.removeAllViews();

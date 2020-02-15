@@ -3,15 +3,18 @@ package com.uav.autodebit.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
@@ -26,19 +29,25 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.uav.autodebit.BO.Electricity_BillBO;
 import com.uav.autodebit.BO.OxigenPlanBO;
+import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.override.DrawableClickListener;
 import com.uav.autodebit.override.UAVEditText;
+import com.uav.autodebit.override.UAVProgressDialog;
 import com.uav.autodebit.permission.PermissionHandler;
 import com.uav.autodebit.permission.Session;
+import com.uav.autodebit.util.BackgroundAsyncService;
+import com.uav.autodebit.util.BackgroundServiceInterface;
 import com.uav.autodebit.util.CustomTextWatcherLengthAction;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerVO;
 import com.uav.autodebit.vo.DataAdapterVO;
 import com.uav.autodebit.vo.OxigenPlanVO;
+import com.uav.autodebit.vo.OxigenQuestionsVO;
 import com.uav.autodebit.vo.OxigenTransactionVO;
 import com.uav.autodebit.vo.ServiceTypeVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
@@ -50,375 +59,464 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickListener {
 
-    UAVEditText mobilenumber;
-    EditText operator,amount;
+
+    EditText amount,operator;
     ImageView back_activity_button;
-    String operatorcode,regioncode,operatorname,regionname=null;
-    TextView browseplan;
-
+    String operatorcode,operatorname=null;
     Button proceed;
+    TextView fetchbill;
+    CardView amountlayout;
 
-    String serviceid;
+    LinearLayout dynamicCardViewContainer , fetchbilllayout;
+
+    List<OxigenQuestionsVO> questionsVOS= new ArrayList<OxigenQuestionsVO>();
+    CardView fetchbillcard;
+
+    boolean valid=true;
+    String operatorListDate;
+    UAVProgressDialog pd;
+    OxigenTransactionVO oxigenTransactionVOresp;
+    Gson gson;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mobile__postpaid);
         getSupportActionBar().hide();
+        operatorListDate=null;
+        pd=new UAVProgressDialog(this);
 
-        mobilenumber=findViewById(R.id.mobilenumber);
-        operator=findViewById(R.id.operator);
         amount=findViewById(R.id.amount);
-        proceed=findViewById(R.id.proceed);
-        browseplan=findViewById(R.id.browseplan);
-
-
-        browseplan.setVisibility(View.GONE);
         back_activity_button=findViewById(R.id.back_activity_button1);
-        back_activity_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+
+        amount.setEnabled(false);
+
+        proceed=findViewById(R.id.proceed);
+        fetchbill=findViewById(R.id.fetchbill);
+        amountlayout=findViewById(R.id.amountlayout);
+        operator=findViewById(R.id.operator);
+        dynamicCardViewContainer =findViewById(R.id.dynamiccards);
+        fetchbilllayout=findViewById(R.id.fetchbilllayout);
+        fetchbillcard =findViewById(R.id.fetchbillcard);
+
+        oxigenTransactionVOresp=new OxigenTransactionVO();
+        gson =new Gson();
+
+        amountlayout.setVisibility(View.GONE);
+
+        back_activity_button.setOnClickListener(this);
         proceed.setOnClickListener(this);
-        browseplan.setOnClickListener(this);
+        fetchbill.setOnClickListener(this);
+
         operator.setClickable(false);
 
-        Intent intent =getIntent();
-        serviceid=intent.getStringExtra("serviceid");
-
-
-
-        Drawable drawable = getResources().getDrawable(R.drawable.contacts);
-        drawable = DrawableCompat.wrap(drawable);
-        DrawableCompat.setTint(drawable, getResources().getColor(R.color.appbar));
-
-        mobilenumber.setCompoundDrawablesWithIntrinsicBounds(R.drawable.mobile,0 , R.drawable.contacts, 0);
-        mobilenumber.setDrawableClickListener(new DrawableClickListener() {
-            @Override
-            public void onClick(DrawablePosition target) {
-                switch (target) {
-                    case RIGHT:
-                        if(mobilenumber.getError() == null){
-
-                            if(PermissionHandler.contactpermission(Mobile_Postpaid.this)){
-                                Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-                                startActivityForResult(intent, 101);
-                            }
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            }
-        });
-
-        amount.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-                if(!operator.getText().toString().equals("")){
-                    if(operator.getError()==null){
-                        browseplan.setVisibility(View.GONE);
-                    }else {
-                        browseplan.setVisibility(View.GONE);
-                    }
-                }
-
-            }
-        });
-
-
-
-        mobilenumber.addTextChangedListener(new CustomTextWatcherLengthAction(mobilenumber,10,operator,"touch"));
 
         operator.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if(MotionEvent.ACTION_UP == motionEvent.getAction()) {
-                    //startActivity(new Intent(Mobile_Postpaid.this,Listview_With_Image.class));
+                    operator.setEnabled(false);
+                    //startActivity(new Intent(Mobile_Prepaid_Recharge_Service.this,Listview_With_Image.class));
+                    BackgroundAsyncService backgroundAsyncService = new BackgroundAsyncService(pd,true, new BackgroundServiceInterface() {
+                        @Override
+                        public void doInBackGround() {
+                            operatorListDate = gson.toJson(getDataList());
+                        }
+                        @Override
+                        public void doPostExecute() {
+                            Intent intent =new Intent(Mobile_Postpaid.this, Listview_With_Image.class);
+                            intent.putExtra("datalist", operatorListDate);
+                            intent.putExtra("title","Operator");
+                            startActivityForResult(intent,100);
 
-                    Intent intent =new Intent(Mobile_Postpaid.this, Listview_With_Image.class);
 
-                    Gson gson = new Gson();
-
-                    String data = gson.toJson(getDataList());
-                    intent.putExtra("datalist", data);
-                    intent.putExtra("title","Mobile Operator");
-                    startActivityForResult(intent,100);
+                        }
+                    });
+                    backgroundAsyncService.execute();
                 }
                 return false;
             }
         });
-
     }
 
     public ArrayList<DataAdapterVO> getDataList(){
         ArrayList<DataAdapterVO> datalist = new ArrayList<>();
-        String operator= Session.getSessionByKey(Mobile_Postpaid.this,Session.MOBILE_OPERATOR_LIST);
+        String operator= Session.getSessionByKey(Mobile_Postpaid.this,Session.CACHE_POSTPAID_OPERATOR);
         try {
-            JSONObject objectoperator =new JSONObject(operator);
-            JSONArray jsonArray=objectoperator.getJSONArray("dataList");
+            JSONArray jsonArray =new JSONArray(operator);
+
+            Log.w("dataoperator",jsonArray.toString());
             for(int i=0;i<jsonArray.length();i++){
                 DataAdapterVO dataAdapterVO = new DataAdapterVO();
                 JSONObject object =jsonArray.getJSONObject(i);
-                dataAdapterVO.setText(object.getString("OperatorName"));
-                dataAdapterVO.setImagename(object.getString("OperatorAlias").toLowerCase());
-                dataAdapterVO.setAssociatedValue(object.getString("OperatorAlias"));
+                dataAdapterVO.setText(object.getString("name"));
+                dataAdapterVO.setQuestionsData(object.getString("questionsData"));
+                dataAdapterVO.setImageUrl(object.has("imageUrl") ?object.getString("imageUrl"):null);
+                dataAdapterVO.setAssociatedValue(object.getString("service"));
+                dataAdapterVO.setIsbillFetch(object.getString("isbillFetch"));
                 datalist.add(dataAdapterVO);
             }
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
         return  datalist;
     }
 
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(resultCode==RESULT_OK){
-            switch (requestCode) {
-                case 100:
-                    operatorname =data.getStringExtra("operatorname");
-                    operatorcode=data.getStringExtra("operator");
+        try{
+            operator.setEnabled(true);
 
-                    ConnectionVO connectionVO = new ConnectionVO();
-                    connectionVO.setTitle("Select State");
-                    connectionVO.setSharedPreferenceKey(Session.MOBILE_STATE_LIST);
-                    connectionVO.setEntityIdKey("RegionAlias");
-                    connectionVO.setEntityTextKey("RegionName");
-                    Intent intent = new Intent(getApplicationContext(),ListViewSingleText.class);
-                    intent.putExtra(ApplicationConstant.INTENT_EXTRA_CONNECTION,  connectionVO);
-                    startActivityForResult(intent,1000);
+            if(resultCode==RESULT_OK){
+                switch (requestCode) {
+                    case 100:
 
-                    break;
-                case 1000 :
-                    amount.requestFocus();
-                    browseplan.setVisibility(View.GONE);
-                    regionname=data.getStringExtra("valueName");
-                    regioncode=data.getStringExtra("valueId");
-                    operator.setText(operatorcode+"-"+data.getStringExtra("valueName"));
-                    operator.setError(null);
-                    amount.setError(null);
-                    if (!mobilenumber.getText().toString().equals("") &&  Utility.validatePattern(mobilenumber.getText().toString().trim(),ApplicationConstant.MOBILENO_VALIDATION)!=null){
-                        mobilenumber.setError(Utility.validatePattern(mobilenumber.getText().toString().trim(),ApplicationConstant.MOBILENO_VALIDATION));
-                    }
-                    break;
-                case 101:
-                    Uri contactData = data.getData();
-                    Cursor c = getContentResolver().query(contactData, null, null, null, null);
-                    if (c.moveToFirst()) {
-                        String contactId = c.getString(c.getColumnIndex(ContactsContract.Contacts._ID));
-                        String hasNumber = c.getString(c.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
-                        String num = "";
-                        if (Integer.valueOf(hasNumber) == 1) {
-                            Cursor numbers = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + contactId, null, null);
-                            while (numbers.moveToNext()) {
-                                num = numbers.getString(numbers.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)).replaceAll("\\s+","");
-                            }
-                            if (num.length()>10) {
+                        operatorname =data.getStringExtra("operatorname");
+                        operatorcode=data.getStringExtra("operator");
 
-                                num=num.substring(num.length() - 10);
-                            }
-                            mobilenumber.setText(num);
+                        amountlayout.setVisibility(View.VISIBLE);
+
+
+                        DataAdapterVO dataAdapterVO = (DataAdapterVO) data.getSerializableExtra("datavo");
+
+                        operator.setError(null);
+                        amount.setError(null);
+
+                        operator.setText(operatorname);
+                        operator.setTag(operatorcode);
+
+
+                        //add fetch bill btn
+                        if (dataAdapterVO.getIsbillFetch().equals("1")) {
+                            fetchbill.setVisibility(View.VISIBLE);
+                            amount.setEnabled(false);
+                        } else {
+                            fetchbill.setVisibility(View.GONE);
+                            amount.setEnabled(true);
                         }
-                    }
-                    break;
-                case 102:
-                    amount.setText(data.getStringExtra("amount"));
-                    amount.setSelection(amount.getText().length());
-                    break;
 
+
+                        //Remove dynamic cards from the layout and arraylist
+                        if(dynamicCardViewContainer.getChildCount()>0) dynamicCardViewContainer.removeAllViews();
+                        removefetchbilllayout();
+
+                        questionsVOS.clear();
+
+                        //Create dynamic cards of edit text
+                        if(dataAdapterVO.getQuestionsData() !=null){
+                            JSONArray jsonArray = new JSONArray(dataAdapterVO.getQuestionsData());
+                            for(int i=0; i<jsonArray.length(); i++){
+                                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                OxigenQuestionsVO oxigenQuestionsVO = gson.fromJson(jsonObject.toString(), OxigenQuestionsVO.class);
+
+                                CardView cardView = Utility.getCardViewStyle(this);
+                                //EditText et = new EditText(new ContextThemeWrapper(this,R.style.edittext));
+
+                                EditText et = Utility.getEditText(Mobile_Postpaid.this);
+                                et.setId(View.generateViewId());
+                                et.setHint(oxigenQuestionsVO.getQuestionLabel());
+
+                                changeEdittextValue(et);
+
+
+                                cardView.addView(et);
+                                dynamicCardViewContainer.addView(cardView);
+                                if(oxigenQuestionsVO.getInstructions()!=null){
+                                    TextView tv = Utility.getTextView(this, oxigenQuestionsVO.getInstructions());
+                                    dynamicCardViewContainer.addView(tv);
+                                }
+                                oxigenQuestionsVO.setElementId(et.getId());
+                                questionsVOS.add(oxigenQuestionsVO);
+                            }
+                            EditText editText =(EditText) findViewById(questionsVOS.get(0).getElementId());
+                            editText.requestFocus();
+                        }
+                        break;
+                }
             }
+        }catch (Exception e){
+            e.printStackTrace();
+            Utility.exceptionAlertDialog(Mobile_Postpaid.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
     }
+
     @Override
     public void onClick(View view) {
-
         switch (view.getId()){
-            case R.id.proceed :
-                rechargeProceed();
+            case R.id.back_activity_button1:
+                finish();
                 break;
-            case R.id.browseplan :
+            case R.id.proceed:
 
-                HashMap<String, Object> params = new HashMap<String, Object>();
+                try {
+                    Utility.hideKeyboard(Mobile_Postpaid.this);
 
-                ConnectionVO connectionVO = OxigenPlanBO.getPlan();
+                    valid=true;
 
+                    JSONObject dataarray=getQuestionLabelDate(true);
+                    if(!valid)return;
 
-                OxigenPlanVO oxigenPlanVO =new OxigenPlanVO();
-                ServiceTypeVO serviceTypeVO =new ServiceTypeVO();
-                serviceTypeVO.setServiceTypeId(Integer.parseInt(serviceid));
-                oxigenPlanVO.setServiceType(serviceTypeVO);
-                oxigenPlanVO.setOperatorAlias(operatorcode);
-                oxigenPlanVO.setStateAlias(regioncode);
-                Gson gson=new Gson();
-                String json = gson.toJson(oxigenPlanVO);
-                params.put("volley", json);
+                        /*JSONObject jsonObject =new JSONObject();
+                        jsonObject.put("operatorcode",operatorcode);
+                        jsonObject.put("amount",amount.getText().toString());
+                        jsonObject.put("questionLabelDate",dataarray.toString());*/
+                    proceedRecharge(oxigenTransactionVOresp);
 
-                connectionVO.setParams(params);
+                }catch (Exception e){
+                    e.printStackTrace();
+                    Utility.exceptionAlertDialog(Mobile_Postpaid.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
 
-                VolleyUtils.makeJsonObjectRequest(this, connectionVO, new VolleyResponseListener() {
-                    @Override
-                    public void onError(String message) {
-                    }
-                    @Override
-                    public void onResponse(Object resp) throws JSONException {
-                        JSONObject response = (JSONObject) resp;
-                        Gson gson = new Gson();
-                        OxigenPlanVO oxigenPlanVO = gson.fromJson(response.toString(), OxigenPlanVO.class);
+                }
 
 
-                        if(oxigenPlanVO.getStatusCode().equals("400")){
+                break;
+            case R.id.fetchbill:
+                try {
+                    Utility.hideKeyboard(Mobile_Postpaid.this);
 
-                            StringBuffer stringBuffer= new StringBuffer();
+                    valid=true;
+                    JSONObject dataarray=getQuestionLabelDate(false);
+                    if(!valid)return;
+                    JSONObject jsonObject =new JSONObject();
 
-                            for(int i=0;i<oxigenPlanVO.getErrorMsgs().size();i++){
-                                stringBuffer.append(oxigenPlanVO.getErrorMsgs().get(i));
-                            }
-                            Utility.showSingleButtonDialog(Mobile_Postpaid.this,"Error !",stringBuffer.toString(),false);
-                        }else {
-                            String json = gson.toJson(oxigenPlanVO);
-                            Session.set_Data_Sharedprefence(Mobile_Postpaid.this,Session.CACHE_BROWSE_DATA,json);
+                    CustomerVO customerVO =new CustomerVO();
+                    customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(Mobile_Postpaid.this)));
 
-                            startActivityForResult(new Intent(Mobile_Postpaid.this,Browse_Plan.class),102);
+                    ServiceTypeVO serviceTypeVO =new ServiceTypeVO();
+                    serviceTypeVO.setServiceTypeId(ApplicationConstant.Electricity);
 
-                        }
-                    }
-                });
+                    OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
+                    oxigenTransactionVO.setOperateName(operatorcode);
+                    oxigenTransactionVO.setCustomer(customerVO);
+                    oxigenTransactionVO.setServiceType(serviceTypeVO);
+                    oxigenTransactionVO.setAnonymousString(dataarray.toString());
 
+                    proceedFetchBill(oxigenTransactionVO);
+                }catch (Exception e){
+                    e.printStackTrace();
+                    Utility.exceptionAlertDialog(Mobile_Postpaid.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+                }
                 break;
         }
-
     }
 
+    private JSONObject getQuestionLabelDate(boolean fetchBill) throws Exception{
+        amount.setError(null);
+        operator.setError(null);
 
-    public void rechargeProceed(){
-        boolean valid=true;
-
-        if(mobilenumber.getText().toString().equals("")){
-            mobilenumber.setError("this filed is required");
-            valid=false;
-        }else if (!mobilenumber.getText().toString().equals("") &&  Utility.validatePattern(mobilenumber.getText().toString().trim(),ApplicationConstant.MOBILENO_VALIDATION)!=null){
-            mobilenumber.setError(Utility.validatePattern(mobilenumber.getText().toString().trim(),ApplicationConstant.MOBILENO_VALIDATION));
-            valid=false;
+        if(fetchBill){
+            if(amount.getText().toString().equals("")){
+                amount.setError("this filed is required");
+                valid=false;
+            }
         }
 
         if(operator.getText().toString().equals("")){
             operator.setError("this filed is required");
             valid=false;
         }
-        if(amount.getText().toString().equals("")){
-            amount.setError("this filed is required");
-            browseplan.setVisibility(View.GONE);
-            valid=false;
+
+        JSONObject jsonObject =new JSONObject();
+
+        for(OxigenQuestionsVO oxigenQuestionsVO:questionsVOS){
+
+            EditText editText =(EditText) findViewById(oxigenQuestionsVO.getElementId());
+            editText.clearFocus();
+
+            editText.setError(null);
+            if(editText.getText().toString().equals("")){
+
+                editText.setError(  Utility.getErrorSpannableStringDynamicEditText(this, "this field is required"));
+                valid=false;
+            }else if(oxigenQuestionsVO.getMinLength()!=null && (editText.getText().toString().length() < Integer.parseInt(oxigenQuestionsVO.getMinLength()))){
+                editText.setError(oxigenQuestionsVO.getMinLength());
+                valid=false;
+            }else if(oxigenQuestionsVO.getMaxLength()!=null && (editText.getText().toString().length() > Integer.parseInt(oxigenQuestionsVO.getMaxLength()))){
+                editText.setError(oxigenQuestionsVO.getMaxLength());
+                valid=false;
+            }
+
+            jsonObject.put(oxigenQuestionsVO.getQuestionLabel(),editText.getText().toString());
+            //oxigenQuestionsVO.getJsonKey();
+            //editText.getText().toString();
+
         }
+        return jsonObject;
+    }
 
-        if(valid){
+
+
+    public void removefetchbilllayout(){
+
+        oxigenTransactionVOresp=new OxigenTransactionVO();
+
+        if(fetchbilllayout.getChildCount()>0) {
+            fetchbilllayout.removeAllViews();
+            amount.setText("");
+            fetchbill.setVisibility(View.VISIBLE);
+            fetchbillcard.setVisibility(View.GONE);
+        }
+    }
+
+    public void changeEdittextValue(EditText editText){
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                removefetchbilllayout();
+            }
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                Log.w("onTextChanged",charSequence.toString());
+            }
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+
+    }
+
+
+    private  void proceedRecharge(OxigenTransactionVO oxigenTransactionVO){
+        if(oxigenTransactionVO==null || oxigenTransactionVOresp.getTypeId()==null){
+            Utility.showSingleButtonDialogconfirmation(Mobile_Postpaid.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                ok.dismiss();
+            }),"Alert","Bill fetch Id is null");
+        }else {
+            proceedBillPayment(oxigenTransactionVO.getTypeId());
+        }
+    }
+
+    private void proceedBillPayment(int typeId) {
+
+        try {
             HashMap<String, Object> params = new HashMap<String, Object>();
-
-            ConnectionVO connectionVO =OxigenPlanBO.oxiMobileRecharge();
-
+            ConnectionVO connectionVO = OxigenPlanBO.oxiBillPayment();
             OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
-            oxigenTransactionVO.setReferenceName("mobile");
-            oxigenTransactionVO.setReferenceValue(mobilenumber.getText().toString().trim());
-            oxigenTransactionVO.setAmount(Double.parseDouble(amount.getText().toString().trim()));
-            oxigenTransactionVO.setStateRegion(regionname);
-            oxigenTransactionVO.setOperateName(operatorname);
-
-
-
-
-            CustomerVO customerVO =new CustomerVO();
-            customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(Mobile_Postpaid.this)));
-            oxigenTransactionVO.setCustomer(customerVO);
-
-            ServiceTypeVO serviceTypeVO =new ServiceTypeVO();
-            serviceTypeVO.setServiceTypeId(Integer.parseInt(serviceid));
-            oxigenTransactionVO.setServiceType(serviceTypeVO);
-
-
-            Gson gson=new Gson();
-            String json = gson.toJson(oxigenTransactionVO);
-
-            Log.w("request",json);
-            params.put("volley", json);
+            oxigenTransactionVO.setTypeId(typeId);
+            params.put("volley",gson.toJson(oxigenTransactionVO));
             connectionVO.setParams(params);
 
+            VolleyUtils.makeJsonObjectRequest(Mobile_Postpaid.this,connectionVO, new VolleyResponseListener() {
+                @Override
+                public void onError(String message) {
+                }
+                @Override
+                public void onResponse(Object resp) {
+                    JSONObject response = (JSONObject) resp;
+
+                    oxigenTransactionVOresp = gson.fromJson(response.toString(), OxigenTransactionVO.class);
+
+                    if(oxigenTransactionVOresp.getStatusCode().equals("400")){
+                        ArrayList error = (ArrayList) oxigenTransactionVOresp.getErrorMsgs();
+                        StringBuilder sb = new StringBuilder();
+                        for(int i=0; i<error.size(); i++){
+                            sb.append(error.get(i)).append("\n");
+                        }
+                        Utility.showSingleButtonDialog(Mobile_Postpaid.this,"Error !",sb.toString(),false);
+                    }else {
+
+                        startActivity(new Intent(Mobile_Postpaid.this,History.class));
+                        finish();
+
+                    }
+                }
+
+            });
+
+        }catch (Exception e){
+            e.printStackTrace();
+            Utility.exceptionAlertDialog(Mobile_Postpaid.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+
+        }
+    }
 
 
-/*
+    private void proceedFetchBill(OxigenTransactionVO oxigenTransactionVO) throws Exception{
 
-            VolleyUtils.makeJsonObjectRequest(this, connectionVO, new VolleyResponseListener() {
+        try {
+
+
+            HashMap<String, Object> params = new HashMap<String, Object>();
+            ConnectionVO connectionVO = Electricity_BillBO.oxiFetchBill();
+
+            params.put("volley",gson.toJson(oxigenTransactionVO));
+
+            Log.w("proceedFetchBill",gson.toJson(oxigenTransactionVO));
+            connectionVO.setParams(params);
+
+            VolleyUtils.makeJsonObjectRequest(Mobile_Postpaid.this,connectionVO, new VolleyResponseListener() {
                 @Override
                 public void onError(String message) {
                 }
                 @Override
                 public void onResponse(Object resp) throws JSONException {
                     JSONObject response = (JSONObject) resp;
-                    Gson gson = new Gson();
-                    OxigenTransactionVO oxigenPlanresp = gson.fromJson(response.toString(), OxigenTransactionVO.class);
 
+                    Log.w("respele",response.toString());
 
-                    if(oxigenPlanresp.getStatusCode().equals("400")){
-                        StringBuffer stringBuffer= new StringBuffer();
-                        for(int i=0;i<oxigenPlanresp.getErrorMsgs().size();i++){
-                            stringBuffer.append(oxigenPlanresp.getErrorMsgs().get(i));
+                    oxigenTransactionVOresp = gson.fromJson(response.toString(), OxigenTransactionVO.class);
+
+                    if(oxigenTransactionVOresp.getStatusCode().equals("400")){
+                        ArrayList error = (ArrayList) oxigenTransactionVOresp.getErrorMsgs();
+                        StringBuilder sb = new StringBuilder();
+                        for(int i=0; i<error.size(); i++){
+                            sb.append(error.get(i)).append("\n");
                         }
-                        Utility.showSingleButtonDialog(Mobile_Postpaid.this,"Error !",stringBuffer.toString(),false);
+                        fetchbill.setVisibility(View.VISIBLE);
+                        Utility.showSingleButtonDialog(Mobile_Postpaid.this,"Error !",sb.toString(),false);
+                    }else if(oxigenTransactionVOresp.getStatusCode().equals("01")){
+                        fetchbill.setVisibility(View.VISIBLE);
+                        Utility.showSingleButtonDialogconfirmation(Mobile_Postpaid.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                            ok.dismiss();
+                        }),"Alert",oxigenTransactionVOresp.getAnonymousString());
                     }else {
-                        Utility.showSingleButtonDialog(Mobile_Postpaid.this,"Success !",oxigenPlanresp.getAnonymousString(),true);;
+                        fetchbill.setVisibility(View.GONE);
+                        amount.setText(oxigenTransactionVOresp.getAmount()+"");
 
+                        JSONArray dataArry =new JSONArray(oxigenTransactionVOresp.getAnonymousString());
+
+                        Typeface typeface = ResourcesCompat.getFont(Mobile_Postpaid.this, R.font.poppinssemibold);
+                        for(int i=0 ;i<dataArry.length();i++){
+                            JSONObject jsonObject =dataArry.getJSONObject(i);
+
+                            LinearLayout et = new LinearLayout(new ContextThemeWrapper(Mobile_Postpaid.this,R.style.confirmation_dialog_layout));
+
+                            et.setPadding(Utility.getPixelsFromDPs(Mobile_Postpaid.this,10),Utility.getPixelsFromDPs(Mobile_Postpaid.this,10),Utility.getPixelsFromDPs(Mobile_Postpaid.this,10),Utility.getPixelsFromDPs(Mobile_Postpaid.this,10));
+
+                            TextView text = new TextView(new ContextThemeWrapper(Mobile_Postpaid.this, R.style.confirmation_dialog_filed));
+                            text.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float) 1));
+                            text.setText(jsonObject.getString("key"));
+                            text.setMaxLines(1);
+                            text.setEllipsize(TextUtils.TruncateAt.END);
+                            text.setTypeface(typeface);
+                            text.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+
+                            TextView value = new TextView(new ContextThemeWrapper(Mobile_Postpaid.this, R.style.confirmation_dialog_value));
+                            value.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,1));
+                            value.setText(jsonObject.getString("value"));
+                            value.setTypeface(typeface);
+                            value.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+                            et.addView(text);
+                            et.addView(value);
+                            fetchbilllayout.addView(et);
+                        }
+                        fetchbillcard.setVisibility(View.VISIBLE);
                     }
                 }
+
             });
-*/
-
-
-
+        } catch (Exception e) {
+            e.printStackTrace();
+            Utility.exceptionAlertDialog(Mobile_Postpaid.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
     }
-/*
-
-    public void Add_Line() {
-      LinearLayout linearLayout =findViewById(R.id.dynamiccards);
-        // add edittext
-        CardView cardView = Utility.getCardViewStyle(this);
-
-
-        EditText et = new EditText(new ContextThemeWrapper(Mobile_Postpaid.this,R.style.edittext));
-        et.setHint("mobile");
-        et.setTag("t1");
-        et.getId();
-
-        cardView.addView(et);
-        linearLayout.addView(cardView);
-
-        linearLayout.removeView(cardView);
-
-    }
-*/
-
-
-
-
-
 }

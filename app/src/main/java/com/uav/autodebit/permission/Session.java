@@ -30,6 +30,7 @@ public class Session {
     public final static String CACHE_WATER_OPERATOR = "WATER_OPERATOR";
     public final static String CACHE_GAS_OPERATOR = "GAS_OPERATOR";
     public final static String CACHE_ELECTRICITY_OPERATOR = "ELECTRICITY_OPERATOR";
+    public final static String CACHE_POSTPAID_OPERATOR = "POSTPAIDOPEATOR";
 
     public final static String CACHE_IS_NEW_USER = "IS_NEW_USER";
     public final static String CACHE_USER_LOGINID = "USERLOGINID";

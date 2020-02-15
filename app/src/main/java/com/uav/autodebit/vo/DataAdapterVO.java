@@ -50,6 +50,8 @@ public class DataAdapterVO  implements Serializable {
     private String serviceCharge;
     private Integer custmerPassBookId;
 
+    private String isbillFetch;
+
 
     public DataAdapterVO(){
 
@@ -324,5 +326,13 @@ public class DataAdapterVO  implements Serializable {
 
     public void setCustmerPassBookId(Integer custmerPassBookId) {
         this.custmerPassBookId = custmerPassBookId;
+    }
+
+    public String getIsbillFetch() {
+        return isbillFetch;
+    }
+
+    public void setIsbillFetch(String isbillFetch) {
+        this.isbillFetch = isbillFetch;
     }
 }
