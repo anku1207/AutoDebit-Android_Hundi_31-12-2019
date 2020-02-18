@@ -72,6 +72,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -91,6 +92,7 @@ import com.uav.autodebit.R;
 import com.uav.autodebit.adpater.ListViewAlertSelectListBaseAdapter;
 import com.uav.autodebit.adpater.ListViewItemCheckboxBaseAdapter;
 import com.uav.autodebit.constant.ApplicationConstant;
+import com.uav.autodebit.override.UAVEditText;
 import com.uav.autodebit.vo.CustomerAuthServiceVO;
 import com.uav.autodebit.volley.VolleyUtils;
 
@@ -700,6 +702,36 @@ public class Utility {
         return ed;
     }
 
+    public static UAVEditText getUavEditText(Context context){
+        Typeface typeface = ResourcesCompat.getFont(context, R.font.poppinsmedium);
+        UAVEditText ed = new UAVEditText(context,null);
+        LinearLayout.LayoutParams layoutparams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        int marginInDp = (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP, 10, context.getResources()
+                        .getDisplayMetrics());
+
+        layoutparams.setMargins(marginInDp,0,0,0);
+
+        ed.setLayoutParams(layoutparams);
+        ed.setSingleLine(true);
+        ed.setTypeface(typeface, Typeface.BOLD);
+        ed.setInputType(InputType.TYPE_CLASS_NUMBER);
+        ed.setKeyListener(DigitsKeyListener.getInstance(context.getString(R.string.NumberDigits)));
+        ed.setCompoundDrawablePadding(4);
+        ed.setMaxLines(1);
+        ed.setTextSize(12);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ed.setBackgroundTintList(context.getResources().getColorStateList(R.color.white));
+        }
+        ed.setCompoundDrawablesWithIntrinsicBounds(context.getResources().getDrawable(R.drawable.pencil),null,null,null);
+
+        return ed;
+    }
+
+
 
     public static RecyclerView getRecyclerView(Context context){
         RecyclerView recyclerView =new RecyclerView(context);
@@ -1260,6 +1292,13 @@ public class Utility {
         }
         return null;
     }
+/*
+    public void RelativeLayoutPro(EditText editText){
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)editText.getLayoutParams();
+        params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        params.addRule(RelativeLayout.LEFT_OF, R.id.amount);
+        params.addRule(RelativeLayout.ALIGN_BOTTOM, RelativeLayout.TRUE);
+    }*/
 
 
 

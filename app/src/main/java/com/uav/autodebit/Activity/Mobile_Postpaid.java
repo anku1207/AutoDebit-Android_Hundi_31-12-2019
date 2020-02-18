@@ -27,6 +27,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -84,6 +85,8 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
     OxigenTransactionVO oxigenTransactionVOresp;
     Gson gson;
 
+    HashMap<String,Object> eleMap;
+
 
 
     @TargetApi(Build.VERSION_CODES.O)
@@ -110,6 +113,7 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
 
         amount.setEnabled(false);
 
+
         proceed=findViewById(R.id.proceed);
         fetchbill=findViewById(R.id.fetchbill);
         amountlayout=findViewById(R.id.amountlayout);
@@ -120,6 +124,8 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
 
         oxigenTransactionVOresp=new OxigenTransactionVO();
         gson =new Gson();
+
+        eleMap=new HashMap<>();
 
         amountlayout.setVisibility(View.GONE);
 
@@ -191,6 +197,8 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
             if(resultCode==RESULT_OK){
                 switch (requestCode) {
                     case 100:
+                        //clear element maplist
+                        eleMap.clear();
 
                         operatorname =data.getStringExtra("operatorname");
                         operatorcode=data.getStringExtra("operator");
@@ -233,11 +241,31 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
                                 OxigenQuestionsVO oxigenQuestionsVO = gson.fromJson(jsonObject.toString(), OxigenQuestionsVO.class);
 
                                 CardView cardView = Utility.getCardViewStyle(this);
-                                //EditText et = new EditText(new ContextThemeWrapper(this,R.style.edittext));
-
-                                EditText et = Utility.getEditText(Mobile_Postpaid.this);
+                                UAVEditText et = Utility.getUavEditText(Mobile_Postpaid.this);
                                 et.setId(View.generateViewId());
                                 et.setHint(oxigenQuestionsVO.getQuestionLabel());
+                                if(oxigenQuestionsVO.getQuestionLabel().contains("Mobile")){
+
+                                    eleMap.put("mobile",et);
+                                    Drawable drawable = getResources().getDrawable(R.drawable.contacts);
+                                    drawable = DrawableCompat.wrap(drawable);
+                                    DrawableCompat.setTint(drawable, getResources().getColor(R.color.appbar));
+
+                                    et.setCompoundDrawablesWithIntrinsicBounds(R.drawable.mobile,0 , R.drawable.contacts, 0);
+                                    et.setDrawableClickListener(new DrawableClickListener() {
+                                        @Override
+                                        public void onClick(DrawablePosition target) {
+                                            switch (target) {
+                                                case RIGHT:
+                                                        if(PermissionHandler.contactpermission(Mobile_Postpaid.this)){
+                                                            Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+                                                            startActivityForResult(intent, 101);
+                                                    }
+                                                    break;
+                                            }
+                                        }
+                                    });
+                                }
 
                               //  changeEdittextValue(et);
 
@@ -252,6 +280,27 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
                             }
                             EditText editText =(EditText) findViewById(questionsVOS.get(0).getElementId());
                             editText.requestFocus();
+                        }
+                        break;
+                    case 101:
+                        Uri contactData = data.getData();
+                        Cursor c = getContentResolver().query(contactData, null, null, null, null);
+                        if (c.moveToFirst()) {
+                            String contactId = c.getString(c.getColumnIndex(ContactsContract.Contacts._ID));
+                            String hasNumber = c.getString(c.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
+                            String num = "";
+                            if (Integer.valueOf(hasNumber) == 1) {
+                                Cursor numbers = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + contactId, null, null);
+                                while (numbers.moveToNext()) {
+                                    num = numbers.getString(numbers.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)).replaceAll("\\s+","");
+                                }
+                                if (num.length()>10) {
+                                    num=num.substring(num.length() - 10);
+                                }
+                                ((EditText)eleMap.get("mobile")).setText(num);
+                                ((EditText)eleMap.get("mobile")).setSelection( ((EditText)eleMap.get("mobile")).getText().toString().length());
+                                amount.setText("");
+                            }
                         }
                         break;
                 }
@@ -279,11 +328,11 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
                     JSONObject dataarray=getQuestionLabelDate(true);
                     if(!valid)return;
 
-                        JSONObject jsonObject =new JSONObject();
-                        jsonObject.put("operatorcode",operatorcode);
-                        jsonObject.put("amount",amount.getText().toString());
-                        jsonObject.put("questionLabelDate",dataarray.toString());
-                    proceedRecharge(oxigenTransactionVOresp!=null?new JSONObject().put("typeId",oxigenTransactionVOresp.getTypeId()):jsonObject);
+                        OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
+                        oxigenTransactionVO.setOperateName(operatorcode);
+                        oxigenTransactionVO.setAmount(Double.valueOf(amount.getText().toString()));
+                        oxigenTransactionVO.setAnonymousString(dataarray.toString());
+                    proceedRecharge(oxigenTransactionVOresp.getTypeId()!=null?oxigenTransactionVOresp:oxigenTransactionVO);
 
                 }catch (Exception e){
                     e.printStackTrace();
@@ -332,12 +381,6 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
                 amount.setError("this filed is required");
                 valid=false;
             }
-        }
-
-        if(valid && isFetchBill){
-            Utility.showSingleButtonDialogconfirmation(Mobile_Postpaid.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
-                ok.dismiss();
-            }),"Alert","Bill fetch is Required !");
         }
 
         if(operator.getText().toString().equals("")){
@@ -406,27 +449,33 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
     }
 
 
-    private  void proceedRecharge(JSONObject data){
-        if(data==null){
+    private  void proceedRecharge(OxigenTransactionVO oxigenTransactionVO){
+        if(oxigenTransactionVO==null){
             Utility.showSingleButtonDialogconfirmation(Mobile_Postpaid.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
                 ok.dismiss();
             }),"Alert","Empty Filed not Allow!");
-        }else if(isFetchBill && !data.has("typeId")){
+        }else if(isFetchBill && oxigenTransactionVO.getTypeId()==null){
             Utility.showSingleButtonDialogconfirmation(Mobile_Postpaid.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
                 ok.dismiss();
             }),"Alert","Bill Fetch Is required!");
         }else {
-            proceedBillPayment(data);
+            proceedBillPayment(oxigenTransactionVO);
         }
     }
 
-    private void proceedBillPayment(JSONObject jsonObject) {
+    private void proceedBillPayment(OxigenTransactionVO oxigenTransactionVO) {
 
         try {
             HashMap<String, Object> params = new HashMap<String, Object>();
+
+            ServiceTypeVO serviceTypeVO =new ServiceTypeVO();
+            serviceTypeVO.setServiceTypeId(ApplicationConstant.MobilePostpaid);
+
+            CustomerVO customerVO =new CustomerVO();
+            customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(Mobile_Postpaid.this)));
             ConnectionVO connectionVO = OxigenPlanBO.oxiBillPayment();
-            OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
-            oxigenTransactionVO.setAnonymousString(jsonObject.toString());
+            oxigenTransactionVO.setCustomer(customerVO);
+            oxigenTransactionVO.setServiceType(serviceTypeVO);
             params.put("volley",gson.toJson(oxigenTransactionVO));
             connectionVO.setParams(params);
 

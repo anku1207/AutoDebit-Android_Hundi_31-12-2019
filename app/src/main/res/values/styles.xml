@@ -225,6 +225,25 @@
 
     </style>
 
+    <style name="fetchBillText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_alignBaseline">@+id/amount</item>
+        <item name="android:layout_alignBottom">@+id/amount</item>
+        <item name="android:layout_marginRight">5dp</item>
+        <item name="android:layout_marginBottom">0dp</item>
+        <item name="android:text">FetchBill</item>
+        <item name="android:textSize">10dp</item>
+        <item name="android:backgroundTint">@color/white</item>
+        <item name="android:textColor">@color/appbar</item>
+        <item name="android:padding">10dp</item>
+
+    </style>
+
+
+
+
+
 
 
 
