@@ -183,6 +183,18 @@ public class DTH_Recharge_Service extends AppCompatActivity implements View.OnCl
                         operator.setError(null);
                         amount.setError(null);
 
+
+                        //add fetch bill btn
+                        if (dataAdapterVO.getIsbillFetch().equals("1")) {
+                            fetchbill.setVisibility(View.VISIBLE);
+                            amount.setEnabled(false);
+                        } else {
+                            fetchbill.setVisibility(View.GONE);
+                            amount.setEnabled(true);
+                        }
+
+
+
                         //Remove dynamic cards from the layout and arraylist
                         if(dynamicCardViewContainer.getChildCount()>0) dynamicCardViewContainer.removeAllViews();
                         removefetchbilllayout();

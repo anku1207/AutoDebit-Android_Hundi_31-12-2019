@@ -1,11 +1,13 @@
 package com.uav.autodebit.Activity;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.v4.content.res.ResourcesCompat;
@@ -83,11 +85,23 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
     Gson gson;
 
 
+
+    @TargetApi(Build.VERSION_CODES.O)
+    private void disableAutofill() {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            getWindow().getDecorView().setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO_EXCLUDE_DESCENDANTS);
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mobile__postpaid);
         getSupportActionBar().hide();
+
+        // disable autofill edittext
+        disableAutofill();
+
         operatorListDate=null;
         pd=new UAVProgressDialog(this);
 
@@ -223,8 +237,7 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
                                 et.setId(View.generateViewId());
                                 et.setHint(oxigenQuestionsVO.getQuestionLabel());
 
-                                changeEdittextValue(et);
-
+                              //  changeEdittextValue(et);
 
                                 cardView.addView(et);
                                 dynamicCardViewContainer.addView(cardView);
@@ -329,6 +342,7 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
 
             EditText editText =(EditText) findViewById(oxigenQuestionsVO.getElementId());
             editText.clearFocus();
+            changeEdittextValue(editText);
 
             editText.setError(null);
             if(editText.getText().toString().equals("")){

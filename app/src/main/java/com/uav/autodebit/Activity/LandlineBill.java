@@ -225,6 +225,7 @@ public class LandlineBill extends AppCompatActivity implements View.OnClickListe
                                 et.setId(View.generateViewId());
                                 et.setHint(oxigenQuestionsVO.getQuestionLabel());
                                 cardView.addView(et);
+
                                 dynamicCardViewContainer.addView(cardView);
                                 if(oxigenQuestionsVO.getInstructions()!=null){
                                     TextView tv = Utility.getTextView(this, oxigenQuestionsVO.getInstructions());
