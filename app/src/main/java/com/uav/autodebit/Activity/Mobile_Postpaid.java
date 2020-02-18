@@ -153,8 +153,6 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
                             intent.putExtra("datalist", operatorListDate);
                             intent.putExtra("title","Operator");
                             startActivityForResult(intent,100);
-
-
                         }
                     });
                     backgroundAsyncService.execute();
@@ -205,15 +203,11 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
 
                         amountlayout.setVisibility(View.VISIBLE);
 
-
                         DataAdapterVO dataAdapterVO = (DataAdapterVO) data.getSerializableExtra("datavo");
-
                         operator.setError(null);
                         amount.setError(null);
-
                         operator.setText(operatorname);
                         operator.setTag(operatorcode);
-
 
                         //add fetch bill btn
                         if (dataAdapterVO.getIsbillFetch().equals("1")) {
@@ -225,7 +219,6 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
                             amount.setEnabled(true);
                             isFetchBill=false;
                         }
-
 
                         //Remove dynamic cards from the layout and arraylist
                         if(dynamicCardViewContainer.getChildCount()>0) dynamicCardViewContainer.removeAllViews();
@@ -244,8 +237,8 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
                                 UAVEditText et = Utility.getUavEditText(Mobile_Postpaid.this);
                                 et.setId(View.generateViewId());
                                 et.setHint(oxigenQuestionsVO.getQuestionLabel());
-                                if(oxigenQuestionsVO.getQuestionLabel().contains("Mobile")){
 
+                                if(oxigenQuestionsVO.getQuestionLabel().contains("Mobile")){
                                     eleMap.put("mobile",et);
                                     Drawable drawable = getResources().getDrawable(R.drawable.contacts);
                                     drawable = DrawableCompat.wrap(drawable);
@@ -321,13 +314,10 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
 
                 try {
                     Utility.hideKeyboard(Mobile_Postpaid.this);
-
                     valid=true;
-
 
                     JSONObject dataarray=getQuestionLabelDate(true);
                     if(!valid)return;
-
                         OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
                         oxigenTransactionVO.setOperateName(operatorcode);
                         oxigenTransactionVO.setAmount(Double.valueOf(amount.getText().toString()));
@@ -499,19 +489,14 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
                         }
                         Utility.showSingleButtonDialog(Mobile_Postpaid.this,"Error !",sb.toString(),false);
                     }else {
-
                         startActivity(new Intent(Mobile_Postpaid.this,History.class));
                         finish();
-
                     }
                 }
-
             });
-
         }catch (Exception e){
             e.printStackTrace();
             Utility.exceptionAlertDialog(Mobile_Postpaid.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
-
         }
     }
 
