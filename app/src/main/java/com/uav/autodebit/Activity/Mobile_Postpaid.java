@@ -78,7 +78,7 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
     List<OxigenQuestionsVO> questionsVOS= new ArrayList<OxigenQuestionsVO>();
     CardView fetchbillcard;
 
-    boolean valid=true;
+    boolean valid=true,isFetchBill=true;
     String operatorListDate;
     UAVProgressDialog pd;
     OxigenTransactionVO oxigenTransactionVOresp;
@@ -211,9 +211,11 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
                         if (dataAdapterVO.getIsbillFetch().equals("1")) {
                             fetchbill.setVisibility(View.VISIBLE);
                             amount.setEnabled(false);
+                            isFetchBill=true;
                         } else {
                             fetchbill.setVisibility(View.GONE);
                             amount.setEnabled(true);
+                            isFetchBill=false;
                         }
 
 
@@ -273,14 +275,15 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
 
                     valid=true;
 
+
                     JSONObject dataarray=getQuestionLabelDate(true);
                     if(!valid)return;
 
-                        /*JSONObject jsonObject =new JSONObject();
+                        JSONObject jsonObject =new JSONObject();
                         jsonObject.put("operatorcode",operatorcode);
                         jsonObject.put("amount",amount.getText().toString());
-                        jsonObject.put("questionLabelDate",dataarray.toString());*/
-                    proceedRecharge(oxigenTransactionVOresp);
+                        jsonObject.put("questionLabelDate",dataarray.toString());
+                    proceedRecharge(oxigenTransactionVOresp!=null?new JSONObject().put("typeId",oxigenTransactionVOresp.getTypeId()):jsonObject);
 
                 }catch (Exception e){
                     e.printStackTrace();
@@ -329,6 +332,12 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
                 amount.setError("this filed is required");
                 valid=false;
             }
+        }
+
+        if(valid && isFetchBill){
+            Utility.showSingleButtonDialogconfirmation(Mobile_Postpaid.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                ok.dismiss();
+            }),"Alert","Bill fetch is Required !");
         }
 
         if(operator.getText().toString().equals("")){
@@ -397,25 +406,31 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
     }
 
 
-    private  void proceedRecharge(OxigenTransactionVO oxigenTransactionVO){
-        if(oxigenTransactionVO==null || oxigenTransactionVOresp.getTypeId()==null){
+    private  void proceedRecharge(JSONObject data){
+        if(data==null){
             Utility.showSingleButtonDialogconfirmation(Mobile_Postpaid.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
                 ok.dismiss();
-            }),"Alert","Bill fetch Id is null");
+            }),"Alert","Empty Filed not Allow!");
+        }else if(isFetchBill && !data.has("typeId")){
+            Utility.showSingleButtonDialogconfirmation(Mobile_Postpaid.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                ok.dismiss();
+            }),"Alert","Bill Fetch Is required!");
         }else {
-            proceedBillPayment(oxigenTransactionVO.getTypeId());
+            proceedBillPayment(data);
         }
     }
 
-    private void proceedBillPayment(int typeId) {
+    private void proceedBillPayment(JSONObject jsonObject) {
 
         try {
             HashMap<String, Object> params = new HashMap<String, Object>();
             ConnectionVO connectionVO = OxigenPlanBO.oxiBillPayment();
             OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
-            oxigenTransactionVO.setTypeId(typeId);
+            oxigenTransactionVO.setAnonymousString(jsonObject.toString());
             params.put("volley",gson.toJson(oxigenTransactionVO));
             connectionVO.setParams(params);
+
+            Log.w("requestData",gson.toJson(oxigenTransactionVO));
 
             VolleyUtils.makeJsonObjectRequest(Mobile_Postpaid.this,connectionVO, new VolleyResponseListener() {
                 @Override
