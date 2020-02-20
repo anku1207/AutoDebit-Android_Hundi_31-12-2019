@@ -75,7 +75,7 @@ public class Electricity_Bill extends AppCompatActivity  implements View.OnClick
     List<OxigenQuestionsVO> questionsVOS= new ArrayList<OxigenQuestionsVO>();
     CardView fetchbillcard;
 
-    boolean valid=true;
+    boolean valid=true,isFetchBill=true;
     String operatorListDate;
     UAVProgressDialog pd;
     OxigenTransactionVO oxigenTransactionVOresp;
@@ -194,10 +194,13 @@ public class Electricity_Bill extends AppCompatActivity  implements View.OnClick
                         //add fetch bill btn
                         if (dataAdapterVO.getIsbillFetch().equals("1")) {
                             fetchbill.setVisibility(View.VISIBLE);
+                            amount.setEnabled(false);
+                            isFetchBill=true;
                         } else {
                             fetchbill.setVisibility(View.GONE);
+                            amount.setEnabled(true);
+                            isFetchBill=false;
                         }
-
                         //Remove dynamic cards from the layout and arraylist
                         if(dynamicCardViewContainer.getChildCount()>0) dynamicCardViewContainer.removeAllViews();
                         removefetchbilllayout();
@@ -306,28 +309,16 @@ public class Electricity_Bill extends AppCompatActivity  implements View.OnClick
         amount.setError(null);
         operator.setError(null);
 
-        if(fetchBill){
-            if(amount.getText().toString().equals("")){
-                amount.setError("this filed is required");
-                valid=false;
-            }
-        }
-
         if(operator.getText().toString().equals("")){
             operator.setError("this filed is required");
             valid=false;
         }
-
         JSONObject jsonObject =new JSONObject();
-
         for(OxigenQuestionsVO oxigenQuestionsVO:questionsVOS){
-
             EditText editText =(EditText) findViewById(oxigenQuestionsVO.getElementId());
             editText.clearFocus();
-
             editText.setError(null);
             if(editText.getText().toString().equals("")){
-
                 editText.setError(  Utility.getErrorSpannableStringDynamicEditText(this, "this field is required"));
                 valid=false;
             }else if(oxigenQuestionsVO.getMinLength()!=null && (editText.getText().toString().length() < Integer.parseInt(oxigenQuestionsVO.getMinLength()))){
@@ -337,10 +328,23 @@ public class Electricity_Bill extends AppCompatActivity  implements View.OnClick
                 editText.setError(oxigenQuestionsVO.getMaxLength());
                 valid=false;
             }
-
             jsonObject.put(oxigenQuestionsVO.getQuestionLabel(),editText.getText().toString());
             //oxigenQuestionsVO.getJsonKey();
             //editText.getText().toString();
+        }
+
+        if(fetchBill && !isFetchBill && valid){
+            if(amount.getText().toString().equals("")){
+                amount.setError("this filed is required");
+                valid=false;
+            }
+        }else if(fetchBill && isFetchBill && valid){
+            if(amount.getText().toString().equals("")){
+                Utility.showSingleButtonDialogconfirmation(Electricity_Bill.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                    ok.dismiss();
+                }),"Alert","Bill Amount is null ");
+                valid=false;
+            }
 
         }
         return jsonObject;
