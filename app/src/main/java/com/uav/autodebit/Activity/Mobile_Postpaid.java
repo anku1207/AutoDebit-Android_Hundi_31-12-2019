@@ -366,20 +366,11 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
         amount.setError(null);
         operator.setError(null);
 
-        if(fetchBill){
-            if(amount.getText().toString().equals("")){
-                amount.setError("this filed is required");
-                valid=false;
-            }
-        }
-
         if(operator.getText().toString().equals("")){
             operator.setError("this filed is required");
             valid=false;
         }
-
         JSONObject jsonObject =new JSONObject();
-
         for(OxigenQuestionsVO oxigenQuestionsVO:questionsVOS){
 
             EditText editText =(EditText) findViewById(oxigenQuestionsVO.getElementId());
@@ -398,12 +389,29 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
                 editText.setError(oxigenQuestionsVO.getMaxLength());
                 valid=false;
             }
-
             jsonObject.put(oxigenQuestionsVO.getQuestionLabel(),editText.getText().toString());
             //oxigenQuestionsVO.getJsonKey();
             //editText.getText().toString();
+        }
+
+
+        if(fetchBill && !isFetchBill && valid){
+            if(amount.getText().toString().equals("")){
+                amount.setError("this filed is required");
+                valid=false;
+            }
+        }else if(fetchBill && isFetchBill && valid){
+            if(amount.getText().toString().equals("")){
+                Utility.showSingleButtonDialogconfirmation(Mobile_Postpaid.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                    ok.dismiss();
+                }),"Alert","Bill Amount is null ");
+                valid=false;
+            }
 
         }
+
+
+
         return jsonObject;
     }
 
