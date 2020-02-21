@@ -1,6 +1,7 @@
 package com.uav.autodebit.Activity;
 
 import android.annotation.TargetApi;
+import android.app.Dialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -35,6 +36,7 @@ import com.google.gson.Gson;
 import com.uav.autodebit.BO.Electricity_BillBO;
 import com.uav.autodebit.BO.OxigenPlanBO;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
+import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.override.DrawableClickListener;
@@ -45,6 +47,7 @@ import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.BackgroundAsyncService;
 import com.uav.autodebit.util.BackgroundServiceInterface;
 import com.uav.autodebit.util.CustomTextWatcherLengthAction;
+import com.uav.autodebit.util.DialogInterface;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerVO;
@@ -62,6 +65,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickListener {
@@ -209,6 +213,8 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
                         operator.setText(operatorname);
                         operator.setTag(operatorcode);
 
+                        amount.setText("");
+
                         //add fetch bill btn
                         if (dataAdapterVO.getIsbillFetch().equals("1")) {
                             fetchbill.setVisibility(View.VISIBLE);
@@ -304,6 +310,8 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
         }
     }
 
+
+
     @Override
     public void onClick(View view) {
         switch (view.getId()){
@@ -318,19 +326,65 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
 
                     JSONObject dataarray=getQuestionLabelDate(true);
                     if(!valid)return;
-                        OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
-                        oxigenTransactionVO.setOperateName(operatorcode);
-                        oxigenTransactionVO.setAmount(Double.valueOf(amount.getText().toString()));
-                        oxigenTransactionVO.setAnonymousString(dataarray.toString());
-                    proceedRecharge(oxigenTransactionVOresp.getTypeId()!=null?oxigenTransactionVOresp:oxigenTransactionVO);
+
+                    if(isFetchBill){
+                        proceedRecharge(oxigenTransactionVOresp);
+                    }else {
+                        String btn[]={"Cancel","Ok"};
+
+                        JSONArray jsonArray =new JSONArray();
+
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.put("key","Operator");
+                        jsonObject.put("value",operator.getText().toString());
+                        jsonArray.put(jsonObject);
+
+
+                        jsonObject = new JSONObject();
+                        jsonObject.put("key","Amount");
+                        jsonObject.put("value",amount.getText().toString());
+                        jsonArray.put(jsonObject);
+
+
+                        Iterator<String> keys= dataarray.keys();
+                        while (keys.hasNext()){
+                            String keyValue = (String)keys.next();
+                            String valueString = dataarray.getString(keyValue);
+                            jsonObject = new JSONObject();
+                            jsonObject.put("key",keyValue);
+                            jsonObject.put("value",valueString);
+                            jsonArray.put(jsonObject);
+                        }
+
+                        Utility.confirmationDialog(new DialogInterface() {
+                            @Override
+                            public void confirm(Dialog dialog) {
+                                dialog.dismiss();
+                                try {
+                                    OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
+                                    oxigenTransactionVO.setOperateName(operatorcode);
+                                    oxigenTransactionVO.setAmount(Double.valueOf(amount.getText().toString()));
+                                    oxigenTransactionVO.setAnonymousString(dataarray.toString());
+                                    proceedRecharge(oxigenTransactionVO);
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                    Utility.exceptionAlertDialog(Mobile_Postpaid.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+                                }
+                            }
+                            @Override
+                            public void modify(Dialog dialog) {
+                                dialog.dismiss();
+                            }
+                        },Mobile_Postpaid.this,jsonArray,null,"Confirmation",btn);
+                    }
+
+
 
                 }catch (Exception e){
                     e.printStackTrace();
                     Utility.exceptionAlertDialog(Mobile_Postpaid.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
 
                 }
-
-
                 break;
             case R.id.fetchbill:
                 try {
@@ -339,7 +393,6 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
                     valid=true;
                     JSONObject dataarray=getQuestionLabelDate(false);
                     if(!valid)return;
-                    JSONObject jsonObject =new JSONObject();
 
                     CustomerVO customerVO =new CustomerVO();
                     customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(Mobile_Postpaid.this)));
@@ -353,7 +406,51 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
                     oxigenTransactionVO.setServiceType(serviceTypeVO);
                     oxigenTransactionVO.setAnonymousString(dataarray.toString());
 
-                    proceedFetchBill(oxigenTransactionVO);
+                    BillPayRequest.proceedFetchBill(oxigenTransactionVO,Mobile_Postpaid.this,new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
+                        try {
+                            oxigenTransactionVOresp=(OxigenTransactionVO)s;
+                            fetchbill.setVisibility(View.GONE);
+                            amount.setText(oxigenTransactionVOresp.getAmount()+"");
+
+                            JSONArray dataArry =new JSONArray(oxigenTransactionVOresp.getAnonymousString());
+
+                            Typeface typeface = ResourcesCompat.getFont(Mobile_Postpaid.this, R.font.poppinssemibold);
+                            for(int i=0 ;i<dataArry.length();i++){
+                                JSONObject jsonObject =dataArry.getJSONObject(i);
+
+                                LinearLayout et = new LinearLayout(new ContextThemeWrapper(Mobile_Postpaid.this,R.style.confirmation_dialog_layout));
+                                et.setPadding(Utility.getPixelsFromDPs(Mobile_Postpaid.this,10),Utility.getPixelsFromDPs(Mobile_Postpaid.this,10),Utility.getPixelsFromDPs(Mobile_Postpaid.this,10),Utility.getPixelsFromDPs(Mobile_Postpaid.this,10));
+
+                                TextView text = new TextView(new ContextThemeWrapper(Mobile_Postpaid.this, R.style.confirmation_dialog_filed));
+                                text.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float) 1));
+                                text.setText(jsonObject.getString("key"));
+                                text.setMaxLines(1);
+                                text.setEllipsize(TextUtils.TruncateAt.END);
+                                text.setTypeface(typeface);
+                                text.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+
+                                TextView value = new TextView(new ContextThemeWrapper(Mobile_Postpaid.this, R.style.confirmation_dialog_value));
+                                value.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,1));
+                                value.setText(jsonObject.getString("value"));
+                                value.setTypeface(typeface);
+                                value.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+                                et.addView(text);
+                                et.addView(value);
+                                fetchbilllayout.addView(et);
+                            }
+                            fetchbillcard.setVisibility(View.VISIBLE);
+                        }catch (Exception e){
+                            e.printStackTrace();
+                            Utility.exceptionAlertDialog(Mobile_Postpaid.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+                        }
+
+                    },(VolleyResponse.OnError)(e)->{
+                        fetchbill.setVisibility(View.VISIBLE);
+                    }));
+
+
                 }catch (Exception e){
                     e.printStackTrace();
                     Utility.exceptionAlertDialog(Mobile_Postpaid.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
@@ -457,137 +554,12 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
                 ok.dismiss();
             }),"Alert","Bill Fetch Is required!");
         }else {
-            proceedBillPayment(oxigenTransactionVO);
+            BillPayRequest.proceedBillPayment(oxigenTransactionVO,Mobile_Postpaid.this,new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
+                startActivity(new Intent(Mobile_Postpaid.this,History.class));
+                finish();
+            },(VolleyResponse.OnError)(e)->{
+            }));
         }
     }
 
-    private void proceedBillPayment(OxigenTransactionVO oxigenTransactionVO) {
-
-        try {
-            HashMap<String, Object> params = new HashMap<String, Object>();
-
-            ServiceTypeVO serviceTypeVO =new ServiceTypeVO();
-            serviceTypeVO.setServiceTypeId(ApplicationConstant.MobilePostpaid);
-
-            CustomerVO customerVO =new CustomerVO();
-            customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(Mobile_Postpaid.this)));
-            ConnectionVO connectionVO = OxigenPlanBO.oxiBillPayment();
-            oxigenTransactionVO.setCustomer(customerVO);
-            oxigenTransactionVO.setServiceType(serviceTypeVO);
-            params.put("volley",gson.toJson(oxigenTransactionVO));
-            connectionVO.setParams(params);
-
-            Log.w("requestData",gson.toJson(oxigenTransactionVO));
-
-            VolleyUtils.makeJsonObjectRequest(Mobile_Postpaid.this,connectionVO, new VolleyResponseListener() {
-                @Override
-                public void onError(String message) {
-                }
-                @Override
-                public void onResponse(Object resp) {
-                    JSONObject response = (JSONObject) resp;
-
-                    oxigenTransactionVOresp = gson.fromJson(response.toString(), OxigenTransactionVO.class);
-
-                    if(oxigenTransactionVOresp.getStatusCode().equals("400")){
-                        ArrayList error = (ArrayList) oxigenTransactionVOresp.getErrorMsgs();
-                        StringBuilder sb = new StringBuilder();
-                        for(int i=0; i<error.size(); i++){
-                            sb.append(error.get(i)).append("\n");
-                        }
-                        Utility.showSingleButtonDialog(Mobile_Postpaid.this,"Error !",sb.toString(),false);
-                    }else {
-                        startActivity(new Intent(Mobile_Postpaid.this,History.class));
-                        finish();
-                    }
-                }
-            });
-        }catch (Exception e){
-            e.printStackTrace();
-            Utility.exceptionAlertDialog(Mobile_Postpaid.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
-        }
-    }
-
-
-    private void proceedFetchBill(OxigenTransactionVO oxigenTransactionVO) throws Exception{
-
-        try {
-
-
-            HashMap<String, Object> params = new HashMap<String, Object>();
-            ConnectionVO connectionVO = Electricity_BillBO.oxiFetchBill();
-
-            params.put("volley",gson.toJson(oxigenTransactionVO));
-
-            Log.w("proceedFetchBill",gson.toJson(oxigenTransactionVO));
-            connectionVO.setParams(params);
-
-            VolleyUtils.makeJsonObjectRequest(Mobile_Postpaid.this,connectionVO, new VolleyResponseListener() {
-                @Override
-                public void onError(String message) {
-                }
-                @Override
-                public void onResponse(Object resp) throws JSONException {
-                    JSONObject response = (JSONObject) resp;
-
-                    Log.w("respele",response.toString());
-
-                    oxigenTransactionVOresp = gson.fromJson(response.toString(), OxigenTransactionVO.class);
-
-                    if(oxigenTransactionVOresp.getStatusCode().equals("400")){
-                        ArrayList error = (ArrayList) oxigenTransactionVOresp.getErrorMsgs();
-                        StringBuilder sb = new StringBuilder();
-                        for(int i=0; i<error.size(); i++){
-                            sb.append(error.get(i)).append("\n");
-                        }
-                        fetchbill.setVisibility(View.VISIBLE);
-                        Utility.showSingleButtonDialog(Mobile_Postpaid.this,"Error !",sb.toString(),false);
-                    }else if(oxigenTransactionVOresp.getStatusCode().equals("01")){
-                        fetchbill.setVisibility(View.VISIBLE);
-                        Utility.showSingleButtonDialogconfirmation(Mobile_Postpaid.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
-                            ok.dismiss();
-                        }),"Alert",oxigenTransactionVOresp.getAnonymousString());
-                    }else {
-                        fetchbill.setVisibility(View.GONE);
-                        amount.setText(oxigenTransactionVOresp.getAmount()+"");
-
-                        JSONArray dataArry =new JSONArray(oxigenTransactionVOresp.getAnonymousString());
-
-                        Typeface typeface = ResourcesCompat.getFont(Mobile_Postpaid.this, R.font.poppinssemibold);
-                        for(int i=0 ;i<dataArry.length();i++){
-                            JSONObject jsonObject =dataArry.getJSONObject(i);
-
-                            LinearLayout et = new LinearLayout(new ContextThemeWrapper(Mobile_Postpaid.this,R.style.confirmation_dialog_layout));
-
-                            et.setPadding(Utility.getPixelsFromDPs(Mobile_Postpaid.this,10),Utility.getPixelsFromDPs(Mobile_Postpaid.this,10),Utility.getPixelsFromDPs(Mobile_Postpaid.this,10),Utility.getPixelsFromDPs(Mobile_Postpaid.this,10));
-
-                            TextView text = new TextView(new ContextThemeWrapper(Mobile_Postpaid.this, R.style.confirmation_dialog_filed));
-                            text.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float) 1));
-                            text.setText(jsonObject.getString("key"));
-                            text.setMaxLines(1);
-                            text.setEllipsize(TextUtils.TruncateAt.END);
-                            text.setTypeface(typeface);
-                            text.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-
-
-                            TextView value = new TextView(new ContextThemeWrapper(Mobile_Postpaid.this, R.style.confirmation_dialog_value));
-                            value.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,1));
-                            value.setText(jsonObject.getString("value"));
-                            value.setTypeface(typeface);
-                            value.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-
-                            et.addView(text);
-                            et.addView(value);
-                            fetchbilllayout.addView(et);
-                        }
-                        fetchbillcard.setVisibility(View.VISIBLE);
-                    }
-                }
-
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-            Utility.exceptionAlertDialog(Mobile_Postpaid.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
-        }
-    }
 }

@@ -33,6 +33,7 @@ import com.uav.autodebit.BO.Electricity_BillBO;
 import com.uav.autodebit.BO.MetroBO;
 import com.uav.autodebit.BO.OxigenPlanBO;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
+import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
 import com.uav.autodebit.adpater.ListViewItemCheckboxBaseAdapter;
 import com.uav.autodebit.constant.ApplicationConstant;
@@ -59,6 +60,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 public class Electricity_Bill extends AppCompatActivity  implements View.OnClickListener {
@@ -254,18 +256,66 @@ public class Electricity_Bill extends AppCompatActivity  implements View.OnClick
             case R.id.proceed:
 
                 try {
-                        Utility.hideKeyboard(Electricity_Bill.this);
+                    Utility.hideKeyboard(Electricity_Bill.this);
 
-                        valid=true;
+                    valid=true;
 
-                        JSONObject dataarray=getQuestionLabelDate(true);
-                        if(!valid)return;
+                    JSONObject dataarray=getQuestionLabelDate(true);
+                    if(!valid)return;
 
-                        /*JSONObject jsonObject =new JSONObject();
-                        jsonObject.put("operatorcode",operatorcode);
-                        jsonObject.put("amount",amount.getText().toString());
-                        jsonObject.put("questionLabelDate",dataarray.toString());*/
+                    if(isFetchBill){
                         proceedRecharge(oxigenTransactionVOresp);
+                    }else {
+                        String btn[]={"Cancel","Ok"};
+
+                        JSONArray jsonArray =new JSONArray();
+
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.put("key","Operator");
+                        jsonObject.put("value",operator.getText().toString());
+                        jsonArray.put(jsonObject);
+
+
+                        jsonObject = new JSONObject();
+                        jsonObject.put("key","Amount");
+                        jsonObject.put("value",amount.getText().toString());
+                        jsonArray.put(jsonObject);
+
+
+                        Iterator<String> keys= dataarray.keys();
+                        while (keys.hasNext()){
+                            String keyValue = (String)keys.next();
+                            String valueString = dataarray.getString(keyValue);
+                            jsonObject = new JSONObject();
+                            jsonObject.put("key",keyValue);
+                            jsonObject.put("value",valueString);
+                            jsonArray.put(jsonObject);
+                        }
+
+                        Utility.confirmationDialog(new DialogInterface() {
+                            @Override
+                            public void confirm(Dialog dialog) {
+                                dialog.dismiss();
+                                try {
+                                    OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
+                                    oxigenTransactionVO.setOperateName(operatorcode);
+                                    oxigenTransactionVO.setAmount(Double.valueOf(amount.getText().toString()));
+                                    oxigenTransactionVO.setAnonymousString(dataarray.toString());
+                                    proceedRecharge(oxigenTransactionVO);
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                    Utility.exceptionAlertDialog(Electricity_Bill.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+
+                                }
+                            }
+                            @Override
+                            public void modify(Dialog dialog) {
+                                dialog.dismiss();
+
+                            }
+                        },Electricity_Bill.this,jsonArray,null,"Confirmation",btn);
+                    }
+
 
                 }catch (Exception e){
                     e.printStackTrace();
@@ -282,8 +332,6 @@ public class Electricity_Bill extends AppCompatActivity  implements View.OnClick
                     valid=true;
                     JSONObject dataarray=getQuestionLabelDate(false);
                     if(!valid)return;
-                    JSONObject jsonObject =new JSONObject();
-
                     CustomerVO customerVO =new CustomerVO();
                     customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(Electricity_Bill.this)));
 
@@ -296,11 +344,57 @@ public class Electricity_Bill extends AppCompatActivity  implements View.OnClick
                     oxigenTransactionVO.setServiceType(serviceTypeVO);
                     oxigenTransactionVO.setAnonymousString(dataarray.toString());
 
-                    proceedFetchBill(oxigenTransactionVO);
+                    BillPayRequest.proceedFetchBill(oxigenTransactionVO,Electricity_Bill.this,new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
+                        try {
+                            oxigenTransactionVOresp=(OxigenTransactionVO)s;
+                            fetchbill.setVisibility(View.GONE);
+                            amount.setText(oxigenTransactionVOresp.getAmount()+"");
+
+                            JSONArray dataArry =new JSONArray(oxigenTransactionVOresp.getAnonymousString());
+
+                            Typeface typeface = ResourcesCompat.getFont(Electricity_Bill.this, R.font.poppinssemibold);
+                            for(int i=0 ;i<dataArry.length();i++){
+                                JSONObject jsonObject =dataArry.getJSONObject(i);
+
+                                LinearLayout et = new LinearLayout(new ContextThemeWrapper(Electricity_Bill.this,R.style.confirmation_dialog_layout));
+
+                                et.setPadding(Utility.getPixelsFromDPs(Electricity_Bill.this,10),Utility.getPixelsFromDPs(Electricity_Bill.this,10),Utility.getPixelsFromDPs(Electricity_Bill.this,10),Utility.getPixelsFromDPs(Electricity_Bill.this,10));
+
+                                TextView text = new TextView(new ContextThemeWrapper(Electricity_Bill.this, R.style.confirmation_dialog_filed));
+                                text.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float) 1));
+                                text.setText(jsonObject.getString("key"));
+                                text.setMaxLines(1);
+                                text.setEllipsize(TextUtils.TruncateAt.END);
+                                text.setTypeface(typeface);
+                                text.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+
+                                TextView value = new TextView(new ContextThemeWrapper(Electricity_Bill.this, R.style.confirmation_dialog_value));
+                                value.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,1));
+                                value.setText(jsonObject.getString("value"));
+                                value.setTypeface(typeface);
+                                value.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+                                et.addView(text);
+                                et.addView(value);
+                                fetchbilllayout.addView(et);
+                            }
+                            fetchbillcard.setVisibility(View.VISIBLE);
+                        }catch (Exception e){
+                            e.printStackTrace();
+                            Utility.exceptionAlertDialog(Electricity_Bill.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+                        }
+
+                    },(VolleyResponse.OnError)(e)->{
+                        fetchbill.setVisibility(View.VISIBLE);
+                    }));
+
+
                 }catch (Exception e){
                     e.printStackTrace();
                     Utility.exceptionAlertDialog(Electricity_Bill.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
                 }
+
                 break;
         }
     }
@@ -383,139 +477,20 @@ public class Electricity_Bill extends AppCompatActivity  implements View.OnClick
 
 
     private  void proceedRecharge(OxigenTransactionVO oxigenTransactionVO){
-        if(oxigenTransactionVO==null || oxigenTransactionVOresp.getTypeId()==null){
+        if(oxigenTransactionVO==null){
             Utility.showSingleButtonDialogconfirmation(Electricity_Bill.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
                 ok.dismiss();
-            }),"Alert","Bill fetch Id is null");
+            }),"Alert","Empty Filed not Allow!");
+        }else if(isFetchBill && oxigenTransactionVO.getTypeId()==null){
+            Utility.showSingleButtonDialogconfirmation(Electricity_Bill.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                ok.dismiss();
+            }),"Alert","Bill Fetch Is required!");
         }else {
-            proceedBillPayment(oxigenTransactionVO.getTypeId());
-        }
-    }
-
-    private void proceedBillPayment(int typeId) {
-
-        try {
-            HashMap<String, Object> params = new HashMap<String, Object>();
-            ConnectionVO connectionVO = OxigenPlanBO.oxiBillPayment();
-            OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
-            oxigenTransactionVO.setTypeId(typeId);
-            params.put("volley",gson.toJson(oxigenTransactionVO));
-            connectionVO.setParams(params);
-
-            VolleyUtils.makeJsonObjectRequest(Electricity_Bill.this,connectionVO, new VolleyResponseListener() {
-                @Override
-                public void onError(String message) {
-                }
-                @Override
-                public void onResponse(Object resp) {
-                    JSONObject response = (JSONObject) resp;
-
-                    oxigenTransactionVOresp = gson.fromJson(response.toString(), OxigenTransactionVO.class);
-
-                    if(oxigenTransactionVOresp.getStatusCode().equals("400")){
-                        ArrayList error = (ArrayList) oxigenTransactionVOresp.getErrorMsgs();
-                        StringBuilder sb = new StringBuilder();
-                        for(int i=0; i<error.size(); i++){
-                            sb.append(error.get(i)).append("\n");
-                        }
-                        Utility.showSingleButtonDialog(Electricity_Bill.this,"Error !",sb.toString(),false);
-                    }else {
-
-                        startActivity(new Intent(Electricity_Bill.this,History.class));
-                        finish();
-
-                    }
-                }
-
-            });
-
-        }catch (Exception e){
-            e.printStackTrace();
-            Utility.exceptionAlertDialog(Electricity_Bill.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
-
-        }
-    }
-
-
-    private void proceedFetchBill(OxigenTransactionVO oxigenTransactionVO) throws Exception{
-
-        try {
-
-
-            HashMap<String, Object> params = new HashMap<String, Object>();
-            ConnectionVO connectionVO = Electricity_BillBO.oxiFetchBill();
-
-            params.put("volley",gson.toJson(oxigenTransactionVO));
-
-            Log.w("proceedFetchBill",gson.toJson(oxigenTransactionVO));
-            connectionVO.setParams(params);
-
-            VolleyUtils.makeJsonObjectRequest(Electricity_Bill.this,connectionVO, new VolleyResponseListener() {
-                @Override
-                public void onError(String message) {
-                }
-                @Override
-                public void onResponse(Object resp) throws JSONException {
-                    JSONObject response = (JSONObject) resp;
-
-                    Log.w("respele",response.toString());
-
-                    oxigenTransactionVOresp = gson.fromJson(response.toString(), OxigenTransactionVO.class);
-
-                    if(oxigenTransactionVOresp.getStatusCode().equals("400")){
-                        ArrayList error = (ArrayList) oxigenTransactionVOresp.getErrorMsgs();
-                        StringBuilder sb = new StringBuilder();
-                        for(int i=0; i<error.size(); i++){
-                            sb.append(error.get(i)).append("\n");
-                        }
-                        fetchbill.setVisibility(View.VISIBLE);
-                        Utility.showSingleButtonDialog(Electricity_Bill.this,"Error !",sb.toString(),false);
-                    }else if(oxigenTransactionVOresp.getStatusCode().equals("01")){
-                        fetchbill.setVisibility(View.VISIBLE);
-                        Utility.showSingleButtonDialogconfirmation(Electricity_Bill.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
-                            ok.dismiss();
-                        }),"Alert",oxigenTransactionVOresp.getAnonymousString());
-                    }else {
-                        fetchbill.setVisibility(View.GONE);
-                        amount.setText(oxigenTransactionVOresp.getAmount()+"");
-
-                        JSONArray dataArry =new JSONArray(oxigenTransactionVOresp.getAnonymousString());
-
-                            Typeface typeface = ResourcesCompat.getFont(Electricity_Bill.this, R.font.poppinssemibold);
-                            for(int i=0 ;i<dataArry.length();i++){
-                                JSONObject jsonObject =dataArry.getJSONObject(i);
-
-                                LinearLayout et = new LinearLayout(new ContextThemeWrapper(Electricity_Bill.this,R.style.confirmation_dialog_layout));
-
-                                et.setPadding(Utility.getPixelsFromDPs(Electricity_Bill.this,10),Utility.getPixelsFromDPs(Electricity_Bill.this,10),Utility.getPixelsFromDPs(Electricity_Bill.this,10),Utility.getPixelsFromDPs(Electricity_Bill.this,10));
-
-                                TextView text = new TextView(new ContextThemeWrapper(Electricity_Bill.this, R.style.confirmation_dialog_filed));
-                                text.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float) 1));
-                                text.setText(jsonObject.getString("key"));
-                                text.setMaxLines(1);
-                                text.setEllipsize(TextUtils.TruncateAt.END);
-                                text.setTypeface(typeface);
-                                text.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-
-
-                                TextView value = new TextView(new ContextThemeWrapper(Electricity_Bill.this, R.style.confirmation_dialog_value));
-                                value.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,1));
-                                value.setText(jsonObject.getString("value"));
-                                value.setTypeface(typeface);
-                                value.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-
-                                et.addView(text);
-                                et.addView(value);
-                                fetchbilllayout.addView(et);
-                            }
-                            fetchbillcard.setVisibility(View.VISIBLE);
-                        }
-                    }
-
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-            Utility.exceptionAlertDialog(Electricity_Bill.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+            BillPayRequest.proceedBillPayment(oxigenTransactionVO,Electricity_Bill.this,new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
+                startActivity(new Intent(Electricity_Bill.this,History.class));
+                finish();
+            },(VolleyResponse.OnError)(e)->{
+            }));
         }
     }
 }

@@ -81,6 +81,11 @@ public class HistorySummary extends AppCompatActivity implements View.OnClickLis
             jsonObject.put("name","");
             colorhash.put(0,jsonObject);
 
+            jsonObject =new JSONObject();
+            jsonObject.put("color","#ff0000");
+            jsonObject.put("name","fail");
+            colorhash.put(6,jsonObject);
+
 
 
         }catch (Exception e){
