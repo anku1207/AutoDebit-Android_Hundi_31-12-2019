@@ -98,7 +98,7 @@ public class BillPayRequest {
         }
     }
 
-    public static void proceedBillPayment(OxigenTransactionVO oxigenTransactionVO, Context context, VolleyResponse volleyResponse) {
+    public static void proceedBillPayment(OxigenTransactionVO oxigenTransactionVO, Context context, int serviceId,VolleyResponse volleyResponse) {
 
         try {
             Gson gson =new Gson();
@@ -106,7 +106,7 @@ public class BillPayRequest {
             HashMap<String, Object> params = new HashMap<String, Object>();
 
             ServiceTypeVO serviceTypeVO =new ServiceTypeVO();
-            serviceTypeVO.setServiceTypeId(ApplicationConstant.MobilePostpaid);
+            serviceTypeVO.setServiceTypeId(serviceId);
 
             CustomerVO customerVO =new CustomerVO();
             customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(context)));
@@ -245,7 +245,7 @@ public class BillPayRequest {
         }
     }
 
-    static   void proceedRecharge(Context context,boolean isFetchBill,OxigenTransactionVO oxigenTransactionVO){
+    static   void proceedRecharge(Context context,boolean isFetchBill,OxigenTransactionVO oxigenTransactionVO ,int serviceId){
         if(oxigenTransactionVO==null){
             Utility.showSingleButtonDialogconfirmation(context,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
                 ok.dismiss();
@@ -255,7 +255,7 @@ public class BillPayRequest {
                 ok.dismiss();
             }),"Alert","Bill Fetch Is required!");
         }else {
-            BillPayRequest.proceedBillPayment(oxigenTransactionVO,context,new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
+            BillPayRequest.proceedBillPayment(oxigenTransactionVO,context,serviceId,new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
                 ((Activity)context).startActivity(new Intent(context,History.class));
                 ((Activity)context).finish();
             },(VolleyResponse.OnError)(e)->{

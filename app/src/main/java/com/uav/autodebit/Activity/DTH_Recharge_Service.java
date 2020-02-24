@@ -29,6 +29,7 @@ import com.google.gson.Gson;
 import com.uav.autodebit.BO.Electricity_BillBO;
 import com.uav.autodebit.BO.OxigenPlanBO;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
+import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.override.UAVProgressDialog;
@@ -67,9 +68,10 @@ public class DTH_Recharge_Service extends AppCompatActivity implements View.OnCl
     List<OxigenQuestionsVO> questionsVOS= new ArrayList<OxigenQuestionsVO>();
     CardView fetchbillcard;
 
-    boolean valid=true;
+    boolean isFetchBill=true;
     String operatorListDate;
     UAVProgressDialog pd;
+    OxigenTransactionVO oxigenTransactionVOresp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +98,8 @@ public class DTH_Recharge_Service extends AppCompatActivity implements View.OnCl
         fetchbillcard =findViewById(R.id.fetchbillcard);
 
         amountlayout.setVisibility(View.GONE);
+        oxigenTransactionVOresp=new OxigenTransactionVO();
+
 
         back_activity_button.setOnClickListener(this);
         proceed.setOnClickListener(this);
@@ -151,6 +155,7 @@ public class DTH_Recharge_Service extends AppCompatActivity implements View.OnCl
                 dataAdapterVO.setQuestionsData(object.getString("questionsData"));
                 dataAdapterVO.setImageUrl(object.has("imageUrl") ?object.getString("imageUrl"):null);
                 dataAdapterVO.setAssociatedValue(object.getString("service"));
+                dataAdapterVO.setIsbillFetch(object.getString("isbillFetch"));
                 datalist.add(dataAdapterVO);
             }
         } catch (Exception e) {
@@ -188,13 +193,12 @@ public class DTH_Recharge_Service extends AppCompatActivity implements View.OnCl
                         if (dataAdapterVO.getIsbillFetch().equals("1")) {
                             fetchbill.setVisibility(View.VISIBLE);
                             amount.setEnabled(false);
+                            isFetchBill=true;
                         } else {
                             fetchbill.setVisibility(View.GONE);
                             amount.setEnabled(true);
+                            isFetchBill=false;
                         }
-
-
-
                         //Remove dynamic cards from the layout and arraylist
                         if(dynamicCardViewContainer.getChildCount()>0) dynamicCardViewContainer.removeAllViews();
                         removefetchbilllayout();
@@ -215,6 +219,7 @@ public class DTH_Recharge_Service extends AppCompatActivity implements View.OnCl
                                 EditText et = Utility.getEditText(DTH_Recharge_Service.this);
                                 et.setId(View.generateViewId());
                                 et.setHint(oxigenQuestionsVO.getQuestionLabel());
+                                changeEdittextValue(et);
                                 cardView.addView(et);
                                 dynamicCardViewContainer.addView(cardView);
                                 if(oxigenQuestionsVO.getInstructions()!=null){
@@ -238,6 +243,7 @@ public class DTH_Recharge_Service extends AppCompatActivity implements View.OnCl
 
     @Override
     public void onClick(View view) {
+        Utility.hideKeyboard(DTH_Recharge_Service.this);
         switch (view.getId()){
             case R.id.back_activity_button1:
                 finish();
@@ -245,92 +251,95 @@ public class DTH_Recharge_Service extends AppCompatActivity implements View.OnCl
             case R.id.proceed:
 
                 try {
-                    valid=true;
-
                     JSONObject dataarray=getQuestionLabelDate(true);
-                    if(!valid)return;
-
-                    JSONObject jsonObject =new JSONObject();
-                    jsonObject.put("operatorcode",operatorcode);
-                    jsonObject.put("amount",amount.getText().toString());
-                    jsonObject.put("questionLabelDate",dataarray.toString());
-
-                    proceedRecharge(jsonObject);
-
+                    if(dataarray==null)return;
+                    if(isFetchBill){
+                        BillPayRequest.proceedRecharge(DTH_Recharge_Service.this,isFetchBill,oxigenTransactionVOresp, ApplicationConstant.Gas);
+                    }else {
+                        BillPayRequest.confirmationDialogBillPay(DTH_Recharge_Service.this, operator, amount ,dataarray , new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                            OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
+                            oxigenTransactionVO.setOperateName(operatorcode);
+                            oxigenTransactionVO.setAmount(Double.valueOf(amount.getText().toString()));
+                            oxigenTransactionVO.setAnonymousString(dataarray.toString());
+                            BillPayRequest.proceedRecharge(DTH_Recharge_Service.this,isFetchBill,oxigenTransactionVO,ApplicationConstant.Gas);
+                        }));
+                    }
                 }catch (Exception e){
                     e.printStackTrace();
                     Utility.exceptionAlertDialog(DTH_Recharge_Service.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
 
                 }
-
 
                 break;
             case R.id.fetchbill:
                 try {
-                    valid=true;
                     JSONObject dataarray=getQuestionLabelDate(false);
-                    if(!valid)return;
-                    JSONObject jsonObject =new JSONObject();
-                    jsonObject.put("operatorcode",operatorcode);
-                    jsonObject.put("questionLabelData",dataarray.toString());
+                    if(dataarray==null)return;
+                    CustomerVO customerVO =new CustomerVO();
+                    customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(DTH_Recharge_Service.this)));
 
-                    proceedFetchBill(jsonObject);
+                    ServiceTypeVO serviceTypeVO =new ServiceTypeVO();
+                    serviceTypeVO.setServiceTypeId(ApplicationConstant.Gas);
 
+                    OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
+                    oxigenTransactionVO.setOperateName(operatorcode);
+                    oxigenTransactionVO.setCustomer(customerVO);
+                    oxigenTransactionVO.setServiceType(serviceTypeVO);
+                    oxigenTransactionVO.setAnonymousString(dataarray.toString());
+
+                    BillPayRequest.proceedFetchBill(oxigenTransactionVO,DTH_Recharge_Service.this,new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
+                        try {
+                            oxigenTransactionVOresp=(OxigenTransactionVO)s;
+                            fetchbill.setVisibility(View.GONE);
+                            amount.setText(oxigenTransactionVOresp.getAmount()+"");
+
+                            JSONArray dataArry =new JSONArray(oxigenTransactionVOresp.getAnonymousString());
+
+                            Typeface typeface = ResourcesCompat.getFont(DTH_Recharge_Service.this, R.font.poppinssemibold);
+                            for(int i=0 ;i<dataArry.length();i++){
+                                JSONObject jsonObject =dataArry.getJSONObject(i);
+
+                                LinearLayout et = new LinearLayout(new ContextThemeWrapper(DTH_Recharge_Service.this,R.style.confirmation_dialog_layout));
+
+                                et.setPadding(Utility.getPixelsFromDPs(DTH_Recharge_Service.this,10),Utility.getPixelsFromDPs(DTH_Recharge_Service.this,10),Utility.getPixelsFromDPs(DTH_Recharge_Service.this,10),Utility.getPixelsFromDPs(DTH_Recharge_Service.this,10));
+
+                                TextView text = new TextView(new ContextThemeWrapper(DTH_Recharge_Service.this, R.style.confirmation_dialog_filed));
+                                text.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float) 1));
+                                text.setText(jsonObject.getString("key"));
+                                text.setMaxLines(1);
+                                text.setEllipsize(TextUtils.TruncateAt.END);
+                                text.setTypeface(typeface);
+                                text.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+                                TextView value = new TextView(new ContextThemeWrapper(DTH_Recharge_Service.this, R.style.confirmation_dialog_value));
+                                value.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,1));
+                                value.setText(jsonObject.getString("value"));
+                                value.setTypeface(typeface);
+                                value.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+                                et.addView(text);
+                                et.addView(value);
+                                fetchbilllayout.addView(et);
+                            }
+                            fetchbillcard.setVisibility(View.VISIBLE);
+                        }catch (Exception e){
+                            e.printStackTrace();
+                            Utility.exceptionAlertDialog(DTH_Recharge_Service.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+                        }
+                    },(VolleyResponse.OnError)(e)->{
+                        fetchbill.setVisibility(View.VISIBLE);
+                    }));
                 }catch (Exception e){
                     e.printStackTrace();
                     Utility.exceptionAlertDialog(DTH_Recharge_Service.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
                 }
-                valid=true;
                 break;
         }
     }
 
     private JSONObject getQuestionLabelDate(boolean fetchBill) throws Exception{
-        amount.setError(null);
-        operator.setError(null);
-
-        if(fetchBill){
-            if(amount.getText().toString().equals("")){
-                amount.setError("this filed is required");
-                valid=false;
-            }
-        }
-
-        if(operator.getText().toString().equals("")){
-            operator.setError("this filed is required");
-            valid=false;
-        }
-
-        JSONObject jsonObject =new JSONObject();
-
-        for(OxigenQuestionsVO oxigenQuestionsVO:questionsVOS){
-
-            EditText editText =(EditText) findViewById(oxigenQuestionsVO.getElementId());
-            editText.clearFocus();
-            changeEdittextValue(editText);
-
-            editText.setError(null);
-            if(editText.getText().toString().equals("")){
-
-                editText.setError(  Utility.getErrorSpannableStringDynamicEditText(this, "this field is required"));
-                valid=false;
-            }else if(oxigenQuestionsVO.getMinLength()!=null && (editText.getText().toString().length() < Integer.parseInt(oxigenQuestionsVO.getMinLength()))){
-                editText.setError(oxigenQuestionsVO.getMinLength());
-                valid=false;
-            }else if(oxigenQuestionsVO.getMaxLength()!=null && (editText.getText().toString().length() > Integer.parseInt(oxigenQuestionsVO.getMaxLength()))){
-                editText.setError(oxigenQuestionsVO.getMaxLength());
-                valid=false;
-            }
-
-            jsonObject.put(oxigenQuestionsVO.getQuestionLabel(),editText.getText().toString());
-            //oxigenQuestionsVO.getJsonKey();
-            //editText.getText().toString();
-
-        }
-        return jsonObject;
+        return BillPayRequest.getQuestionLabelData(DTH_Recharge_Service.this,operator,amount,fetchBill,isFetchBill, questionsVOS);
     }
-
-
 
     public void removefetchbilllayout(){
         if(fetchbilllayout.getChildCount()>0) {
@@ -356,124 +365,5 @@ public class DTH_Recharge_Service extends AppCompatActivity implements View.OnCl
             }
         });
 
-    }
-
-
-    private  void proceedRecharge(JSONObject jsonObject){
-    }
-
-
-    private void proceedFetchBill(JSONObject jsonObject) throws Exception{
-
-        try {
-            Gson gson =new Gson();
-
-            HashMap<String, Object> params = new HashMap<String, Object>();
-            ConnectionVO connectionVO = Electricity_BillBO.oxiFetchBill();
-
-            params.put("volley",jsonObject.toString());
-
-            Log.w("proceedFetchBill",jsonObject.toString());
-            connectionVO.setParams(params);
-
-            VolleyUtils.makeJsonObjectRequest(DTH_Recharge_Service.this,connectionVO, new VolleyResponseListener() {
-                @Override
-                public void onError(String message) {
-                }
-                @Override
-                public void onResponse(Object resp) throws JSONException {
-                    JSONObject response = (JSONObject) resp;
-                    Gson gson = new Gson();
-                    CustomerVO customerVO = gson.fromJson(response.toString(), CustomerVO.class);
-
-                    if(customerVO.getStatusCode().equals("400")){
-                        ArrayList error = (ArrayList) customerVO.getErrorMsgs();
-                        StringBuilder sb = new StringBuilder();
-                        for(int i=0; i<error.size(); i++){
-                            sb.append(error.get(i)).append("\n");
-                        }
-                        fetchbill.setVisibility(View.VISIBLE);
-                        Utility.showSingleButtonDialog(DTH_Recharge_Service.this,"Error !",sb.toString(),false);
-                    }else {
-                        fetchbill.setVisibility(View.GONE);
-
-
-                        JSONArray dataArry=new JSONArray();
-                        JSONObject jsonObject1 =new JSONObject(customerVO.getAnonymousString());
-
-                        JSONObject jsonresponseInfo =jsonObject1.getJSONObject("serviceResponse").getJSONObject("responseInfo");
-
-                        if(jsonresponseInfo.getString("responseCode").equals("0")){
-                            JSONObject jsonBillerResponse =jsonObject1.getJSONObject("serviceResponse").getJSONObject("OperatorResponse").getJSONObject("BillerResponse");
-
-                            JSONObject datajson=new JSONObject();
-                            datajson.put("key","Amount");
-                            datajson.put("value",jsonBillerResponse.getString("NetAmount"));
-                            amount.setText(jsonBillerResponse.getString("NetAmount"));
-                            dataArry.put(datajson);
-
-                            datajson=new JSONObject();
-                            datajson.put("key","BillDate");
-                            datajson.put("value",jsonBillerResponse.getString("BillDate"));
-                            dataArry.put(datajson);
-
-                            datajson=new JSONObject();
-                            datajson.put("key","Customer Name");
-                            datajson.put("value",jsonBillerResponse.getString("CustomerName"));
-                            dataArry.put(datajson);
-
-                            datajson=new JSONObject();
-                            datajson.put("key","DueDate");
-                            datajson.put("value",jsonBillerResponse.getString("DueDate"));
-                            dataArry.put(datajson);
-
-                            datajson=new JSONObject();
-                            datajson.put("key","BillPeriod");
-                            datajson.put("value",jsonBillerResponse.getString("BillPeriod"));
-                            dataArry.put(datajson);
-
-                            Typeface typeface = ResourcesCompat.getFont(DTH_Recharge_Service.this, R.font.poppinssemibold);
-                            for(int i=0 ;i<dataArry.length();i++){
-                                JSONObject jsonObject =dataArry.getJSONObject(i);
-
-                                LinearLayout et = new LinearLayout(new ContextThemeWrapper(DTH_Recharge_Service.this,R.style.confirmation_dialog_layout));
-
-                                et.setPadding(Utility.getPixelsFromDPs(DTH_Recharge_Service.this,10),Utility.getPixelsFromDPs(DTH_Recharge_Service.this,10),Utility.getPixelsFromDPs(DTH_Recharge_Service.this,10),Utility.getPixelsFromDPs(DTH_Recharge_Service.this,10));
-
-                                TextView text = new TextView(new ContextThemeWrapper(DTH_Recharge_Service.this, R.style.confirmation_dialog_filed));
-                                text.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float) 1));
-                                text.setText(jsonObject.getString("key"));
-                                text.setMaxLines(1);
-                                text.setEllipsize(TextUtils.TruncateAt.END);
-                                text.setTypeface(typeface);
-                                text.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-
-
-                                TextView value = new TextView(new ContextThemeWrapper(DTH_Recharge_Service.this, R.style.confirmation_dialog_value));
-                                value.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,1));
-                                value.setText(jsonObject.getString("value"));
-                                value.setTypeface(typeface);
-                                value.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-
-                                et.addView(text);
-                                et.addView(value);
-                                fetchbilllayout.addView(et);
-                            }
-                            fetchbillcard.setVisibility(View.VISIBLE);
-                        }else if(jsonresponseInfo.getString("responseCode").equals("01")){
-                            fetchbill.setVisibility(View.VISIBLE);
-                            Utility.showSingleButtonDialogconfirmation(DTH_Recharge_Service.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
-                                ok.dismiss();
-                            }),"Alert",jsonresponseInfo.getString("responseDescription"));
-                        }
-
-
-                    }
-                }
-            });
-        } catch (Exception e) {
-            Utility.exceptionAlertDialog(DTH_Recharge_Service.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
-
-        }
     }
 }

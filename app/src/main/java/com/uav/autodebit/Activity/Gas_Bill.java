@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.uav.autodebit.BO.Electricity_BillBO;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
+import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.override.UAVProgressDialog;
@@ -63,7 +64,7 @@ public class Gas_Bill extends AppCompatActivity implements View.OnClickListener 
     List<OxigenQuestionsVO> questionsVOS= new ArrayList<OxigenQuestionsVO>();
     CardView fetchbillcard;
 
-    boolean valid=true;
+    boolean isFetchBill=true;
     String operatorListDate;
     UAVProgressDialog pd;
 
@@ -149,6 +150,7 @@ public class Gas_Bill extends AppCompatActivity implements View.OnClickListener 
                 dataAdapterVO.setQuestionsData(object.getString("questionsData"));
                 dataAdapterVO.setImageUrl(object.has("imageUrl") ?object.getString("imageUrl"):null);
                 dataAdapterVO.setAssociatedValue(object.getString("service"));
+                dataAdapterVO.setIsbillFetch(object.getString("isbillFetch"));
                 datalist.add(dataAdapterVO);
             }
         } catch (JSONException e) {
@@ -181,6 +183,16 @@ public class Gas_Bill extends AppCompatActivity implements View.OnClickListener 
                         operator.setError(null);
                         amount.setError(null);
 
+                        //add fetch bill btn
+                        if (dataAdapterVO.getIsbillFetch().equals("1")) {
+                            fetchbill.setVisibility(View.VISIBLE);
+                            amount.setEnabled(false);
+                            isFetchBill=true;
+                        } else {
+                            fetchbill.setVisibility(View.GONE);
+                            amount.setEnabled(true);
+                            isFetchBill=false;
+                        }
                         //Remove dynamic cards from the layout and arraylist
                         if(dynamicCardViewContainer.getChildCount()>0) dynamicCardViewContainer.removeAllViews();
                         removefetchbilllayout();
@@ -201,6 +213,7 @@ public class Gas_Bill extends AppCompatActivity implements View.OnClickListener 
                                 EditText et = Utility.getEditText(Gas_Bill.this);
                                 et.setId(View.generateViewId());
                                 et.setHint(oxigenQuestionsVO.getQuestionLabel());
+                                changeEdittextValue(et);
                                 cardView.addView(et);
                                 dynamicCardViewContainer.addView(cardView);
                                 if(oxigenQuestionsVO.getInstructions()!=null){
@@ -224,6 +237,7 @@ public class Gas_Bill extends AppCompatActivity implements View.OnClickListener 
 
     @Override
     public void onClick(View view) {
+        Utility.hideKeyboard(Gas_Bill.this);
         switch (view.getId()){
             case R.id.back_activity_button1:
                 finish();
@@ -231,40 +245,34 @@ public class Gas_Bill extends AppCompatActivity implements View.OnClickListener 
             case R.id.proceed:
 
                 try {
-                    valid=true;
-
                     JSONObject dataarray=getQuestionLabelDate(true);
-                    if(!valid)return;
-
-                    JSONObject jsonObject =new JSONObject();
-                    jsonObject.put("operatorcode",operatorcode);
-                    jsonObject.put("amount",amount.getText().toString());
-                    jsonObject.put("questionLabelDate",dataarray.toString());
-
-                    proceedRecharge(oxigenTransactionVOresp);
-
+                    if(dataarray==null)return;
+                    if(isFetchBill){
+                        BillPayRequest.proceedRecharge(Gas_Bill.this,isFetchBill,oxigenTransactionVOresp, ApplicationConstant.Gas);
+                    }else {
+                        BillPayRequest.confirmationDialogBillPay(Gas_Bill.this, operator, amount ,dataarray , new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                            OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
+                            oxigenTransactionVO.setOperateName(operatorcode);
+                            oxigenTransactionVO.setAmount(Double.valueOf(amount.getText().toString()));
+                            oxigenTransactionVO.setAnonymousString(dataarray.toString());
+                            BillPayRequest.proceedRecharge(Gas_Bill.this,isFetchBill,oxigenTransactionVO,ApplicationConstant.Gas);
+                        }));
+                    }
                 }catch (Exception e){
                     e.printStackTrace();
                     Utility.exceptionAlertDialog(Gas_Bill.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
 
                 }
-
-
                 break;
             case R.id.fetchbill:
                 try {
-                    Utility.hideKeyboard(Gas_Bill.this);
-
-                    valid=true;
                     JSONObject dataarray=getQuestionLabelDate(false);
-                    if(!valid)return;
-                    JSONObject jsonObject =new JSONObject();
-
+                    if(dataarray==null)return;
                     CustomerVO customerVO =new CustomerVO();
                     customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(Gas_Bill.this)));
 
                     ServiceTypeVO serviceTypeVO =new ServiceTypeVO();
-                    serviceTypeVO.setServiceTypeId(ApplicationConstant.Water);
+                    serviceTypeVO.setServiceTypeId(ApplicationConstant.Gas);
 
                     OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
                     oxigenTransactionVO.setOperateName(operatorcode);
@@ -272,63 +280,60 @@ public class Gas_Bill extends AppCompatActivity implements View.OnClickListener 
                     oxigenTransactionVO.setServiceType(serviceTypeVO);
                     oxigenTransactionVO.setAnonymousString(dataarray.toString());
 
-                    proceedFetchBill(oxigenTransactionVO);
+                    BillPayRequest.proceedFetchBill(oxigenTransactionVO,Gas_Bill.this,new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
+                        try {
+                            oxigenTransactionVOresp=(OxigenTransactionVO)s;
+                            fetchbill.setVisibility(View.GONE);
+                            amount.setText(oxigenTransactionVOresp.getAmount()+"");
 
+                            JSONArray dataArry =new JSONArray(oxigenTransactionVOresp.getAnonymousString());
+
+                            Typeface typeface = ResourcesCompat.getFont(Gas_Bill.this, R.font.poppinssemibold);
+                            for(int i=0 ;i<dataArry.length();i++){
+                                JSONObject jsonObject =dataArry.getJSONObject(i);
+
+                                LinearLayout et = new LinearLayout(new ContextThemeWrapper(Gas_Bill.this,R.style.confirmation_dialog_layout));
+
+                                et.setPadding(Utility.getPixelsFromDPs(Gas_Bill.this,10),Utility.getPixelsFromDPs(Gas_Bill.this,10),Utility.getPixelsFromDPs(Gas_Bill.this,10),Utility.getPixelsFromDPs(Gas_Bill.this,10));
+
+                                TextView text = new TextView(new ContextThemeWrapper(Gas_Bill.this, R.style.confirmation_dialog_filed));
+                                text.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float) 1));
+                                text.setText(jsonObject.getString("key"));
+                                text.setMaxLines(1);
+                                text.setEllipsize(TextUtils.TruncateAt.END);
+                                text.setTypeface(typeface);
+                                text.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+                                TextView value = new TextView(new ContextThemeWrapper(Gas_Bill.this, R.style.confirmation_dialog_value));
+                                value.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,1));
+                                value.setText(jsonObject.getString("value"));
+                                value.setTypeface(typeface);
+                                value.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+                                et.addView(text);
+                                et.addView(value);
+                                fetchbilllayout.addView(et);
+                            }
+                            fetchbillcard.setVisibility(View.VISIBLE);
+                        }catch (Exception e){
+                            e.printStackTrace();
+                            Utility.exceptionAlertDialog(Gas_Bill.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+                        }
+                    },(VolleyResponse.OnError)(e)->{
+                        fetchbill.setVisibility(View.VISIBLE);
+                    }));
                 }catch (Exception e){
                     e.printStackTrace();
                     Utility.exceptionAlertDialog(Gas_Bill.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
                 }
-                valid=true;
                 break;
         }
     }
 
+
     private JSONObject getQuestionLabelDate(boolean fetchBill) throws Exception{
-        amount.setError(null);
-        operator.setError(null);
-
-        if(fetchBill){
-            if(amount.getText().toString().equals("")){
-                amount.setError("this filed is required");
-                valid=false;
-            }
-        }
-
-        if(operator.getText().toString().equals("")){
-            operator.setError("this filed is required");
-            valid=false;
-        }
-
-        JSONObject jsonObject =new JSONObject();
-
-        for(OxigenQuestionsVO oxigenQuestionsVO:questionsVOS){
-
-            EditText editText =(EditText) findViewById(oxigenQuestionsVO.getElementId());
-            editText.clearFocus();
-            changeEdittextValue(editText);
-
-            editText.setError(null);
-            if(editText.getText().toString().equals("")){
-
-                editText.setError(  Utility.getErrorSpannableStringDynamicEditText(this, "this field is required"));
-                valid=false;
-            }else if(oxigenQuestionsVO.getMinLength()!=null && (editText.getText().toString().length() < Integer.parseInt(oxigenQuestionsVO.getMinLength()))){
-                editText.setError(oxigenQuestionsVO.getMinLength());
-                valid=false;
-            }else if(oxigenQuestionsVO.getMaxLength()!=null && (editText.getText().toString().length() > Integer.parseInt(oxigenQuestionsVO.getMaxLength()))){
-                editText.setError(oxigenQuestionsVO.getMaxLength());
-                valid=false;
-            }
-
-            jsonObject.put(oxigenQuestionsVO.getQuestionLabel(),editText.getText().toString());
-            //oxigenQuestionsVO.getJsonKey();
-            //editText.getText().toString();
-
-        }
-        return jsonObject;
+        return BillPayRequest.getQuestionLabelData(Gas_Bill.this,operator,amount,fetchBill,isFetchBill, questionsVOS);
     }
-
-
 
     public void removefetchbilllayout(){
         oxigenTransactionVOresp=new OxigenTransactionVO();
@@ -358,90 +363,4 @@ public class Gas_Bill extends AppCompatActivity implements View.OnClickListener 
 
     }
 
-
-    private  void proceedRecharge(OxigenTransactionVO oxigenTransactionVO){
-    }
-
-
-    private void proceedFetchBill(OxigenTransactionVO oxigenTransactionVO) throws Exception{
-
-        try {
-            Gson gson =new Gson();
-
-            HashMap<String, Object> params = new HashMap<String, Object>();
-            ConnectionVO connectionVO = Electricity_BillBO.oxiFetchBill();
-
-            params.put("volley",gson.toJson(oxigenTransactionVO));
-
-            Log.w("proceedFetchBill",gson.toJson(oxigenTransactionVO));
-            connectionVO.setParams(params);
-
-            VolleyUtils.makeJsonObjectRequest(Gas_Bill.this,connectionVO, new VolleyResponseListener() {
-                @Override
-                public void onError(String message) {
-                }
-                @Override
-                public void onResponse(Object resp) throws JSONException {
-                    JSONObject response = (JSONObject) resp;
-
-                    Log.w("respele",response.toString());
-                    Gson gson = new Gson();
-                    oxigenTransactionVOresp = gson.fromJson(response.toString(), OxigenTransactionVO.class);
-
-                    if(oxigenTransactionVOresp.getStatusCode().equals("400")){
-                        ArrayList error = (ArrayList) oxigenTransactionVOresp.getErrorMsgs();
-                        StringBuilder sb = new StringBuilder();
-                        for(int i=0; i<error.size(); i++){
-                            sb.append(error.get(i)).append("\n");
-                        }
-                        fetchbill.setVisibility(View.VISIBLE);
-                        Utility.showSingleButtonDialog(Gas_Bill.this,"Error !",sb.toString(),false);
-                    }else if(oxigenTransactionVOresp.getStatusCode().equals("01")){
-                        fetchbill.setVisibility(View.VISIBLE);
-                        Utility.showSingleButtonDialogconfirmation(Gas_Bill.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
-                            ok.dismiss();
-                        }),"Alert",oxigenTransactionVOresp.getAnonymousString());
-                    }else {
-                        fetchbill.setVisibility(View.GONE);
-                        amount.setText(oxigenTransactionVOresp.getAmount()+"");
-
-                        JSONArray dataArry =new JSONArray(oxigenTransactionVOresp.getAnonymousString());
-
-                        Typeface typeface = ResourcesCompat.getFont(Gas_Bill.this, R.font.poppinssemibold);
-                        for(int i=0 ;i<dataArry.length();i++){
-                            JSONObject jsonObject =dataArry.getJSONObject(i);
-
-                            LinearLayout et = new LinearLayout(new ContextThemeWrapper(Gas_Bill.this,R.style.confirmation_dialog_layout));
-
-                            et.setPadding(Utility.getPixelsFromDPs(Gas_Bill.this,10),Utility.getPixelsFromDPs(Gas_Bill.this,10),Utility.getPixelsFromDPs(Gas_Bill.this,10),Utility.getPixelsFromDPs(Gas_Bill.this,10));
-
-                            TextView text = new TextView(new ContextThemeWrapper(Gas_Bill.this, R.style.confirmation_dialog_filed));
-                            text.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float) 1));
-                            text.setText(jsonObject.getString("key"));
-                            text.setMaxLines(1);
-                            text.setEllipsize(TextUtils.TruncateAt.END);
-                            text.setTypeface(typeface);
-                            text.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-
-
-                            TextView value = new TextView(new ContextThemeWrapper(Gas_Bill.this, R.style.confirmation_dialog_value));
-                            value.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,1));
-                            value.setText(jsonObject.getString("value"));
-                            value.setTypeface(typeface);
-                            value.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-
-                            et.addView(text);
-                            et.addView(value);
-                            fetchbilllayout.addView(et);
-                        }
-                        fetchbillcard.setVisibility(View.VISIBLE);
-                    }
-                }
-
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-            Utility.exceptionAlertDialog(Gas_Bill.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
-        }
-    }
 }

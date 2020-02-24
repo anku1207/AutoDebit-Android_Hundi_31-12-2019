@@ -196,14 +196,7 @@ public class LandlineBill extends AppCompatActivity implements View.OnClickListe
                         operator.setError(null);
                         amount.setError(null);
 
-                        //add fetch bill btn
-                        if (dataAdapterVO.getIsbillFetch().equals("1")) {
-                            fetchbill.setVisibility(View.VISIBLE);
-                            amount.setEnabled(false);
-                        } else {
-                            fetchbill.setVisibility(View.GONE);
-                            amount.setEnabled(true);
-                        }
+
                         //add fetch bill btn
                         if (dataAdapterVO.getIsbillFetch().equals("1")) {
                             fetchbill.setVisibility(View.VISIBLE);
@@ -271,14 +264,14 @@ public class LandlineBill extends AppCompatActivity implements View.OnClickListe
                     JSONObject dataarray=getQuestionLabelDate(true);
                     if(dataarray==null)return;
                     if(isFetchBill){
-                        BillPayRequest.proceedRecharge(LandlineBill.this,isFetchBill,oxigenTransactionVOresp);
+                        BillPayRequest.proceedRecharge(LandlineBill.this,isFetchBill,oxigenTransactionVOresp,ApplicationConstant.Landline);
                     }else {
                         BillPayRequest.confirmationDialogBillPay(LandlineBill.this, operator, amount ,dataarray , new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
                             OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
                             oxigenTransactionVO.setOperateName(operatorcode);
                             oxigenTransactionVO.setAmount(Double.valueOf(amount.getText().toString()));
                             oxigenTransactionVO.setAnonymousString(dataarray.toString());
-                            BillPayRequest.proceedRecharge(LandlineBill.this,isFetchBill,oxigenTransactionVO);
+                            BillPayRequest.proceedRecharge(LandlineBill.this,isFetchBill,oxigenTransactionVO,ApplicationConstant.Landline);
                         }));
                     }
                 }catch (Exception e){

@@ -47,7 +47,7 @@ public class D2H extends AppCompatActivity implements View.OnClickListener {
 
     EditText accountnumber;
     Button proceed;
-    
+
     Context context;
     LinearLayout plandetailslayout;
 

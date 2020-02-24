@@ -229,9 +229,7 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
                         //Remove dynamic cards from the layout and arraylist
                         if(dynamicCardViewContainer.getChildCount()>0) dynamicCardViewContainer.removeAllViews();
                         removefetchbilllayout();
-
                         questionsVOS.clear();
-
                         //Create dynamic cards of edit text
                         if(dataAdapterVO.getQuestionsData() !=null){
                             JSONArray jsonArray = new JSONArray(dataAdapterVO.getQuestionsData());
@@ -267,7 +265,6 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
                                         }
                                     });
                                 }
-
                                 cardView.addView(et);
                                 dynamicCardViewContainer.addView(cardView);
                                 if(oxigenQuestionsVO.getInstructions()!=null){
@@ -325,14 +322,14 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
                     if(dataarray==null)return;
 
                     if(isFetchBill){
-                        BillPayRequest.proceedRecharge(Mobile_Postpaid.this,isFetchBill,oxigenTransactionVOresp);
+                        BillPayRequest.proceedRecharge(Mobile_Postpaid.this,isFetchBill,oxigenTransactionVOresp,ApplicationConstant.MobilePostpaid);
                     }else {
                         BillPayRequest.confirmationDialogBillPay(Mobile_Postpaid.this, operator, amount ,dataarray , new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
                             OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
                             oxigenTransactionVO.setOperateName(operatorcode);
                             oxigenTransactionVO.setAmount(Double.valueOf(amount.getText().toString()));
                             oxigenTransactionVO.setAnonymousString(dataarray.toString());
-                            BillPayRequest.proceedRecharge(Mobile_Postpaid.this,isFetchBill,oxigenTransactionVO);
+                            BillPayRequest.proceedRecharge(Mobile_Postpaid.this,isFetchBill,oxigenTransactionVO,ApplicationConstant.MobilePostpaid);
                         }));
                     }
                 }catch (Exception e){
@@ -350,7 +347,7 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
                     customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(Mobile_Postpaid.this)));
 
                     ServiceTypeVO serviceTypeVO =new ServiceTypeVO();
-                    serviceTypeVO.setServiceTypeId(ApplicationConstant.Electricity);
+                    serviceTypeVO.setServiceTypeId(ApplicationConstant.MobilePostpaid);
 
                     OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
                     oxigenTransactionVO.setOperateName(operatorcode);

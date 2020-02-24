@@ -20,7 +20,7 @@ public class ApplicationConstant {
     public final static  boolean IS_PRODUCTION_ENVIRONMENT=false;
 
 
-    public static int MobilePostpaid=14,d2h=17,Dmrc=2,Electricity=10,Landline=7,Water=12;
+    public static int MobilePostpaid=14,d2h=17,Dmrc=2,Electricity=10,Landline=7,Water=12,Broadband=8,PNG=6,Gas=11;
 
     public static int  REQ_ENACH_MANDATE=1003,REQ_ALLSERVICE=1004,REQ_AdditionalService_Add_More=1005;
 

@@ -185,7 +185,6 @@ public class Electricity_Bill extends AppCompatActivity  implements View.OnClick
 
                         amountlayout.setVisibility(View.VISIBLE);
 
-
                         DataAdapterVO dataAdapterVO = (DataAdapterVO) data.getSerializableExtra("datavo");
                         operator.setText(operatorname);
                         operator.setTag(operatorcode);
@@ -217,14 +216,12 @@ public class Electricity_Bill extends AppCompatActivity  implements View.OnClick
                                 OxigenQuestionsVO oxigenQuestionsVO = gson.fromJson(jsonObject.toString(), OxigenQuestionsVO.class);
 
                                 CardView cardView = Utility.getCardViewStyle(this);
-                                //EditText et = new EditText(new ContextThemeWrapper(this,R.style.edittext));
 
                                 EditText et = Utility.getEditText(Electricity_Bill.this);
                                 et.setId(View.generateViewId());
                                 et.setHint(oxigenQuestionsVO.getQuestionLabel());
 
                                 changeEdittextValue(et);
-
 
                                 cardView.addView(et);
                                 dynamicCardViewContainer.addView(cardView);
@@ -255,32 +252,25 @@ public class Electricity_Bill extends AppCompatActivity  implements View.OnClick
                 finish();
                 break;
             case R.id.proceed:
-
                 try {
                     JSONObject dataarray=getQuestionLabelDate(true);
                     if(dataarray==null)return;
-
                     if(isFetchBill){
-                        BillPayRequest.proceedRecharge(Electricity_Bill.this,isFetchBill,oxigenTransactionVOresp);
-
+                        BillPayRequest.proceedRecharge(Electricity_Bill.this,isFetchBill,oxigenTransactionVOresp,ApplicationConstant.Electricity);
                     }else {
                         BillPayRequest.confirmationDialogBillPay(Electricity_Bill.this, operator, amount ,dataarray , new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
                             OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
                             oxigenTransactionVO.setOperateName(operatorcode);
                             oxigenTransactionVO.setAmount(Double.valueOf(amount.getText().toString()));
                             oxigenTransactionVO.setAnonymousString(dataarray.toString());
-                            BillPayRequest.proceedRecharge(Electricity_Bill.this,isFetchBill,oxigenTransactionVO);
+                            BillPayRequest.proceedRecharge(Electricity_Bill.this,isFetchBill,oxigenTransactionVO,ApplicationConstant.Electricity);
 
                         }));
                     }
-
-
                 }catch (Exception e){
                     e.printStackTrace();
                     Utility.exceptionAlertDialog(Electricity_Bill.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
-
                 }
-
 
                 break;
             case R.id.fetchbill:
@@ -357,9 +347,6 @@ public class Electricity_Bill extends AppCompatActivity  implements View.OnClick
     private JSONObject getQuestionLabelDate(boolean fetchBill) throws Exception{
         return BillPayRequest.getQuestionLabelData(Electricity_Bill.this,operator,amount,fetchBill,isFetchBill, questionsVOS);
     }
-
-
-
 
     public void removefetchbilllayout(){
 

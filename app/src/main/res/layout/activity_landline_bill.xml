@@ -166,7 +166,6 @@
                         android:inputType="number|numberDecimal"
                         android:digits="@string/NumberDigits"
                         android:maxLines="1"
-                        android:layout_marginRight="60dp"
                         style="@style/commonEdittextStyle"/>
 
                     <TextView

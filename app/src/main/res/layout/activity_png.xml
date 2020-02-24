@@ -148,20 +148,19 @@
 
                     <EditText
                         android:id="@+id/amount"
-                        style="@style/commonEdittextStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
                         android:layout_alignParentTop="true"
-                        android:layout_marginRight="60dp"
-                        android:backgroundTint="@color/white"
-                        android:digits="@string/NumberDigits"
                         android:drawableLeft="@drawable/amount"
+                        android:backgroundTint="@color/white"
                         android:hint="Amount"
-                        android:inputType="number|numberDecimal"
+                        android:singleLine="true"
                         android:maxLength="10"
+                        android:inputType="number|numberDecimal"
+                        android:digits="@string/NumberDigits"
                         android:maxLines="1"
-                        android:singleLine="true" />
+                        style="@style/commonEdittextStyle"/>
 
                     <TextView
                         android:id="@+id/fetchbill"
@@ -170,13 +169,13 @@
                         android:layout_alignBaseline="@+id/amount"
                         android:layout_alignBottom="@+id/amount"
                         android:layout_alignParentRight="true"
-                        android:layout_marginBottom="0dp"
                         android:layout_marginRight="5dp"
-                        android:backgroundTint="@color/white"
-                        android:padding="10dp"
+                        android:layout_marginBottom="0dp"
                         android:text="FetchBill"
+                        android:textSize="10dp"
+                        android:backgroundTint="@color/white"
                         android:textColor="@color/appbar"
-                        android:textSize="10dp" />
+                        android:padding="10dp"/>
                 </RelativeLayout>
 
             </android.support.v7.widget.CardView>

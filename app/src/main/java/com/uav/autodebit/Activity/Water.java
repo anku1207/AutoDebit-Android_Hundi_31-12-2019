@@ -155,6 +155,7 @@ public class Water extends AppCompatActivity implements View.OnClickListener {
                 dataAdapterVO.setQuestionsData(object.getString("questionsData"));
                 dataAdapterVO.setImageUrl(object.has("imageUrl") ?object.getString("imageUrl"):null);
                 dataAdapterVO.setAssociatedValue(object.getString("service"));
+                dataAdapterVO.setIsbillFetch(object.getString("isbillFetch"));
                 datalist.add(dataAdapterVO);
             }
         } catch (JSONException e) {
@@ -258,7 +259,7 @@ public class Water extends AppCompatActivity implements View.OnClickListener {
                     if(dataarray==null)return;
 
                     if(isFetchBill){
-                        BillPayRequest.proceedRecharge(Water.this,isFetchBill,oxigenTransactionVOresp);
+                        BillPayRequest.proceedRecharge(Water.this,isFetchBill,oxigenTransactionVOresp,ApplicationConstant.Water);
 
                     }else {
                         BillPayRequest.confirmationDialogBillPay(Water.this, operator, amount ,dataarray , new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
@@ -266,7 +267,7 @@ public class Water extends AppCompatActivity implements View.OnClickListener {
                             oxigenTransactionVO.setOperateName(operatorcode);
                             oxigenTransactionVO.setAmount(Double.valueOf(amount.getText().toString()));
                             oxigenTransactionVO.setAnonymousString(dataarray.toString());
-                            BillPayRequest.proceedRecharge(Water.this,isFetchBill,oxigenTransactionVO);
+                            BillPayRequest.proceedRecharge(Water.this,isFetchBill,oxigenTransactionVO,ApplicationConstant.Water);
                         }));
                     }
                 }catch (Exception e){
@@ -374,24 +375,5 @@ public class Water extends AppCompatActivity implements View.OnClickListener {
             }
         });
 
-    }
-
-
-    private  void proceedRecharge(OxigenTransactionVO oxigenTransactionVO){
-        if(oxigenTransactionVO==null){
-            Utility.showSingleButtonDialogconfirmation(Water.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
-                ok.dismiss();
-            }),"Alert","Empty Filed not Allow!");
-        }else if(isFetchBill && oxigenTransactionVO.getTypeId()==null){
-            Utility.showSingleButtonDialogconfirmation(Water.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
-                ok.dismiss();
-            }),"Alert","Bill Fetch Is required!");
-        }else {
-            BillPayRequest.proceedBillPayment(oxigenTransactionVO,Water.this,new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
-                startActivity(new Intent(Water.this,History.class));
-                finish();
-            },(VolleyResponse.OnError)(e)->{
-            }));
-        }
     }
 }
