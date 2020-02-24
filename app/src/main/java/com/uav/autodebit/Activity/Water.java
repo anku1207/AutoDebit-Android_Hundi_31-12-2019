@@ -258,14 +258,15 @@ public class Water extends AppCompatActivity implements View.OnClickListener {
                     if(dataarray==null)return;
 
                     if(isFetchBill){
-                        proceedRecharge(oxigenTransactionVOresp);
+                        BillPayRequest.proceedRecharge(Water.this,isFetchBill,oxigenTransactionVOresp);
+
                     }else {
                         BillPayRequest.confirmationDialogBillPay(Water.this, operator, amount ,dataarray , new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
                             OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
                             oxigenTransactionVO.setOperateName(operatorcode);
                             oxigenTransactionVO.setAmount(Double.valueOf(amount.getText().toString()));
                             oxigenTransactionVO.setAnonymousString(dataarray.toString());
-                            proceedRecharge(oxigenTransactionVO);
+                            BillPayRequest.proceedRecharge(Water.this,isFetchBill,oxigenTransactionVO);
                         }));
                     }
                 }catch (Exception e){

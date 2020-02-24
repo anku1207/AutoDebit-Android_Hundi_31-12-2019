@@ -271,14 +271,14 @@ public class LandlineBill extends AppCompatActivity implements View.OnClickListe
                     JSONObject dataarray=getQuestionLabelDate(true);
                     if(dataarray==null)return;
                     if(isFetchBill){
-                        proceedRecharge(oxigenTransactionVOresp);
+                        BillPayRequest.proceedRecharge(LandlineBill.this,isFetchBill,oxigenTransactionVOresp);
                     }else {
                         BillPayRequest.confirmationDialogBillPay(LandlineBill.this, operator, amount ,dataarray , new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
                             OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
                             oxigenTransactionVO.setOperateName(operatorcode);
                             oxigenTransactionVO.setAmount(Double.valueOf(amount.getText().toString()));
                             oxigenTransactionVO.setAnonymousString(dataarray.toString());
-                            proceedRecharge(oxigenTransactionVO);
+                            BillPayRequest.proceedRecharge(LandlineBill.this,isFetchBill,oxigenTransactionVO);
                         }));
                     }
                 }catch (Exception e){
@@ -382,22 +382,5 @@ public class LandlineBill extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-    }
-
-
-
-
-    private  void proceedRecharge(OxigenTransactionVO oxigenTransactionVO){
-        if(oxigenTransactionVO==null){
-            Utility.showSingleButtonDialogconfirmation(LandlineBill.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk) Dialog::dismiss),"Alert","Empty Filed not Allow!");
-        }else if(isFetchBill && oxigenTransactionVO.getTypeId()==null){
-            Utility.showSingleButtonDialogconfirmation(LandlineBill.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk) Dialog::dismiss),"Alert","Bill Fetch Is required!");
-        }else {
-            BillPayRequest.proceedBillPayment(oxigenTransactionVO,LandlineBill.this,new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
-                startActivity(new Intent(LandlineBill.this,History.class));
-                finish();
-            },(VolleyResponse.OnError)(e)->{
-            }));
-        }
     }
 }

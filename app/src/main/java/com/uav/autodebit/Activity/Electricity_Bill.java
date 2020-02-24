@@ -261,14 +261,16 @@ public class Electricity_Bill extends AppCompatActivity  implements View.OnClick
                     if(dataarray==null)return;
 
                     if(isFetchBill){
-                        proceedRecharge(oxigenTransactionVOresp);
+                        BillPayRequest.proceedRecharge(Electricity_Bill.this,isFetchBill,oxigenTransactionVOresp);
+
                     }else {
                         BillPayRequest.confirmationDialogBillPay(Electricity_Bill.this, operator, amount ,dataarray , new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
                             OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
                             oxigenTransactionVO.setOperateName(operatorcode);
                             oxigenTransactionVO.setAmount(Double.valueOf(amount.getText().toString()));
                             oxigenTransactionVO.setAnonymousString(dataarray.toString());
-                            proceedRecharge(oxigenTransactionVO);
+                            BillPayRequest.proceedRecharge(Electricity_Bill.this,isFetchBill,oxigenTransactionVO);
+
                         }));
                     }
 
@@ -386,24 +388,5 @@ public class Electricity_Bill extends AppCompatActivity  implements View.OnClick
             }
         });
 
-    }
-
-
-    private  void proceedRecharge(OxigenTransactionVO oxigenTransactionVO){
-        if(oxigenTransactionVO==null){
-            Utility.showSingleButtonDialogconfirmation(Electricity_Bill.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
-                ok.dismiss();
-            }),"Alert","Empty Filed not Allow!");
-        }else if(isFetchBill && oxigenTransactionVO.getTypeId()==null){
-            Utility.showSingleButtonDialogconfirmation(Electricity_Bill.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
-                ok.dismiss();
-            }),"Alert","Bill Fetch Is required!");
-        }else {
-            BillPayRequest.proceedBillPayment(oxigenTransactionVO,Electricity_Bill.this,new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
-                startActivity(new Intent(Electricity_Bill.this,History.class));
-                finish();
-            },(VolleyResponse.OnError)(e)->{
-            }));
-        }
     }
 }

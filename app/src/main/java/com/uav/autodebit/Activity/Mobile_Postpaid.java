@@ -325,20 +325,19 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
                     if(dataarray==null)return;
 
                     if(isFetchBill){
-                        proceedRecharge(oxigenTransactionVOresp);
+                        BillPayRequest.proceedRecharge(Mobile_Postpaid.this,isFetchBill,oxigenTransactionVOresp);
                     }else {
                         BillPayRequest.confirmationDialogBillPay(Mobile_Postpaid.this, operator, amount ,dataarray , new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
                             OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
                             oxigenTransactionVO.setOperateName(operatorcode);
                             oxigenTransactionVO.setAmount(Double.valueOf(amount.getText().toString()));
                             oxigenTransactionVO.setAnonymousString(dataarray.toString());
-                            proceedRecharge(oxigenTransactionVO);
+                            BillPayRequest.proceedRecharge(Mobile_Postpaid.this,isFetchBill,oxigenTransactionVO);
                         }));
                     }
                 }catch (Exception e){
                     e.printStackTrace();
                     Utility.exceptionAlertDialog(Mobile_Postpaid.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
-
                 }
                 break;
             case R.id.fetchbill:
@@ -441,22 +440,5 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
     }
 
 
-    private  void proceedRecharge(OxigenTransactionVO oxigenTransactionVO){
-        if(oxigenTransactionVO==null){
-            Utility.showSingleButtonDialogconfirmation(Mobile_Postpaid.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
-                ok.dismiss();
-            }),"Alert","Empty Filed not Allow!");
-        }else if(isFetchBill && oxigenTransactionVO.getTypeId()==null){
-            Utility.showSingleButtonDialogconfirmation(Mobile_Postpaid.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
-                ok.dismiss();
-            }),"Alert","Bill Fetch Is required!");
-        }else {
-            BillPayRequest.proceedBillPayment(oxigenTransactionVO,Mobile_Postpaid.this,new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
-                startActivity(new Intent(Mobile_Postpaid.this,History.class));
-                finish();
-            },(VolleyResponse.OnError)(e)->{
-            }));
-        }
-    }
 
 }

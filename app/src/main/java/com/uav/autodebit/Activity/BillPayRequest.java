@@ -245,4 +245,23 @@ public class BillPayRequest {
         }
     }
 
+    static   void proceedRecharge(Context context,boolean isFetchBill,OxigenTransactionVO oxigenTransactionVO){
+        if(oxigenTransactionVO==null){
+            Utility.showSingleButtonDialogconfirmation(context,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                ok.dismiss();
+            }),"Alert","Empty Filed not Allow!");
+        }else if(isFetchBill && oxigenTransactionVO.getTypeId()==null){
+            Utility.showSingleButtonDialogconfirmation(context,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                ok.dismiss();
+            }),"Alert","Bill Fetch Is required!");
+        }else {
+            BillPayRequest.proceedBillPayment(oxigenTransactionVO,context,new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
+                ((Activity)context).startActivity(new Intent(context,History.class));
+                ((Activity)context).finish();
+            },(VolleyResponse.OnError)(e)->{
+            }));
+        }
+    }
+
+
 }
