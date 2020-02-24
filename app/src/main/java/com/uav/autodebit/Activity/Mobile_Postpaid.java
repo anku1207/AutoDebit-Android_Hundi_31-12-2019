@@ -83,7 +83,7 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
     List<OxigenQuestionsVO> questionsVOS= new ArrayList<OxigenQuestionsVO>();
     CardView fetchbillcard;
 
-    boolean valid=true,isFetchBill=true;
+    boolean isFetchBill=true;
     String operatorListDate;
     UAVProgressDialog pd;
     OxigenTransactionVO oxigenTransactionVOresp;
@@ -244,6 +244,8 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
                                 et.setId(View.generateViewId());
                                 et.setHint(oxigenQuestionsVO.getQuestionLabel());
 
+                                changeEdittextValue(et);
+
                                 if(oxigenQuestionsVO.getQuestionLabel().contains("Mobile")){
                                     eleMap.put("mobile",et);
                                     Drawable drawable = getResources().getDrawable(R.drawable.contacts);
@@ -265,8 +267,6 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
                                         }
                                     });
                                 }
-
-                              //  changeEdittextValue(et);
 
                                 cardView.addView(et);
                                 dynamicCardViewContainer.addView(cardView);
@@ -314,72 +314,27 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void onClick(View view) {
+        Utility.hideKeyboard(Mobile_Postpaid.this);
         switch (view.getId()){
             case R.id.back_activity_button1:
                 finish();
                 break;
             case R.id.proceed:
-
                 try {
-                    Utility.hideKeyboard(Mobile_Postpaid.this);
-                    valid=true;
-
                     JSONObject dataarray=getQuestionLabelDate(true);
-                    if(!valid)return;
+                    if(dataarray==null)return;
 
                     if(isFetchBill){
                         proceedRecharge(oxigenTransactionVOresp);
                     }else {
-                        String btn[]={"Cancel","Ok"};
-
-                        JSONArray jsonArray =new JSONArray();
-
-                        JSONObject jsonObject = new JSONObject();
-                        jsonObject.put("key","Operator");
-                        jsonObject.put("value",operator.getText().toString());
-                        jsonArray.put(jsonObject);
-
-
-                        jsonObject = new JSONObject();
-                        jsonObject.put("key","Amount");
-                        jsonObject.put("value",amount.getText().toString());
-                        jsonArray.put(jsonObject);
-
-
-                        Iterator<String> keys= dataarray.keys();
-                        while (keys.hasNext()){
-                            String keyValue = (String)keys.next();
-                            String valueString = dataarray.getString(keyValue);
-                            jsonObject = new JSONObject();
-                            jsonObject.put("key",keyValue);
-                            jsonObject.put("value",valueString);
-                            jsonArray.put(jsonObject);
-                        }
-
-                        Utility.confirmationDialog(new DialogInterface() {
-                            @Override
-                            public void confirm(Dialog dialog) {
-                                dialog.dismiss();
-                                try {
-                                    OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
-                                    oxigenTransactionVO.setOperateName(operatorcode);
-                                    oxigenTransactionVO.setAmount(Double.valueOf(amount.getText().toString()));
-                                    oxigenTransactionVO.setAnonymousString(dataarray.toString());
-                                    proceedRecharge(oxigenTransactionVO);
-                                }catch (Exception e){
-                                    e.printStackTrace();
-                                    Utility.exceptionAlertDialog(Mobile_Postpaid.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
-                                }
-                            }
-                            @Override
-                            public void modify(Dialog dialog) {
-                                dialog.dismiss();
-                            }
-                        },Mobile_Postpaid.this,jsonArray,null,"Confirmation",btn);
+                        BillPayRequest.confirmationDialogBillPay(Mobile_Postpaid.this, operator, amount ,dataarray , new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                            OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
+                            oxigenTransactionVO.setOperateName(operatorcode);
+                            oxigenTransactionVO.setAmount(Double.valueOf(amount.getText().toString()));
+                            oxigenTransactionVO.setAnonymousString(dataarray.toString());
+                            proceedRecharge(oxigenTransactionVO);
+                        }));
                     }
-
-
-
                 }catch (Exception e){
                     e.printStackTrace();
                     Utility.exceptionAlertDialog(Mobile_Postpaid.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
@@ -388,11 +343,9 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
                 break;
             case R.id.fetchbill:
                 try {
-                    Utility.hideKeyboard(Mobile_Postpaid.this);
 
-                    valid=true;
                     JSONObject dataarray=getQuestionLabelDate(false);
-                    if(!valid)return;
+                    if(dataarray==null)return;
 
                     CustomerVO customerVO =new CustomerVO();
                     customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(Mobile_Postpaid.this)));
@@ -445,12 +398,9 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
                             e.printStackTrace();
                             Utility.exceptionAlertDialog(Mobile_Postpaid.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
                         }
-
                     },(VolleyResponse.OnError)(e)->{
                         fetchbill.setVisibility(View.VISIBLE);
                     }));
-
-
                 }catch (Exception e){
                     e.printStackTrace();
                     Utility.exceptionAlertDialog(Mobile_Postpaid.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
@@ -460,64 +410,11 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
     }
 
     private JSONObject getQuestionLabelDate(boolean fetchBill) throws Exception{
-        amount.setError(null);
-        operator.setError(null);
-
-        if(operator.getText().toString().equals("")){
-            operator.setError("this filed is required");
-            valid=false;
-        }
-        JSONObject jsonObject =new JSONObject();
-        for(OxigenQuestionsVO oxigenQuestionsVO:questionsVOS){
-
-            EditText editText =(EditText) findViewById(oxigenQuestionsVO.getElementId());
-            editText.clearFocus();
-            changeEdittextValue(editText);
-
-            editText.setError(null);
-            if(editText.getText().toString().equals("")){
-
-                editText.setError(  Utility.getErrorSpannableStringDynamicEditText(this, "this field is required"));
-                valid=false;
-            }else if(oxigenQuestionsVO.getMinLength()!=null && (editText.getText().toString().length() < Integer.parseInt(oxigenQuestionsVO.getMinLength()))){
-                editText.setError(oxigenQuestionsVO.getMinLength());
-                valid=false;
-            }else if(oxigenQuestionsVO.getMaxLength()!=null && (editText.getText().toString().length() > Integer.parseInt(oxigenQuestionsVO.getMaxLength()))){
-                editText.setError(oxigenQuestionsVO.getMaxLength());
-                valid=false;
-            }
-            jsonObject.put(oxigenQuestionsVO.getQuestionLabel(),editText.getText().toString());
-            //oxigenQuestionsVO.getJsonKey();
-            //editText.getText().toString();
-        }
-
-
-        if(fetchBill && !isFetchBill && valid){
-            if(amount.getText().toString().equals("")){
-                amount.setError("this filed is required");
-                valid=false;
-            }
-        }else if(fetchBill && isFetchBill && valid){
-            if(amount.getText().toString().equals("")){
-                Utility.showSingleButtonDialogconfirmation(Mobile_Postpaid.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
-                    ok.dismiss();
-                }),"Alert","Bill Amount is null ");
-                valid=false;
-            }
-
-        }
-
-
-
-        return jsonObject;
+        return BillPayRequest.getQuestionLabelData(Mobile_Postpaid.this,operator,amount,fetchBill,isFetchBill, questionsVOS);
     }
 
-
-
     public void removefetchbilllayout(){
-
         oxigenTransactionVOresp=new OxigenTransactionVO();
-
         if(fetchbilllayout.getChildCount()>0) {
             fetchbilllayout.removeAllViews();
             amount.setText("");
