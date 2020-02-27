@@ -63,10 +63,10 @@ public class SI_First_Data extends AppCompatActivity implements MyJavaScriptInte
     WebView webview;
     JSONObject respjson;
 
-    String redirectUrl,cancelUrl;
+    String redirectUrl, cancelUrl;
 
-    TextView text1,text2,text3;
-    Button  continuebtn;
+    TextView text1, text2, text3;
+    Button continuebtn;
     LinearLayout orderlayout;
 
     @SuppressLint("WrongViewCast")
@@ -75,9 +75,9 @@ public class SI_First_Data extends AppCompatActivity implements MyJavaScriptInte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_si__first__data);
         getSupportActionBar().hide();
-        webview=findViewById(R.id.webview);
+        webview = findViewById(R.id.webview);
 
-        ImageView rof_backbutton=findViewById(R.id.back_activity_button);
+        ImageView rof_backbutton = findViewById(R.id.back_activity_button);
 
         rof_backbutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,12 +87,11 @@ public class SI_First_Data extends AppCompatActivity implements MyJavaScriptInte
         });
 
 
-
-        text1=findViewById(R.id.text1);
-        text2=findViewById(R.id.text2);
-        text3=findViewById(R.id.text3);
-        orderlayout=findViewById(R.id.orderlayout);
-        continuebtn=findViewById(R.id.continuebtn);
+        text1 = findViewById(R.id.text1);
+        text2 = findViewById(R.id.text2);
+        text3 = findViewById(R.id.text3);
+        orderlayout = findViewById(R.id.orderlayout);
+        continuebtn = findViewById(R.id.continuebtn);
 
         sifirstdata();
         //openWebView("file:///android_asset/sifirst.html");
@@ -110,7 +109,7 @@ public class SI_First_Data extends AppCompatActivity implements MyJavaScriptInte
 
     }
 
-    public void sifirstdata(){
+    public void sifirstdata() {
 
       /*  String customerId= Session.getCustomerId(SI_First_Data.this);
 
@@ -128,42 +127,41 @@ public class SI_First_Data extends AppCompatActivity implements MyJavaScriptInte
         connectionVO.setParams(params);*/
 
 
-
-
         VolleyUtils.makeJsonObjectRequest(this, SiBO.getSIMandateProperties(), new VolleyResponseListener() {
             @Override
             public void onError(String message) {
             }
+
             @Override
             public void onResponse(Object resp) throws JSONException {
                 JSONObject response = (JSONObject) resp;
 
 
-                if(!response.getString("status").equals("200")){
-                    Utility.alertDialog(SI_First_Data.this,"Alert",response.getString("errorMsg"),"Ok");
-                }else {
+                if (!response.getString("status").equals("200")) {
+                    Utility.alertDialog(SI_First_Data.this, "Alert", response.getString("errorMsg"), "Ok");
+                } else {
 
-                    if(ApplicationConstant.SI_SERVICE.equals("hdfc")){
-                        respjson=response.getJSONObject("consumerData");
-                        Log.w("resp",respjson.toString());
+                    if (ApplicationConstant.SI_SERVICE.equals("hdfc")) {
+                        respjson = response.getJSONObject("consumerData");
+                        Log.w("resp", respjson.toString());
 
-                        Checkout checkout=new Checkout();
+                        Checkout checkout = new Checkout();
                         checkout.setMerchantIdentifier(respjson.getString("merchantId"));
                         checkout.setTransactionIdentifier("txnId");
                         checkout.setTransactionReference("");
                         checkout.setTransactionType(PaymentActivity.TRANSACTION_TYPE_SALE);
-                        checkout.setTransactionSubType (PaymentActivity.TRANSACTION_SUBTYPE_DEBIT);
-                        checkout.setTransactionCurrency (respjson.getString("currency"));
-                        JSONArray jsonArray=respjson.getJSONArray("items");
-                        JSONObject object =jsonArray.getJSONObject(0);
-                        checkout.setTransactionAmount (object.getString("amount"));
-                        checkout.addCartItem(object.getString("itemId"),object.getString("amount"),"ProductSurchargeOrDiscountAmount", object.getString("comAmt"), "ProductSKU", "ProductReference", "ProductDescriptor","ProductProviderID");
+                        checkout.setTransactionSubType(PaymentActivity.TRANSACTION_SUBTYPE_DEBIT);
+                        checkout.setTransactionCurrency(respjson.getString("currency"));
+                        JSONArray jsonArray = respjson.getJSONArray("items");
+                        JSONObject object = jsonArray.getJSONObject(0);
+                        checkout.setTransactionAmount(object.getString("amount"));
+                        checkout.addCartItem(object.getString("itemId"), object.getString("amount"), "ProductSurchargeOrDiscountAmount", object.getString("comAmt"), "ProductSKU", "ProductReference", "ProductDescriptor", "ProductProviderID");
                         checkout.setTransactionDateTime("");
-                        checkout.setConsumerIdentifier (respjson.getString("consumerId"));
-                        checkout.setConsumerEmailID (respjson.getString("consumerEmailId"));
-                        checkout.setConsumerMobileNumber (respjson.getString("consumerMobileNo"));
-                        checkout.setConsumerMobileNumber (respjson.getString("consumerMobileNo"));
-                        checkout.setTransactionAmount (respjson.getString("consumerId"));
+                        checkout.setConsumerIdentifier(respjson.getString("consumerId"));
+                        checkout.setConsumerEmailID(respjson.getString("consumerEmailId"));
+                        checkout.setConsumerMobileNumber(respjson.getString("consumerMobileNo"));
+                        checkout.setConsumerMobileNumber(respjson.getString("consumerMobileNo"));
+                        checkout.setTransactionAmount(respjson.getString("consumerId"));
                         checkout.setPaymentInstructionAction("Y");
                         checkout.setPaymentInstructionType(respjson.getString("amountType"));
                         checkout.setPaymentInstructionLimit(respjson.getString("maxAmount"));
@@ -185,17 +183,17 @@ public class SI_First_Data extends AppCompatActivity implements MyJavaScriptInte
                         startActivityForResult(authIntent, PaymentActivity.REQUEST_CODE);
 
                         //openWebView("file:///android_asset/sItechprocessHDFC.html");
-                    }else if(ApplicationConstant.SI_SERVICE.equals("icici")){
-                        respjson=response;
-                        Log.w("resp",respjson.toString());
+                    } else if (ApplicationConstant.SI_SERVICE.equals("icici")) {
+                        respjson = response;
+                        Log.w("resp", respjson.toString());
                         openWebView("file:///android_asset/sifirst.html");
-                    }else if(ApplicationConstant.SI_SERVICE.equals("avenue")){
-                        respjson=response;
-                        Log.w("resp",respjson.toString());
+                    } else if (ApplicationConstant.SI_SERVICE.equals("avenue")) {
+                        respjson = response;
+                        Log.w("resp", respjson.toString());
 
-                        redirectUrl=respjson.getString("redirectUrl");
-                        cancelUrl=respjson.getString("cancelUrl");
-                        String url =respjson.getString("url")+"&customerId="+Session.getCustomerId(SI_First_Data.this);
+                        redirectUrl = respjson.getString("redirectUrl");
+                        cancelUrl = respjson.getString("cancelUrl");
+                        String url = respjson.getString("url") + "&customerId=" + Session.getCustomerId(SI_First_Data.this);
                         openWebView(url);
                     }
 
@@ -207,7 +205,6 @@ public class SI_First_Data extends AppCompatActivity implements MyJavaScriptInte
 
     @SuppressLint({"SetJavaScriptEnabled", "JavascriptInterface"})
     void openWebView(final String receiptUrl) {
-
 
 
         //webView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
@@ -287,20 +284,19 @@ public class SI_First_Data extends AppCompatActivity implements MyJavaScriptInte
                 .setNegativeButton(android.R.string.no, null)
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();*/
-       Log.e("weverrir",description);
+        Log.e("weverrir", description);
     }
 
     @Override
     public void htmlresult(String result) {
-        Log.w("htmlresp",result);
-
+        Log.w("htmlresp", result);
 
 
         try {
-            JSONObject object =new JSONObject(result);
-            CustomerVO  customerVO =new CustomerVO();
-            String anonymousString=object.getString("anonymousString");
-            String anonymousInteger= object.getString("anonymousInteger");
+            JSONObject object = new JSONObject(result);
+            CustomerVO customerVO = new CustomerVO();
+            String anonymousString = object.getString("anonymousString");
+            String anonymousInteger = object.getString("anonymousInteger");
 
             HashMap<String, Object> params = new HashMap<String, Object>();
             ConnectionVO connectionVO = SiBO.proceedCCAvenueResponse();
@@ -312,15 +308,15 @@ public class SI_First_Data extends AppCompatActivity implements MyJavaScriptInte
             String json = gson.toJson(customerVO);
             params.put("volley", json);
 
-            Log.w("request",json);
+            Log.w("request", json);
             connectionVO.setParams(params);
-
 
 
             VolleyUtils.makeJsonObjectRequest(this, connectionVO, new VolleyResponseListener() {
                 @Override
                 public void onError(String message) {
                 }
+
                 @Override
                 public void onResponse(Object resp) throws JSONException {
                     JSONObject response = (JSONObject) resp;
@@ -329,25 +325,22 @@ public class SI_First_Data extends AppCompatActivity implements MyJavaScriptInte
                     CustomerVO customerVO = gson.fromJson(response.toString(), CustomerVO.class);
 
 
-
-                    if(!customerVO.getStatusCode().equals("200")){
-                        showSingleButtonDialog(SI_First_Data.this,"Alert",response.getString("errorMsg"));
-                    }else {
+                    if (!customerVO.getStatusCode().equals("200")) {
+                        showSingleButtonDialog(SI_First_Data.this, "Alert", response.getString("errorMsg"));
+                    } else {
                         DecimalFormat df = new DecimalFormat();
                         df.setMinimumFractionDigits(2);
-                        JSONObject orderreap=new JSONObject(customerVO.getAnonymousString());
+                        JSONObject orderreap = new JSONObject(customerVO.getAnonymousString());
                         webview.setVisibility(View.GONE);
                         orderlayout.setVisibility(View.VISIBLE);
                         text2.setText(orderreap.getString("txnId"));
                         text3.setText(df.format(Double.parseDouble(orderreap.getString("orderAmount"))));
                         continuebtn.setVisibility(View.VISIBLE);
                         String json = gson.toJson(customerVO);
-                        Session.set_Data_Sharedprefence(SI_First_Data.this,Session.CACHE_CUSTOMER,json);
+                        Session.set_Data_Sharedprefence(SI_First_Data.this, Session.CACHE_CUSTOMER, json);
                     }
                 }
             });
-
-
 
 
         } catch (JSONException e) {
@@ -362,12 +355,12 @@ public class SI_First_Data extends AppCompatActivity implements MyJavaScriptInte
         var3.getWindow().setBackgroundDrawable(new ColorDrawable(0));
         var3.setContentView(var1.getResources().getIdentifier("singlebuttondialog", "layout", var1.getPackageName()));
         var3.setCanceledOnTouchOutside(false);
-        TextView var4 = (TextView)var3.findViewById(var1.getResources().getIdentifier("dialog_one_tv_title", "id", var1.getPackageName()));
+        TextView var4 = (TextView) var3.findViewById(var1.getResources().getIdentifier("dialog_one_tv_title", "id", var1.getPackageName()));
         var4.setText(error);
-        TextView var6 = (TextView)var3.findViewById(var1.getResources().getIdentifier("dialog_one_tv_text", "id", var1.getPackageName()));
+        TextView var6 = (TextView) var3.findViewById(var1.getResources().getIdentifier("dialog_one_tv_text", "id", var1.getPackageName()));
 
         var6.setText(var2);
-        Button var5 = (Button)var3.findViewById(var1.getResources().getIdentifier("dialog_one_btn", "id", var1.getPackageName()));
+        Button var5 = (Button) var3.findViewById(var1.getResources().getIdentifier("dialog_one_btn", "id", var1.getPackageName()));
         var5.setOnClickListener(new View.OnClickListener() {
             public void onClick(View var) {
                 var3.dismiss();
@@ -381,13 +374,12 @@ public class SI_First_Data extends AppCompatActivity implements MyJavaScriptInte
     }
 
 
-
     private class MyBrowser extends WebViewClient {
         final ProgressDialog progressBar = ProgressDialog.show(SI_First_Data.this, null, " Please wait...", false, false);
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            Log.w("URL",url);
+            Log.w("URL", url);
 
 
             view.loadUrl(url);
@@ -398,10 +390,10 @@ public class SI_First_Data extends AppCompatActivity implements MyJavaScriptInte
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
-            Log.w("pagestart",url);
+            Log.w("pagestart", url);
 
-            if(ApplicationConstant.SI_SERVICE.equals("avenue")){
-                if(url.equals(redirectUrl+"app") || url.equals(cancelUrl+"app")){
+            if (ApplicationConstant.SI_SERVICE.equals("avenue")) {
+                if (url.equals(redirectUrl + "app") || url.equals(cancelUrl + "app")) {
                     webview.setVisibility(View.GONE);
                 }
             }
@@ -414,22 +406,23 @@ public class SI_First_Data extends AppCompatActivity implements MyJavaScriptInte
         @Override
         public void onPageFinished(WebView view, String url) {
             progressBar.dismiss();
-            Log.w("loadurlresp",url);
-            if (ApplicationConstant.SI_SERVICE.equals("icici")){
-                    if(url.equals("file:///android_asset/sifirst.html")){
-                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-                            view.evaluateJavascript("loadParam('" +respjson.toString() +"')", null);
-                        } else {
-                            view.loadUrl("loadParam('" +respjson.toString() +"')");
-                        }
+            Log.w("loadurlresp", url);
+            if (ApplicationConstant.SI_SERVICE.equals("icici")) {
+                if (url.equals("file:///android_asset/sifirst.html")) {
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+                        view.evaluateJavascript("loadParam('" + respjson.toString() + "')", null);
+                    } else {
+                        view.loadUrl("loadParam('" + respjson.toString() + "')");
                     }
-            }else if(ApplicationConstant.SI_SERVICE.equals("avenue")){
-                if(url.equals(redirectUrl+"app") || url.equals(cancelUrl+"app")){
+                }
+            } else if (ApplicationConstant.SI_SERVICE.equals("avenue")) {
+                if (url.equals(redirectUrl + "app") || url.equals(cancelUrl + "app")) {
                     webview.loadUrl("javascript:HTMLOUT.showHTML(document.getElementById('siresp').innerHTML);");
                     webview.loadUrl("javascript:console.log('MAGIC'+document.getElementById('siresp').innerHTML);");
                 }
             }
         }
+
         @SuppressWarnings("deprecation")
         public void onReceivedError(WebView view, int errorCode,
                                     String description, String failingUrl) {
@@ -438,6 +431,7 @@ public class SI_First_Data extends AppCompatActivity implements MyJavaScriptInte
             }
             showError(description);
         }
+
         @TargetApi(android.os.Build.VERSION_CODES.M)
         public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
             if (progressBar.isShowing()) {
@@ -445,6 +439,7 @@ public class SI_First_Data extends AppCompatActivity implements MyJavaScriptInte
             }
             showError((String) error.getDescription());
         }
+
         @TargetApi(android.os.Build.VERSION_CODES.M)
         public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
             if (progressBar.isShowing()) {
