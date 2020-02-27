@@ -165,8 +165,8 @@ public class Splash_Screen extends AppCompatActivity implements BitmapInterface 
                     Session.set_Data_Sharedprefence(Splash_Screen.this,Session.CACHE_WATER_OPERATOR,localCacheVO.getWater());
                     Session.set_Data_Sharedprefence(Splash_Screen.this,Session.CACHE_GAS_OPERATOR,localCacheVO.getGas());
                     Session.set_Data_Sharedprefence(Splash_Screen.this,Session.CACHE_ELECTRICITY_OPERATOR,localCacheVO.getElectricity());
-                    Session.set_Data_Sharedprefence(Splash_Screen.this, Session.LOCAL_CACHE,response.toString());
-                    Session.set_Data_Sharedprefence(Splash_Screen.this, Session.CACHE_POSTPAID_OPERATOR,localCacheVO.getPostPaid());
+                    Session.set_Data_Sharedprefence(Splash_Screen.this,Session.LOCAL_CACHE,response.toString());
+                    Session.set_Data_Sharedprefence(Splash_Screen.this,Session.CACHE_POSTPAID_OPERATOR,localCacheVO.getPostPaid());
 
 
 

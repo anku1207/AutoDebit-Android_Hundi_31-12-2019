@@ -116,12 +116,10 @@ public class DTH_Recharge_Service extends AppCompatActivity implements View.OnCl
                     BackgroundAsyncService backgroundAsyncService = new BackgroundAsyncService(pd,true, new BackgroundServiceInterface() {
                         @Override
                         public void doInBackGround() {
-
                             Gson gson = new Gson();
                             operatorListDate = gson.toJson(getDataList());
 
                             //manoj
-
                         }
                         @Override
                         public void doPostExecute() {
@@ -129,8 +127,6 @@ public class DTH_Recharge_Service extends AppCompatActivity implements View.OnCl
                             intent.putExtra("datalist", operatorListDate);
                             intent.putExtra("title","Operator");
                             startActivityForResult(intent,100);
-
-
                         }
                     });
                     backgroundAsyncService.execute();
@@ -179,7 +175,6 @@ public class DTH_Recharge_Service extends AppCompatActivity implements View.OnCl
                         operatorcode=data.getStringExtra("operator");
 
                         amountlayout.setVisibility(View.VISIBLE);
-
 
                         DataAdapterVO dataAdapterVO = (DataAdapterVO) data.getSerializableExtra("datavo");
                         operator.setText(operatorname);
@@ -254,14 +249,14 @@ public class DTH_Recharge_Service extends AppCompatActivity implements View.OnCl
                     JSONObject dataarray=getQuestionLabelDate(true);
                     if(dataarray==null)return;
                     if(isFetchBill){
-                        BillPayRequest.proceedRecharge(DTH_Recharge_Service.this,isFetchBill,oxigenTransactionVOresp, ApplicationConstant.Gas);
+                        BillPayRequest.proceedRecharge(DTH_Recharge_Service.this,isFetchBill,oxigenTransactionVOresp, ApplicationConstant.DTH);
                     }else {
                         BillPayRequest.confirmationDialogBillPay(DTH_Recharge_Service.this, operator, amount ,dataarray , new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
                             OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
                             oxigenTransactionVO.setOperateName(operatorcode);
                             oxigenTransactionVO.setAmount(Double.valueOf(amount.getText().toString()));
                             oxigenTransactionVO.setAnonymousString(dataarray.toString());
-                            BillPayRequest.proceedRecharge(DTH_Recharge_Service.this,isFetchBill,oxigenTransactionVO,ApplicationConstant.Gas);
+                            BillPayRequest.proceedRecharge(DTH_Recharge_Service.this,isFetchBill,oxigenTransactionVO,ApplicationConstant.DTH);
                         }));
                     }
                 }catch (Exception e){
@@ -279,7 +274,7 @@ public class DTH_Recharge_Service extends AppCompatActivity implements View.OnCl
                     customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(DTH_Recharge_Service.this)));
 
                     ServiceTypeVO serviceTypeVO =new ServiceTypeVO();
-                    serviceTypeVO.setServiceTypeId(ApplicationConstant.Gas);
+                    serviceTypeVO.setServiceTypeId(ApplicationConstant.DTH);
 
                     OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
                     oxigenTransactionVO.setOperateName(operatorcode);
