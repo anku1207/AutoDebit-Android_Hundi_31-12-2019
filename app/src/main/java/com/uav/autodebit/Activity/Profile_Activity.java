@@ -1,19 +1,24 @@
 package com.uav.autodebit.Activity;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
@@ -105,13 +110,15 @@ public class Profile_Activity extends AppCompatActivity implements FileDownloadI
     RecyclerViewAdapterMenu recyclerViewAdapter;
 
     Uri mImageUri;
-    int  REQ_IMAGE=1001,REQ_GALLERY=1002,REQ_ENACH_MANDATE=1003;
+    int  REQ_IMAGE=1001,REQ_GALLERY=1002,REQ_ENACH_MANDATE=1003,PIC_CROP=1004;
     Bitmap bmp;
 
     ConnectionVO customerProfileImage;
     ProgressBar progressBar;
 
     ScrollView scrollView;
+
+    String currentImagePath;
 
 
     @Override
@@ -325,22 +332,18 @@ public class Profile_Activity extends AppCompatActivity implements FileDownloadI
             // place where to store camera taken picture
             photo = VolleyUtils.createTemporaryFile("picture", ".jpg");
             photo.delete();
-            mImageUri = Uri.fromFile(photo);
-            /*Uri mImageUri = CustomProvider.getPhotoUri(photo);
-             */
-            Uri mImageUri = FileProvider.getUriForFile(getApplicationContext(),getApplicationContext().getPackageName()
-                    + ".provider", photo);
+            mImageUri = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", photo);
+            // Uri mImageUri = CustomProvider.getPhotoUri(photo);
+           /* Uri mImageUri = FileProvider.getUriForFile(getApplicationContext(),getApplicationContext().getPackageName()
+                    + ".provider", photo);*/
             intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
             startActivityForResult(intent, REQ_IMAGE);
         }
-        catch(Exception e)
-        {
+        catch(Exception e){
+            e.printStackTrace();
             Utility.exceptionAlertDialog(this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
     }
-
-
-
     public void backbuttonfun(){
         Intent intent = new Intent(getApplicationContext(), Home.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -411,13 +414,12 @@ public class Profile_Activity extends AppCompatActivity implements FileDownloadI
             if(resultCode==RESULT_OK){
                 if(requestCode==100 ){
                     if(data!=null){
-
                         getProfileDate(Session.getCustomerId(Profile_Activity.this));
                     }
                 }else if(requestCode==200){
                     getProfileDate(Session.getCustomerId(Profile_Activity.this));
                 }else if (requestCode == REQ_IMAGE) {
-                    bmp =Utility.decodeImageFromFiles(mImageUri.getPath(),150,150);
+                    /*bmp =Utility.decodeImageFromFiles(mImageUri.getPath(),150,150);
                     if(bmp.getWidth()>bmp.getHeight()){
                         Matrix matrix =new Matrix();
                         matrix.postRotate(90);
@@ -426,19 +428,36 @@ public class Profile_Activity extends AppCompatActivity implements FileDownloadI
                     imageView1.setImageBitmap(bmp);
                     View current = getCurrentFocus();
                     if (current != null) current.clearFocus();
-                    setCustomerProfileImage();
+                    setCustomerProfileImage();*/
+
+                    performCrop(mImageUri);
+
+
 
                 }else if(requestCode==REQ_GALLERY){
                     Uri contentURI = data.getData();
-                    bmp =VolleyUtils.grabImage(contentURI,this);
+                   /* bmp =VolleyUtils.grabImage(contentURI,this);
                     if(bmp.getWidth()>bmp.getHeight()){
                         Matrix matrix =new Matrix();
                         matrix.postRotate(90);
                         bmp= Bitmap.createBitmap(bmp,0,0,bmp.getWidth(),bmp.getHeight(),matrix,true);
-                    }
-                    imageView1.setImageBitmap(bmp);
+                    }*/
+                    performCrop(contentURI);
 
+                   // i
+                    // mageView1.setImageBitmap(bmp);
+
+                   // setCustomerProfileImage();
+                }else  if(requestCode==PIC_CROP){
+                    //get the returned data
+                    Bundle extras = data.getExtras();
+                    //get the cropped bitmap
+                    bmp = (Bitmap) extras.get("data");
+                    //display the returned cropped image
+                    imageView1.setImageBitmap(bmp);
                     setCustomerProfileImage();
+
+
                 }else if(requestCode==300){
                     Utility.showSingleButtonDialog(Profile_Activity.this,"","Success fully update ",false);
                 }else if(requestCode==REQ_ENACH_MANDATE){
@@ -446,7 +465,42 @@ public class Profile_Activity extends AppCompatActivity implements FileDownloadI
                 }
             }
         }catch (Exception e) {
+            e.printStackTrace();
             Utility.exceptionAlertDialog(this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+        }
+    }
+
+
+
+
+
+    private void performCrop(Uri picUri){
+        Log.w("uri",picUri.toString());
+
+        try {
+            //call the standard crop action intent (the user device may not support it)
+            Intent cropIntent = new Intent( "com.android.camera.action.CROP");
+            //indicate image type and Uri
+            cropIntent.setDataAndType(picUri, "image/*");
+            //set crop properties
+            cropIntent.putExtra("crop", "true");
+            //indicate aspect of desired crop
+            cropIntent.putExtra("aspectX", 1);
+            cropIntent.putExtra("aspectY", 1);
+            //indicate output X and Y
+            cropIntent.putExtra("outputX", 256);
+            cropIntent.putExtra("outputY", 256);
+            //retrieve data on return
+            cropIntent.putExtra("return-data", true);
+            cropIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            //start the activity - we handle returning in onActivityResult
+            startActivityForResult(cropIntent, PIC_CROP);
+        }
+        catch(Exception anfe){
+            //display an error message
+            String errorMessage = "Whoops - your device doesn't support the crop action!";
+            Toast toast = Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT);
+            toast.show();
         }
     }
 
