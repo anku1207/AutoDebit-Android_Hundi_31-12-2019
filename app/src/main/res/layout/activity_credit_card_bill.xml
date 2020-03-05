@@ -21,8 +21,6 @@
         app:contentInsetEnd="0dp"
 
         >
-
-
         <ImageView
             android:layout_width="40dp"
             android:layout_height="match_parent"
@@ -72,96 +70,4 @@
             />
     </android.support.v7.widget.Toolbar>
 
-<ScrollView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <android.support.v4.view.ViewPager
-            android:foregroundGravity="center"
-            android:id="@+id/viewPager"
-            android:layout_centerInParent="true"
-            android:overScrollMode="never"
-            android:clipToPadding="false"
-            android:layout_width="match_parent"
-            android:layout_height="300dp"/>
-        <Button
-            android:id="@+id/btnOrder"
-            android:text="Order Now !"
-            android:paddingLeft="30dp"
-            android:paddingRight="30dp"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="60dp"
-            android:layout_width="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_height="wrap_content"/>
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="sdfsdf"/>
-    </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <Button
-                android:text="Order Now !"
-                android:paddingLeft="30dp"
-                android:paddingRight="30dp"
-                android:layout_alignParentBottom="true"
-                android:layout_marginBottom="60dp"
-                android:layout_width="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_height="wrap_content"/>
-            <Button
-                android:text="Order Now !"
-                android:paddingLeft="30dp"
-                android:paddingRight="30dp"
-                android:layout_alignParentBottom="true"
-                android:layout_marginBottom="60dp"
-                android:layout_width="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_height="wrap_content"/>
-            <Button
-                android:text="Order Now !"
-                android:paddingLeft="30dp"
-                android:paddingRight="30dp"
-                android:layout_alignParentBottom="true"
-                android:layout_marginBottom="60dp"
-                android:layout_width="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_height="wrap_content"/>
-            <Button
-                android:text="Order Now !"
-                android:paddingLeft="30dp"
-                android:paddingRight="30dp"
-                android:layout_alignParentBottom="true"
-                android:layout_marginBottom="60dp"
-                android:layout_width="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
-
-
-
-    </LinearLayout>
-
-</ScrollView>
 </LinearLayout>

@@ -109,8 +109,8 @@ public class Profile_Activity extends AppCompatActivity implements FileDownloadI
 
     RecyclerViewAdapterMenu recyclerViewAdapter;
 
-    Uri mImageUri;
-    int  REQ_IMAGE=1001,REQ_GALLERY=1002,REQ_ENACH_MANDATE=1003,PIC_CROP=1004;
+
+    int  REQ_IMAGE=1001,REQ_GALLERY=1002,REQ_ENACH_MANDATE=1003,PIC_CROP=1004,REQ_CHANGE_PASS=300;
     Bitmap bmp;
 
     ConnectionVO customerProfileImage;
@@ -118,7 +118,7 @@ public class Profile_Activity extends AppCompatActivity implements FileDownloadI
 
     ScrollView scrollView;
 
-    String currentImagePath;
+    File photofileurl;
 
 
     @Override
@@ -295,11 +295,10 @@ public class Profile_Activity extends AppCompatActivity implements FileDownloadI
                     public void confirm(Dialog dialog) {
                         dialog.dismiss();
 
-
                         Intent intent =new Intent(Profile_Activity.this,ChangePassword.class);
                         intent.putExtra("customerid",Session.getCustomerId(Profile_Activity.this));
                         intent.putExtra("methodname","setCustomerChangePassword");
-                        startActivityForResult(intent,300);
+                        startActivityForResult(intent,REQ_CHANGE_PASS);
                     }
 
                     @Override
@@ -326,16 +325,14 @@ public class Profile_Activity extends AppCompatActivity implements FileDownloadI
 
     public void cameraimage(){
         Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-        File photo;
+        photofileurl=null;
         try
         {
             // place where to store camera taken picture
-            photo = VolleyUtils.createTemporaryFile("picture", ".jpg");
-            photo.delete();
-            mImageUri = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", photo);
-            // Uri mImageUri = CustomProvider.getPhotoUri(photo);
-           /* Uri mImageUri = FileProvider.getUriForFile(getApplicationContext(),getApplicationContext().getPackageName()
-                    + ".provider", photo);*/
+            photofileurl = VolleyUtils.createTemporaryFile("picture", ".jpg");
+            photofileurl.delete();
+            Uri mImageUri = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", photofileurl);
+
             intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
             startActivityForResult(intent, REQ_IMAGE);
         }
@@ -419,35 +416,23 @@ public class Profile_Activity extends AppCompatActivity implements FileDownloadI
                 }else if(requestCode==200){
                     getProfileDate(Session.getCustomerId(Profile_Activity.this));
                 }else if (requestCode == REQ_IMAGE) {
-                    /*bmp =Utility.decodeImageFromFiles(mImageUri.getPath(),150,150);
+                    bmp =Utility.decodeImageFromFiles(Uri.fromFile(photofileurl).getPath(),150,150);
                     if(bmp.getWidth()>bmp.getHeight()){
                         Matrix matrix =new Matrix();
                         matrix.postRotate(90);
                         bmp= Bitmap.createBitmap(bmp,0,0,bmp.getWidth(),bmp.getHeight(),matrix,true);
                     }
-                    imageView1.setImageBitmap(bmp);
-                    View current = getCurrentFocus();
-                    if (current != null) current.clearFocus();
-                    setCustomerProfileImage();*/
-
-                    performCrop(mImageUri);
-
-
+                   performCrop(Utility.getVersionWiseUri(Profile_Activity.this,photofileurl));
 
                 }else if(requestCode==REQ_GALLERY){
                     Uri contentURI = data.getData();
-                   /* bmp =VolleyUtils.grabImage(contentURI,this);
+                    bmp =VolleyUtils.grabImage(contentURI,this);
                     if(bmp.getWidth()>bmp.getHeight()){
                         Matrix matrix =new Matrix();
                         matrix.postRotate(90);
                         bmp= Bitmap.createBitmap(bmp,0,0,bmp.getWidth(),bmp.getHeight(),matrix,true);
-                    }*/
+                    }
                     performCrop(contentURI);
-
-                   // i
-                    // mageView1.setImageBitmap(bmp);
-
-                   // setCustomerProfileImage();
                 }else  if(requestCode==PIC_CROP){
                     //get the returned data
                     Bundle extras = data.getExtras();
@@ -458,7 +443,7 @@ public class Profile_Activity extends AppCompatActivity implements FileDownloadI
                     setCustomerProfileImage();
 
 
-                }else if(requestCode==300){
+                }else if(requestCode==REQ_CHANGE_PASS){
                     Utility.showSingleButtonDialog(Profile_Activity.this,"","Success fully update ",false);
                 }else if(requestCode==REQ_ENACH_MANDATE){
                     Toast.makeText(context, "sfdsdfsfd", Toast.LENGTH_SHORT).show();
@@ -475,8 +460,6 @@ public class Profile_Activity extends AppCompatActivity implements FileDownloadI
 
 
     private void performCrop(Uri picUri){
-        Log.w("uri",picUri.toString());
-
         try {
             //call the standard crop action intent (the user device may not support it)
             Intent cropIntent = new Intent( "com.android.camera.action.CROP");
@@ -496,23 +479,27 @@ public class Profile_Activity extends AppCompatActivity implements FileDownloadI
             //start the activity - we handle returning in onActivityResult
             startActivityForResult(cropIntent, PIC_CROP);
         }
-        catch(Exception anfe){
+        catch(ActivityNotFoundException anfe){
             //display an error message
             String errorMessage = "Whoops - your device doesn't support the crop action!";
             Toast toast = Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT);
             toast.show();
+
+            imageView1.setImageBitmap(bmp);
+            setCustomerProfileImage();
+        }catch (Exception e){
+            e.printStackTrace();
+            Utility.exceptionAlertDialog(this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
     }
 
 
     private void setCustomerProfileImage(){
-
         BackgroundAsyncService backgroundAsyncService = new BackgroundAsyncService(pd,true, new BackgroundServiceInterface() {
             @Override
             public void doInBackGround() {
 
                 HashMap<String, Object> params = new HashMap<String, Object>();
-
                 CustomerVO customerVO=new CustomerVO();
                 customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(Profile_Activity.this)));
                 customerVO.setImage(Utility.BitMapToString(bmp,500,true));
@@ -533,8 +520,6 @@ public class Profile_Activity extends AppCompatActivity implements FileDownloadI
                     @Override
                     public void onResponse(Object resp) throws JSONException {
                         JSONObject response = (JSONObject) resp;
-
-
 
                         Gson gson=new Gson();
                         CustomerVO customerVO = gson.fromJson(response.toString(), CustomerVO.class);

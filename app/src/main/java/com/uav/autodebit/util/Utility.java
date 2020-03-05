@@ -34,6 +34,7 @@ import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
@@ -1301,22 +1302,13 @@ public class Utility {
     }*/
 
 
-    public static String getRealPathFromUri(Context context,Uri contentUri) {
-        Cursor cursor = null;
-        try {
-            String[] proj = {MediaStore.Images.Media.DATA};
-            cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
-            assert cursor != null;
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            return cursor.getString(column_index);
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-        }
-
-
-    }
-
+   public static Uri getVersionWiseUri(Context context, File file){
+       Uri uri;
+       if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            uri = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", file);
+       }else{
+           uri = Uri.fromFile(file);
+      }
+       return uri;
+   }
 }
