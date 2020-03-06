@@ -133,7 +133,7 @@
                 android:imeOptions="actionNext"
                 android:drawablePadding="5dp"
                 android:singleLine="true"
-                android:visibility="visible"/>
+                android:visibility="gone"/>
 
 
             <Button

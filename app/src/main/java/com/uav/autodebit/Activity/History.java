@@ -54,6 +54,7 @@ import static com.uav.autodebit.Activity.Home.clickServiceId;
 public class History extends AppCompatActivity implements View.OnClickListener {
     RecyclerView recyclerView;
     ImageView back_activity_button;
+    TextView emptymsg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +64,7 @@ public class History extends AppCompatActivity implements View.OnClickListener {
 
         recyclerView=findViewById(R.id.recyclerView);
         back_activity_button=findViewById(R.id.back_activity_button);
+        emptymsg=findViewById(R.id.emptymsg);
         back_activity_button.setOnClickListener(this);
 
         recyclerView.setNestedScrollingEnabled(true);
@@ -78,9 +80,15 @@ public class History extends AppCompatActivity implements View.OnClickListener {
        // recyclerView.setLayoutManager(new LinearLayoutManager(History.this, LinearLayoutManager.VERTICAL, true));
 
         getdata(new ServiceClick((ServiceClick.OnSuccess)(s)->{
-            History_List_Adapter history_list_adapter=new History_List_Adapter(History.this, (List<DataAdapterVO>) s,R.layout.design_history_card_list);
-            recyclerView.setAdapter(history_list_adapter);
-            runLayoutAnimation(recyclerView);
+          if(((List<DataAdapterVO>) s).size()>0){
+              emptymsg.setVisibility(View.GONE);
+              History_List_Adapter history_list_adapter=new History_List_Adapter(History.this, (List<DataAdapterVO>) s,R.layout.design_history_card_list);
+              recyclerView.setAdapter(history_list_adapter);
+              runLayoutAnimation(recyclerView);
+            }else {
+              emptymsg.setVisibility(View.VISIBLE);
+          }
+
         }));
 
     }

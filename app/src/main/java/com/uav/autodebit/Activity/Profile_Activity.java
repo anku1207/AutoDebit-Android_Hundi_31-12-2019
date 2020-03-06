@@ -209,12 +209,14 @@ public class Profile_Activity extends AppCompatActivity implements FileDownloadI
                     startActivity(new Intent(Profile_Activity.this,History.class));
                     break;
                 case R.id.bottom_help:
-                    Toast.makeText(Profile_Activity.this, "bottom_help", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(Profile_Activity.this,Help.class));
                     break;
             }
             return true;
         }
     };
+
+
 
 
 

@@ -67,20 +67,33 @@
     </android.support.v7.widget.Toolbar>
 
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:id="@+id/main">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="No History Available"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:layout_centerHorizontal="true"
+                android:fontFamily="@font/poppinsbold"
+                android:textSize="18dp"
+                android:id="@+id/emptymsg"
+                android:visibility="gone">
+
+            </TextView>
 
             <android.support.v7.widget.RecyclerView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:id="@+id/recyclerView"
                 android:layoutAnimation="@anim/layout_animation_fall_down"/>
 
 
-        </LinearLayout>
+        </RelativeLayout>
 
 </LinearLayout>
 
