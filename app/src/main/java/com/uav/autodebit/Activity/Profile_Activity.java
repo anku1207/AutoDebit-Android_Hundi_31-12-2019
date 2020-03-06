@@ -110,7 +110,7 @@ public class Profile_Activity extends AppCompatActivity implements FileDownloadI
     RecyclerViewAdapterMenu recyclerViewAdapter;
 
 
-    int  REQ_IMAGE=1001,REQ_GALLERY=1002,REQ_ENACH_MANDATE=1003,PIC_CROP=1004,REQ_CHANGE_PASS=300;
+    int  REQ_IMAGE=1001,REQ_GALLERY=1002,REQ_ENACH_MANDATE=1003,PIC_CROP=1004,REQ_CHANGE_PASS=300,REQ_ADD_MORE_SERVICE=200,REQ_EMAIL_VERIFY=100;
     Bitmap bmp;
 
     ConnectionVO customerProfileImage;
@@ -263,7 +263,7 @@ public class Profile_Activity extends AppCompatActivity implements FileDownloadI
 
                 break;
             case R.id.more_service:
-                startActivityForResult(new Intent(Profile_Activity.this,AdditionalService.class),200);
+                startActivityForResult(new Intent(Profile_Activity.this,AdditionalService.class),REQ_ADD_MORE_SERVICE);
                 break;
             case R.id.imageView1:
                     if (PermissionHandler.imagePermission(this)) {
@@ -313,7 +313,7 @@ public class Profile_Activity extends AppCompatActivity implements FileDownloadI
 
                 break;
             case R.id.more_bankadd:
-                startActivityForResult(new Intent(Profile_Activity.this,Enach_Mandate.class).putExtra("activity",getPackageName()+".Activity.Profile_Activity").putExtra("forresutl",true),REQ_ENACH_MANDATE);
+                //startActivityForResult(new Intent(Profile_Activity.this,Enach_Mandate.class).putExtra("activity",getPackageName()+".Activity.Profile_Activity").putExtra("forresutl",true),REQ_ENACH_MANDATE);
                 break;
         }
     }
@@ -395,7 +395,7 @@ public class Profile_Activity extends AppCompatActivity implements FileDownloadI
                     // customerVO.setAnonymousString(customerVO.getOtpExpiredMobile().toString());
                     String json = gson.toJson(customerVO); // myObject - instance of MyObject
                     intent.putExtra("resp",json);
-                    startActivityForResult(intent,100);
+                    startActivityForResult(intent,REQ_EMAIL_VERIFY);
 
 
                 }
@@ -411,12 +411,12 @@ public class Profile_Activity extends AppCompatActivity implements FileDownloadI
         super.onActivityResult(requestCode, resultCode, data);
         try {
             if(resultCode==RESULT_OK){
-                if(requestCode==100 ){
+                if(requestCode==REQ_EMAIL_VERIFY ){
                     if(data!=null){
                         getProfileDate(Session.getCustomerId(Profile_Activity.this));
                     }
-                }else if(requestCode==200){
-                    getProfileDate(Session.getCustomerId(Profile_Activity.this));
+                }else if(requestCode==REQ_ADD_MORE_SERVICE){
+                        getProfileDate(Session.getCustomerId(Profile_Activity.this));
                 }else if (requestCode == REQ_IMAGE) {
                     bmp =Utility.decodeImageFromFiles(Uri.fromFile(photofileurl).getPath(),150,150);
                     if(bmp.getWidth()>bmp.getHeight()){

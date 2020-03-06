@@ -808,7 +808,12 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
                     bmp =VolleyUtils.grabImage(contentURI,Dmrc_Card_Request.this);
                     addressimage.setImageBitmap(bmp);
                 }else if(requestCode==ApplicationConstant.REQ_ENACH_MANDATE){
-                    allotDmrcCard(null);
+                    boolean enachMandateStatus=data.getBooleanExtra("mandate_status",false);
+                    if(enachMandateStatus){
+                        allotDmrcCard(null);
+                    }else{
+                        Utility.showSingleButtonDialog(Dmrc_Card_Request.this,"Alert",data.getStringExtra("msg"),false);
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();

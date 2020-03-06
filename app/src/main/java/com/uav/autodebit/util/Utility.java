@@ -1004,7 +1004,7 @@ public class Utility {
 
 
 
-    public static void showSingleButtonDialogconfirmation(final Context context, ConfirmationDialogInterface confirmationDialogInterface, String title, String msg , String... buttons){
+    public static void showSingleButtonDialogconfirmation(Context context, ConfirmationDialogInterface confirmationDialogInterface, String title, String msg , String... buttons){
 
         String leftButton= (buttons.length==0 ?"OK":buttons[0]);//(leftButton ==null?"Modify": leftButton);
         final Dialog var3 = new Dialog(context);

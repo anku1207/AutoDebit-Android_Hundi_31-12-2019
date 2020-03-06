@@ -107,7 +107,7 @@ public class Enach_Mandate extends AppCompatActivity{
         setContentView(R.layout.activity_enach__mandate);
         getSupportActionBar().hide();
 
-        foractivity=getIntent().getBooleanExtra("foractivity",true);
+        foractivity=getIntent().getBooleanExtra("forresutl",true);
         selectServiceIds=getIntent().getIntegerArrayListExtra("selectservice");
         disAmountEdittext=getIntent().getBooleanExtra("disAmountEdittext",false);
 
@@ -529,6 +529,7 @@ public class Enach_Mandate extends AppCompatActivity{
                         Intent intent =new Intent();
                         intent.putExtra("selectservice",selectServiceIds);
                         intent.putExtra("msg",customerVO.getAnonymousString());
+                        intent.putExtra("mandate_status",customerVO.isEventIs());
                         setResult(RESULT_OK,intent);
                         finish();
                     }

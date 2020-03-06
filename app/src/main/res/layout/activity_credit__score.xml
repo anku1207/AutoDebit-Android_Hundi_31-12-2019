@@ -286,7 +286,6 @@
                 android:layout_gravity="right"
                 android:gravity="right"
                 android:layout_marginRight="20dp"
-                android:textAlignment="center"
                 android:visibility="gone"
                 >
 

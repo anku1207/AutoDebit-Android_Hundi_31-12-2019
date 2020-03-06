@@ -1,10 +1,12 @@
 package com.uav.autodebit.Activity;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -26,16 +28,21 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.uav.autodebit.BO.BannerBO;
 import com.uav.autodebit.BO.MetroBO;
+import com.uav.autodebit.Interface.AlertSelectDialogClick;
+import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.R;
 import com.uav.autodebit.adpater.ListViewItemCheckboxBaseAdapter;
 import com.uav.autodebit.androidFragment.Profile;
+import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.override.ExpandableHeightListView;
 import com.uav.autodebit.override.UAVProgressDialog;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.BackgroundAsyncService;
 import com.uav.autodebit.util.BackgroundServiceInterface;
+import com.uav.autodebit.util.DialogInterface;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.ConnectionVO;
+import com.uav.autodebit.vo.CustomerAuthServiceVO;
 import com.uav.autodebit.vo.CustomerVO;
 import com.uav.autodebit.vo.DMRC_Customer_CardVO;
 import com.uav.autodebit.vo.LocalCacheVO;
@@ -43,11 +50,13 @@ import com.uav.autodebit.vo.ServiceTypeVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
 import com.uav.autodebit.volley.VolleyUtils;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -212,9 +221,7 @@ public class AdditionalService extends AppCompatActivity implements View.OnClick
 
             Log.w("request",json);
             params.put("volley", json);
-
             connectionVO.setParams(params);
-
             VolleyUtils.makeJsonObjectRequest(AdditionalService.this,connectionVO, new VolleyResponseListener() {
                 @Override
                 public void onError(String message) {
@@ -224,33 +231,88 @@ public class AdditionalService extends AppCompatActivity implements View.OnClick
                     JSONObject response = (JSONObject) resp;
                     Gson gson = new Gson();
                     CustomerVO customerVO1 = gson.fromJson(response.toString(), CustomerVO.class);
-
-
-                    if(customerVO1.getStatusCode().equals("400")){
+                    if (customerVO1.getStatusCode().equals("400")) {
                         //VolleyUtils.furnishErrorMsg(  "Fail" ,response, MainActivity.this);
                         ArrayList error = (ArrayList) customerVO1.getErrorMsgs();
                         StringBuilder sb = new StringBuilder();
-                        for(int i=0; i<error.size(); i++){
+                        for (int i = 0; i < error.size(); i++) {
                             sb.append(error.get(i)).append("\n");
                         }
-                        // Utility.alertDialog(PanVerification.this,"Alert",sb.toString(),"Ok");
-                        Utility.showSingleButtonDialog(AdditionalService.this,"Error !",sb.toString(),false);
-                    }else if(customerVO1.getStatusCode().equals("200")){
-                        Session.set_Data_Sharedprefence(AdditionalService.this,Session.CACHE_CUSTOMER,response.toString());
-                        CustomerVO customerVO = new Gson().fromJson(Session.getSessionByKey(AdditionalService.this,Session.CACHE_CUSTOMER), CustomerVO.class);
-                        Session.set_Data_Sharedprefence(AdditionalService.this, Session.LOCAL_CACHE,customerVO.getLocalCache());
+                        Utility.showSingleButtonDialog(AdditionalService.this, "Error !", sb.toString(), false);
+                    } else if (customerVO1.getStatusCode().equals("ap102")) {
+                        String[] buttons = {"OK"};
+                        Utility.showSingleButtonDialogconfirmation(AdditionalService.this, new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk) (ok) -> {
+                            ok.dismiss();
+                            startActivityForResult(new Intent(AdditionalService.this, Enach_Mandate.class).putExtra("forresutl", true).putExtra("selectservice",arrayList), ApplicationConstant.REQ_ENACH_MANDATE);
+                        }), "Alert", customerVO1.getErrorMsgs().get(0), buttons);
+                    } else if (customerVO1.getStatusCode().equals("ap103")) {
+                        String[] buttons = {"New Mandate", "Choose Bank"};
+                        Utility.showDoubleButtonDialogConfirmation(new DialogInterface() {
+                            @Override
+                            public void confirm(Dialog dialog) {
+                                dialog.dismiss();
+                                try {
+                                    JSONArray arryjson = new JSONArray(customerVO1.getAnonymousString());
+                                    ArrayList<CustomerAuthServiceVO> customerAuthServiceArry = new ArrayList<>();
+                                    for (int i = 0; i < arryjson.length(); i++) {
+                                        JSONObject jsonObject = arryjson.getJSONObject(i);
+                                        CustomerAuthServiceVO customerAuthServiceVO = new CustomerAuthServiceVO();
+                                        customerAuthServiceVO.setBankName(jsonObject.getString("bankName"));
+                                        customerAuthServiceVO.setProviderTokenId(jsonObject.getString("mandateId"));
+                                        customerAuthServiceVO.setCustomerAuthId(jsonObject.getInt("id"));
+                                        customerAuthServiceVO.setAnonymousString(jsonObject.getString("status"));
+                                        customerAuthServiceArry.add(customerAuthServiceVO);
+                                    }
 
-                        Intent intent =new Intent();
-                        setResult(RESULT_OK,intent);
-                        finish();
+                                    CustomerAuthServiceVO customerAuthServiceVO = new CustomerAuthServiceVO();
+                                    customerAuthServiceVO.setBankName(null);
+                                    customerAuthServiceVO.setProviderTokenId("Add New Mandate");
+                                    customerAuthServiceVO.setCustomerAuthId(0);
+                                    customerAuthServiceVO.setAnonymousString(null);
+                                    customerAuthServiceArry.add(customerAuthServiceVO);
 
-                    }else {
-                        Utility.showSingleButtonDialog(AdditionalService.this,null,customerVO1.getErrorMsgs().get(0),false);
+                                    Utility.alertselectdialog(AdditionalService.this, "Choose from existing Bank", customerAuthServiceArry, new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess) (s) -> {
+                                        if (!s.equals("0")) {
+                                            Log.w("Home_value", s);
+                                            //setBankForService(--, Integer.parseInt(Session.getCustomerId(AdditionalService.this)), Integer.parseInt(s));
+                                        } else {
+                                            startActivityForResult(new Intent(AdditionalService.this, Enach_Mandate.class).putExtra("forresutl", true).putExtra("selectservice",arrayList), ApplicationConstant.REQ_ENACH_MANDATE);
+                                        }
+                                    }));
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    Utility.exceptionAlertDialog(AdditionalService.this, "Alert!", "Something went wrong, Please try again!", "Report", Utility.getStackTrace(e));
+                                }
+                            }
+                            @Override
+                            public void modify(Dialog dialog) {
+                                dialog.dismiss();
+                                startActivityForResult(new Intent(AdditionalService.this, Enach_Mandate.class).putExtra("forresutl", true).putExtra("selectservice",arrayList), ApplicationConstant.REQ_ENACH_MANDATE);
+                            }
+                        }, AdditionalService.this, customerVO1.getErrorMsgs().get(0), "Alert", buttons);
                     }
                 }
             });
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode==RESULT_OK){
+            if(requestCode==ApplicationConstant.REQ_ENACH_MANDATE){
+                boolean enachMandateStatus=data.getBooleanExtra("mandate_status",false);
+                if(enachMandateStatus){
+                    Intent intent =new Intent();
+                    setResult(RESULT_OK,intent);
+                    finish();
+                }else{
+                    Utility.showSingleButtonDialog(AdditionalService.this,"Alert",data.getStringExtra("msg"),false);
+                }
+            }
         }
     }
 
@@ -280,7 +342,7 @@ public class AdditionalService extends AppCompatActivity implements View.OnClick
                     saveServiceAdd(addservice);
                 }else {
                     Intent intent =new Intent();
-                    intent.putExtra("selectservice",addservice);
+                    intent.putIntegerArrayListExtra("selectservice",addservice);
                     setResult(RESULT_OK,intent);
                     finish();
                 }
@@ -295,11 +357,6 @@ public class AdditionalService extends AppCompatActivity implements View.OnClick
 
 
     public void backbuttonfun(){
-       /* Intent intent = new Intent(getApplicationContext(), Home.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);*/
-
        finish();
     }
-
 }

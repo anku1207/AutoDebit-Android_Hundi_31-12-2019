@@ -549,11 +549,6 @@ public class Home extends AppCompatActivity
             return null;
     }
 
-
-
-
-
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -561,35 +556,32 @@ public class Home extends AppCompatActivity
             if (requestCode == ApplicationConstant.REQ_ENACH_MANDATE) {
                 loadDateInRecyclerView();
 
-                //show dialog after mandate
-                ArrayList<Integer> enachActServiceIds = data.getIntegerArrayListExtra("selectservice");
-                int [] showDialogServiceIds={1,2,3,4};
-                boolean showDialogValidate=false;
-                int i=0;
-                do{
-                    if(enachActServiceIds.contains(showDialogServiceIds[i])) showDialogValidate = true;
-                    i++;
-                }while(i<showDialogServiceIds.length);{
-                    if(showDialogValidate){
-                        Utility.showSingleButtonDialogconfirmation(this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
-                            ok.dismiss();
+                boolean enachMandateStatus=data.getBooleanExtra("mandate_status",false);
+                if(enachMandateStatus){
+                    //show dialog after mandate
+                    ArrayList<Integer> enachActServiceIds = data.getIntegerArrayListExtra("selectservice");
+                    int [] showDialogServiceIds={1,2,3,4};
+                    boolean showDialogValidate=false;
+                    int i=0;
+                    do{
+                        if(enachActServiceIds.contains(showDialogServiceIds[i])) showDialogValidate = true;
+                        i++;
+                    }while(i<showDialogServiceIds.length);{
+                        if(showDialogValidate){
+                            Utility.showSingleButtonDialogconfirmation(this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                                ok.dismiss();
+                                startUserClickService(clickServiceId,null);
+                            }),"Alert",data.getStringExtra("msg"));
+                        }else {
                             startUserClickService(clickServiceId,null);
-                        }),"Alert",data.getStringExtra("msg"));
-                    }else {
-                        startUserClickService(clickServiceId,null);
+                        }
                     }
+                }else{
+                    Utility.showSingleButtonDialog(Home.this,"Alert",data.getStringExtra("msg"),false);
                 }
             } else if (requestCode == ApplicationConstant.REQ_ALLSERVICE) {
                 startUserClickService(clickServiceId,null);
-            } else if (requestCode == ApplicationConstant.REQ_AdditionalService_Add_More) {
-                ArrayList<Integer> integers = data.getIntegerArrayListExtra("selectservice");
-
-               // double highestAmt = getHighestAmtForService(integers);
-                Intent enachMandate = new Intent(Home.this, Enach_Mandate.class);
-                enachMandate.putExtra("forresutl", true);
-                enachMandate.putExtra("selectservice", integers);
-                startActivityForResult(enachMandate, ApplicationConstant.REQ_ENACH_MANDATE);
-
+            } else if (requestCode == ApplicationConstant.REQ_SI_MANDATE) {
             }
         }
     }
@@ -685,9 +677,7 @@ public class Home extends AppCompatActivity
                         public void confirm(Dialog dialog) {
                             dialog.dismiss();
                             try {
-
                                 JSONArray arryjson=new JSONArray(customerVO.getAnonymousString());
-
                                 ArrayList<CustomerAuthServiceVO> customerAuthServiceArry=new ArrayList<>();
                                 for(int i=0;i<arryjson.length();i++){
                                     JSONObject jsonObject =arryjson.getJSONObject(i);
@@ -698,7 +688,6 @@ public class Home extends AppCompatActivity
                                     customerAuthServiceVO.setAnonymousString(jsonObject.getString("status"));
                                     customerAuthServiceArry.add(customerAuthServiceVO);
                                 }
-
 
                                 CustomerAuthServiceVO customerAuthServiceVO =new CustomerAuthServiceVO();
                                 customerAuthServiceVO.setBankName(null);
@@ -741,11 +730,11 @@ public class Home extends AppCompatActivity
                                 startActivity(new Intent(Home.this, activityhasmap.get("L_3")));
                                 finish();
                             }else if(customerVO.getStatusCode().equals("L_4")){
-                                startActivityForResult(new Intent(Home.this, activityhasmap.get("L_5")).putExtra("onactivityresult",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(serviceId))),ApplicationConstant.REQ_ENACH_MANDATE);
+                                startActivityForResult(new Intent(Home.this, activityhasmap.get("L_5")).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(serviceId))),ApplicationConstant.REQ_ENACH_MANDATE);
                             }else if(customerVO.getStatusCode().equals("L_5")){
-                                startActivityForResult(new Intent(Home.this, activityhasmap.get("L_5")).putExtra("onactivityresult",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(serviceId))),ApplicationConstant.REQ_ENACH_MANDATE);
+                                startActivityForResult(new Intent(Home.this, activityhasmap.get("L_5")).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(serviceId))),ApplicationConstant.REQ_ENACH_MANDATE);
                             }else if(customerVO.getStatusCode().equals("L_6")){
-                                    startActivityForResult(new Intent(Home.this, activityhasmap.get("L_6")).putExtra("onactivityresult",true),ApplicationConstant.REQ_AdditionalService_Add_More);
+                                    startActivityForResult(new Intent(Home.this, activityhasmap.get("L_6")).putExtra("forresutl",true),ApplicationConstant.REQ_SI_MANDATE);
                             }else  if(customerVO.getStatusCode().equals("ap101")){
                                 startActivityForResult(new Intent(Home.this,AdditionalService.class), ApplicationConstant.REQ_ALLSERVICE);
                             }
