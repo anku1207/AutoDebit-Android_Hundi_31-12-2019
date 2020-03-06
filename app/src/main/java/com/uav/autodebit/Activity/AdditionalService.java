@@ -70,8 +70,6 @@ public class AdditionalService extends AppCompatActivity implements View.OnClick
     List<ServiceTypeVO> servicelist;
 
     ServiceTypeVO selectServiceTypeVo=null;
-
-
     ImageView back_activity_button ;
     BottomNavigationView navigation;
 
@@ -79,9 +77,6 @@ public class AdditionalService extends AppCompatActivity implements View.OnClick
     List<ServiceTypeVO> newList;
 
     boolean onActivityResult=false;
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -198,10 +193,6 @@ public class AdditionalService extends AppCompatActivity implements View.OnClick
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            // your code
-           /* Intent intent=new Intent(AdditionalService.this,Home.class);
-            startActivity(intent);
-            finish();*/
             backbuttonfun();
             return true;
         }

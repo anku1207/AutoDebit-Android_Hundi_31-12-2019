@@ -113,8 +113,8 @@ public class ApplicationConstant {
            return "http://autope.in";
           //  return "http://164.52.192.45";
         }else{
-            //return  "http://205.147.103.18" ;
-           return "http://192.168.43.170";
+            return  "http://205.147.103.18" ;
+           //return "http://192.168.43.170";
         }
     }
 }

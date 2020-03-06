@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -294,11 +295,9 @@ public class Home extends AppCompatActivity
         bannerIndicator.setupWithViewPager(viewPager, true);
         Utility.disable_Tab(bannerIndicator);
 
-
-
+        TextView textView=  (TextView)findViewById(R.id.textview);
+        textView.setBackgroundColor(Utility.getColorWithAlpha(Color.rgb(51, 181, 255 ), 0.5f));
         //view pager change position change text view msg
-/*
-
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
             @Override
@@ -308,14 +307,11 @@ public class Home extends AppCompatActivity
 
             @Override
             public void onPageSelected(int position) {
-              TextView textView=  (TextView)findViewById(R.id.textview);
 
               TranslateAnimation animObj= new TranslateAnimation(0,100, 0, 0);
               animObj.setDuration(500);
               textView.startAnimation(animObj);
-
               textView.setText(position+"sdfsdfsdfdsfsdfdsfs");
-
             }
 
             @Override
@@ -323,8 +319,6 @@ public class Home extends AppCompatActivity
 
             }
         });
-*/
-
 
 
 
