@@ -65,11 +65,13 @@ public class Webview extends AppCompatActivity {
         void openWebView(final String receiptUrl) {
 
             setContentView(R.layout.activity_webview);
-             webView = findViewById(R.id.webView);
-            //webView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
+            webView = findViewById(R.id.webView);
+           // webView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
             webView.setVerticalScrollBarEnabled(false);
             webView.setHorizontalScrollBarEnabled(false);
 
+
+            webView.getSettings().setBuiltInZoomControls(true);
 
             //  wv.setWebViewClient(new MyBrowser());
             //webSettings.setDomStorageEnabled(true);
