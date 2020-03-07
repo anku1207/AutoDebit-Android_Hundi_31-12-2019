@@ -11,6 +11,7 @@ public class BannerVO extends BaseVO implements Serializable {
     private String  bannerImage;
     private List<BannerVO> banners;
     private Long updateAt;
+    private String description;
 
     public BannerVO (){
 
@@ -62,4 +63,11 @@ public class BannerVO extends BaseVO implements Serializable {
         this.updateAt = updateAt;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }

@@ -53,6 +53,7 @@
                     android:fontFamily="@font/poppinsbold"
                     android:padding="3dp"
                     android:lineSpacingExtra="2dp"
+                    android:layout_marginLeft="5dp"
                     />
                 <android.support.design.widget.TabLayout
                     android:id="@+id/indicator"

@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.uav.autodebit.BO.BannerBO;
+import com.uav.autodebit.BO.CustomerBO;
 import com.uav.autodebit.BO.MetroBO;
 import com.uav.autodebit.Interface.AlertSelectDialogClick;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
@@ -202,7 +203,7 @@ public class AdditionalService extends AppCompatActivity implements View.OnClick
     public void saveServiceAdd(ArrayList arrayList){
         try {
             HashMap<String, Object> params = new HashMap<String, Object>();
-            ConnectionVO connectionVO = BannerBO.saveCustomerService();
+            ConnectionVO connectionVO = CustomerBO.saveAdditionalService();
 
             CustomerVO customerVO=new CustomerVO();
             customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(AdditionalService.this)));

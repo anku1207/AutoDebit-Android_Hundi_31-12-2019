@@ -297,35 +297,27 @@ public class Home extends AppCompatActivity
 
         TextView textView=  (TextView)findViewById(R.id.textview);
         textView.setBackgroundColor(Utility.getColorWithAlpha(Color.rgb(51, 181, 255 ), 0.5f));
+        textView.setText(banners.get(0).getDescription());
         //view pager change position change text view msg
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
             }
-
             @Override
             public void onPageSelected(int position) {
-
               TranslateAnimation animObj= new TranslateAnimation(0,100, 0, 0);
               animObj.setDuration(500);
               textView.startAnimation(animObj);
-              textView.setText(position+"sdfsdfsdfdsfsdfdsfs");
+              textView.setText(banners.get(position).getDescription());
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
-
             }
         });
 
-
-
-
         List<ServiceTypeVO> utilityServices = localCacheVO.getUtilityBills();
         List<ServiceTypeVO> addservice =new ArrayList<>();
-
 
         String utilityService =localCacheVO.getUitiyServiceHomePage();
         String[] utilServiceArr =  utilityService.split(",");
@@ -603,7 +595,6 @@ public class Home extends AppCompatActivity
             e.printStackTrace();
             Log.e("error_home",e.getMessage());
             Utility.exceptionAlertDialog(Home.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
-
         }
    }
 

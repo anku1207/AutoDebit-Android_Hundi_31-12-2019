@@ -233,7 +233,7 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
             ImageView imageView =Utility.getImageView(Dmrc_Card_Request.this);
             imageView.setScaleType(ImageView.ScaleType.FIT_XY);
             Picasso.with(this)
-                    .load("http://205.147.103.18/autodebit/bannerimages/banner_1.png")
+                    .load("http://autope.in/images/apk/1577709175082.jpeg")
                     .into(imageView, new com.squareup.picasso.Callback() {
                         @Override
                         public void onSuccess() {

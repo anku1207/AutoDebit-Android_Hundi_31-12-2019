@@ -50,4 +50,12 @@ public class CustomerBO implements Serializable {
         return connectionVO;
     }
 
+    public static ConnectionVO saveAdditionalService(){
+        ConnectionVO connectionVO = new ConnectionVO();
+        connectionVO.setMethodName("saveAdditionalService");
+        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
+        return connectionVO;
+    }
+
+
 }
