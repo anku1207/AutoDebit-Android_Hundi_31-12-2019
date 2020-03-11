@@ -217,17 +217,17 @@ public class Enach_Mandate extends AppCompatActivity{
 
                 boolean validation=true;
 
-                if(acno.getText().toString().equals("")){
+                if(acno.getText().toString().trim().equals("")){
                     acno.setError("this filed is required");
                     validation=false;
                 }
 
-                if(acholdername.getText().toString().equals("")){
+                if(acholdername.getText().toString().trim().equals("")){
                     acholdername.setError("this filed is required");
                     validation=false;
                 }
 
-                if(maxamount.getText().toString().equals("")){
+                if(maxamount.getText().toString().trim().equals("")){
                     maxamount.setError("this filed is required");
                     validation=false;
                 }
@@ -245,12 +245,12 @@ public class Enach_Mandate extends AppCompatActivity{
                     Utility.alertDialog(Enach_Mandate.this,"Alert","Account Type is not selected","Ok");
                     validation=false;
                 }
-                if(!maxamount.getText().toString().equals("")  && Integer.parseInt(maxamount.getText().toString())< minamt){
+                if(!maxamount.getText().toString().trim().equals("")  && Integer.parseInt(maxamount.getText().toString().trim())< minamt){
                     Utility.showSingleButtonDialog(Enach_Mandate.this,"Alert",errormsz,false);
                     validation=false;
                 }
 
-                if(acno.getText().toString().length()<5){
+                if(acno.getText().toString().trim().length()<5){
                     acno.setError("Minimum length is 5");
                     validation=false;
                 }
@@ -273,17 +273,17 @@ public class Enach_Mandate extends AppCompatActivity{
             JSONArray jsonArray=new JSONArray();
             JSONObject object =new JSONObject();
             object.put("key","Account No");
-            object.put("value",acno.getText().toString());
+            object.put("value",acno.getText().toString().trim());
             jsonArray.put(object);
 
             object =new JSONObject();
             object.put("key","Holder Name");
-            object.put("value",acholdername.getText().toString());
+            object.put("value",acholdername.getText().toString().trim());
             jsonArray.put(object);
 
             object =new JSONObject();
             object.put("key","Max Amount");
-            object.put("value",maxamount.getText().toString());
+            object.put("value",maxamount.getText().toString().trim());
             jsonArray.put(object);
 
             object =new JSONObject();

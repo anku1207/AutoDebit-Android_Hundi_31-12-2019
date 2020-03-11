@@ -467,10 +467,6 @@ public class PanVerification extends AppCompatActivity {
             filed=false;
 
         }
-
-
-
-
         if(date1.getText().toString().trim().equals("")){
             date1.setError("This filed is required");
             filed=false;
