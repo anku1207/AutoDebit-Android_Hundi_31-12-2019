@@ -521,8 +521,8 @@ public class Profile_Activity extends AppCompatActivity implements FileDownloadI
                     }
                     @Override
                     public void onResponse(Object resp) throws JSONException {
-                        JSONObject response = (JSONObject) resp;
 
+                        JSONObject response = (JSONObject) resp;
                         Gson gson=new Gson();
                         CustomerVO customerVO = gson.fromJson(response.toString(), CustomerVO.class);
                         if(customerVO.getStatusCode().equals("400")){
@@ -539,15 +539,8 @@ public class Profile_Activity extends AppCompatActivity implements FileDownloadI
                 });
             }
         });
-
         backgroundAsyncService.execute();
     }
-
-
-
-
-
-
 
     private void getProfileDate(String id){
         progressBar.setVisibility(View.VISIBLE);
