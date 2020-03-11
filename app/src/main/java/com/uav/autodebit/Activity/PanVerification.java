@@ -15,7 +15,9 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.InputType;
+import android.text.Spanned;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -142,7 +144,6 @@ public class PanVerification extends AppCompatActivity {
                 finish();
             }
         });
-
 
 
         CustomerVO customerVO = gson.fromJson(Session.getSessionByKey(PanVerification.this,Session.CACHE_CUSTOMER), CustomerVO.class);

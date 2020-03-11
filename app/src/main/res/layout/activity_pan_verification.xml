@@ -142,11 +142,12 @@
                     android:singleLine="true"
                     android:id="@+id/username"
                     android:maxLength="75"
-                    android:inputType="textCapWords|textNoSuggestions|textFilter"
+                    android:inputType="textCapWords"
                     android:text=""
                     android:maxLines="1"
                     android:digits="@string/NameDigits"
                     style="@style/commonEdittextStyle"
+
 
                     />
             </android.support.v7.widget.CardView>
