@@ -147,7 +147,7 @@ public class Splash_Screen extends AppCompatActivity implements BitmapInterface 
             VolleyUtils.makeJsonObjectRequest(this, BannerBO.getLocalCache(), new VolleyResponseListener() {
                 @Override
                 public void onError(String message) {
-                    Utility.alertDialog(Splash_Screen.this,"Alert!","Something went wrong, Please try again!","Ok");
+                    finish();
                 }
                 @Override
                 public void onResponse(Object resp) throws JSONException {

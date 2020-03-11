@@ -117,7 +117,7 @@ public class VolleyUtils {
                         pDialog.dismiss();
 
                         if (volleyError instanceof NetworkError) {
-                            errorMessage = "Cannot connect to Internet...Please check your connection!";
+                            errorMessage = "The service is temporary not available";
                         } else if (volleyError instanceof ServerError) {
                             errorMessage = "The server could not be found. Please try again after some time!!";
                         } else if (volleyError instanceof AuthFailureError) {
