@@ -83,25 +83,25 @@ public class User_Registration extends AppCompatActivity {
             public void onClick(View view) {
 
                 boolean inputvalid=true;
-                if(username.getText().toString().equals("")){
+                if(username.getText().toString().trim().equals("")){
                     username.setError(ErrorMsg.user_Registration_Filed_Required);
                     inputvalid=false;
                 }
-                if(userphone.getText().toString().equals("")){
+                if(userphone.getText().toString().trim().equals("")){
                     userphone.setError(ErrorMsg.user_Registration_Filed_Required);
                     inputvalid=false;
                 }
-                if(useremail.getText().toString().equals("")){
+                if(useremail.getText().toString().trim().equals("")){
                     useremail.setError(ErrorMsg.user_Registration_Filed_Required);
                     inputvalid=false;
                 }
 
-                if(!useremail.getText().toString().equals("") && Utility.validatePattern(useremail.getText().toString().trim(), ApplicationConstant.EMAIL_VALIDATION)!=null){
+                if(!useremail.getText().toString().trim().equals("") && Utility.validatePattern(useremail.getText().toString().trim(), ApplicationConstant.EMAIL_VALIDATION)!=null){
 
                     useremail.setError(Utility.validatePattern(useremail.getText().toString().trim(),ApplicationConstant.EMAIL_VALIDATION));
                     inputvalid=false;
                 }
-                if (!userphone.getText().toString().equals("") &&  Utility.validatePattern(userphone.getText().toString().trim(),ApplicationConstant.MOBILENO_VALIDATION)!=null){
+                if (!userphone.getText().toString().trim().equals("") &&  Utility.validatePattern(userphone.getText().toString().trim(),ApplicationConstant.MOBILENO_VALIDATION)!=null){
                     userphone.setError(Utility.validatePattern(userphone.getText().toString().trim(),ApplicationConstant.MOBILENO_VALIDATION));
                     inputvalid=false;
                 }
@@ -241,17 +241,17 @@ public class User_Registration extends AppCompatActivity {
             JSONArray jsonArray=new JSONArray();
             JSONObject object =new JSONObject();
             object.put("key","Name");
-            object.put("value",username.getText().toString());
+            object.put("value",username.getText().toString().trim());
             jsonArray.put(object);
 
             object =new JSONObject();
             object.put("key","Email");
-            object.put("value",useremail.getText().toString());
+            object.put("value",useremail.getText().toString().trim());
             jsonArray.put(object);
 
             object =new JSONObject();
             object.put("key","Mobile No.");
-            object.put("value",userphone.getText().toString());
+            object.put("value",userphone.getText().toString().trim());
             jsonArray.put(object);
 
             int textviewsize[] = {1,3};

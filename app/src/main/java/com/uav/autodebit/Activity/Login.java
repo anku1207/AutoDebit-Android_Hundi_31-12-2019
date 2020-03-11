@@ -140,7 +140,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
         if(Session.check_Exists_key(Login.this,Session.CACHE_USER_LOGINID)){
             userid.setText(Session.getSessionByKey(Login.this,Session.CACHE_USER_LOGINID));
         }
-        if(!userid.getText().toString().equals("")){
+        if(!userid.getText().toString().trim().equals("")){
             try {
                 startLoginFingerPrint();
             }catch (Exception e){
@@ -192,7 +192,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
                     Utility.showSingleButtonDialog(Login.this,"Alert",ErrorMsg.login_Valid_User_Id,false);
                     return;
                 }
-                loginByFigerprint(userid.getText().toString(),type);
+                loginByFigerprint(userid.getText().toString().trim(),type);
             }
         });
     }
@@ -242,7 +242,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
                 startActivity(new Intent(Login.this,User_Registration.class));
                 break;
             case R.id.forgorpassword:
-                if(userid.getText().toString().equals("")){
+                if(userid.getText().toString().trim().equals("")){
                     Utility.showSingleButtonDialog(Login.this,"Alert", ErrorMsg.login_User_empty,false);
                     return;
                 }else {
@@ -266,13 +266,13 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
                 }
                 break;
             case R.id.loginbtn:
-                if(userid.getText().toString().equals("") || password.getText().toString().equals("")){
+                if(userid.getText().toString().trim().equals("") || password.getText().toString().trim().equals("")){
 
-                    if(userid.getText().toString().equals("")){
+                    if(userid.getText().toString().trim().equals("")){
                         Utility.showSingleButtonDialog(Login.this,"Alert",ErrorMsg.login_User_empty,false);
                         return;
                     }
-                    if(password.getText().toString().equals("")){
+                    if(password.getText().toString().trim().equals("")){
                         Utility.showSingleButtonDialog(Login.this,"Alert",ErrorMsg.login_Password_empty,false);
                         return;
                     }
