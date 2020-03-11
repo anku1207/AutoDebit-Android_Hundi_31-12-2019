@@ -486,7 +486,6 @@ public class Profile_Activity extends AppCompatActivity implements FileDownloadI
             String errorMessage = "Whoops - your device doesn't support the crop action!";
             Toast toast = Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT);
             toast.show();
-
             imageView1.setImageBitmap(bmp);
             setCustomerProfileImage();
         }catch (Exception e){
