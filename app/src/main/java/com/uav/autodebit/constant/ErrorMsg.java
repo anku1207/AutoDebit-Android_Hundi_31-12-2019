@@ -12,6 +12,7 @@ public class ErrorMsg {
     //permission msg
     public static String DOWNLOAD_PERMISSION="Need this  permission for download credit report";
     public static String CAMERA_PERMISSION="Need Camera permission";
+    public static String SMS_PERMISSION="Need Sms permission for read otp ";
 
 
 

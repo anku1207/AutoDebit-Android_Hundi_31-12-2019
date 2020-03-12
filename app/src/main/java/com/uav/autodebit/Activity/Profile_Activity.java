@@ -259,12 +259,8 @@ public class Profile_Activity extends AppCompatActivity implements FileDownloadI
                     @Override
                     public void modify(Dialog dialog) {
                         dialog.dismiss();
-
-
                     }
                 },this,null,"Would you like email verify ?"+email.getText().toString(),"Alert",buttons);
-
-
                 break;
             case R.id.more_service:
                 startActivityForResult(new Intent(Profile_Activity.this,AdditionalService.class),REQ_ADD_MORE_SERVICE);

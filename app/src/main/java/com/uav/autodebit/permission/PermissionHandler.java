@@ -74,20 +74,28 @@ public class PermissionHandler {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
 
 
+    public static ArrayList<String> readSmsPermissionArrayList(Context context) {
+        ArrayList<String> permissions=new ArrayList<>();
+        permissions.add(Manifest.permission.SEND_SMS);
+        permissions.add(Manifest.permission.RECEIVE_SMS);
+        permissions.add(Manifest.permission.READ_SMS);
+        return permissions;
+
+    }
+
+
     public static boolean checkpermissionmessage(Context context) {
         context1=context;
-        int permissionSendMessage = ContextCompat.checkSelfPermission(context1,
-                Manifest.permission.SEND_SMS);
+        int permissionSendMessage = ContextCompat.checkSelfPermission(context1,Manifest.permission.SEND_SMS);
         int receiveSMS = ContextCompat.checkSelfPermission(context1, Manifest.permission.RECEIVE_SMS);
         int readSMS = ContextCompat.checkSelfPermission(context1, Manifest.permission.READ_SMS);
         List<String> listPermissionsNeeded = new ArrayList<>();
         if (receiveSMS != PackageManager.PERMISSION_GRANTED) {
-            listPermissionsNeeded.add(Manifest.permission.RECEIVE_MMS);
+            listPermissionsNeeded.add(Manifest.permission.RECEIVE_SMS);
         }
         if (readSMS != PackageManager.PERMISSION_GRANTED) {
             listPermissionsNeeded.add(Manifest.permission.READ_SMS);
