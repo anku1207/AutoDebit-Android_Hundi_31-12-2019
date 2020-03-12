@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class All_Service extends AppCompatActivity {
+public class All_Service extends Base_Activity {
 
     RecyclerView service,utilityservie;
 

@@ -50,7 +50,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class Gas_Bill extends AppCompatActivity implements View.OnClickListener {
+public class Gas_Bill extends Base_Activity implements View.OnClickListener {
 
     EditText amount,operator;
     ImageView back_activity_button;

@@ -93,7 +93,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-public class Profile_Activity extends AppCompatActivity implements FileDownloadInterface , View.OnClickListener , PermissionUtils.PermissionResultCallback ,ActivityCompat.OnRequestPermissionsResultCallback{
+public class Profile_Activity extends Base_Activity implements FileDownloadInterface , View.OnClickListener , PermissionUtils.PermissionResultCallback ,ActivityCompat.OnRequestPermissionsResultCallback{
 
     BottomNavigationView navigation;
     TextView usename,pannumber,mobileno,email,address,citystate,pincode,creditscore,changepass;
@@ -327,7 +327,7 @@ public class Profile_Activity extends AppCompatActivity implements FileDownloadI
         try
         {
             // place where to store camera taken picture
-            photofileurl = VolleyUtils.createTemporaryFile("picture", ".jpg");
+            photofileurl = Utility.createTemporaryFile("picture", ".jpg");
             photofileurl.delete();
             Uri mImageUri = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", photofileurl);
 
@@ -399,9 +399,6 @@ public class Profile_Activity extends AppCompatActivity implements FileDownloadI
         });
     }
 
-
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -421,10 +418,9 @@ public class Profile_Activity extends AppCompatActivity implements FileDownloadI
                         bmp= Bitmap.createBitmap(bmp,0,0,bmp.getWidth(),bmp.getHeight(),matrix,true);
                     }
                    performCrop(Utility.getVersionWiseUri(Profile_Activity.this,photofileurl));
-
                 }else if(requestCode==REQ_GALLERY){
                     Uri contentURI = data.getData();
-                    bmp =VolleyUtils.grabImage(contentURI,this);
+                    bmp =Utility.grabImage(contentURI,this);
                     if(bmp.getWidth()>bmp.getHeight()){
                         Matrix matrix =new Matrix();
                         matrix.postRotate(90);

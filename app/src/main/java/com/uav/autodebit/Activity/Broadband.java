@@ -52,7 +52,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class Broadband extends AppCompatActivity implements View.OnClickListener {
+public class Broadband extends Base_Activity implements View.OnClickListener {
     EditText amount,operator;
     ImageView back_activity_button;
     String operatorcode,operatorname=null;

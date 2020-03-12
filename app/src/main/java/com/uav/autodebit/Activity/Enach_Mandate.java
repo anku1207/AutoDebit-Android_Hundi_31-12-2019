@@ -71,7 +71,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class Enach_Mandate extends AppCompatActivity{
+public class Enach_Mandate extends Base_Activity{
 
     EditText acholdername,acno;
     Button mandatebtn;

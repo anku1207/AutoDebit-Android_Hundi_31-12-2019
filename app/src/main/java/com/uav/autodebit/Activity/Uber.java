@@ -58,7 +58,7 @@ import java.util.List;
 
 import static com.uav.autodebit.util.Utility.fromJson;
 
-public class Uber extends AppCompatActivity implements View.OnClickListener {
+public class Uber extends Base_Activity implements View.OnClickListener {
     EditText name,lastname,email;
     Button proceed;
     ImageView back_activity_button;

@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.uav.autodebit.R;
 import com.uav.autodebit.util.ExceptionHandler;
 
-public class Help extends AppCompatActivity implements View.OnClickListener {
+public class Help extends Base_Activity implements View.OnClickListener {
 
     TextView emailid,mobileno,timing;
     ImageView back_activity_button;

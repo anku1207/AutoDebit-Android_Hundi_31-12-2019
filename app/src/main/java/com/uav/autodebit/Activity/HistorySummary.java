@@ -37,7 +37,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class HistorySummary extends AppCompatActivity implements View.OnClickListener {
+public class HistorySummary extends Base_Activity implements View.OnClickListener {
     LinearLayout main,payment_detail_Layout;
     TextView service_name,number,order_id,status;
     ImageView service_Icon,back_activity_button;

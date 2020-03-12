@@ -87,33 +87,6 @@ public class PermissionHandler {
 
     }
 
-
-    public static boolean checkpermissionmessage(Context context) {
-        context1=context;
-        int permissionSendMessage = ContextCompat.checkSelfPermission(context1,Manifest.permission.SEND_SMS);
-        int receiveSMS = ContextCompat.checkSelfPermission(context1, Manifest.permission.RECEIVE_SMS);
-        int readSMS = ContextCompat.checkSelfPermission(context1, Manifest.permission.READ_SMS);
-        List<String> listPermissionsNeeded = new ArrayList<>();
-        if (receiveSMS != PackageManager.PERMISSION_GRANTED) {
-            listPermissionsNeeded.add(Manifest.permission.RECEIVE_SMS);
-        }
-        if (readSMS != PackageManager.PERMISSION_GRANTED) {
-            listPermissionsNeeded.add(Manifest.permission.READ_SMS);
-        }
-        if (permissionSendMessage != PackageManager.PERMISSION_GRANTED) {
-            listPermissionsNeeded.add(Manifest.permission.SEND_SMS);
-        }
-        if (!listPermissionsNeeded.isEmpty()) {
-            ActivityCompat.requestPermissions((Activity) context1,
-                    listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]),
-                    REQUEST_ID_MULTIPLE_PERMISSIONS);
-            return false;
-        }
-        return true;
-
-    }
-
-
     public static ArrayList<String> fileDownloadAndReadPermissionArrayList(Context context) {
         ArrayList<String> permissions=new ArrayList<>();
         permissions.add(Manifest.permission.INTERNET);
@@ -123,47 +96,12 @@ public class PermissionHandler {
 
     }
 
+    public static ArrayList<String> contactPermissionArrayList(Context context) {
+        ArrayList<String> permissions=new ArrayList<>();
+        permissions.add(Manifest.permission.READ_CONTACTS);
+        return permissions;
 
-    public static boolean filedownloadandread(Context context) {
-        context1=context;
-        int permissionINTERNET = ContextCompat.checkSelfPermission(context1,Manifest.permission.INTERNET);
-        int permissionWRITE_EXTERNAL_STORAGE = ContextCompat.checkSelfPermission(context1, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        List<String> listPermissionsNeeded = new ArrayList<>();
-        if (permissionINTERNET != PackageManager.PERMISSION_GRANTED) {
-            listPermissionsNeeded.add(Manifest.permission.INTERNET);
-        }
-        if (permissionWRITE_EXTERNAL_STORAGE != PackageManager.PERMISSION_GRANTED) {
-            listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        }
-
-        if (!listPermissionsNeeded.isEmpty()) {
-            ActivityCompat.requestPermissions((Activity) context1,
-                    listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]),
-                    REQUEST_ID_MULTIPLE_PERMISSIONS);
-            return false;
-        }
-        return true;
     }
-
-
-    public static boolean contactpermission(Context context) {
-        context1=context;
-
-        int receiveREAD_PHONE_STATE = ContextCompat.checkSelfPermission(context1, Manifest.permission.READ_CONTACTS);
-        List<String> listPermissionsNeeded = new ArrayList<>();
-
-        if (receiveREAD_PHONE_STATE != PackageManager.PERMISSION_GRANTED) {
-            listPermissionsNeeded.add(Manifest.permission.READ_CONTACTS);
-        }
-        if (!listPermissionsNeeded.isEmpty()) {
-            ActivityCompat.requestPermissions((Activity) context1,
-                    listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]),
-                    REQUEST_ID_MULTIPLE_PERMISSIONS);
-            return false;
-        }
-        return true;
-    }
-
 
     public static ArrayList<String> imagePermissionArrayList(Context context) {
         ArrayList<String> permissions=new ArrayList<>();
@@ -171,34 +109,6 @@ public class PermissionHandler {
         permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
         permissions.add(Manifest.permission.CAMERA);
         return permissions;
-
-    }
-
-
-
-    public static boolean imagePermission(Context context) {
-        context1=context;
-        int permissionREADEXTERNALSTORAGE = ContextCompat.checkSelfPermission(context1,
-                Manifest.permission.READ_EXTERNAL_STORAGE);
-        int receiveWRITEEXTERNALSTORAGE = ContextCompat.checkSelfPermission(context1, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        int readCAMERA = ContextCompat.checkSelfPermission(context1, Manifest.permission.CAMERA);
-        List<String> listPermissionsNeeded = new ArrayList<>();
-        if (permissionREADEXTERNALSTORAGE != PackageManager.PERMISSION_GRANTED) {
-            listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        }
-        if (receiveWRITEEXTERNALSTORAGE != PackageManager.PERMISSION_GRANTED) {
-            listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        }
-        if (readCAMERA != PackageManager.PERMISSION_GRANTED) {
-            listPermissionsNeeded.add(Manifest.permission.CAMERA);
-        }
-        if (!listPermissionsNeeded.isEmpty()) {
-            ActivityCompat.requestPermissions((Activity) context1,
-                    listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]),
-                    REQUEST_ID_MULTIPLE_PERMISSIONS);
-            return false;
-        }
-        return true;
 
     }
 }

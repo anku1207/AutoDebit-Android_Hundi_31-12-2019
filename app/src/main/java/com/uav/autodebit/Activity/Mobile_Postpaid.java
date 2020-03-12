@@ -10,7 +10,9 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -39,10 +41,12 @@ import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
+import com.uav.autodebit.constant.ErrorMsg;
 import com.uav.autodebit.override.DrawableClickListener;
 import com.uav.autodebit.override.UAVEditText;
 import com.uav.autodebit.override.UAVProgressDialog;
 import com.uav.autodebit.permission.PermissionHandler;
+import com.uav.autodebit.permission.PermissionUtils;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.BackgroundAsyncService;
 import com.uav.autodebit.util.BackgroundServiceInterface;
@@ -68,7 +72,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickListener {
+public class Mobile_Postpaid extends Base_Activity implements View.OnClickListener , PermissionUtils.PermissionResultCallback , ActivityCompat.OnRequestPermissionsResultCallback{
 
 
     EditText amount,operator;
@@ -90,6 +94,8 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
     Gson gson;
 
     HashMap<String,Object> eleMap;
+
+    PermissionUtils permissionUtils;
 
 
 
@@ -130,6 +136,7 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
         gson =new Gson();
 
         eleMap=new HashMap<>();
+        permissionUtils=new PermissionUtils(Mobile_Postpaid.this);
 
         amountlayout.setVisibility(View.GONE);
 
@@ -256,10 +263,7 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
                                         public void onClick(DrawablePosition target) {
                                             switch (target) {
                                                 case RIGHT:
-                                                        if(PermissionHandler.contactpermission(Mobile_Postpaid.this)){
-                                                            Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-                                                            startActivityForResult(intent, 101);
-                                                    }
+                                                    permissionUtils.check_permission(PermissionHandler.contactPermissionArrayList(Mobile_Postpaid.this), ErrorMsg.CONTACT_PERMISSION, ApplicationConstant.REQ_READ_CONTACT_PERMISSION);
                                                     break;
                                             }
                                         }
@@ -433,7 +437,29 @@ public class Mobile_Postpaid extends AppCompatActivity implements View.OnClickLi
             public void afterTextChanged(Editable editable) {
             }
         });
+    }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        permissionUtils.onRequestPermissionsResult(requestCode,permissions,grantResults);
+    }
+
+    @Override
+    public void PermissionGranted(int request_code) {
+        if(request_code==ApplicationConstant.REQ_READ_CONTACT_PERMISSION){
+            Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+            startActivityForResult(intent, 101);
+        }
+    }
+    @Override
+    public void PartialPermissionGranted(int request_code, ArrayList<String> granted_permissions) {
+    }
+    @Override
+    public void PermissionDenied(int request_code) {
+    }
+    @Override
+    public void NeverAskAgain(int request_code) {
     }
 
 

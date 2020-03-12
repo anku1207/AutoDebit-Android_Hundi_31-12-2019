@@ -36,7 +36,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Listview_With_Image extends AppCompatActivity {
+public class Listview_With_Image extends Base_Activity {
 
     ImageView back_activity_button;
     ExpandableHeightListView listView;

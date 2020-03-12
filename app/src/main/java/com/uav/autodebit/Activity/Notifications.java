@@ -7,7 +7,7 @@ import android.widget.ListView;
 
 import com.uav.autodebit.R;
 
-public class Notifications extends AppCompatActivity {
+public class Notifications extends Base_Activity {
     RecyclerView recyclerView;
 
     @Override

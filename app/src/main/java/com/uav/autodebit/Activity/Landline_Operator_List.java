@@ -22,7 +22,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class Landline_Operator_List extends AppCompatActivity {
+public class Landline_Operator_List extends Base_Activity {
     TextView title;
     ImageView back_activity_button;
     ExpandableHeightListView listView;

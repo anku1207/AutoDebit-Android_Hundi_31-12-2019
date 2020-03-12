@@ -23,7 +23,7 @@ import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
 import com.uav.autodebit.R;
 
-public class BarcodeScanner extends AppCompatActivity {
+public class BarcodeScanner extends Base_Activity {
 
 
     private BarcodeDetector barcodeDetector;

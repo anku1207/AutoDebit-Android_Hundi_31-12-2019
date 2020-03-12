@@ -42,7 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class Splash_Screen extends AppCompatActivity implements BitmapInterface {
+public class Splash_Screen extends Base_Activity implements BitmapInterface {
     ProgressBar progressBar;
 
     List<BannerVO> slBannerVos= new ArrayList<>();

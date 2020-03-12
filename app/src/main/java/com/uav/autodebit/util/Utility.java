@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -99,6 +100,7 @@ import com.uav.autodebit.volley.VolleyUtils;
 
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
@@ -175,7 +177,7 @@ public class Utility {
 
     public  static String imagetostring (Uri mImageUri, Context context){
         ByteArrayOutputStream outputStream=new ByteArrayOutputStream();
-        Bitmap bmp= VolleyUtils.grabImage(mImageUri,context);
+        Bitmap bmp= Utility.grabImage(mImageUri,context);
         bmp= Utility.scaleDown(bmp, 1100, true);
         if(bmp.getWidth()>bmp.getHeight()){
             Matrix matrix =new Matrix();
@@ -1312,7 +1314,6 @@ public class Utility {
        return uri;
    }
 
-
     public static int getColorWithAlpha(int color, float ratio) {
         int newColor = 0;
         int alpha = Math.round(Color.alpha(color) * ratio);
@@ -1322,4 +1323,37 @@ public class Utility {
         newColor = Color.argb(alpha, r, g, b);
         return newColor;
     }
+
+    public static  void furnishErrorMsg(String errorTitle, JSONObject jsonObject, Context context) throws JSONException {
+        JSONArray error = jsonObject.getJSONArray("error");
+        StringBuilder sb = new StringBuilder();
+        for(int i=0; i<error.length(); i++){
+            sb.append(error.get(i)).append("\n");
+        }
+        VolleyUtils.showError(errorTitle, sb.toString(), context );
+
+
+    }
+    /// manoj shakya
+    public static File createTemporaryFile(String part, String ext) throws Exception {
+        File tempDir= Environment.getExternalStorageDirectory();
+        tempDir=new File(tempDir.getAbsolutePath()+"/HUNDI/");
+        if(!tempDir.exists()){
+            tempDir.mkdirs();
+        }
+        return File.createTempFile(part, ext, tempDir);
+    }
+    public static Bitmap grabImage(Uri mImageUri, Context context){
+        //context.getContentResolver().notifyChange(mImageUri, null);
+        ContentResolver cr = context.getContentResolver();
+        Bitmap bitmap = null;
+        try{
+            bitmap  = android.provider.MediaStore.Images.Media.getBitmap(cr, mImageUri);
+        }
+        catch (Exception e){
+            Toast.makeText(context, "Failed to load", Toast.LENGTH_SHORT).show();
+        }
+        return bitmap;
+    }
+
 }

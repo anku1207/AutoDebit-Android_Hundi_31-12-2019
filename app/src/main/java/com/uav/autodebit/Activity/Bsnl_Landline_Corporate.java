@@ -14,7 +14,7 @@ import android.widget.Toast;
 import com.uav.autodebit.R;
 import com.uav.autodebit.override.UAVEditText;
 
-public class Bsnl_Landline_Corporate extends AppCompatActivity implements View.OnClickListener {
+public class Bsnl_Landline_Corporate extends Base_Activity implements View.OnClickListener {
     EditText amount;
     ImageView back_activity_button;
     String operatorcode,operatorname=null;

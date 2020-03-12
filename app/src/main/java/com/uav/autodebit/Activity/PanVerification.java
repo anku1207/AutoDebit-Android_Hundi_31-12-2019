@@ -11,6 +11,8 @@ import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -34,12 +36,15 @@ import com.uav.autodebit.BO.PanCardBO;
 import com.uav.autodebit.BO.PinCodeBO;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
+import com.uav.autodebit.constant.ErrorMsg;
 import com.uav.autodebit.override.DrawableClickListener;
 import com.uav.autodebit.override.UAVEditText;
 import com.uav.autodebit.override.UAVProgressDialog;
+import com.uav.autodebit.permission.PermissionUtils;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.BackgroundAsyncService;
 import com.uav.autodebit.util.BackgroundServiceInterface;
+import com.uav.autodebit.util.DownloadTask;
 import com.uav.autodebit.util.ExceptionHandler;
 import com.uav.autodebit.permission.PermissionHandler;
 import com.uav.autodebit.util.MaskWatcher;
@@ -67,7 +72,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
-public class PanVerification extends AppCompatActivity {
+public class PanVerification extends Base_Activity implements  PermissionUtils.PermissionResultCallback , ActivityCompat.OnRequestPermissionsResultCallback{
     EditText pannumber,customername,pin,city,state,permanentaddress;
     TextView attachaddress;
     Button panverify;
@@ -87,28 +92,15 @@ public class PanVerification extends AppCompatActivity {
 
     UAVProgressDialog pd;
     String stringimg;
-
-
-    @TargetApi(Build.VERSION_CODES.O)
-    private void disableAutofill() {
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            getWindow().getDecorView().setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO_EXCLUDE_DESCENDANTS);
-        }
-
-    }
+    PermissionUtils permissionUtils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
-
-        disableAutofill();
 
         setContentView(R.layout.activity_pan_verification);
         getSupportActionBar().hide();
-
         pd=new UAVProgressDialog(this);
-
 
         pannumber=findViewById(R.id.pannumber);
         customername=findViewById(R.id.username);
@@ -127,7 +119,7 @@ public class PanVerification extends AppCompatActivity {
        // username.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
         pin.setInputType(InputType.TYPE_CLASS_NUMBER);
 
-
+        permissionUtils=new PermissionUtils(PanVerification.this);
 
 
         city.setKeyListener(null);
@@ -189,34 +181,7 @@ public class PanVerification extends AppCompatActivity {
         attachaddress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
-
-                        if (PermissionHandler.imagePermission(PanVerification.this)) {
-                            AlertDialog.Builder pictureDialog = new AlertDialog.Builder(PanVerification.this);
-                            pictureDialog.setTitle("Select Action");
-                            String[] pictureDialogItems = {
-                                    "Select photo from gallery",
-                                    "Capture photo from camera"};
-                            pictureDialog.setItems(pictureDialogItems,
-                                    new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            switch (which) {
-                                                case 0:
-                                                    galleryimage();
-                                                    break;
-                                                case 1:
-                                                    cameraimage();
-                                                    break;
-                                            }
-                                        }
-                                    });
-                            pictureDialog.show();
-                        }
-                    }
-                catch(Exception e){
-                    Utility.exceptionAlertDialog(PanVerification.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
-                }
+                permissionUtils.check_permission(PermissionHandler.imagePermissionArrayList(PanVerification.this), ErrorMsg.CAMERA_PERMISSION,ApplicationConstant.REQ_CAMERA_PERMISSION);
             }
         });
 
@@ -335,15 +300,31 @@ public class PanVerification extends AppCompatActivity {
                     });
                     backgroundAsyncService.execute();
                 }
-
-
-
-
-
-
-
             }
         });
+    }
+
+   public void startCamera(){
+        AlertDialog.Builder pictureDialog = new AlertDialog.Builder(this);
+        pictureDialog.setTitle("Select Action");
+        String[] pictureDialogItems = {
+                "Select photo from gallery",
+                "Capture photo from camera"};
+        pictureDialog.setItems(pictureDialogItems,
+                new android.content.DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(android.content.DialogInterface dialog, int which) {
+                        switch (which) {
+                            case 0:
+                                galleryimage();
+                                break;
+                            case 1:
+                                cameraimage();
+                                break;
+                        }
+                    }
+                });
+        pictureDialog.show();
     }
 
     public void verifyPan(){
@@ -429,7 +410,7 @@ public class PanVerification extends AppCompatActivity {
         try
         {
             // place where to store camera taken picture
-            photo = VolleyUtils.createTemporaryFile("picture", ".jpg");
+            photo = Utility.createTemporaryFile("picture", ".jpg");
             photo.delete();
             mImageUri = Uri.fromFile(photo);
             /*Uri mImageUri = CustomProvider.getPhotoUri(photo);
@@ -555,7 +536,7 @@ public class PanVerification extends AppCompatActivity {
                 }
                if(requestCode==REQ_GALLERY){
                       Uri contentURI = data.getData();
-                      bmp =VolleyUtils.grabImage(contentURI,PanVerification.this);
+                      bmp =Utility.grabImage(contentURI,PanVerification.this);
                       addressimage.setImageBitmap(bmp);
                }
             } catch (Exception e) {
@@ -564,5 +545,32 @@ public class PanVerification extends AppCompatActivity {
         }
     }
 
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        permissionUtils.onRequestPermissionsResult(requestCode,permissions,grantResults);
+    }
+    @Override
+    public void PermissionGranted(int request_code) {
+        if(request_code==ApplicationConstant.REQ_CAMERA_PERMISSION){
+            startCamera();
+        }
+    }
+
+    @Override
+    public void PartialPermissionGranted(int request_code, ArrayList<String> granted_permissions) {
+
+    }
+
+    @Override
+    public void PermissionDenied(int request_code) {
+
+    }
+
+    @Override
+    public void NeverAskAgain(int request_code) {
+
+    }
 }
 

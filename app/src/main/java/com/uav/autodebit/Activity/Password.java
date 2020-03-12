@@ -33,7 +33,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Password extends AppCompatActivity {
+public class Password extends Base_Activity {
 
     UAVEditText newpassword;
     Button loginbtn;

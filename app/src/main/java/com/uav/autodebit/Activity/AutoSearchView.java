@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
+import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
 import com.uav.autodebit.volley.VolleyUtils;
@@ -30,7 +31,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class AutoSearchView extends AppCompatActivity {
+public class AutoSearchView extends Base_Activity {
     private static int REQ_AUTOSEARCH = 100;
 
 
@@ -171,7 +172,7 @@ public class AutoSearchView extends AppCompatActivity {
                 JSONObject response = (JSONObject) resp;
 
                 if(response.get("status").equals("fail")){
-                    VolleyUtils.furnishErrorMsg(  connectionVO.getTitle() ,response, AutoSearchView.this);
+                    Utility.furnishErrorMsg(  connectionVO.getTitle() ,response, AutoSearchView.this);
                     return;
                 }
 

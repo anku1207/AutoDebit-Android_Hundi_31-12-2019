@@ -14,7 +14,7 @@ import android.widget.Toast;
 import com.uav.autodebit.R;
 import com.uav.autodebit.override.UAVEditText;
 
-public class MTNL_Landline_Delhi extends AppCompatActivity implements View.OnClickListener {
+public class MTNL_Landline_Delhi extends Base_Activity implements View.OnClickListener {
     EditText amount;
     ImageView back_activity_button;
     UAVEditText accountnumber,number;

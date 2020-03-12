@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.CountDownTimer;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,7 +23,9 @@ import com.google.gson.Gson;
 import com.uav.autodebit.BO.SignUpBO;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
+import com.uav.autodebit.constant.ErrorMsg;
 import com.uav.autodebit.permission.PermissionHandler;
+import com.uav.autodebit.permission.PermissionUtils;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.ConnectionVO;
@@ -38,7 +42,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Verify_Sign_OTP extends AppCompatActivity implements View.OnClickListener ,TextWatcher ,View.OnFocusChangeListener {
+public class Verify_Sign_OTP extends Base_Activity implements View.OnClickListener ,TextWatcher ,View.OnFocusChangeListener,PermissionUtils.PermissionResultCallback , ActivityCompat.OnRequestPermissionsResultCallback {
     Button phonepinverifybtn,emailpinverifybtn;
     LinearLayout emailotplayout,mobileotplayout;
     CountDownTimer mobiletime = null;
@@ -49,6 +53,8 @@ public class Verify_Sign_OTP extends AppCompatActivity implements View.OnClickLi
 
     String mobilenumber,emailid;
 
+    PermissionUtils permissionUtils;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,9 +63,10 @@ public class Verify_Sign_OTP extends AppCompatActivity implements View.OnClickLi
         getSupportActionBar().hide();
 
 
-        if(!PermissionHandler.checkpermissionmessage(Verify_Sign_OTP.this)){
-            Toast.makeText(this, "Permission not granted!", Toast.LENGTH_SHORT).show();
-        }
+        permissionUtils=new PermissionUtils(Verify_Sign_OTP.this);
+        permissionUtils.check_permission(PermissionHandler.readSmsPermissionArrayList(Verify_Sign_OTP.this), ErrorMsg.SMS_PERMISSION, ApplicationConstant.REQ_READ_SMS_PERMISSION);
+
+
 
         phonepinverifybtn=findViewById(R.id.phonepinverifybtn);
         emailpinverifybtn=findViewById(R.id.emailpinverifybtn);
@@ -646,6 +653,31 @@ public class Verify_Sign_OTP extends AppCompatActivity implements View.OnClickLi
                 break;
         }
 
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        permissionUtils.onRequestPermissionsResult(requestCode,permissions,grantResults);
+    }
+
+    @Override
+    public void PermissionGranted(int request_code) {
+
+    }
+
+    @Override
+    public void PartialPermissionGranted(int request_code, ArrayList<String> granted_permissions) {
+        Toast.makeText(Verify_Sign_OTP.this, "Permission not granted!!!", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void PermissionDenied(int request_code) {
+        Toast.makeText(Verify_Sign_OTP.this, "Permission not granted!!!", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void NeverAskAgain(int request_code) {
     }
 
 

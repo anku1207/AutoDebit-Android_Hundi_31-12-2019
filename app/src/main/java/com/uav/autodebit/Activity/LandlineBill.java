@@ -64,7 +64,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-public class LandlineBill extends AppCompatActivity implements View.OnClickListener {
+public class LandlineBill extends Base_Activity implements View.OnClickListener {
     EditText amount,operator;
     ImageView back_activity_button;
     String operatorcode,operatorname=null;

@@ -63,7 +63,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-public class Credit_Score_Report extends AppCompatActivity implements FileDownloadInterface, PermissionUtils.PermissionResultCallback , ActivityCompat.OnRequestPermissionsResultCallback {
+public class Credit_Score_Report extends Base_Activity implements FileDownloadInterface, PermissionUtils.PermissionResultCallback , ActivityCompat.OnRequestPermissionsResultCallback {
     Context context;
     TextView creditreportbtn;
     Button proceed;

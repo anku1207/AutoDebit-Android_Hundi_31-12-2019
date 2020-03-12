@@ -40,7 +40,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-public class Credit_Score extends AppCompatActivity {
+public class Credit_Score extends Base_Activity {
 
     EditText pannumber,customername,date1,pin,city,state,permanentaddress,mobileno;
     Button update;

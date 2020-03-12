@@ -15,7 +15,7 @@ import com.uav.autodebit.vo.DmrcCardStatusVO;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CreditCardBill extends AppCompatActivity implements View.OnClickListener {
+public class CreditCardBill extends Base_Activity implements View.OnClickListener {
 
     ImageView back_activity_button;
 

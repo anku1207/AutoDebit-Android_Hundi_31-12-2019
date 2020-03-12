@@ -51,7 +51,7 @@ import java.util.List;
 
 import static com.uav.autodebit.Activity.Home.clickServiceId;
 
-public class History extends AppCompatActivity implements View.OnClickListener {
+public class History extends Base_Activity implements View.OnClickListener {
     RecyclerView recyclerView;
     ImageView back_activity_button;
     TextView emptymsg;

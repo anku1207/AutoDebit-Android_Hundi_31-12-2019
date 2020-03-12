@@ -43,7 +43,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 
-public class D2H extends AppCompatActivity implements View.OnClickListener {
+public class D2H extends Base_Activity implements View.OnClickListener {
 
     EditText accountnumber;
     Button proceed;

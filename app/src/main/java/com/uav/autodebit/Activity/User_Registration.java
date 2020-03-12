@@ -51,7 +51,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-public class User_Registration extends AppCompatActivity {
+public class User_Registration extends Base_Activity {
     Button otpgeneratebtn;
     EditText username,userphone,useremail;
     Intent intent=null;

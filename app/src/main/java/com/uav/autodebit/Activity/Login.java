@@ -64,7 +64,7 @@ import java.util.HashMap;
 
 import javax.crypto.KeyGenerator;
 
-public class Login extends AppCompatActivity implements View.OnClickListener, View.OnTouchListener {
+public class Login extends Base_Activity implements View.OnClickListener, View.OnTouchListener {
     EditText password,userid;
     TextView forgorpassword,fingerprinttext;
     Button newuserbtn;

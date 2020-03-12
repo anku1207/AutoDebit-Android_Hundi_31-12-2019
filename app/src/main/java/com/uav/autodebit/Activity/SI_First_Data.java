@@ -59,7 +59,7 @@ import java.text.DecimalFormat;
 import java.util.HashMap;
 
 
-public class SI_First_Data extends AppCompatActivity implements MyJavaScriptInterface.javascriptinterface {
+public class SI_First_Data extends Base_Activity implements MyJavaScriptInterface.javascriptinterface {
     WebView webview;
     JSONObject respjson;
 

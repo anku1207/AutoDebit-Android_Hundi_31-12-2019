@@ -80,7 +80,7 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class Home extends AppCompatActivity
+public class Home extends Base_Activity
         implements View.OnClickListener {
 
     SharedPreferences sharedPreferences;

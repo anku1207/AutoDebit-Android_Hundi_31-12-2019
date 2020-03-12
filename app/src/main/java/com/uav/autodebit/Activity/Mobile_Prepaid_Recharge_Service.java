@@ -8,7 +8,9 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -29,12 +31,15 @@ import com.uav.autodebit.BO.OxigenPlanBO;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
+import com.uav.autodebit.constant.ErrorMsg;
 import com.uav.autodebit.override.DrawableClickListener;
 import com.uav.autodebit.override.UAVEditText;
 import com.uav.autodebit.permission.PermissionHandler;
+import com.uav.autodebit.permission.PermissionUtils;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.CustomTextWatcherLengthAction;
 import com.uav.autodebit.util.DialogInterface;
+import com.uav.autodebit.util.DownloadTask;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerVO;
@@ -52,18 +57,16 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Mobile_Prepaid_Recharge_Service extends AppCompatActivity implements View.OnClickListener{
+public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements View.OnClickListener , PermissionUtils.PermissionResultCallback , ActivityCompat.OnRequestPermissionsResultCallback{
     UAVEditText mobilenumber;
     EditText operator,amount;
     ImageView back_activity_button;
     String operatorcode,regioncode,operatorname,regionname=null;
     TextView browseplan;
-
     Button proceed;
-
     String serviceid;
 
-
+    PermissionUtils permissionUtils ;
 
     @TargetApi(Build.VERSION_CODES.O)
     private void disableAutofill() {
@@ -87,6 +90,7 @@ public class Mobile_Prepaid_Recharge_Service extends AppCompatActivity implement
         amount=findViewById(R.id.amount);
         proceed=findViewById(R.id.proceed);
         browseplan=findViewById(R.id.browseplan);
+        permissionUtils=new PermissionUtils(Mobile_Prepaid_Recharge_Service.this);
 
         browseplan.setVisibility(View.GONE);
         back_activity_button=findViewById(R.id.back_activity_button1);
@@ -115,11 +119,7 @@ public class Mobile_Prepaid_Recharge_Service extends AppCompatActivity implement
                 switch (target) {
                     case RIGHT:
                         if(mobilenumber.getError() == null){
-
-                            if(PermissionHandler.contactpermission(Mobile_Prepaid_Recharge_Service.this)){
-                                Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-                                startActivityForResult(intent, 101);
-                            }
+                           permissionUtils.check_permission(PermissionHandler.contactPermissionArrayList(Mobile_Prepaid_Recharge_Service.this), ErrorMsg.CONTACT_PERMISSION, ApplicationConstant.REQ_READ_CONTACT_PERMISSION);
                         }
                         break;
                     default:
@@ -131,17 +131,12 @@ public class Mobile_Prepaid_Recharge_Service extends AppCompatActivity implement
         amount.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
-
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
-
             @Override
             public void afterTextChanged(Editable editable) {
-
                 if(!operator.getText().toString().equals("")){
                     if(operator.getError()==null){
                         browseplan.setVisibility(View.VISIBLE);
@@ -149,14 +144,10 @@ public class Mobile_Prepaid_Recharge_Service extends AppCompatActivity implement
                         browseplan.setVisibility(View.GONE);
                     }
                 }
-
             }
         });
 
-
-
         mobilenumber.addTextChangedListener(new  CustomTextWatcherLengthAction(mobilenumber,10,operator,"touch"));
-
         operator.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -246,10 +237,10 @@ public class Mobile_Prepaid_Recharge_Service extends AppCompatActivity implement
                                     num = numbers.getString(numbers.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)).replaceAll("\\s+","");
                                 }
                                 if (num.length()>10) {
-
                                     num=num.substring(num.length() - 10);
                                 }
                                 mobilenumber.setText(num);
+                                mobilenumber.setSelection( mobilenumber.getText().toString().length());
                             }
                         }
                         break;
@@ -454,5 +445,28 @@ public class Mobile_Prepaid_Recharge_Service extends AppCompatActivity implement
                     }
             }
         });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        permissionUtils.onRequestPermissionsResult(requestCode,permissions,grantResults);
+    }
+
+    @Override
+    public void PermissionGranted(int request_code) {
+        if(request_code==ApplicationConstant.REQ_READ_CONTACT_PERMISSION){
+            Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+            startActivityForResult(intent, 101);
+        }
+    }
+    @Override
+    public void PartialPermissionGranted(int request_code, ArrayList<String> granted_permissions) {
+    }
+    @Override
+    public void PermissionDenied(int request_code) {
+    }
+    @Override
+    public void NeverAskAgain(int request_code) {
     }
 }

@@ -49,7 +49,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class PNG extends AppCompatActivity  implements View.OnClickListener{
+public class PNG extends Base_Activity  implements View.OnClickListener{
 
     EditText amount,operator;
     ImageView back_activity_button;

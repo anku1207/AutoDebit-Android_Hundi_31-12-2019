@@ -49,7 +49,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Verify_OTP extends AppCompatActivity implements  TextWatcher,View.OnFocusChangeListener , PermissionUtils.PermissionResultCallback , ActivityCompat.OnRequestPermissionsResultCallback{
+public class Verify_OTP extends Base_Activity implements  TextWatcher,View.OnFocusChangeListener , PermissionUtils.PermissionResultCallback , ActivityCompat.OnRequestPermissionsResultCallback{
 
 
     TextView resendotpbtn,otp_send;

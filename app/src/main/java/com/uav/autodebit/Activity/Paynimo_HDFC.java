@@ -41,7 +41,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
-public class Paynimo_HDFC extends AppCompatActivity {
+public class Paynimo_HDFC extends Base_Activity {
     Gson gson = new Gson();
     ImageView back_activity_button1;
 

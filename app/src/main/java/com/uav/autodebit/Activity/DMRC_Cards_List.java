@@ -33,7 +33,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 
-public class DMRC_Cards_List extends AppCompatActivity implements View.OnClickListener {
+public class DMRC_Cards_List extends Base_Activity implements View.OnClickListener {
 
     RecyclerView recyclerView;
     ArrayList<DMRC_Customer_CardVO> listforcard=new ArrayList<>();

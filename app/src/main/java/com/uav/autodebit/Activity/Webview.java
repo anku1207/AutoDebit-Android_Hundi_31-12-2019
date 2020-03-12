@@ -40,7 +40,7 @@ import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Webview extends AppCompatActivity {
+public class Webview extends Base_Activity {
 
 
     WebView webView;

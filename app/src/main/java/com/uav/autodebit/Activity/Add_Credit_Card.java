@@ -5,7 +5,7 @@ import android.os.Bundle;
 
 import com.uav.autodebit.R;
 
-public class Add_Credit_Card extends AppCompatActivity {
+public class Add_Credit_Card extends Base_Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

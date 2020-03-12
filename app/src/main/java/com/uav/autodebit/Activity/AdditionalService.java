@@ -63,7 +63,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class AdditionalService extends AppCompatActivity implements View.OnClickListener {
+public class AdditionalService extends Base_Activity implements View.OnClickListener {
     ExpandableHeightListView listview;
     Button btnadd,btnskip;
     ListViewItemCheckboxBaseAdapter myAdapter;

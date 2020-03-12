@@ -36,6 +36,7 @@ import android.widget.Toast;
 import com.uav.autodebit.BO.SignUpBO;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
+import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
 import com.uav.autodebit.volley.VolleyUtils;
@@ -48,7 +49,7 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Base_Activity {
     String request=null;
 
 
@@ -822,7 +823,7 @@ public class MainActivity extends AppCompatActivity {
 
                 Log.w("responsesignup",response.toString());
                 if(response.get("status").equals("fail")){
-                    VolleyUtils.furnishErrorMsg(  "Fail" ,response, MainActivity.this);
+                    Utility.furnishErrorMsg(  "Fail" ,response, MainActivity.this);
 
                 }else {
                     request="signup";

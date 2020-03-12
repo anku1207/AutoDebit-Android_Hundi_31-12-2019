@@ -26,7 +26,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class ListViewSingleText extends AppCompatActivity {
+public class ListViewSingleText extends Base_Activity {
 
     ArrayList<String> entityText;
     ArrayList<Object> entityId;

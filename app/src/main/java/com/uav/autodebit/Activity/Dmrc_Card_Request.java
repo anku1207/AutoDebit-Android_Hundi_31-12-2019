@@ -20,7 +20,9 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v4.content.res.ResourcesCompat;
@@ -67,14 +69,17 @@ import com.uav.autodebit.adpater.CustomPagerAdapter;
 import com.uav.autodebit.adpater.DMRC_List_Adpater;
 import com.uav.autodebit.adpater.ListViewItemCheckboxBaseAdapter;
 import com.uav.autodebit.constant.ApplicationConstant;
+import com.uav.autodebit.constant.ErrorMsg;
 import com.uav.autodebit.override.UAVProgressDialog;
 import com.uav.autodebit.permission.PermissionHandler;
+import com.uav.autodebit.permission.PermissionUtils;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.BackgroundAsyncService;
 import com.uav.autodebit.util.BackgroundAsyncServiceGetList;
 import com.uav.autodebit.util.BackgroundAsyncServiceGetListInterface;
 import com.uav.autodebit.util.BackgroundServiceInterface;
 import com.uav.autodebit.util.CommonUtils;
+import com.uav.autodebit.util.DownloadTask;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.CityVO;
 import com.uav.autodebit.vo.ConnectionVO;
@@ -100,7 +105,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClickListener {
+public class Dmrc_Card_Request extends Base_Activity implements View.OnClickListener ,PermissionUtils.PermissionResultCallback , ActivityCompat.OnRequestPermissionsResultCallback{
 
     EditText customername,pin,city,state,permanentaddress,mobilenumber;
 
@@ -127,6 +132,7 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
 
     int serviceId=ApplicationConstant.Dmrc;
     TabLayout tabLayout;
+    PermissionUtils permissionUtils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,6 +163,7 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
         pin.setInputType(InputType.TYPE_CLASS_NUMBER);
         city.setKeyListener(null);
         state.setKeyListener(null);
+        permissionUtils=new PermissionUtils(Dmrc_Card_Request.this);
 
         addcardlistlayout.removeAllViews();
 
@@ -302,33 +309,9 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
                 break;
 
             case R.id. attachaddress:
-                PermissionHandler.checkpermission(Dmrc_Card_Request.this);
-                if(!permissionstate) return;
-                try{
-                    AlertDialog.Builder pictureDialog = new AlertDialog.Builder(Dmrc_Card_Request.this);
-                    pictureDialog.setTitle("Select Action");
-                    String[] pictureDialogItems = {
-                            "Select photo from gallery",
-                            "Capture photo from camera" };
-                    pictureDialog.setItems(pictureDialogItems,
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    switch (which) {
-                                        case 0:
-                                            galleryimage();
-                                            break;
-                                        case 1:
-                                            cameraimage();
-                                            break;
-                                    }
-                                }
-                            });
-                    pictureDialog.show();
-                }
-                catch(Exception e){
-                    Utility.exceptionAlertDialog(Dmrc_Card_Request.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
-                }
+                permissionUtils.check_permission(PermissionHandler.imagePermissionArrayList(Dmrc_Card_Request.this), ErrorMsg.CAMERA_PERMISSION,ApplicationConstant.REQ_CAMERA_PERMISSION);
+
+
                break;
             case R.id. changeaddress :
                 enabledAllEle(true);
@@ -414,6 +397,30 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
         }
     }
 
+
+
+    public void startCamera(){
+        AlertDialog.Builder pictureDialog = new AlertDialog.Builder(Dmrc_Card_Request.this);
+        pictureDialog.setTitle("Select Action");
+        String[] pictureDialogItems = {
+                "Select photo from gallery",
+                "Capture photo from camera" };
+        pictureDialog.setItems(pictureDialogItems,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case 0:
+                                galleryimage();
+                                break;
+                            case 1:
+                                cameraimage();
+                                break;
+                        }
+                    }
+                });
+        pictureDialog.show();
+    }
     @SuppressLint("ResourceType")
     public void showAddCardBtn(){
 
@@ -715,7 +722,7 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
         try
         {
             // place where to store camera taken picture
-            photo = VolleyUtils.createTemporaryFile("picture", ".jpg");
+            photo = Utility.createTemporaryFile("picture", ".jpg");
             photo.delete();
             mImageUri = Uri.fromFile(photo);
             /*Uri mImageUri = CustomProvider.getPhotoUri(photo);
@@ -805,7 +812,7 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
                     if (current != null) current.clearFocus();
                 }else  if(requestCode==REQ_GALLERY){
                     Uri contentURI = data.getData();
-                    bmp =VolleyUtils.grabImage(contentURI,Dmrc_Card_Request.this);
+                    bmp =Utility.grabImage(contentURI,Dmrc_Card_Request.this);
                     addressimage.setImageBitmap(bmp);
                 }else if(requestCode==ApplicationConstant.REQ_ENACH_MANDATE){
                     boolean enachMandateStatus=data.getBooleanExtra("mandate_status",false);
@@ -820,6 +827,33 @@ public class Dmrc_Card_Request extends AppCompatActivity implements View.OnClick
                 Utility.exceptionAlertDialog(Dmrc_Card_Request.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
             }
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        permissionUtils.onRequestPermissionsResult(requestCode,permissions,grantResults);
+    }
+
+    @Override
+    public void PermissionGranted(int request_code) {
+        if(request_code==ApplicationConstant.REQ_CAMERA_PERMISSION){
+            startCamera();
+        }
+    }
+    @Override
+    public void PartialPermissionGranted(int request_code, ArrayList<String> granted_permissions) {
+
+    }
+
+    @Override
+    public void PermissionDenied(int request_code) {
+
+    }
+
+    @Override
+    public void NeverAskAgain(int request_code) {
+
     }
 
 

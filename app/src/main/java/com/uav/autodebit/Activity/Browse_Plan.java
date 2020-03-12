@@ -47,7 +47,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Browse_Plan extends AppCompatActivity {
+public class Browse_Plan extends Base_Activity {
 
 
 

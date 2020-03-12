@@ -54,7 +54,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-public class Water extends AppCompatActivity implements View.OnClickListener {
+public class Water extends Base_Activity implements View.OnClickListener {
 
 
     EditText amount,operator;

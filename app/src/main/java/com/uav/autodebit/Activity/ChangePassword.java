@@ -28,7 +28,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ChangePassword extends AppCompatActivity {
+public class ChangePassword extends Base_Activity {
 
 
     UAVEditText newpassword;

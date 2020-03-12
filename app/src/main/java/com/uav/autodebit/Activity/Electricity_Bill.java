@@ -63,7 +63,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-public class Electricity_Bill extends AppCompatActivity  implements View.OnClickListener {
+public class Electricity_Bill extends Base_Activity  implements View.OnClickListener {
 
     EditText amount,operator;
     ImageView back_activity_button;

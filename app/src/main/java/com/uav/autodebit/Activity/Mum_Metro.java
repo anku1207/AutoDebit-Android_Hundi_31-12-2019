@@ -5,7 +5,7 @@ import android.os.Bundle;
 
 import com.uav.autodebit.R;
 
-public class Mum_Metro extends AppCompatActivity {
+public class Mum_Metro extends Base_Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

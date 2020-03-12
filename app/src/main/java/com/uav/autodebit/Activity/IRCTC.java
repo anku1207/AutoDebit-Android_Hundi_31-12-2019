@@ -5,7 +5,7 @@ import android.os.Bundle;
 
 import com.uav.autodebit.R;
 
-public class IRCTC extends AppCompatActivity {
+public class IRCTC extends Base_Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
