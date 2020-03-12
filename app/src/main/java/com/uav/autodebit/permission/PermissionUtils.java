@@ -133,41 +133,30 @@ public class PermissionUtils
      * @param permissions
      * @param grantResults
      */
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults)
-    {
-        switch (requestCode)
-        {
-            case 1:
-                if(grantResults.length>0)
-                {
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults){
+                if(grantResults.length>0){
                     Map<String, Integer> perms = new HashMap<>();
 
-                    for (int i = 0; i < permissions.length; i++)
-                    {
+                    for (int i = 0; i < permissions.length; i++){
                         perms.put(permissions[i], grantResults[i]);
                     }
 
                     final ArrayList<String> pending_permissions=new ArrayList<>();
 
-                    for (int i = 0; i < listPermissionsNeeded.size(); i++)
-                    {
-                        if (perms.get(listPermissionsNeeded.get(i)) != PackageManager.PERMISSION_GRANTED)
-                        {
+                    for (int i = 0; i < listPermissionsNeeded.size(); i++){
+                        if (perms.get(listPermissionsNeeded.get(i)) != PackageManager.PERMISSION_GRANTED){
                             if(ActivityCompat.shouldShowRequestPermissionRationale(current_activity,listPermissionsNeeded.get(i)))
                                 pending_permissions.add(listPermissionsNeeded.get(i));
-                            else
-                            {
+                            else{
                                 Log.i("Go to settings","and enable permissions");
                                 permissionResultCallback.NeverAskAgain(req_code);
                                 Toast.makeText(current_activity, "Go to settings and enable permissions", Toast.LENGTH_LONG).show();
                                 return;
                             }
                         }
-
                     }
 
-                    if(pending_permissions.size()>0)
-                    {
+                    if(pending_permissions.size()>0){
                         showMessageOKCancel(dialog_content,
                                 new DialogInterface.OnClickListener() {
                                     @Override
@@ -189,33 +178,14 @@ public class PermissionUtils
 
                                     }
                                 });
-
                     }
-                    else
-                    {
+                    else{
                         Log.i("all","permissions granted");
                         Log.i("proceed","to next step");
                         permissionResultCallback.PermissionGranted(req_code);
-
                     }
-
-
-
                 }
-                break;
-
-
-            case 100:
-
-                //volley permission check case
-                Log.i("all","permissions granted");
-                Log.i("proceed","to next step");
-                permissionResultCallback.PermissionGranted(req_code);
-                break;
-
-        }
     }
-
 
     /**
      * Explain why the app needs permissions

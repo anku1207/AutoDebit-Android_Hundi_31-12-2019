@@ -147,7 +147,8 @@
                     android:maxLines="1"
                     android:digits="@string/NameDigits"
                     style="@style/commonEdittextStyle"
-                    
+                    android:textIsSelectable="true"
+
 
 
                     />

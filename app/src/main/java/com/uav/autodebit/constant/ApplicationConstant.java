@@ -23,7 +23,7 @@ public class ApplicationConstant {
     public static int MobilePostpaid=14,d2h=17,Dmrc=2,Electricity=10,Landline=7,Water=12,Broadband=8,PNG=6,Gas=11,DTH=13;
 
     public static int  REQ_ENACH_MANDATE=1003,REQ_ALLSERVICE=1004,REQ_SI_MANDATE=1005;
-
+    public static int  REQ_CAMERA_PERMISSION=2001, REQ_DOWNLOAD_PERMISSION=2002;
 
 
 

@@ -13,6 +13,8 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -39,7 +41,9 @@ import com.uav.autodebit.BO.CustomerBO;
 import com.uav.autodebit.BO.PanCardBO;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
+import com.uav.autodebit.constant.ErrorMsg;
 import com.uav.autodebit.permission.PermissionHandler;
+import com.uav.autodebit.permission.PermissionUtils;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.DownloadTask;
 import com.uav.autodebit.util.FileDownloadInterface;
@@ -59,14 +63,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-public class Credit_Score_Report extends AppCompatActivity implements FileDownloadInterface {
+public class Credit_Score_Report extends AppCompatActivity implements FileDownloadInterface, PermissionUtils.PermissionResultCallback , ActivityCompat.OnRequestPermissionsResultCallback {
     Context context;
     TextView creditreportbtn;
     Button proceed;
     String customername;
     TextView activitytext;
     ImageView back_activity_button1;
-
+    PermissionUtils permissionUtils;
+    String creditScoreFileUrl;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +80,7 @@ public class Credit_Score_Report extends AppCompatActivity implements FileDownlo
         getSupportActionBar().hide();
 
         context=Credit_Score_Report.this;
+        permissionUtils=new PermissionUtils(Credit_Score_Report.this);
 
 
         /*Intent intent =getIntent();
@@ -267,11 +273,8 @@ public class Credit_Score_Report extends AppCompatActivity implements FileDownlo
             public void onClick(View view) {
 
                 if(fileurl.equals("")) return;
-                if(PermissionHandler.filedownloadandread(context)){
-                    new DownloadTask(Credit_Score_Report.this,Credit_Score_Report.this, fileurl);
-                }
-
-
+                creditScoreFileUrl=fileurl;
+                permissionUtils.check_permission(PermissionHandler.fileDownloadAndReadPermissionArrayList(Credit_Score_Report.this), ErrorMsg.DOWNLOAD_PERMISSION,ApplicationConstant.REQ_DOWNLOAD_PERMISSION);
             }
         });
 
@@ -375,12 +378,38 @@ public class Credit_Score_Report extends AppCompatActivity implements FileDownlo
 
     @Override
     public void error(final String error) {
-
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                Utility.showSingleButtonDialog(context,"Error !",error,false);
             }
         });
+    }
+
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        permissionUtils.onRequestPermissionsResult(requestCode,permissions,grantResults);
+    }
+
+
+    @Override
+    public void PermissionGranted(int request_code) {
+        if(request_code==ApplicationConstant.REQ_DOWNLOAD_PERMISSION){
+            new DownloadTask(Credit_Score_Report.this,Credit_Score_Report.this, creditScoreFileUrl);
+        }
+    }
+    @Override
+    public void PartialPermissionGranted(int request_code, ArrayList<String> granted_permissions) {
+    }
+
+    @Override
+    public void PermissionDenied(int request_code) {
+    }
+
+    @Override
+    public void NeverAskAgain(int request_code) {
     }
 }

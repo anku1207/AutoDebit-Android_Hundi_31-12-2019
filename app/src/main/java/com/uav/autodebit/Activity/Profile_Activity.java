@@ -57,9 +57,12 @@ import com.uav.autodebit.adpater.RecyclerViewProfileBankAdapterMenu;
 import com.uav.autodebit.adpater.UitilityAdapter;
 import com.uav.autodebit.androidFragment.Home_Menu;
 import com.uav.autodebit.androidFragment.Profile;
+import com.uav.autodebit.constant.ApplicationConstant;
+import com.uav.autodebit.constant.ErrorMsg;
 import com.uav.autodebit.override.CircularImageView;
 import com.uav.autodebit.override.UAVProgressDialog;
 import com.uav.autodebit.permission.PermissionHandler;
+import com.uav.autodebit.permission.PermissionUtils;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.BackgroundAsyncService;
 import com.uav.autodebit.util.BackgroundServiceInterface;
@@ -90,7 +93,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-public class Profile_Activity extends AppCompatActivity implements FileDownloadInterface , View.OnClickListener {
+public class Profile_Activity extends AppCompatActivity implements FileDownloadInterface , View.OnClickListener , PermissionUtils.PermissionResultCallback ,ActivityCompat.OnRequestPermissionsResultCallback{
 
     BottomNavigationView navigation;
     TextView usename,pannumber,mobileno,email,address,citystate,pincode,creditscore,changepass;
@@ -111,6 +114,7 @@ public class Profile_Activity extends AppCompatActivity implements FileDownloadI
 
 
     int  REQ_IMAGE=1001,REQ_GALLERY=1002,REQ_ENACH_MANDATE=1003,PIC_CROP=1004,REQ_CHANGE_PASS=300,REQ_ADD_MORE_SERVICE=200,REQ_EMAIL_VERIFY=100;
+
     Bitmap bmp;
 
     ConnectionVO customerProfileImage;
@@ -119,6 +123,8 @@ public class Profile_Activity extends AppCompatActivity implements FileDownloadI
     ScrollView scrollView;
 
     File photofileurl;
+
+    PermissionUtils permissionUtils;
 
 
     @Override
@@ -147,6 +153,12 @@ public class Profile_Activity extends AppCompatActivity implements FileDownloadI
         changepass=findViewById(R.id.changepass);
         more_bankadd=findViewById(R.id.more_bankadd);
         scrollView=findViewById(R.id.scrollView);
+        mobileverify=findViewById(R.id.mobileverify);
+        emailverify=findViewById(R.id.emailverify);
+        addressverify=findViewById(R.id.addressverify);
+        downloadreport=findViewById(R.id.downloadreport);
+
+        permissionUtils=new PermissionUtils(Profile_Activity.this);
 
 
         back_activity_button.setOnClickListener(this);
@@ -154,12 +166,6 @@ public class Profile_Activity extends AppCompatActivity implements FileDownloadI
         changepass.setOnClickListener(this);
         more_bankadd.setOnClickListener(this);
 
-
-        mobileverify=findViewById(R.id.mobileverify);
-        emailverify=findViewById(R.id.emailverify);
-        addressverify=findViewById(R.id.addressverify);
-
-        downloadreport=findViewById(R.id.downloadreport);
         downloadreport.setVisibility(View.GONE);
 
 
@@ -239,9 +245,7 @@ public class Profile_Activity extends AppCompatActivity implements FileDownloadI
                 backbuttonfun();
                 break;
             case R.id.downloadreport:
-                if(PermissionHandler.filedownloadandread(Profile_Activity.this)){
-                    new DownloadTask(Profile_Activity.this,Profile_Activity.this, cir_report);
-                }
+                permissionUtils.check_permission(PermissionHandler.fileDownloadAndReadPermissionArrayList(Profile_Activity.this),ErrorMsg.DOWNLOAD_PERMISSION, ApplicationConstant.REQ_DOWNLOAD_PERMISSION);
                 break;
             case R.id.emailverify:
                 String[] buttons = {"No","Yes"};
@@ -258,7 +262,7 @@ public class Profile_Activity extends AppCompatActivity implements FileDownloadI
 
 
                     }
-                },this,null,"Would you like email verify ?"+email.getText().toString(),"Please Confirm Detail",buttons);
+                },this,null,"Would you like email verify ?"+email.getText().toString(),"Alert",buttons);
 
 
                 break;
@@ -266,29 +270,7 @@ public class Profile_Activity extends AppCompatActivity implements FileDownloadI
                 startActivityForResult(new Intent(Profile_Activity.this,AdditionalService.class),REQ_ADD_MORE_SERVICE);
                 break;
             case R.id.imageView1:
-                    if (PermissionHandler.imagePermission(this)) {
-                        AlertDialog.Builder pictureDialog = new AlertDialog.Builder(this);
-                        pictureDialog.setTitle("Select Action");
-                        String[] pictureDialogItems = {
-                                "Select photo from gallery",
-                                "Capture photo from camera"};
-                        pictureDialog.setItems(pictureDialogItems,
-                                new android.content.DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(android.content.DialogInterface dialog, int which) {
-                                        switch (which) {
-                                            case 0:
-                                                galleryimage();
-                                                break;
-                                            case 1:
-                                                cameraimage();
-                                                break;
-                                        }
-                                    }
-                                });
-                        pictureDialog.show();
-                    }
-
+                permissionUtils.check_permission(PermissionHandler.imagePermissionArrayList(Profile_Activity.this), ErrorMsg.CAMERA_PERMISSION,ApplicationConstant.REQ_CAMERA_PERMISSION);
                 break;
             case R.id.changepass:
                 String[] changePass = {"No","Yes"};
@@ -296,26 +278,44 @@ public class Profile_Activity extends AppCompatActivity implements FileDownloadI
                     @Override
                     public void confirm(Dialog dialog) {
                         dialog.dismiss();
-
                         Intent intent =new Intent(Profile_Activity.this,ChangePassword.class);
                         intent.putExtra("customerid",Session.getCustomerId(Profile_Activity.this));
                         intent.putExtra("methodname","setCustomerChangePassword");
                         startActivityForResult(intent,REQ_CHANGE_PASS);
                     }
-
                     @Override
                     public void modify(Dialog dialog) {
                         dialog.dismiss();
-
-
                     }
-                },this,null,"Would you like change password ?","Please Confirm Detail",changePass);
-
+                },this,null,"Would you like change pin ?","Alert",changePass);
                 break;
             case R.id.more_bankadd:
                 //startActivityForResult(new Intent(Profile_Activity.this,Enach_Mandate.class).putExtra("activity",getPackageName()+".Activity.Profile_Activity").putExtra("forresutl",true),REQ_ENACH_MANDATE);
                 break;
         }
+    }
+
+    public void startCamera(){
+            AlertDialog.Builder pictureDialog = new AlertDialog.Builder(this);
+            pictureDialog.setTitle("Select Action");
+            String[] pictureDialogItems = {
+                    "Select photo from gallery",
+                    "Capture photo from camera"};
+            pictureDialog.setItems(pictureDialogItems,
+                    new android.content.DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(android.content.DialogInterface dialog, int which) {
+                            switch (which) {
+                                case 0:
+                                    galleryimage();
+                                    break;
+                                case 1:
+                                    cameraimage();
+                                    break;
+                            }
+                    }
+                    });
+            pictureDialog.show();
     }
 
 
@@ -838,5 +838,37 @@ public class Profile_Activity extends AppCompatActivity implements FileDownloadI
                     dialog.dismiss();
                 }
             },Profile_Activity.this,jsonArray,null,"Bank Detail",changePass);
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        permissionUtils.onRequestPermissionsResult(requestCode,permissions,grantResults);
+    }
+
+    @Override
+    public void PermissionGranted(int request_code) {
+        if(request_code==ApplicationConstant.REQ_CAMERA_PERMISSION){
+            startCamera();
+        }else if(request_code==ApplicationConstant.REQ_DOWNLOAD_PERMISSION){
+            new DownloadTask(Profile_Activity.this,Profile_Activity.this, cir_report);
+        }
+
+    }
+
+    @Override
+    public void PartialPermissionGranted(int request_code, ArrayList<String> granted_permissions) {
+
+    }
+
+    @Override
+    public void PermissionDenied(int request_code) {
+
+    }
+
+    @Override
+    public void NeverAskAgain(int request_code) {
+
     }
 }

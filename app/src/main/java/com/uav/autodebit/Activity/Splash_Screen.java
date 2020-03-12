@@ -49,19 +49,13 @@ public class Splash_Screen extends AppCompatActivity implements BitmapInterface 
     List<BannerVO> plBannerVos =new ArrayList<>();
     List<BitmapVO> imageVos =new ArrayList<>();
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash__screen);
 
-
         ImageView imageView = (ImageView) findViewById( R.id.appstarticon);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
-
-
-
 
         if(!Utility.isNetworkAvailable(Splash_Screen.this)){
             AlertDialog.Builder builder = new AlertDialog.Builder(Splash_Screen.this);

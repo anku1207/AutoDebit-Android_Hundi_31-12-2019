@@ -105,6 +105,17 @@ public class PermissionHandler {
 
     }
 
+
+    public static ArrayList<String> fileDownloadAndReadPermissionArrayList(Context context) {
+        ArrayList<String> permissions=new ArrayList<>();
+        permissions.add(Manifest.permission.INTERNET);
+        permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        return permissions;
+
+    }
+
+
     public static boolean filedownloadandread(Context context) {
         context1=context;
         int permissionINTERNET = ContextCompat.checkSelfPermission(context1,Manifest.permission.INTERNET);
@@ -143,6 +154,16 @@ public class PermissionHandler {
             return false;
         }
         return true;
+    }
+
+
+    public static ArrayList<String> imagePermissionArrayList(Context context) {
+        ArrayList<String> permissions=new ArrayList<>();
+        permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        permissions.add(Manifest.permission.CAMERA);
+        return permissions;
+
     }
 
 
