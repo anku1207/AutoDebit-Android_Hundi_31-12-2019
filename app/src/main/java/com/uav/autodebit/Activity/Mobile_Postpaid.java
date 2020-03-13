@@ -1,5 +1,7 @@
 package com.uav.autodebit.Activity;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Dialog;
 import android.content.Intent;
@@ -21,11 +23,16 @@ import android.support.v7.widget.CardView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.transition.Fade;
+import android.transition.Transition;
+import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -82,7 +89,7 @@ public class Mobile_Postpaid extends Base_Activity implements View.OnClickListen
     TextView fetchbill;
     CardView amountlayout;
 
-    LinearLayout dynamicCardViewContainer , fetchbilllayout;
+    LinearLayout dynamicCardViewContainer , fetchbilllayout,min_amt_layout;
 
     List<OxigenQuestionsVO> questionsVOS= new ArrayList<OxigenQuestionsVO>();
     CardView fetchbillcard;
@@ -99,21 +106,14 @@ public class Mobile_Postpaid extends Base_Activity implements View.OnClickListen
 
 
 
-    @TargetApi(Build.VERSION_CODES.O)
-    private void disableAutofill() {
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            getWindow().getDecorView().setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO_EXCLUDE_DESCENDANTS);
-        }
-    }
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mobile__postpaid);
         getSupportActionBar().hide();
-
-        // disable autofill edittext
-        disableAutofill();
 
         operatorListDate=null;
         pd=new UAVProgressDialog(this);
@@ -131,6 +131,7 @@ public class Mobile_Postpaid extends Base_Activity implements View.OnClickListen
         dynamicCardViewContainer =findViewById(R.id.dynamiccards);
         fetchbilllayout=findViewById(R.id.fetchbilllayout);
         fetchbillcard =findViewById(R.id.fetchbillcard);
+        min_amt_layout=findViewById(R.id.min_amt_layout);
 
         oxigenTransactionVOresp=new OxigenTransactionVO();
         gson =new Gson();
@@ -188,6 +189,7 @@ public class Mobile_Postpaid extends Base_Activity implements View.OnClickListen
                 dataAdapterVO.setImageUrl(object.has("imageUrl") ?object.getString("imageUrl"):null);
                 dataAdapterVO.setAssociatedValue(object.getString("service"));
                 dataAdapterVO.setIsbillFetch(object.getString("isbillFetch"));
+                dataAdapterVO.setMinTxnAmount(object.getInt("minTxnAmount"));
                 datalist.add(dataAdapterVO);
             }
         } catch (JSONException e) {
@@ -231,6 +233,21 @@ public class Mobile_Postpaid extends Base_Activity implements View.OnClickListen
                             fetchbill.setVisibility(View.GONE);
                             amount.setEnabled(true);
                             isFetchBill=false;
+                        }
+
+                        //add min Amt Layout
+                        if(dataAdapterVO.getMinTxnAmount()!=null){
+                            if(min_amt_layout.getChildCount()>0)min_amt_layout.removeAllViews();
+
+                            Animation animFadeIn = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fadein);
+                            min_amt_layout.startAnimation(animFadeIn);
+                            min_amt_layout.setVisibility(View.VISIBLE);
+                            min_amt_layout.setBackgroundColor(Utility.getColorWithAlpha(Color.rgb(224,224,224), 0.5f));
+                            min_amt_layout.setPadding(Utility.getPixelsFromDPs(Mobile_Postpaid.this,15),Utility.getPixelsFromDPs(Mobile_Postpaid.this,15),0,Utility.getPixelsFromDPs(Mobile_Postpaid.this,15));
+
+                            min_amt_layout.addView(DynamicLayout.billMinLayout(Mobile_Postpaid.this,dataAdapterVO));
+                        }else {
+                            min_amt_layout.setVisibility(View.GONE);
                         }
 
                         //Remove dynamic cards from the layout and arraylist
@@ -393,7 +410,10 @@ public class Mobile_Postpaid extends Base_Activity implements View.OnClickListen
                                 et.addView(value);
                                 fetchbilllayout.addView(et);
                             }
+                            Animation animFadeIn = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fadein);
+                            fetchbillcard.startAnimation(animFadeIn);
                             fetchbillcard.setVisibility(View.VISIBLE);
+
                         }catch (Exception e){
                             e.printStackTrace();
                             Utility.exceptionAlertDialog(Mobile_Postpaid.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));

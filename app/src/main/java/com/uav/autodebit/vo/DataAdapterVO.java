@@ -51,6 +51,7 @@ public class DataAdapterVO  implements Serializable {
     private Integer custmerPassBookId;
 
     private String isbillFetch;
+    private Integer minTxnAmount;
 
 
     public DataAdapterVO(){
@@ -334,5 +335,13 @@ public class DataAdapterVO  implements Serializable {
 
     public void setIsbillFetch(String isbillFetch) {
         this.isbillFetch = isbillFetch;
+    }
+
+    public Integer getMinTxnAmount() {
+        return minTxnAmount;
+    }
+
+    public void setMinTxnAmount(Integer minTxnAmount) {
+        this.minTxnAmount = minTxnAmount;
     }
 }

@@ -3,6 +3,7 @@ package com.uav.autodebit.Activity;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.annotation.Nullable;
 import android.support.v4.content.res.ResourcesCompat;
@@ -17,6 +18,8 @@ import android.view.ContextThemeWrapper;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -64,7 +67,7 @@ public class Water extends Base_Activity implements View.OnClickListener {
     TextView fetchbill;
     CardView amountlayout;
 
-    LinearLayout dynamicCardViewContainer , fetchbilllayout;
+    LinearLayout dynamicCardViewContainer , fetchbilllayout,min_amt_layout;
 
     List<OxigenQuestionsVO> questionsVOS= new ArrayList<OxigenQuestionsVO>();
     CardView fetchbillcard;
@@ -96,6 +99,7 @@ public class Water extends Base_Activity implements View.OnClickListener {
         dynamicCardViewContainer =findViewById(R.id.dynamiccards);
         fetchbilllayout=findViewById(R.id.fetchbilllayout);
         fetchbillcard =findViewById(R.id.fetchbillcard);
+        min_amt_layout=findViewById(R.id.min_amt_layout);
 
         oxigenTransactionVOresp=new OxigenTransactionVO();
 
@@ -156,6 +160,7 @@ public class Water extends Base_Activity implements View.OnClickListener {
                 dataAdapterVO.setImageUrl(object.has("imageUrl") ?object.getString("imageUrl"):null);
                 dataAdapterVO.setAssociatedValue(object.getString("service"));
                 dataAdapterVO.setIsbillFetch(object.getString("isbillFetch"));
+                dataAdapterVO.setMinTxnAmount(object.getInt("minTxnAmount"));
                 datalist.add(dataAdapterVO);
             }
         } catch (JSONException e) {
@@ -198,6 +203,23 @@ public class Water extends Base_Activity implements View.OnClickListener {
                             fetchbill.setVisibility(View.GONE);
                             amount.setEnabled(true);
                             isFetchBill=false;
+                        }
+
+                        //add min Amt Layout
+                        if(dataAdapterVO.getMinTxnAmount()!=null){
+                            if(min_amt_layout.getChildCount()>0)min_amt_layout.removeAllViews();
+
+                            Animation animFadeIn = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fadein);
+                            min_amt_layout.startAnimation(animFadeIn);
+                            min_amt_layout.setVisibility(View.VISIBLE);
+
+                            min_amt_layout.setBackgroundColor(Utility.getColorWithAlpha(Color.rgb(224,224,224), 0.5f));
+                            min_amt_layout.setPadding(Utility.getPixelsFromDPs(Water.this,15),Utility.getPixelsFromDPs(Water.this,15),0,Utility.getPixelsFromDPs(Water.this,15));
+
+                            min_amt_layout.addView(DynamicLayout.billMinLayout(Water.this,dataAdapterVO));
+
+                        }else {
+                            min_amt_layout.setVisibility(View.GONE);
                         }
 
 
@@ -327,6 +349,8 @@ public class Water extends Base_Activity implements View.OnClickListener {
                                 et.addView(value);
                                 fetchbilllayout.addView(et);
                             }
+                            Animation animFadeIn = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fadein);
+                            fetchbillcard.startAnimation(animFadeIn);
                             fetchbillcard.setVisibility(View.VISIBLE);
                         }catch (Exception e){
                             e.printStackTrace();

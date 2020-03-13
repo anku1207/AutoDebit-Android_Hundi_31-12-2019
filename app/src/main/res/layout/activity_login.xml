@@ -75,7 +75,6 @@
                             android:layout_alignParentTop="true"
                             android:backgroundTint="@color/white"
                             android:hint="Password"
-                            android:inputType="textPassword"
                             android:maxLines="1"
                             android:paddingTop="40px"
                             android:paddingBottom="20dp"

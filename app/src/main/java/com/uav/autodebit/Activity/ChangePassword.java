@@ -3,7 +3,9 @@ package com.uav.autodebit.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
@@ -54,8 +56,8 @@ public class ChangePassword extends Base_Activity {
         Gson gson=new Gson();
          customerid=intent.getStringExtra("customerid");
 
-        repeatpassword.setInputType (InputType.TYPE_CLASS_NUMBER  );
-        newpassword.setInputType( InputType.TYPE_CLASS_NUMBER);
+        repeatpassword.setInputType (InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
+        newpassword.setInputType( InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
         repeatpassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
         newpassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
 
@@ -172,6 +174,25 @@ public class ChangePassword extends Base_Activity {
                         break;
                 }
             }
+        });
+
+
+        repeatpassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(newpassword.getText().toString().length()<=1){
+                    if(editable.toString().length()>0){
+                        repeatpassword.setText(null);
+                    }
+                }
+            }
+            //...
         });
 
 

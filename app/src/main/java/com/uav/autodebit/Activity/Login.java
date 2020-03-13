@@ -90,7 +90,7 @@ public class Login extends Base_Activity implements View.OnClickListener, View.O
         getSupportActionBar().hide();
         disableAutofill();
 
-        PermissionHandler.checkpermission(Login.this);
+        //PermissionHandler.checkpermission(Login.this);
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
             fingerprint_authentication =new Fingerprint_Authentication();
@@ -131,7 +131,7 @@ public class Login extends Base_Activity implements View.OnClickListener, View.O
         password.setOnTouchListener(this);
         userid.setOnTouchListener(this);
 
-        password.setInputType( InputType.TYPE_CLASS_NUMBER);
+        password.setInputType( InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
         password.setTransformationMethod(PasswordTransformationMethod.getInstance());
 
         userid.setText(getIntent().getStringExtra("user_mobile"));

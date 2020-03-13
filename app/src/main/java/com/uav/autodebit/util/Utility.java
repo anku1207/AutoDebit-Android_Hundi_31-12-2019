@@ -785,7 +785,7 @@ public class Utility {
 
 
 
-    private static LinearLayout.LayoutParams getLayoutparams(Context context ,int left, int top, int right, int bottom ){
+    public static LinearLayout.LayoutParams getLayoutparams(Context context, int left, int top, int right, int bottom){
         LinearLayout.LayoutParams layoutparams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
