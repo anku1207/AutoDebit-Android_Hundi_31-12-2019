@@ -99,12 +99,10 @@ public class Mobile_Postpaid extends Base_Activity implements View.OnClickListen
     UAVProgressDialog pd;
     OxigenTransactionVO oxigenTransactionVOresp;
     Gson gson;
-
     HashMap<String,Object> eleMap;
-
     PermissionUtils permissionUtils;
 
-
+    int minAmt;
 
 
 
@@ -132,6 +130,7 @@ public class Mobile_Postpaid extends Base_Activity implements View.OnClickListen
         fetchbilllayout=findViewById(R.id.fetchbilllayout);
         fetchbillcard =findViewById(R.id.fetchbillcard);
         min_amt_layout=findViewById(R.id.min_amt_layout);
+        minAmt=0;
 
         oxigenTransactionVOresp=new OxigenTransactionVO();
         gson =new Gson();
@@ -238,6 +237,8 @@ public class Mobile_Postpaid extends Base_Activity implements View.OnClickListen
                         //add min Amt Layout
                         if(dataAdapterVO.getMinTxnAmount()!=null){
                             if(min_amt_layout.getChildCount()>0)min_amt_layout.removeAllViews();
+                            minAmt=dataAdapterVO.getMinTxnAmount();
+
 
                             Animation animFadeIn = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fadein);
                             min_amt_layout.startAnimation(animFadeIn);
@@ -430,6 +431,7 @@ public class Mobile_Postpaid extends Base_Activity implements View.OnClickListen
     }
 
     private JSONObject getQuestionLabelDate(boolean fetchBill) throws Exception{
+        Toast.makeText(this, ""+minAmt, Toast.LENGTH_SHORT).show();
         return BillPayRequest.getQuestionLabelData(Mobile_Postpaid.this,operator,amount,fetchBill,isFetchBill, questionsVOS);
     }
 

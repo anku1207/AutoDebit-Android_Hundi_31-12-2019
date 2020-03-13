@@ -29,13 +29,14 @@ public class DynamicLayout {
         parent.setOrientation(LinearLayout.HORIZONTAL);
 
         ImageView imageView = new ImageView(context);
-        imageView.setLayoutParams(new LinearLayout.LayoutParams(Utility.getPixelsFromDPs(context,15), Utility.getPixelsFromDPs(context,15), (float) .1));
+        imageView.setLayoutParams(new LinearLayout.LayoutParams(Utility.getPixelsFromDPs(context,15), Utility.getPixelsFromDPs(context,15), (float)0));
         imageView.setImageDrawable(context.getDrawable(R.drawable.iconcheck));
-        imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);;
+        imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);;
 
         TextView text1 = new TextView(context);
         text1.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,(float)1));
         text1.setText("Minimum amount allowed is Rs "+dataAdapterVO.getMinTxnAmount().toString());
+        text1.setLayoutParams(Utility.getLayoutparams(context,10,0,0,0));
         parent.addView(imageView);
         parent.addView(text1);
         parent_min_layout.addView(parent);
