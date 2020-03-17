@@ -1,6 +1,7 @@
 package com.uav.autodebit.androidFragment;
 
 
+import android.content.Intent;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -250,7 +251,8 @@ public class Profile extends Fragment {
         return  datalist;
     }
 
-
-
-
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 }

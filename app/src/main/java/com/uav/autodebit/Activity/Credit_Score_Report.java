@@ -137,6 +137,8 @@ public class Credit_Score_Report extends Base_Activity implements FileDownloadIn
                         String[] result = customerVO.getAnonymousString().split("\\|");
                         openWebView(result[1],result[0]); //http://d.eze.cc/r/o/0zfATRE7
 
+                        Log.w("url",customerVO.getAnonymousString());
+
                     }
                 }
             });
