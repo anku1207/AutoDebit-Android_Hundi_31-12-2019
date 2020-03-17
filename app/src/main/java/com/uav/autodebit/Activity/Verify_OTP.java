@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.Html;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
@@ -159,8 +160,10 @@ public class Verify_OTP extends Base_Activity implements  TextWatcher,View.OnFoc
     private void setPINListeners() {
 
 
-
-
+        phone_pin_first_edittext.setInputType (InputType.TYPE_CLASS_NUMBER );
+        phone_pin_second_edittext.setInputType (InputType.TYPE_CLASS_NUMBER );
+        phone_pin_third_edittext.setInputType (InputType.TYPE_CLASS_NUMBER );
+        phone_pin_forth_edittext.setInputType (InputType.TYPE_CLASS_NUMBER);
 
         phone_pin_first_edittext.addTextChangedListener(this);
         phone_pin_second_edittext.addTextChangedListener(this);
