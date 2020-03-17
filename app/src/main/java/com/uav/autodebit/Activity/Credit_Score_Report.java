@@ -142,14 +142,7 @@ public class Credit_Score_Report extends Base_Activity implements FileDownloadIn
                     }
                 }
             });
-
-
-
-
-
     }
-
-
 
 
     @SuppressLint("SetJavaScriptEnabled")

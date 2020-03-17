@@ -151,43 +151,10 @@ public class PanVerification extends Base_Activity implements  PermissionUtils.P
 
         if(customerVO.getPanNo()!=null){
             pannumber.setText(customerVO.getPanNo());
+            pannumber.setEnabled(false);
         }
-        if(customerVO.getDateOfBirth()!=null){
-            Timestamp timestamp =new Timestamp(customerVO.getDateOfBirth());
-            Date date =new Date(timestamp.getTime());
-
-            String simpleDateFormat =new SimpleDateFormat("dd/MM/yyyy").format(date);
-            date1.setText(simpleDateFormat);
-
-        }
-        if(customerVO.getPincode()!=null){
-            pin.setText(customerVO.getPincode());
-
-        }
-        if(customerVO.getCity()!=null && customerVO.getCity().getCityName()!=null){
-            city.setText(Utility.capitalize(customerVO.getCity().getCityName()));
-            city.setEnabled(false);
-        }
-        if(customerVO.getStateRegion()!=null && customerVO.getStateRegion().getStateRegionName()!=null){
-            state.setText(Utility.capitalize(customerVO.getStateRegion().getStateRegionName()));
-            state.setEnabled(false);
-        }
-        if(customerVO.getAddress1()!=null){
-            permanentaddress.setText(Utility.capitalize(customerVO.getAddress1()));
-        }
-
-
-
-        attachaddress.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                permissionUtils.check_permission(PermissionHandler.imagePermissionArrayList(PanVerification.this), ErrorMsg.CAMERA_PERMISSION,ApplicationConstant.REQ_CAMERA_PERMISSION);
-            }
-        });
-
 
         date1.addTextChangedListener(new MaskWatcher("##/##/####"));
-
         date1.setDrawableClickListener(new DrawableClickListener() {
             @Override
             public void onClick(DrawablePosition target) {
@@ -206,6 +173,45 @@ public class PanVerification extends Base_Activity implements  PermissionUtils.P
                 }
             }
         });
+
+        if(customerVO.getDateOfBirth()!=null){
+            Timestamp timestamp =new Timestamp(customerVO.getDateOfBirth());
+            Date date =new Date(timestamp.getTime());
+
+            String simpleDateFormat =new SimpleDateFormat("dd/MM/yyyy").format(date);
+            date1.setText(simpleDateFormat);
+            date1.setEnabled(false);
+            date1.setDrawableClickListener(null);
+
+        }
+        if(customerVO.getPincode()!=null){
+            pin.setText(customerVO.getPincode());
+            pin.setEnabled(false);
+
+        }
+        if(customerVO.getCity()!=null && customerVO.getCity().getCityName()!=null){
+            city.setText(Utility.capitalize(customerVO.getCity().getCityName()));
+            city.setEnabled(false);
+        }
+        if(customerVO.getStateRegion()!=null && customerVO.getStateRegion().getStateRegionName()!=null){
+            state.setText(Utility.capitalize(customerVO.getStateRegion().getStateRegionName()));
+            state.setEnabled(false);
+        }
+        if(customerVO.getAddress1()!=null){
+            permanentaddress.setText(Utility.capitalize(customerVO.getAddress1()));
+            permanentaddress.setEnabled(false);
+        }
+
+
+
+        attachaddress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                permissionUtils.check_permission(PermissionHandler.imagePermissionArrayList(PanVerification.this), ErrorMsg.CAMERA_PERMISSION,ApplicationConstant.REQ_CAMERA_PERMISSION);
+            }
+        });
+
+
 
 
 
