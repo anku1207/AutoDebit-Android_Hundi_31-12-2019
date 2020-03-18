@@ -84,7 +84,9 @@ public class History extends Base_Activity implements View.OnClickListener {
               emptymsg.setVisibility(View.GONE);
               History_List_Adapter history_list_adapter=new History_List_Adapter(History.this, (List<DataAdapterVO>) s,R.layout.design_history_card_list);
               recyclerView.setAdapter(history_list_adapter);
-              runLayoutAnimation(recyclerView);
+              recyclerView.setLayoutAnimation(Utility.getRunLayoutAnimation(History.this));
+              recyclerView.getAdapter().notifyDataSetChanged();
+              recyclerView.scheduleLayoutAnimation();
             }else {
               emptymsg.setVisibility(View.VISIBLE);
           }
@@ -172,15 +174,7 @@ public class History extends Base_Activity implements View.OnClickListener {
     }
 
 
-    private void runLayoutAnimation(final RecyclerView recyclerView) {
-        final Context context = recyclerView.getContext();
-        final LayoutAnimationController controller =
-                AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_from_bottom);
 
-        recyclerView.setLayoutAnimation(controller);
-        recyclerView.getAdapter().notifyDataSetChanged();
-        recyclerView.scheduleLayoutAnimation();
-    }
 
     public void getHistoryDetailById(Integer id , VolleyResponse volleyResponse){
 

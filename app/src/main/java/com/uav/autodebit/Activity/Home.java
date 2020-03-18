@@ -99,7 +99,7 @@ public class Home extends Base_Activity
     List<BannerVO> banners;
     Integer level=null;
 
-    ImageView  allutilityservice;
+    ImageView  allutilityservice,notificationicon;
 
     Context cntxt;
     UAVProgressDialog pd ;
@@ -215,6 +215,7 @@ public class Home extends Base_Activity
         condition=findViewById(R.id.condition);
         setting=findViewById(R.id.setting);
         closemenuactivity=findViewById(R.id.closemenuactivity);
+        notificationicon=findViewById(R.id.notificationicon);
 
         mainwallet.setOnClickListener(this);
         profile.setOnClickListener(this);
@@ -228,8 +229,10 @@ public class Home extends Base_Activity
         condition.setOnClickListener(this);
         setting.setOnClickListener(this);
         closemenuactivity.setOnClickListener(this);
+        notificationicon.setOnClickListener(this);
 
-
+        //
+        notificationicon.setAnimation(Utility.getOnShakeAnimation(Home.this));
 
         logoutbtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -931,6 +934,10 @@ public class Home extends Base_Activity
                 Toast.makeText(this, "setting", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.closemenuactivity:
+                break;
+
+            case R.id.notificationicon:
+                startActivity(new Intent(Home.this,Notifications.class));
                 break;
         }
         drawer.closeDrawer(GravityCompat.START);

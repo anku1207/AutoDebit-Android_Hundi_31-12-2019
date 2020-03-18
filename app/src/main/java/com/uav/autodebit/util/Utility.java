@@ -65,6 +65,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -1356,4 +1359,14 @@ public class Utility {
         return bitmap;
     }
 
+
+    public static Animation getOnShakeAnimation(Context context ) {
+        return  AnimationUtils.loadAnimation(context, R.anim.shake);
+   }
+
+    public static  LayoutAnimationController getRunLayoutAnimation(Context context) {
+        final LayoutAnimationController controller =
+                AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_from_bottom);
+        return controller;
+    }
 }
