@@ -77,6 +77,7 @@ public class Water extends Base_Activity implements View.OnClickListener {
     UAVProgressDialog pd;
 
     OxigenTransactionVO oxigenTransactionVOresp;
+    int minAmt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +103,7 @@ public class Water extends Base_Activity implements View.OnClickListener {
         min_amt_layout=findViewById(R.id.min_amt_layout);
 
         oxigenTransactionVOresp=new OxigenTransactionVO();
+        minAmt=0;
 
         amountlayout.setVisibility(View.GONE);
         amount.setEnabled(false);
@@ -208,7 +210,7 @@ public class Water extends Base_Activity implements View.OnClickListener {
                         //add min Amt Layout
                         if(dataAdapterVO.getMinTxnAmount()!=null){
                             if(min_amt_layout.getChildCount()>0)min_amt_layout.removeAllViews();
-
+                            minAmt=dataAdapterVO.getMinTxnAmount();
                             Animation animFadeIn = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fadein);
                             min_amt_layout.startAnimation(animFadeIn);
                             min_amt_layout.setVisibility(View.VISIBLE);
@@ -368,7 +370,7 @@ public class Water extends Base_Activity implements View.OnClickListener {
     }
 
     private JSONObject getQuestionLabelDate(boolean fetchBill) throws Exception{
-       return BillPayRequest.getQuestionLabelData(Water.this,operator,amount,fetchBill,isFetchBill, questionsVOS);
+       return BillPayRequest.getQuestionLabelData(Water.this,operator,amount,fetchBill,isFetchBill, questionsVOS,minAmt);
     }
 
 

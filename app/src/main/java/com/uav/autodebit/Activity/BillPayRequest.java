@@ -148,7 +148,7 @@ public class BillPayRequest {
     }
 
 
-    static JSONObject getQuestionLabelData(Activity activity, EditText operator, EditText amount, boolean fetchBill, boolean isFetchBill, List<OxigenQuestionsVO> questionsVOS) throws  JSONException {
+    static JSONObject getQuestionLabelData(Activity activity, EditText operator, EditText amount, boolean fetchBill, boolean isFetchBill, List<OxigenQuestionsVO> questionsVOS,int minamt) throws  JSONException {
 
         amount.setError(null);
         operator.setError(null);
@@ -182,10 +182,16 @@ public class BillPayRequest {
             if(amount.getText().toString().equals("")){
                 amount.setError("this filed is required");
                 valid=false;
+            }else if(!amount.getText().toString().equals("") && Integer.parseInt(amount.getText().toString())<minamt){
+                amount.setError("Amount Must be greater then " +activity.getString(R.string.Rs)+" "+minamt);
+                valid=false;
             }
         }else if(fetchBill && isFetchBill && valid){
             if(amount.getText().toString().equals("")){
                 Utility.showSingleButtonDialogconfirmation(activity,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk) Dialog::dismiss),"Alert","Bill Amount is null ");
+                valid=false;
+            }else if(!amount.getText().toString().equals("") && Integer.parseInt(amount.getText().toString())<minamt){
+                Utility.showSingleButtonDialogconfirmation(activity,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk) Dialog::dismiss),"Alert","Amount Must be greater then " +activity.getString(R.string.Rs)+" "+minamt);
                 valid=false;
             }
         }

@@ -75,6 +75,7 @@ public class DTH_Recharge_Service extends Base_Activity implements View.OnClickL
     String operatorListDate;
     UAVProgressDialog pd;
     OxigenTransactionVO oxigenTransactionVOresp;
+    int minAmt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +104,7 @@ public class DTH_Recharge_Service extends Base_Activity implements View.OnClickL
 
         amountlayout.setVisibility(View.GONE);
         oxigenTransactionVOresp=new OxigenTransactionVO();
+        minAmt=0;
 
 
         back_activity_button.setOnClickListener(this);
@@ -205,7 +207,7 @@ public class DTH_Recharge_Service extends Base_Activity implements View.OnClickL
                         //add min Amt Layout
                         if(dataAdapterVO.getMinTxnAmount()!=null){
                             if(min_amt_layout.getChildCount()>0)min_amt_layout.removeAllViews();
-
+                            minAmt=dataAdapterVO.getMinTxnAmount();
                             Animation animFadeIn = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fadein);
                             min_amt_layout.startAnimation(animFadeIn);
                             min_amt_layout.setVisibility(View.VISIBLE);
@@ -360,7 +362,7 @@ public class DTH_Recharge_Service extends Base_Activity implements View.OnClickL
     }
 
     private JSONObject getQuestionLabelDate(boolean fetchBill) throws Exception{
-        return BillPayRequest.getQuestionLabelData(DTH_Recharge_Service.this,operator,amount,fetchBill,isFetchBill, questionsVOS);
+        return BillPayRequest.getQuestionLabelData(DTH_Recharge_Service.this,operator,amount,fetchBill,isFetchBill, questionsVOS,minAmt);
     }
 
     public void removefetchbilllayout(){

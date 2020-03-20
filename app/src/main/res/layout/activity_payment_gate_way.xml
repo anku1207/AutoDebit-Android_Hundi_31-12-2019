@@ -10,7 +10,8 @@
         android:id="@+id/my_awesome_toolbar"
         android:layout_height="50dp"
         android:layout_width="match_parent"
-        android:background="@color/appbar">
+        android:background="@color/appbar"
+        android:visibility="gone">
         <ImageView
             android:layout_width="25dp"
             android:layout_height="25dp"

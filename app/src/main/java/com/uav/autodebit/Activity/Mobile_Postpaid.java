@@ -239,7 +239,6 @@ public class Mobile_Postpaid extends Base_Activity implements View.OnClickListen
                             if(min_amt_layout.getChildCount()>0)min_amt_layout.removeAllViews();
                             minAmt=dataAdapterVO.getMinTxnAmount();
 
-
                             Animation animFadeIn = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fadein);
                             min_amt_layout.startAnimation(animFadeIn);
                             min_amt_layout.setVisibility(View.VISIBLE);
@@ -432,7 +431,7 @@ public class Mobile_Postpaid extends Base_Activity implements View.OnClickListen
 
     private JSONObject getQuestionLabelDate(boolean fetchBill) throws Exception{
         Toast.makeText(this, ""+minAmt, Toast.LENGTH_SHORT).show();
-        return BillPayRequest.getQuestionLabelData(Mobile_Postpaid.this,operator,amount,fetchBill,isFetchBill, questionsVOS);
+        return BillPayRequest.getQuestionLabelData(Mobile_Postpaid.this,operator,amount,fetchBill,isFetchBill, questionsVOS,minAmt);
     }
 
     public void removefetchbilllayout(){

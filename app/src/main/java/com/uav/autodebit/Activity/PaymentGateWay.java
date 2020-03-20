@@ -2,7 +2,9 @@ package com.uav.autodebit.Activity;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
@@ -20,20 +22,66 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
 
+import com.paynimo.android.payment.PaymentActivity;
+import com.paynimo.android.payment.PaymentModesActivity;
+import com.paynimo.android.payment.model.Checkout;
+import com.paynimo.android.payment.util.Constant;
+import com.uav.autodebit.BO.PaymentGateWayBO;
+import com.uav.autodebit.BO.SiBO;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
+import com.uav.autodebit.permission.Session;
+import com.uav.autodebit.util.DialogInterface;
+import com.uav.autodebit.util.Utility;
+import com.uav.autodebit.volley.VolleyResponseListener;
+import com.uav.autodebit.volley.VolleyUtils;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class PaymentGateWay extends AppCompatActivity {
 
     WebView webView;
     ImageView back_activity_button;
 
+    String redirectUrl, cancelUrl;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
         setContentView(R.layout.activity_payment_gate_way);
-        openWebView("http://192.168.1.22/hundi.com/paymentgateway?uid=payu&customerId=58"); //http://d.eze.cc/r/o/0zfATRE7
+        getPaymentGateWayURL();
+    }
+
+
+
+
+
+    public void getPaymentGateWayURL() {
+
+        VolleyUtils.makeJsonObjectRequest(this, PaymentGateWayBO.getPaymentGateWayUrl(), new VolleyResponseListener() {
+            @Override
+            public void onError(String message) {
+            }
+
+            @Override
+            public void onResponse(Object resp) throws JSONException {
+                JSONObject response = (JSONObject) resp;
+                if (!response.getString("status").equals("200")) {
+                    Utility.showSingleButtonDialog(PaymentGateWay.this, "Alert", response.getString("errorMsg"), false);
+                } else {
+                        Log.w("resp", response.toString());
+                        redirectUrl = response.getString("redirectUrl");
+                        cancelUrl = response.getString("cancelUrl");
+                        String url = response.getString("url") + "&customerId=" + Session.getCustomerId(PaymentGateWay.this);
+                        openWebView(url);
+                }
+            }
+        });
+
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -109,11 +157,27 @@ public class PaymentGateWay extends AppCompatActivity {
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
             switch (keyCode) {
                 case KeyEvent.KEYCODE_BACK:
-                    if (webView.canGoBack()) {
+                    /*if (webView.canGoBack()) {
                         webView.goBack();
                     } else {
                         finish();
-                    }
+                    }*/
+                    String[] buttons = {"No","Yes"};
+                    Utility.showDoubleButtonDialogConfirmation(new DialogInterface() {
+                        @Override
+                        public void confirm(Dialog dialog) {
+                            dialog.dismiss();
+                            finish();
+
+                        }
+
+                        @Override
+                        public void modify(Dialog dialog) {
+                            dialog.dismiss();
+
+                        }
+                    },PaymentGateWay.this,"Do you really want to cancel the transaction","Cancel Transaction",buttons);
+
                     return true;
             }
         }

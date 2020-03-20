@@ -84,6 +84,8 @@ public class Electricity_Bill extends Base_Activity  implements View.OnClickList
     UAVProgressDialog pd;
     OxigenTransactionVO oxigenTransactionVOresp;
     Gson gson;
+    int minAmt;
+
 
 
     @Override
@@ -110,6 +112,7 @@ public class Electricity_Bill extends Base_Activity  implements View.OnClickList
         min_amt_layout=findViewById(R.id.min_amt_layout);
 
         oxigenTransactionVOresp=new OxigenTransactionVO();
+        minAmt=0;
         gson =new Gson();
 
         amountlayout.setVisibility(View.GONE);
@@ -210,7 +213,7 @@ public class Electricity_Bill extends Base_Activity  implements View.OnClickList
                         //add min Amt Layout
                         if(dataAdapterVO.getMinTxnAmount()!=null){
                             if(min_amt_layout.getChildCount()>0)min_amt_layout.removeAllViews();
-
+                            minAmt=dataAdapterVO.getMinTxnAmount();
                             Animation animFadeIn = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fadein);
                             min_amt_layout.startAnimation(animFadeIn);
                             min_amt_layout.setVisibility(View.VISIBLE);
@@ -373,7 +376,7 @@ public class Electricity_Bill extends Base_Activity  implements View.OnClickList
     }
 
     private JSONObject getQuestionLabelDate(boolean fetchBill) throws Exception{
-        return BillPayRequest.getQuestionLabelData(Electricity_Bill.this,operator,amount,fetchBill,isFetchBill, questionsVOS);
+        return BillPayRequest.getQuestionLabelData(Electricity_Bill.this,operator,amount,fetchBill,isFetchBill, questionsVOS,minAmt);
     }
 
     public void removefetchbilllayout(){
