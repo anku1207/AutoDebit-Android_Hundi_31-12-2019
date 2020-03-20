@@ -360,7 +360,8 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                     public void confirm(Dialog dialog) {
                         dialog.dismiss();
                         try {
-                            proceedToRecharge();
+                           // proceedToRecharge();
+                            startActivityForResult(new Intent(Mobile_Prepaid_Recharge_Service.this,PaymentGateWay.class),200);
                         }catch (Exception e){
                             e.printStackTrace();
                             Utility.exceptionAlertDialog(Mobile_Prepaid_Recharge_Service.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
