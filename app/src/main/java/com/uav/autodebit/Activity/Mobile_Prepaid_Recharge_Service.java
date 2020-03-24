@@ -198,7 +198,7 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
 
         if(resultCode==RESULT_OK){
             switch (requestCode) {
-                case 100:
+                case 100: // operator list response
                     operatorname =data.getStringExtra("operatorname");
                     operatorcode=data.getStringExtra("operator");
 
@@ -212,7 +212,7 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                     startActivityForResult(intent,1000);
 
                     break;
-                case 1000 :
+                case 1000 : // browse plan response
                         amount.requestFocus();
                         browseplan.setVisibility(View.VISIBLE);
                         regionname=data.getStringExtra("valueName");
@@ -224,7 +224,7 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                             mobilenumber.setError(Utility.validatePattern(mobilenumber.getText().toString().trim(),ApplicationConstant.MOBILENO_VALIDATION));
                         }
                     break;
-                case 101:
+                case 101: // select contact list response
                         Uri contactData = data.getData();
                         Cursor c = getContentResolver().query(contactData, null, null, null, null);
                         if (c.moveToFirst()) {
@@ -248,7 +248,11 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                     amount.setText(data.getStringExtra("amount"));
                     amount.setSelection(amount.getText().length());
                     break;
-
+                case 200: // payu response
+                    Toast.makeText(this, "success", Toast.LENGTH_SHORT).show();
+                    if (data != null) {
+                        proceedToRecharge(data.getStringExtra("oxigenTypeId"),data.getStringExtra("tnxid"));
+                    }
             }
         }
     }
@@ -262,9 +266,7 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
             case R.id.browseplan :
 
                 HashMap<String, Object> params = new HashMap<String, Object>();
-
                 ConnectionVO connectionVO =OxigenPlanBO.getPlan();
-
 
                 OxigenPlanVO oxigenPlanVO =new OxigenPlanVO();
                 ServiceTypeVO serviceTypeVO =new ServiceTypeVO();
@@ -275,7 +277,6 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                 Gson gson=new Gson();
                 String json = gson.toJson(oxigenPlanVO);
                 params.put("volley", json);
-
                 connectionVO.setParams(params);
 
                 VolleyUtils.makeJsonObjectRequest(this, connectionVO, new VolleyResponseListener() {
@@ -300,9 +301,7 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                         }else {
                             String json = gson.toJson(oxigenPlanVO);
                             Session.set_Data_Sharedprefence(Mobile_Prepaid_Recharge_Service.this,Session.CACHE_BROWSE_DATA,json);
-
                             startActivityForResult(new Intent(Mobile_Prepaid_Recharge_Service.this,Browse_Plan.class),102);
-
                         }
                     }
                 });
@@ -360,25 +359,18 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                     public void confirm(Dialog dialog) {
                         dialog.dismiss();
                         try {
+                            oxiMobileRechargeValidation();
                            // proceedToRecharge();
-                            startActivityForResult(new Intent(Mobile_Prepaid_Recharge_Service.this,PaymentGateWay.class),200);
                         }catch (Exception e){
                             e.printStackTrace();
                             Utility.exceptionAlertDialog(Mobile_Prepaid_Recharge_Service.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
-
                         }
-
-
                     }
-
                     @Override
                     public void modify(Dialog dialog) {
                         dialog.dismiss();
-
                     }
                 },Mobile_Prepaid_Recharge_Service.this,jsonArray,null,"Confirmation",btn);
-
-
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -388,9 +380,9 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
 
     }
 
-    public void proceedToRecharge() throws Exception{
+    private void oxiMobileRechargeValidation() {
         HashMap<String, Object> params = new HashMap<String, Object>();
-        ConnectionVO connectionVO =OxigenPlanBO.oxiMobileRecharge();
+        ConnectionVO connectionVO =OxigenPlanBO.oxiMobileRechargeValidation();
 
         OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
         oxigenTransactionVO.setReferenceName("mobile");
@@ -398,9 +390,6 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
         oxigenTransactionVO.setAmount(Double.parseDouble(amount.getText().toString().trim()));
         oxigenTransactionVO.setStateRegion(regionname);
         oxigenTransactionVO.setOperateName(operatorname);
-
-
-
 
         CustomerVO customerVO =new CustomerVO();
         customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(Mobile_Prepaid_Recharge_Service.this)));
@@ -410,13 +399,80 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
         serviceTypeVO.setServiceTypeId(Integer.parseInt(serviceid));
         oxigenTransactionVO.setServiceType(serviceTypeVO);
 
-
         Gson gson=new Gson();
         String json = gson.toJson(oxigenTransactionVO);
 
-        Log.w("request",json);
         params.put("volley", json);
         connectionVO.setParams(params);
+        Log.w("request",params.toString());
+
+        VolleyUtils.makeJsonObjectRequest(this, connectionVO, new VolleyResponseListener() {
+            @Override
+            public void onError(String message) {
+            }
+            @Override
+            public void onResponse(Object resp) throws JSONException {
+
+                JSONObject response = (JSONObject) resp;
+                Gson gson = new Gson();
+                OxigenTransactionVO oxigenPlanresp = gson.fromJson(response.toString(), OxigenTransactionVO.class);
+
+                if(oxigenPlanresp.getStatusCode().equals("400")){
+                    StringBuffer stringBuffer= new StringBuffer();
+                    for(int i=0;i<oxigenPlanresp.getErrorMsgs().size();i++){
+                        stringBuffer.append(oxigenPlanresp.getErrorMsgs().get(i));
+                    }
+                    Utility.showSingleButtonDialog(Mobile_Prepaid_Recharge_Service.this,"Error !",stringBuffer.toString(),false);
+                }else {
+
+                    if(oxigenPlanresp.getTypeId()==null){
+                        Utility.showSingleButtonDialog(Mobile_Prepaid_Recharge_Service.this,"Error !","Something went wrong, Please try again!",false);
+                        return;
+                    }
+                    if(oxigenPlanresp.isEventIs()){
+
+                        Utility.showDoubleButtonDialogConfirmation(new DialogInterface() {
+                            @Override
+                            public void confirm(Dialog dialog) {
+                                dialog.dismiss();
+                            }
+                            @Override
+                            public void modify(Dialog dialog) {
+                                dialog.dismiss();
+                                startActivityForResult(new Intent(Mobile_Prepaid_Recharge_Service.this,PaymentGateWay.class).putExtra("oxigenTypeId",oxigenPlanresp.getTypeId().toString()),200);
+                            }
+                        },Mobile_Prepaid_Recharge_Service.this,oxigenPlanresp.getAnonymousString(),"");
+                    }else {
+                        startActivityForResult(new Intent(Mobile_Prepaid_Recharge_Service.this,PaymentGateWay.class).putExtra("oxigenTypeId",oxigenPlanresp.getTypeId().toString()),200);
+                    }
+                }
+            }
+        });
+    }
+
+    public void proceedToRecharge(String oxigenTypeId,String payUTxnId) {
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        ConnectionVO connectionVO =OxigenPlanBO.oxiMobileRecharge();
+
+        OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
+        oxigenTransactionVO.setTypeId(Integer.parseInt(oxigenTypeId));
+        oxigenTransactionVO.setAnonymousString(payUTxnId);
+
+        CustomerVO customerVO =new CustomerVO();
+        customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(Mobile_Prepaid_Recharge_Service.this)));
+        oxigenTransactionVO.setCustomer(customerVO);
+
+        ServiceTypeVO serviceTypeVO =new ServiceTypeVO();
+        serviceTypeVO.setServiceTypeId(Integer.parseInt(serviceid));
+        oxigenTransactionVO.setServiceType(serviceTypeVO);
+        Gson gson=new Gson();
+        String json = gson.toJson(oxigenTransactionVO);
+
+
+        params.put("volley", json);
+        connectionVO.setParams(params);
+
+        Log.w("proceedToRecharge",params.toString());
 
         VolleyUtils.makeJsonObjectRequest(this, connectionVO, new VolleyResponseListener() {
             @Override

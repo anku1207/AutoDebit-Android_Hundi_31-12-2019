@@ -21,18 +21,29 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.paynimo.android.payment.PaymentActivity;
 import com.paynimo.android.payment.PaymentModesActivity;
 import com.paynimo.android.payment.model.Checkout;
 import com.paynimo.android.payment.util.Constant;
+import com.uav.autodebit.BO.OxigenPlanBO;
 import com.uav.autodebit.BO.PaymentGateWayBO;
 import com.uav.autodebit.BO.SiBO;
+import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.DialogInterface;
 import com.uav.autodebit.util.Utility;
+import com.uav.autodebit.vo.BaseVO;
+import com.uav.autodebit.vo.ConnectionVO;
+import com.uav.autodebit.vo.CustomerVO;
+import com.uav.autodebit.vo.OxigenTransactionVO;
+import com.uav.autodebit.vo.PayUVO;
+import com.uav.autodebit.vo.PaymentGatewayVO;
+import com.uav.autodebit.vo.ServiceTypeVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
 import com.uav.autodebit.volley.VolleyUtils;
 
@@ -40,11 +51,20 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class PaymentGateWay extends AppCompatActivity {
+import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
+import java.io.InputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.HashMap;
+
+public class PaymentGateWay extends AppCompatActivity implements MyJavaScriptInterface.javascriptinterface {
 
     WebView webView;
     ImageView back_activity_button;
-
     String redirectUrl, cancelUrl;
 
 
@@ -53,15 +73,15 @@ public class PaymentGateWay extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
         setContentView(R.layout.activity_payment_gate_way);
-        getPaymentGateWayURL();
+        getPaymentGateWayURL(getIntent().getStringExtra("oxigenTypeId"));
     }
 
 
 
 
 
-    public void getPaymentGateWayURL() {
-
+    public void getPaymentGateWayURL(String id) {
+        Log.w("typeid",id);
         VolleyUtils.makeJsonObjectRequest(this, PaymentGateWayBO.getPaymentGateWayUrl(), new VolleyResponseListener() {
             @Override
             public void onError(String message) {
@@ -73,10 +93,10 @@ public class PaymentGateWay extends AppCompatActivity {
                 if (!response.getString("status").equals("200")) {
                     Utility.showSingleButtonDialog(PaymentGateWay.this, "Alert", response.getString("errorMsg"), false);
                 } else {
-                        Log.w("resp", response.toString());
+                        Log.w("getPaymentGateWayUrl", response.toString());
                         redirectUrl = response.getString("redirectUrl");
                         cancelUrl = response.getString("cancelUrl");
-                        String url = response.getString("url") + "&customerId=" + Session.getCustomerId(PaymentGateWay.this);
+                        String url = response.getString("url") + "&tnxid=" +id;
                         openWebView(url);
                 }
             }
@@ -84,7 +104,7 @@ public class PaymentGateWay extends AppCompatActivity {
 
     }
 
-    @SuppressLint("SetJavaScriptEnabled")
+    @SuppressLint({"SetJavaScriptEnabled", "JavascriptInterface"})
     void openWebView(final String receiptUrl) {
         webView = findViewById(R.id.webView);
         // webView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
@@ -134,6 +154,7 @@ public class PaymentGateWay extends AppCompatActivity {
         });
 
         webView.setWebViewClient(new MyBrowser());
+        webView.addJavascriptInterface(new MyJavaScriptInterface(this), "HTMLOUT");
 
         back_activity_button=findViewById(R.id.back_activity_button);
 
@@ -184,6 +205,50 @@ public class PaymentGateWay extends AppCompatActivity {
         return super.onKeyDown(keyCode, event);
     }
 
+    @Override
+    public void htmlresult(String result) {
+
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        ConnectionVO connectionVO = OxigenPlanBO.oxiMobileRechargeValidation();
+        BaseVO baseVO =new BaseVO();
+        baseVO.setAnonymousString(result);
+        Gson gson=new Gson();
+        String json = gson.toJson(baseVO);
+        params.put("volley", json);
+        connectionVO.setParams(params);
+        Log.w("request",params.toString());
+
+        VolleyUtils.makeJsonObjectRequest(this, PaymentGateWayBO.validatePayUResponse(), new VolleyResponseListener() {
+            @Override
+            public void onError(String message) {
+            }
+            @Override
+            public void onResponse(Object resp) throws JSONException {
+                JSONObject response = (JSONObject) resp;
+                Gson gson = new Gson();
+                PayUVO payUVO = gson.fromJson(response.toString(), PayUVO.class);
+                if (!payUVO.getStatusCode().equals("200")) {
+                    Utility.showSingleButtonDialog(PaymentGateWay.this, "Alert", payUVO.getErrorMsgs().get(0), false);
+                } else {
+                    Log.w("getPaymentGateWayUrl", payUVO.toString());
+                    if(payUVO.getOperatorTxnID()==null || getIntent().getStringExtra("oxigenTypeId")==null || getIntent().getStringExtra("oxigenTypeId").equals("") ){
+                        Utility.showSingleButtonDialogconfirmation(PaymentGateWay.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                            ok.dismiss();
+                            finish();
+                        }),"","Something went wrong, Please try again!");
+                    }else {
+                        Intent intent =new Intent();
+                        intent.putExtra("tnxid",payUVO.getOperatorTxnID());
+                        intent.putExtra("oxigenTypeId",getIntent().getStringExtra("oxigenTypeId"));
+                        setResult(RESULT_OK,intent);
+                        finish();
+                    }
+                }
+            }
+        });
+
+    }
+
 
     public class MyBrowser extends WebViewClient {
         final ProgressDialog progressBar = ProgressDialog.show(PaymentGateWay.this, null, " Please wait...", false, false);
@@ -191,26 +256,24 @@ public class PaymentGateWay extends AppCompatActivity {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             Log.w("URL", url);
-
-
             view.loadUrl(url);
             return true;
         }
-
-
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
             Log.w("pagestart", url);
             progressBar.show();
-
         }
-
         @Override
         public void onPageFinished(WebView view, String url) {
             progressBar.dismiss();
             Log.w("loadurlresp", url);
-
+            if(url.equals(redirectUrl)){
+                webView.loadUrl("javascript:HTMLOUT.showHTML(document.getElementById('siresp').innerHTML);");
+            }else if(url.equals(cancelUrl)){
+                finish();
+            }
         }
 
         @SuppressWarnings("deprecation")

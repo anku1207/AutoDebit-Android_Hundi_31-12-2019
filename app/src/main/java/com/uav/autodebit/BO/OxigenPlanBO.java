@@ -26,6 +26,15 @@ public class OxigenPlanBO implements Serializable {
         return connectionVO;
     }
 
+    public static ConnectionVO oxiMobileRechargeValidation() {
+        ConnectionVO connectionVO = new ConnectionVO();
+        connectionVO.setMethodName("oxiMobileRechargeValidation");
+        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
+        return connectionVO;
+    }
+
+
+
     public static ConnectionVO oxiDTHRechargeTransaction() {
         ConnectionVO connectionVO = new ConnectionVO();
         connectionVO.setMethodName("oxiDTHRechargeTransaction");
