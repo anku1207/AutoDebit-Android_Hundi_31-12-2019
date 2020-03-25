@@ -431,6 +431,7 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                         return;
                     }
                     if(oxigenPlanresp.isEventIs()){
+                        String [] btn ={"PG","Mandate"};
 
                         Utility.showDoubleButtonDialogConfirmation(new DialogInterface() {
                             @Override
@@ -444,7 +445,7 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                                 dialog.dismiss();
                                 startActivityForResult(new Intent(Mobile_Prepaid_Recharge_Service.this,PaymentGateWay.class).putExtra("oxigenTypeId",oxigenPlanresp.getTypeId().toString()),200);
                             }
-                        },Mobile_Prepaid_Recharge_Service.this,oxigenPlanresp.getAnonymousString(),"");
+                        },Mobile_Prepaid_Recharge_Service.this,oxigenPlanresp.getAnonymousString(),"",btn);
                     }else {
                         startActivityForResult(new Intent(Mobile_Prepaid_Recharge_Service.this,PaymentGateWay.class).putExtra("oxigenTypeId",oxigenPlanresp.getTypeId().toString()),200);
                     }

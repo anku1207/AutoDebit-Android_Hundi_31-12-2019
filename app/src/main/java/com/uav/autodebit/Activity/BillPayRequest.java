@@ -303,6 +303,8 @@ public class BillPayRequest {
 
                     if(oxigenPlanresp.isEventIs()){
 
+                        String [] btn ={"PG","Mandate"};
+
                         Utility.showDoubleButtonDialogConfirmation(new DialogInterface() {
                             @Override
                             public void confirm(Dialog dialog) {
@@ -315,16 +317,16 @@ public class BillPayRequest {
                                 responseOxigenTransactionVO.setTypeId(oxigenPlanresp.getTypeId());
                                 responseOxigenTransactionVO.setAnonymousString(oxigenPlanresp.getAnonymousInteger().toString());
                                 responseOxigenTransactionVO.setProvider(authServiceProviderVO);
-                                paymentGatewayResponse.onPg(responseOxigenTransactionVO);
+                                paymentGatewayResponse.onEnach(responseOxigenTransactionVO);
                             }
                             @Override
                             public void modify(Dialog dialog) {
                                 dialog.dismiss();
-                                paymentGatewayResponse.onEnach(oxigenPlanresp);
+                                paymentGatewayResponse.onPg(oxigenPlanresp);
                             }
-                        },context,oxigenPlanresp.getAnonymousString(),"");
+                        },context,oxigenPlanresp.getAnonymousString(),"",btn);
                     }else {
-                        paymentGatewayResponse.onEnach(oxigenPlanresp);
+                        paymentGatewayResponse.onPg(oxigenPlanresp);
 
                     }
                 }
