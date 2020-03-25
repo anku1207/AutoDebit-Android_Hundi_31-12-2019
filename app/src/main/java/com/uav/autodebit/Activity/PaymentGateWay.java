@@ -209,7 +209,7 @@ public class PaymentGateWay extends AppCompatActivity implements MyJavaScriptInt
     public void htmlresult(String result) {
 
         HashMap<String, Object> params = new HashMap<String, Object>();
-        ConnectionVO connectionVO = OxigenPlanBO.oxiMobileRechargeValidation();
+        ConnectionVO connectionVO = PaymentGateWayBO.validatePayUResponse();
         params.put("volley", result);
         connectionVO.setParams(params);
         Log.w("request",params.toString());
@@ -268,11 +268,16 @@ public class PaymentGateWay extends AppCompatActivity implements MyJavaScriptInt
         public void onPageFinished(WebView view, String url) {
             progressBar.dismiss();
             Log.w("loadurlresp", url);
-            if(url.equals(redirectUrl)){
-                webView.loadUrl("javascript:HTMLOUT.showHTML(document.getElementById('siresp').innerHTML);");
-            }else if(url.equals(cancelUrl)){
-                finish();
+            try{
+                if(url.equals(redirectUrl)){
+                    webView.loadUrl("javascript:HTMLOUT.showHTML(document.getElementById('siresp').innerHTML);");
+                }else if(url.equals(cancelUrl)){
+                    finish();
+                }
+            }catch (Exception e){
+
             }
+
         }
 
         @SuppressWarnings("deprecation")

@@ -21,12 +21,14 @@ import com.google.gson.JsonObject;
 import com.uav.autodebit.BO.Electricity_BillBO;
 import com.uav.autodebit.BO.OxigenPlanBO;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
+import com.uav.autodebit.Interface.PaymentGatewayResponse;
 import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.DialogInterface;
 import com.uav.autodebit.util.Utility;
+import com.uav.autodebit.vo.AuthServiceProviderVO;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerVO;
 import com.uav.autodebit.vo.OxigenQuestionsVO;
@@ -98,26 +100,16 @@ public class BillPayRequest {
         }
     }
 
-    public static void proceedBillPayment(OxigenTransactionVO oxigenTransactionVO, Context context, int serviceId,VolleyResponse volleyResponse) {
+    public static void proceedBillPayment(OxigenTransactionVO oxigenTransactionVO, Context context,VolleyResponse volleyResponse) {
 
         try {
             Gson gson =new Gson();
 
             HashMap<String, Object> params = new HashMap<String, Object>();
-
-            ServiceTypeVO serviceTypeVO =new ServiceTypeVO();
-            serviceTypeVO.setServiceTypeId(serviceId);
-
-            CustomerVO customerVO =new CustomerVO();
-            customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(context)));
             ConnectionVO connectionVO = OxigenPlanBO.oxiBillPayment();
-            oxigenTransactionVO.setCustomer(customerVO);
-            oxigenTransactionVO.setServiceType(serviceTypeVO);
             params.put("volley",gson.toJson(oxigenTransactionVO));
             connectionVO.setParams(params);
-
             Log.w("requestData",gson.toJson(oxigenTransactionVO));
-
             VolleyUtils.makeJsonObjectRequest(context,connectionVO, new VolleyResponseListener() {
                 @Override
                 public void onError(String message) {
@@ -261,11 +253,96 @@ public class BillPayRequest {
                 ok.dismiss();
             }),"Alert","Bill Fetch Is required!");
         }else {
-            BillPayRequest.proceedBillPayment(oxigenTransactionVO,context,serviceId,new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
-                ((Activity)context).startActivity(new Intent(context,History.class));
-                ((Activity)context).finish();
-            },(VolleyResponse.OnError)(e)->{
-            }));
+           BillPayRequest.oxiBillPaymentValdated(context,oxigenTransactionVO,new PaymentGatewayResponse((PaymentGatewayResponse.OnPg)(pg)->{
+               ((Activity)context).startActivityForResult(new Intent(context,PaymentGateWay.class).putExtra("oxigenTypeId",((OxigenTransactionVO)pg).getTypeId().toString()),200);
+           },(PaymentGatewayResponse.OnEnach)(onEnach)->{
+               BillPayRequest.proceedBillPayment((OxigenTransactionVO)onEnach,context,new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
+                   ((Activity)context).startActivity(new Intent(context,History.class));
+                   ((Activity)context).finish();
+               },(VolleyResponse.OnError)(e)->{
+               }));
+           }));
         }
     }
+
+
+    private static void oxiBillPaymentValdated(Context context, OxigenTransactionVO oxigenTransactionVO, PaymentGatewayResponse paymentGatewayResponse) {
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        ConnectionVO connectionVO =OxigenPlanBO.oxiBillPaymentValdated();
+
+        Gson gson=new Gson();
+        String json = gson.toJson(oxigenTransactionVO);
+
+        params.put("volley", json);
+        connectionVO.setParams(params);
+        Log.w("request",params.toString());
+
+        VolleyUtils.makeJsonObjectRequest(context, connectionVO, new VolleyResponseListener() {
+            @Override
+            public void onError(String message) {
+            }
+            @Override
+            public void onResponse(Object resp) throws JSONException {
+
+                JSONObject response = (JSONObject) resp;
+                Gson gson = new Gson();
+                OxigenTransactionVO oxigenPlanresp = gson.fromJson(response.toString(), OxigenTransactionVO.class);
+
+                if(oxigenPlanresp.getStatusCode().equals("400")){
+                    StringBuffer stringBuffer= new StringBuffer();
+                    for(int i=0;i<oxigenPlanresp.getErrorMsgs().size();i++){
+                        stringBuffer.append(oxigenPlanresp.getErrorMsgs().get(i));
+                    }
+                    Utility.showSingleButtonDialog(context,"Error !",stringBuffer.toString(),false);
+                }else {
+                    if(oxigenPlanresp.getTypeId()==null){
+                        Utility.showSingleButtonDialog(context,"Error !","Something went wrong, Please try again!",false);
+                        return;
+                    }
+
+
+                    if(oxigenPlanresp.isEventIs()){
+
+                        Utility.showDoubleButtonDialogConfirmation(new DialogInterface() {
+                            @Override
+                            public void confirm(Dialog dialog) {
+                                dialog.dismiss();
+
+                                AuthServiceProviderVO authServiceProviderVO =new AuthServiceProviderVO();
+                                authServiceProviderVO.setProviderId(AuthServiceProviderVO.ENACHIDFC);
+
+                                OxigenTransactionVO responseOxigenTransactionVO =new OxigenTransactionVO();
+                                responseOxigenTransactionVO.setTypeId(oxigenPlanresp.getTypeId());
+                                responseOxigenTransactionVO.setAnonymousString(oxigenPlanresp.getAnonymousInteger().toString());
+                                responseOxigenTransactionVO.setProvider(authServiceProviderVO);
+                                paymentGatewayResponse.onPg(responseOxigenTransactionVO);
+                            }
+                            @Override
+                            public void modify(Dialog dialog) {
+                                dialog.dismiss();
+                                paymentGatewayResponse.onEnach(oxigenPlanresp);
+                            }
+                        },context,oxigenPlanresp.getAnonymousString(),"");
+                    }else {
+                        paymentGatewayResponse.onEnach(oxigenPlanresp);
+
+                    }
+                }
+            }
+        });
+    }
+
+
+    public static void onActivityResult(Context context,OxigenTransactionVO oxigenTransactionVO){
+        BillPayRequest.proceedBillPayment(oxigenTransactionVO,context,new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
+            ((Activity)context).startActivity(new Intent(context,History.class));
+            ((Activity)context).finish();
+        },(VolleyResponse.OnError)(e)->{
+        }));
+    }
+
+
+
+
+
 }

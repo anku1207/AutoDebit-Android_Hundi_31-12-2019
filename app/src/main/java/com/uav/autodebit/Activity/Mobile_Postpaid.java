@@ -60,6 +60,7 @@ import com.uav.autodebit.util.BackgroundServiceInterface;
 import com.uav.autodebit.util.CustomTextWatcherLengthAction;
 import com.uav.autodebit.util.DialogInterface;
 import com.uav.autodebit.util.Utility;
+import com.uav.autodebit.vo.AuthServiceProviderVO;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerVO;
 import com.uav.autodebit.vo.DataAdapterVO;
@@ -320,6 +321,16 @@ public class Mobile_Postpaid extends Base_Activity implements View.OnClickListen
                             }
                         }
                         break;
+                    case 200:
+                        OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
+                        oxigenTransactionVO.setTypeId(Integer.parseInt(data.getStringExtra("oxigenTypeId")));
+                        oxigenTransactionVO.setAnonymousString(data.getStringExtra("tnxid"));
+                        AuthServiceProviderVO authServiceProviderVO =new AuthServiceProviderVO();
+                        authServiceProviderVO.setProviderId(AuthServiceProviderVO.PAYU);
+                        oxigenTransactionVO.setProvider(authServiceProviderVO);
+
+                        BillPayRequest.onActivityResult(Mobile_Postpaid.this,oxigenTransactionVO);
+
                 }
             }
         }catch (Exception e){
@@ -350,6 +361,15 @@ public class Mobile_Postpaid extends Base_Activity implements View.OnClickListen
                             oxigenTransactionVO.setOperateName(operatorcode);
                             oxigenTransactionVO.setAmount(Double.valueOf(amount.getText().toString()));
                             oxigenTransactionVO.setAnonymousString(dataarray.toString());
+
+                            ServiceTypeVO serviceTypeVO =new ServiceTypeVO();
+                            serviceTypeVO.setServiceTypeId(ApplicationConstant.MobilePostpaid);
+                            oxigenTransactionVO.setServiceType(serviceTypeVO);
+
+                            CustomerVO customerVO =new CustomerVO();
+                            customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(Mobile_Postpaid.this)));
+                            oxigenTransactionVO.setCustomer(customerVO);
+
                             BillPayRequest.proceedRecharge(Mobile_Postpaid.this,isFetchBill,oxigenTransactionVO,ApplicationConstant.MobilePostpaid);
                         }));
                     }

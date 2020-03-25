@@ -213,7 +213,7 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                     startActivityForResult(intent,1000);
 
                     break;
-                case 1000 : // browse plan response
+                case 1000 : // state list response
                         amount.requestFocus();
                         browseplan.setVisibility(View.VISIBLE);
                         regionname=data.getStringExtra("valueName");
@@ -245,7 +245,7 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                             }
                         }
                         break;
-                case 102:
+                case 102: // browse plan response
                     amount.setText(data.getStringExtra("amount"));
                     amount.setSelection(amount.getText().length());
                     break;
@@ -456,6 +456,8 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
     public void proceedToRecharge(String oxigenTypeId,String typeRechargeId,int providerId) {
         HashMap<String, Object> params = new HashMap<String, Object>();
         ConnectionVO connectionVO =OxigenPlanBO.oxiMobileRecharge();
+
+
         AuthServiceProviderVO authServiceProviderVO =new AuthServiceProviderVO();
         authServiceProviderVO.setProviderId(providerId);
         OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
