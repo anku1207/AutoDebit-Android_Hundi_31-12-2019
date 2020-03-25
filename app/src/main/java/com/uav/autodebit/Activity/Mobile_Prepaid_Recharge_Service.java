@@ -41,6 +41,7 @@ import com.uav.autodebit.util.CustomTextWatcherLengthAction;
 import com.uav.autodebit.util.DialogInterface;
 import com.uav.autodebit.util.DownloadTask;
 import com.uav.autodebit.util.Utility;
+import com.uav.autodebit.vo.AuthServiceProviderVO;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerVO;
 import com.uav.autodebit.vo.DataAdapterVO;
@@ -251,7 +252,7 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                 case 200: // payu response
                     Toast.makeText(this, "success", Toast.LENGTH_SHORT).show();
                     if (data != null) {
-                        proceedToRecharge(data.getStringExtra("oxigenTypeId"),data.getStringExtra("tnxid"));
+                        proceedToRecharge(data.getStringExtra("oxigenTypeId"),data.getStringExtra("tnxid"), AuthServiceProviderVO.PAYU);
                     }
             }
         }
@@ -435,6 +436,8 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                             @Override
                             public void confirm(Dialog dialog) {
                                 dialog.dismiss();
+
+                                proceedToRecharge(oxigenPlanresp.getTypeId().toString(),oxigenPlanresp.getAnonymousInteger().toString(), AuthServiceProviderVO.ENACHIDFC);
                             }
                             @Override
                             public void modify(Dialog dialog) {
@@ -450,13 +453,15 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
         });
     }
 
-    public void proceedToRecharge(String oxigenTypeId,String payUTxnId) {
+    public void proceedToRecharge(String oxigenTypeId,String typeRechargeId,int providerId) {
         HashMap<String, Object> params = new HashMap<String, Object>();
         ConnectionVO connectionVO =OxigenPlanBO.oxiMobileRecharge();
-
+        AuthServiceProviderVO authServiceProviderVO =new AuthServiceProviderVO();
+        authServiceProviderVO.setProviderId(providerId);
         OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
         oxigenTransactionVO.setTypeId(Integer.parseInt(oxigenTypeId));
-        oxigenTransactionVO.setAnonymousString(payUTxnId);
+        oxigenTransactionVO.setAnonymousString(typeRechargeId);
+        oxigenTransactionVO.setProvider(authServiceProviderVO);
 
         CustomerVO customerVO =new CustomerVO();
         customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(Mobile_Prepaid_Recharge_Service.this)));

@@ -12,10 +12,10 @@ public class OxigenTransactionVO extends BannerVO  implements Serializable {
     private String referenceName;
     private String referenceValue;
     private Double amount;
-
-
     private String stateRegion ;
     private String operateName;
+    private AuthServiceProviderVO provider;
+    private Integer providerAuthKeyId;
 
     public OxigenTransactionVO() {
     }
@@ -85,5 +85,21 @@ public class OxigenTransactionVO extends BannerVO  implements Serializable {
 
     public void setOperateName(String operateName) {
         this.operateName = operateName;
+    }
+
+    public AuthServiceProviderVO getProvider() {
+        return provider;
+    }
+
+    public void setProvider(AuthServiceProviderVO provider) {
+        this.provider = provider;
+    }
+
+    public Integer getProviderAuthKeyId() {
+        return providerAuthKeyId;
+    }
+
+    public void setProviderAuthKeyId(Integer providerAuthKeyId) {
+        this.providerAuthKeyId = providerAuthKeyId;
     }
 }

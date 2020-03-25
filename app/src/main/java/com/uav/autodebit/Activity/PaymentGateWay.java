@@ -210,15 +210,11 @@ public class PaymentGateWay extends AppCompatActivity implements MyJavaScriptInt
 
         HashMap<String, Object> params = new HashMap<String, Object>();
         ConnectionVO connectionVO = OxigenPlanBO.oxiMobileRechargeValidation();
-        BaseVO baseVO =new BaseVO();
-        baseVO.setAnonymousString(result);
-        Gson gson=new Gson();
-        String json = gson.toJson(baseVO);
-        params.put("volley", json);
+        params.put("volley", result);
         connectionVO.setParams(params);
         Log.w("request",params.toString());
 
-        VolleyUtils.makeJsonObjectRequest(this, PaymentGateWayBO.validatePayUResponse(), new VolleyResponseListener() {
+        VolleyUtils.makeJsonObjectRequest(this,connectionVO, new VolleyResponseListener() {
             @Override
             public void onError(String message) {
             }
@@ -228,9 +224,12 @@ public class PaymentGateWay extends AppCompatActivity implements MyJavaScriptInt
                 Gson gson = new Gson();
                 PayUVO payUVO = gson.fromJson(response.toString(), PayUVO.class);
                 if (!payUVO.getStatusCode().equals("200")) {
-                    Utility.showSingleButtonDialog(PaymentGateWay.this, "Alert", payUVO.getErrorMsgs().get(0), false);
+                    Utility.showSingleButtonDialogconfirmation(PaymentGateWay.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                        ok.dismiss();
+                        finish();
+                    }),"Alert", payUVO.getErrorMsgs().get(0));
                 } else {
-                    Log.w("getPaymentGateWayUrl", payUVO.toString());
+                    Log.w("oxiMobileRecharge", payUVO.toString());
                     if(payUVO.getOperatorTxnID()==null || getIntent().getStringExtra("oxigenTypeId")==null || getIntent().getStringExtra("oxigenTypeId").equals("") ){
                         Utility.showSingleButtonDialogconfirmation(PaymentGateWay.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
                             ok.dismiss();
