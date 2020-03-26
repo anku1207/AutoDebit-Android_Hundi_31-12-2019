@@ -36,6 +36,7 @@ import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.BackgroundAsyncService;
 import com.uav.autodebit.util.BackgroundServiceInterface;
 import com.uav.autodebit.util.Utility;
+import com.uav.autodebit.vo.AuthServiceProviderVO;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerVO;
 import com.uav.autodebit.vo.DataAdapterVO;
@@ -251,6 +252,17 @@ public class Gas_Bill extends Base_Activity implements View.OnClickListener {
                             editText.requestFocus();
                         }
                         break;
+                    case 200:
+                        if(data !=null){
+                            OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
+                            oxigenTransactionVO.setTypeId(Integer.parseInt(data.getStringExtra("oxigenTypeId")));
+                            oxigenTransactionVO.setAnonymousString(data.getStringExtra("tnxid"));
+                            AuthServiceProviderVO authServiceProviderVO =new AuthServiceProviderVO();
+                            authServiceProviderVO.setProviderId(AuthServiceProviderVO.PAYU);
+                            oxigenTransactionVO.setProvider(authServiceProviderVO);
+                            BillPayRequest.onActivityResult(this,oxigenTransactionVO);
+                        }
+                        break;
                 }
             }
         }catch (Exception e){
@@ -272,14 +284,23 @@ public class Gas_Bill extends Base_Activity implements View.OnClickListener {
                     JSONObject dataarray=getQuestionLabelDate(true);
                     if(dataarray==null)return;
                     if(isFetchBill){
-                        BillPayRequest.proceedRecharge(Gas_Bill.this,isFetchBill,oxigenTransactionVOresp, ApplicationConstant.Gas);
+                        BillPayRequest.proceedRecharge(this,isFetchBill,oxigenTransactionVOresp);
                     }else {
-                        BillPayRequest.confirmationDialogBillPay(Gas_Bill.this, operator, amount ,dataarray , new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                        BillPayRequest.confirmationDialogBillPay(this, operator, amount ,dataarray , new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
                             OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
                             oxigenTransactionVO.setOperateName(operatorcode);
                             oxigenTransactionVO.setAmount(Double.valueOf(amount.getText().toString()));
                             oxigenTransactionVO.setAnonymousString(dataarray.toString());
-                            BillPayRequest.proceedRecharge(Gas_Bill.this,isFetchBill,oxigenTransactionVO,ApplicationConstant.Gas);
+
+                            ServiceTypeVO serviceTypeVO =new ServiceTypeVO();
+                            serviceTypeVO.setServiceTypeId(ApplicationConstant.Gas);
+                            oxigenTransactionVO.setServiceType(serviceTypeVO);
+
+                            CustomerVO customerVO =new CustomerVO();
+                            customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(this)));
+                            oxigenTransactionVO.setCustomer(customerVO);
+
+                            BillPayRequest.proceedRecharge(this,isFetchBill,oxigenTransactionVO);
                         }));
                     }
                 }catch (Exception e){

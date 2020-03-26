@@ -39,6 +39,7 @@ import com.uav.autodebit.util.BackgroundAsyncService;
 import com.uav.autodebit.util.BackgroundServiceInterface;
 import com.uav.autodebit.util.DialogInterface;
 import com.uav.autodebit.util.Utility;
+import com.uav.autodebit.vo.AuthServiceProviderVO;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerVO;
 import com.uav.autodebit.vo.DataAdapterVO;
@@ -262,6 +263,17 @@ public class Water extends Base_Activity implements View.OnClickListener {
                             editText.requestFocus();
                         }
                         break;
+                    case 200:
+                        if(data !=null){
+                            OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
+                            oxigenTransactionVO.setTypeId(Integer.parseInt(data.getStringExtra("oxigenTypeId")));
+                            oxigenTransactionVO.setAnonymousString(data.getStringExtra("tnxid"));
+                            AuthServiceProviderVO authServiceProviderVO =new AuthServiceProviderVO();
+                            authServiceProviderVO.setProviderId(AuthServiceProviderVO.PAYU);
+                            oxigenTransactionVO.setProvider(authServiceProviderVO);
+                            BillPayRequest.onActivityResult(this,oxigenTransactionVO);
+                        }
+                        break;
                 }
             }
         }catch (Exception e){
@@ -283,15 +295,23 @@ public class Water extends Base_Activity implements View.OnClickListener {
                     if(dataarray==null)return;
 
                     if(isFetchBill){
-                        BillPayRequest.proceedRecharge(Water.this,isFetchBill,oxigenTransactionVOresp,ApplicationConstant.Water);
-
+                        BillPayRequest.proceedRecharge(this,isFetchBill,oxigenTransactionVOresp);
                     }else {
-                        BillPayRequest.confirmationDialogBillPay(Water.this, operator, amount ,dataarray , new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                        BillPayRequest.confirmationDialogBillPay(this, operator, amount ,dataarray , new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
                             OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
                             oxigenTransactionVO.setOperateName(operatorcode);
                             oxigenTransactionVO.setAmount(Double.valueOf(amount.getText().toString()));
                             oxigenTransactionVO.setAnonymousString(dataarray.toString());
-                            BillPayRequest.proceedRecharge(Water.this,isFetchBill,oxigenTransactionVO,ApplicationConstant.Water);
+
+                            ServiceTypeVO serviceTypeVO =new ServiceTypeVO();
+                            serviceTypeVO.setServiceTypeId(ApplicationConstant.Water);
+                            oxigenTransactionVO.setServiceType(serviceTypeVO);
+
+                            CustomerVO customerVO =new CustomerVO();
+                            customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(this)));
+                            oxigenTransactionVO.setCustomer(customerVO);
+
+                            BillPayRequest.proceedRecharge(this,isFetchBill,oxigenTransactionVO);
                         }));
                     }
                 }catch (Exception e){

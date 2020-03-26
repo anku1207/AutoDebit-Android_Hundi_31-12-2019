@@ -322,15 +322,16 @@ public class Mobile_Postpaid extends Base_Activity implements View.OnClickListen
                         }
                         break;
                     case 200:
-                        OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
-                        oxigenTransactionVO.setTypeId(Integer.parseInt(data.getStringExtra("oxigenTypeId")));
-                        oxigenTransactionVO.setAnonymousString(data.getStringExtra("tnxid"));
-                        AuthServiceProviderVO authServiceProviderVO =new AuthServiceProviderVO();
-                        authServiceProviderVO.setProviderId(AuthServiceProviderVO.PAYU);
-                        oxigenTransactionVO.setProvider(authServiceProviderVO);
-
-                        BillPayRequest.onActivityResult(Mobile_Postpaid.this,oxigenTransactionVO);
-
+                        if(data !=null){
+                            OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
+                            oxigenTransactionVO.setTypeId(Integer.parseInt(data.getStringExtra("oxigenTypeId")));
+                            oxigenTransactionVO.setAnonymousString(data.getStringExtra("tnxid"));
+                            AuthServiceProviderVO authServiceProviderVO =new AuthServiceProviderVO();
+                            authServiceProviderVO.setProviderId(AuthServiceProviderVO.PAYU);
+                            oxigenTransactionVO.setProvider(authServiceProviderVO);
+                            BillPayRequest.onActivityResult(Mobile_Postpaid.this,oxigenTransactionVO);
+                        }
+                        break;
                 }
             }
         }catch (Exception e){
@@ -354,7 +355,7 @@ public class Mobile_Postpaid extends Base_Activity implements View.OnClickListen
                     if(dataarray==null)return;
 
                     if(isFetchBill){
-                        BillPayRequest.proceedRecharge(Mobile_Postpaid.this,isFetchBill,oxigenTransactionVOresp,ApplicationConstant.MobilePostpaid);
+                        BillPayRequest.proceedRecharge(Mobile_Postpaid.this,isFetchBill,oxigenTransactionVOresp);
                     }else {
                         BillPayRequest.confirmationDialogBillPay(Mobile_Postpaid.this, operator, amount ,dataarray , new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
                             OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
@@ -370,7 +371,7 @@ public class Mobile_Postpaid extends Base_Activity implements View.OnClickListen
                             customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(Mobile_Postpaid.this)));
                             oxigenTransactionVO.setCustomer(customerVO);
 
-                            BillPayRequest.proceedRecharge(Mobile_Postpaid.this,isFetchBill,oxigenTransactionVO,ApplicationConstant.MobilePostpaid);
+                            BillPayRequest.proceedRecharge(Mobile_Postpaid.this,isFetchBill,oxigenTransactionVO);
                         }));
                     }
                 }catch (Exception e){

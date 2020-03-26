@@ -182,7 +182,7 @@ public class BillPayRequest {
             if(amount.getText().toString().equals("")){
                 Utility.showSingleButtonDialogconfirmation(activity,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk) Dialog::dismiss),"Alert","Bill Amount is null ");
                 valid=false;
-            }else if(!amount.getText().toString().equals("") && Integer.parseInt(amount.getText().toString())<minamt){
+            }else if(!amount.getText().toString().equals("") && ((int)Double.parseDouble(amount.getText().toString()))<minamt){
                 Utility.showSingleButtonDialogconfirmation(activity,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk) Dialog::dismiss),"Alert","Amount Must be greater then " +activity.getString(R.string.Rs)+" "+minamt);
                 valid=false;
             }
@@ -243,7 +243,7 @@ public class BillPayRequest {
         }
     }
 
-    static   void proceedRecharge(Context context,boolean isFetchBill,OxigenTransactionVO oxigenTransactionVO ,int serviceId){
+    static   void proceedRecharge(Context context,boolean isFetchBill,OxigenTransactionVO oxigenTransactionVO ){
         if(oxigenTransactionVO==null){
             Utility.showSingleButtonDialogconfirmation(context,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
                 ok.dismiss();
