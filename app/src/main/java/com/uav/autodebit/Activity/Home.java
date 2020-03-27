@@ -30,6 +30,7 @@ import android.view.WindowManager;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,6 +50,7 @@ import com.uav.autodebit.R;
 import com.uav.autodebit.adpater.BannerAdapter;
 import com.uav.autodebit.adpater.UitilityAdapter;
 import com.uav.autodebit.constant.ApplicationConstant;
+import com.uav.autodebit.constant.GlobalApplication;
 import com.uav.autodebit.override.UAVProgressDialog;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.BackgroundAsyncService;
@@ -80,19 +82,21 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+
+
 public class Home extends Base_Activity
         implements View.OnClickListener {
 
     SharedPreferences sharedPreferences;
     TextView mainwallet,profile,linked,all,wallet,regular,
             delinkservice,faqs,reportbug,condition,setting,logoutbtn;
-    ImageView closemenuactivity;
+    ImageView closemenuactivity,active_notification_icon;
     DrawerLayout drawer;
     BottomNavigationView navigation;
     public static ProgressDialog dialog;
     UAVProgressDialog uavProgressDialog ;
-    /////19-10-2019
 
+    /////19-10-2019
     ViewPager viewPager;
     TabLayout bannerIndicator;
 
@@ -112,10 +116,13 @@ public class Home extends Base_Activity
     NestedScrollView scrollView;
 
     Map<String,Class> activityhasmap;
+    RelativeLayout notification_layout;
 
     @Override
     protected void onRestart() {
         super.onRestart();
+
+        showNotificationIndicator();
 
         loadDateInRecyclerView();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -216,6 +223,8 @@ public class Home extends Base_Activity
         setting=findViewById(R.id.setting);
         closemenuactivity=findViewById(R.id.closemenuactivity);
         notificationicon=findViewById(R.id.notificationicon);
+        active_notification_icon=findViewById(R.id.active_notification_icon);
+        notification_layout=findViewById(R.id.notification_layout);
 
         mainwallet.setOnClickListener(this);
         profile.setOnClickListener(this);
@@ -229,7 +238,7 @@ public class Home extends Base_Activity
         condition.setOnClickListener(this);
         setting.setOnClickListener(this);
         closemenuactivity.setOnClickListener(this);
-        notificationicon.setOnClickListener(this);
+        notification_layout.setOnClickListener(this);
 
         //
         notificationicon.setAnimation(Utility.getOnShakeAnimation(Home.this));
@@ -277,6 +286,19 @@ public class Home extends Base_Activity
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new SliderTimer(), 4000, 6000);
 
+
+        //show active notification indicator
+        showNotificationIndicator();
+
+
+    }
+
+    public void showNotificationIndicator(){
+        if(GlobalApplication.notificationCount>0){
+            active_notification_icon.setVisibility(View.VISIBLE);
+        }else {
+            active_notification_icon.setVisibility(View.GONE);
+        }
 
     }
 
@@ -936,7 +958,8 @@ public class Home extends Base_Activity
             case R.id.closemenuactivity:
                 break;
 
-            case R.id.notificationicon:
+            case R.id.notification_layout:
+                GlobalApplication.notificationCount=0;
                 startActivity(new Intent(Home.this,Notifications.class));
                 break;
         }

@@ -51,9 +51,13 @@ public class NotificationAdapter  extends RecyclerView.Adapter<NotificationAdapt
             holder.notification_image.setImageDrawable(null);
         }
 
+        if(pro.getImagename()!=null){
+            Picasso.with(mctx).load(pro.getImagename()).fit()
+                    .into(holder.notification_icon);
 
-        Picasso.with(mctx).load(pro.getImagename()).fit()
-                .into(holder.notification_icon);
+        }else {
+            holder.notification_icon.setImageDrawable(null);
+        }
 
 
 

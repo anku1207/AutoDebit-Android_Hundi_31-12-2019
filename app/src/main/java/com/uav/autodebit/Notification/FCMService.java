@@ -1,9 +1,17 @@
 package com.uav.autodebit.Notification;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.media.RingtoneManager;
+import android.os.Build;
+import android.provider.Settings;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -11,11 +19,20 @@ import android.widget.Toast;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+
+import com.uav.autodebit.Activity.MainActivity;
+import com.uav.autodebit.Activity.Splash_Screen;
+import com.uav.autodebit.R;
+import com.uav.autodebit.adpater.NotificationAdapter;
+import com.uav.autodebit.constant.GlobalApplication;
 import com.uav.autodebit.permission.Session;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Random;
+
 
 /**
  * Created by Ravi Tamada on 08/08/16.
@@ -69,52 +86,24 @@ public class FCMService extends FirebaseMessagingService {
                 Intent pushNotification = new Intent(Config.PUSH_NOTIFICATION);
                 pushNotification.putExtra("message", message);
                 LocalBroadcastManager.getInstance(this).sendBroadcast(pushNotification);
-
                 // play notification sound
                 NotificationUtils notificationUtils = new NotificationUtils(getApplicationContext());
                 notificationUtils.playNotificationSound();
-
             }else{
                 // If the app is in background, firebase itself handles the notification
             }
-
-            //notificationManagement(remoteMessage);
-
-
     }
 
-    
-  /*  private void notificationManagement(RemoteMessage remoteMessage) {
-        try {
-            if (Session.check_Exists_key(FCMService.this, Session.CACHE_NOTIFICATION)) {
-                JSONArray notificationarry = new JSONArray(Session.getSessionByKey(FCMService.this, Session.CACHE_NOTIFICATION));
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("body", remoteMessage.getNotification().getBody());
-                jsonObject.put("title", remoteMessage.getNotification().getTitle());
-                jsonObject.put("image", remoteMessage.getNotification().getImageUrl());
 
-                notificationarry.put(jsonObject);
-                Session.set_Data_Sharedprefence(FCMService.this, Session.CACHE_NOTIFICATION, notificationarry.toString());
 
-            } else {
-                JSONArray notificationarry = new JSONArray();
 
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("body", remoteMessage.getNotification().getBody());
-                jsonObject.put("title", remoteMessage.getNotification().getTitle());
-                jsonObject.put("image", remoteMessage.getNotification().getImageUrl());
 
-                notificationarry.put(jsonObject);
-                Session.set_Data_Sharedprefence(FCMService.this, Session.CACHE_NOTIFICATION, notificationarry.toString());
-            }
-        } catch (Exception e) {
-            Log.w("error",e.getMessage());
-        }
-    }
-*/
     private void handleDataMessage(JSONObject data) {
         Log.e(TAG, "push json: " + data.toString());
         try {
+
+            //save notification in Cache
+            notificationManagement(data);
 
             String title = data.getString("title");
             String message = data.getString("message");
@@ -133,7 +122,9 @@ public class FCMService extends FirebaseMessagingService {
             Log.e(TAG, "timestamp: " + timestamp);
 
 
-            if (!NotificationUtils.isAppIsInBackground(getApplicationContext())) {
+
+            //notification for background service
+            /*if (!NotificationUtils.isAppIsInBackground(getApplicationContext())) {
                 // app is in foreground, broadcast the push message
                 Intent pushNotification = new Intent(Config.PUSH_NOTIFICATION);
                 pushNotification.putExtra("message", message);
@@ -142,7 +133,7 @@ public class FCMService extends FirebaseMessagingService {
                 // play notification sound
                 NotificationUtils notificationUtils = new NotificationUtils(getApplicationContext());
                 notificationUtils.playNotificationSound();
-            } else {
+            } else {*/
                 // app is in background, show the notification in notification tray
                 Class <?>clazz = Class.forName(getApplicationContext().getPackageName()+".Activity."+activityname);
                 Intent resultIntent = new Intent(getApplicationContext(), clazz);
@@ -160,7 +151,7 @@ public class FCMService extends FirebaseMessagingService {
                     // image is present, show notification with image
                     showNotificationMessageWithBigImage(getApplicationContext(), title, message, timestamp, resultIntent, imageUrl,smallImageurl);
                 }
-            }
+         /*   }*/
         } catch (JSONException e) {
             Log.e(TAG, "Json Exception: " + e.getMessage());
         } catch (Exception e) {
@@ -168,6 +159,24 @@ public class FCMService extends FirebaseMessagingService {
         }
     }
 
+    private void notificationManagement(JSONObject data) {
+        try {
+            if(data.has("storeData") && data.getString("storeData").equals("1")){
+                GlobalApplication.notificationCount++;
+                if (Session.check_Exists_key(FCMService.this, Session.CACHE_NOTIFICATION)) {
+                    JSONArray notificationarry = new JSONArray(Session.getSessionByKey(FCMService.this, Session.CACHE_NOTIFICATION));
+                    notificationarry.put(data);
+                    Session.set_Data_Sharedprefence(FCMService.this, Session.CACHE_NOTIFICATION, notificationarry.toString());
+                } else {
+                    JSONArray notificationarry = new JSONArray();
+                    notificationarry.put(data);
+                    Session.set_Data_Sharedprefence(FCMService.this, Session.CACHE_NOTIFICATION, notificationarry.toString());
+                }
+            }
+        } catch (Exception e) {
+            Log.w("error",e.getMessage());
+        }
+    }
     /**
      * Showing notification with text only
      */
@@ -176,7 +185,6 @@ public class FCMService extends FirebaseMessagingService {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         notificationUtils.showNotificationMessage(title, message, timeStamp, intent,smallimgurl);
     }
-
     /**
      * Showing notification with text and image
      */

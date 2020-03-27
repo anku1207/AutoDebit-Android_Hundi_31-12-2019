@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -34,6 +36,7 @@ import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v4.content.res.ResourcesCompat;
@@ -84,6 +87,7 @@ import android.widget.Toast;
 import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
+import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 
@@ -91,8 +95,10 @@ import com.uav.autodebit.Activity.AdditionalService;
 import com.uav.autodebit.Activity.Enach_Mandate;
 import com.uav.autodebit.Activity.Login;
 import com.uav.autodebit.Activity.PanVerification;
+import com.uav.autodebit.Activity.Splash_Screen;
 import com.uav.autodebit.Interface.AlertSelectDialogClick;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
+import com.uav.autodebit.Notification.NotificationUtils;
 import com.uav.autodebit.R;
 import com.uav.autodebit.adpater.ListViewAlertSelectListBaseAdapter;
 import com.uav.autodebit.adpater.ListViewItemCheckboxBaseAdapter;
@@ -132,6 +138,7 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -1369,4 +1376,49 @@ public class Utility {
                 AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_from_bottom);
         return controller;
     }
+
+
+    private void generateNotification(Context context, RemoteMessage remoteMessage) {
+
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        String channelId = "channel-fbase";
+        String channelName = "group_Notification";
+        int importance = NotificationManager.IMPORTANCE_HIGH;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel mChannel = new NotificationChannel(
+                    channelId, channelName, importance);
+            notificationManager.createNotificationChannel(mChannel);
+        }
+
+        Intent notificationIntent = new Intent(context, Splash_Screen.class);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        //  PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_ONE_SHOT);
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, channelId);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mBuilder.setSmallIcon(R.drawable.autodebitlogo);
+            int color = 0x008000;
+            mBuilder.setColor(color);
+        } else {
+            mBuilder.setSmallIcon(R.drawable.autodebitlogo);
+        }
+        NotificationCompat.BigPictureStyle bigPictureStyle = new NotificationCompat.BigPictureStyle();
+        bigPictureStyle.setBigContentTitle(remoteMessage.getNotification().getBody());
+        if(remoteMessage.getNotification().getImageUrl()!=null){
+            bigPictureStyle.bigPicture(NotificationUtils.getBitmapFromURL(remoteMessage.getNotification().getImageUrl()+""));
+        }
+        mBuilder.setStyle(bigPictureStyle);
+        mBuilder.setContentTitle(remoteMessage.getNotification().getTitle());
+        mBuilder.setContentText(remoteMessage.getNotification().getBody());
+        // mBuilder.setContentIntent(pendingIntent);
+        //If you don't want all notifications to overwrite add int m to unique value
+        Random random = new Random();
+        int m = random.nextInt(9999 - 1000) + 1000;
+        notificationManager.notify(m, mBuilder.build());
+    }
+
+
+
 }

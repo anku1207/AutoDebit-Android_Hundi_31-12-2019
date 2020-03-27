@@ -24,6 +24,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
 
+import com.google.firebase.messaging.RemoteMessage;
 import com.uav.autodebit.R;
 
 
@@ -84,11 +85,8 @@ public class NotificationUtils {
 
 
         if (!TextUtils.isEmpty(imageUrl)) {
-
             if (imageUrl != null && imageUrl.length() > 4 && Patterns.WEB_URL.matcher(imageUrl).matches()) {
-
                 Bitmap bitmap = getBitmapFromURL(imageUrl);
-
                 if (bitmap != null) {
                     showBigNotification(bitmap, mBuilder, icon, title, message, timeStamp, resultPendingIntent, alarmSound,smallicon);
                 } else {
@@ -101,9 +99,7 @@ public class NotificationUtils {
         }
     }
 
-
     private void showSmallNotification(NotificationCompat.Builder mBuilder, int icon, String title, String message, String timeStamp, PendingIntent resultPendingIntent, Uri alarmSound, Bitmap smallicon) {
-
          NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             Notification notification = mBuilder
@@ -225,7 +221,7 @@ public class NotificationUtils {
      * Downloading push notification image before displaying it in
      * the notification tray
      */
-    public Bitmap getBitmapFromURL(String strURL) {
+    public static Bitmap getBitmapFromURL(String strURL) {
         try {
             URL url = new URL(strURL);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -295,4 +291,6 @@ public class NotificationUtils {
         }
         return 0;
     }
+
+
 }

@@ -17,28 +17,50 @@
         >
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/activitybackground"
             app:popupTheme="@style/AppTheme.PopupOverlay"
             app:titleTextColor="@color/appbar"
+            android:minHeight="?attr/actionBarSize"
+            android:layout_height="50dp"
+            android:layout_width="match_parent"
+            android:background="@color/activitybackground"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp"
+            app:contentInsetRight="0dp"
+            app:contentInsetEnd="0dp"
+
+
+
             >
 
             <LinearLayout
-                android:layout_width="30dp"
-                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="end"
                 android:orientation="vertical"
                 >
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:paddingBottom="0dp"
-                    android:tint="@drawable/creditreporttext"
-                    android:src="@drawable/notifications_black"
-                    android:id="@+id/notificationicon"
-                   />
-
+                <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:gravity="center"
+                    android:id="@+id/notification_layout"
+                    >
+                    <ImageView
+                        android:id="@+id/active_notification_icon"
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
+                        android:layout_toRightOf="@+id/id_index_gallery_item_image"
+                        android:layout_marginRight="-5dp"
+                        android:background="@drawable/util_default_indicator"
+                        android:visibility="gone"
+                        />
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:tint="@drawable/creditreporttext"
+                        android:src="@drawable/notifications_black"
+                        android:id="@+id/notificationicon"
+                        />
+                </RelativeLayout>
             </LinearLayout>
 
 

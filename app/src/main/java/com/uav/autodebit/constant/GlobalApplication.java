@@ -5,5 +5,7 @@ import android.app.ProgressDialog;
 
 public class GlobalApplication extends Application {
 
+    public static int notificationCount=0;
+
 
 }
