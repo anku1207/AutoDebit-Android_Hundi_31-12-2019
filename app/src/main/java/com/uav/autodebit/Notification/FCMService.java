@@ -20,17 +20,23 @@ import android.widget.Toast;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.uav.autodebit.Activity.MainActivity;
 import com.uav.autodebit.Activity.Splash_Screen;
 import com.uav.autodebit.R;
 import com.uav.autodebit.adpater.NotificationAdapter;
 import com.uav.autodebit.constant.GlobalApplication;
 import com.uav.autodebit.permission.Session;
+import com.uav.autodebit.util.Utility;
+import com.uav.autodebit.vo.CustomerNotificationVO;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 
@@ -164,13 +170,30 @@ public class FCMService extends FirebaseMessagingService {
             if(data.has("storeData") && data.getString("storeData").equals("1")){
                 GlobalApplication.notificationCount++;
                 if (Session.check_Exists_key(FCMService.this, Session.CACHE_NOTIFICATION)) {
-                    JSONArray notificationarry = new JSONArray(Session.getSessionByKey(FCMService.this, Session.CACHE_NOTIFICATION));
-                    notificationarry.put(data);
-                    Session.set_Data_Sharedprefence(FCMService.this, Session.CACHE_NOTIFICATION, notificationarry.toString());
+
+                    ArrayList<CustomerNotificationVO> customerNotificationVOS= (ArrayList<CustomerNotificationVO>) new Gson().fromJson(Session.getSessionByKey(FCMService.this, Session.CACHE_NOTIFICATION), new TypeToken<ArrayList<CustomerNotificationVO>>() { }.getType());
+
+
+                    CustomerNotificationVO customerNotificationVO =new CustomerNotificationVO();
+                    customerNotificationVO.setTitle(data.getString("title"));
+                    customerNotificationVO.setMessage(data.getString("message"));
+                    customerNotificationVO.setImage(data.has("imageUrl")&& !data.getString("imageUrl").equals("")?data.getString("imageUrl"):null);
+                    customerNotificationVO.setCreatedAt(data.getString("timestamp"));
+                    customerNotificationVO.setServiceIcon(data.has("smallImageUrl") && !data.getString("smallImageUrl").equals("")?data.getString("smallImageUrl"):null);
+                    customerNotificationVO.setActivityName(data.has("activityname")? data.getString("activityname"):"SplashScreen");
+                    customerNotificationVOS.add(customerNotificationVO);
+                    Session.set_Data_Sharedprefence(FCMService.this, Session.CACHE_NOTIFICATION, Utility.toJson(customerNotificationVOS));
                 } else {
-                    JSONArray notificationarry = new JSONArray();
-                    notificationarry.put(data);
-                    Session.set_Data_Sharedprefence(FCMService.this, Session.CACHE_NOTIFICATION, notificationarry.toString());
+                    List<CustomerNotificationVO> notificationarry = new ArrayList<>();
+                    CustomerNotificationVO customerNotificationVO =new CustomerNotificationVO();
+                    customerNotificationVO.setTitle(data.getString("title"));
+                    customerNotificationVO.setMessage(data.getString("message"));
+                    customerNotificationVO.setImage(data.has("imageUrl")&& !data.getString("imageUrl").equals("")?data.getString("imageUrl"):null);
+                    customerNotificationVO.setCreatedAt(data.getString("timestamp"));
+                    customerNotificationVO.setServiceIcon(data.has("smallImageUrl") && !data.getString("smallImageUrl").equals("")?data.getString("smallImageUrl"):null);
+                    customerNotificationVO.setActivityName(data.has("activityname")? data.getString("activityname"):"SplashScreen");
+                    notificationarry.add(customerNotificationVO);
+                    Session.set_Data_Sharedprefence(FCMService.this, Session.CACHE_NOTIFICATION, Utility.toJson(notificationarry));
                 }
             }
         } catch (Exception e) {

@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.uav.autodebit.R;
 import com.uav.autodebit.util.Utility;
+import com.uav.autodebit.vo.CustomerNotificationVO;
 import com.uav.autodebit.vo.DataAdapterVO;
 import com.uav.autodebit.vo.ServiceTypeVO;
 
@@ -19,11 +20,11 @@ import java.util.List;
 
 public class NotificationAdapter  extends RecyclerView.Adapter<NotificationAdapter.ProdectViewHolder>{
     Context mctx ;
-    List<DataAdapterVO> dataAdapterVOS;
+    List<CustomerNotificationVO> customerNotificationVOS;
 
-    public NotificationAdapter(Context mctx, List<DataAdapterVO> dataAdapterVOS) {
+    public NotificationAdapter(Context mctx, List<CustomerNotificationVO> customerNotificationVOS) {
         this.mctx = mctx;
-        this.dataAdapterVOS = dataAdapterVOS;
+        this.customerNotificationVOS = customerNotificationVOS;
     }
 
     @Override
@@ -37,22 +38,22 @@ public class NotificationAdapter  extends RecyclerView.Adapter<NotificationAdapt
     @Override
     public void onBindViewHolder(NotificationAdapter.ProdectViewHolder holder, int position) {
 
-        final DataAdapterVO pro=dataAdapterVOS.get(position);
+        final CustomerNotificationVO pro=customerNotificationVOS.get(position);
 
 
-        holder.notification_title.setText(pro.getText());
-        holder.notification_desc.setText(pro.getText2());
-        holder.notification_date.setText(pro.getTxnDate());
+        holder.notification_title.setText(pro.getTitle());
+        holder.notification_desc.setText(pro.getMessage());
+        holder.notification_date.setText(pro.getCreatedAt());
 
-        if(pro.getImageUrl()!=null){
-            Picasso.with(mctx).load(pro.getImageUrl())
+        if(pro.getImage()!=null){
+            Picasso.with(mctx).load(pro.getImage())
                     .into(holder.notification_image);
         }else{
             holder.notification_image.setImageDrawable(null);
         }
 
-        if(pro.getImagename()!=null){
-            Picasso.with(mctx).load(pro.getImagename()).fit()
+        if(pro.getServiceIcon()!=null){
+            Picasso.with(mctx).load(pro.getServiceIcon()).fit()
                     .into(holder.notification_icon);
 
         }else {
@@ -65,7 +66,7 @@ public class NotificationAdapter  extends RecyclerView.Adapter<NotificationAdapt
 
     @Override
     public int getItemCount() {
-        return dataAdapterVOS.size();
+        return customerNotificationVOS.size();
     }
     public  class ProdectViewHolder extends RecyclerView.ViewHolder {
 

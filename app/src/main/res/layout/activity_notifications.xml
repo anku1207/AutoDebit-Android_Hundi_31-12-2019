@@ -74,13 +74,45 @@
         android:layout_height="match_parent"
         android:padding="10dp">
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:id="@+id/main">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="No History Available"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:layout_centerHorizontal="true"
+                    android:fontFamily="@font/poppinsbold"
+                    android:textSize="18dp"
+                    android:id="@+id/no_notification"
+                    android:visibility="gone"
+                    android:orientation="vertical"
+                    >
 
-            <android.support.v7.widget.RecyclerView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/recyclerView">
+                    <ImageView
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:src="@drawable/notifications_black"
+                        android:tint="@color/colorAccent"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="No new notification"
+                        android:textColor="@color/black"
+                        android:textSize="18dp"
+                        android:fontFamily="@font/poppinslight"/>
+                </LinearLayout>
 
-            </android.support.v7.widget.RecyclerView>
+                <android.support.v7.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/recyclerView">
+                </android.support.v7.widget.RecyclerView>
+        </RelativeLayout>
     </android.support.v4.widget.SwipeRefreshLayout>
 
 </LinearLayout>

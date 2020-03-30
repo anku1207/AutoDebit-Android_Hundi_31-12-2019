@@ -1,6 +1,7 @@
 package com.uav.autodebit.Activity;
 
 import android.app.Notification;
+import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,9 +12,11 @@ import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.uav.autodebit.BO.CustomerBO;
 import com.uav.autodebit.Interface.ServiceClick;
 import com.uav.autodebit.Notification.FCMService;
@@ -23,8 +26,10 @@ import com.uav.autodebit.adpater.NotificationAdapter;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.ConnectionVO;
+import com.uav.autodebit.vo.CustomerNotificationVO;
 import com.uav.autodebit.vo.CustomerVO;
 import com.uav.autodebit.vo.DataAdapterVO;
+import com.uav.autodebit.vo.LocalCacheVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
 import com.uav.autodebit.volley.VolleyUtils;
 
@@ -41,6 +46,7 @@ public class Notifications extends Base_Activity implements View.OnClickListener
     RecyclerView recyclerView;
     ImageView back_activity_button;
     SwipeRefreshLayout mSwipeRefreshLayout;
+    LinearLayout no_notification;
 
 
     @Override
@@ -50,6 +56,7 @@ public class Notifications extends Base_Activity implements View.OnClickListener
         getSupportActionBar().hide();
         back_activity_button=findViewById(R.id.back_activity_button);
         recyclerView=findViewById(R.id.recyclerView);
+        no_notification=findViewById(R.id.no_notification);
         // SwipeRefreshLayout
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
 
@@ -57,8 +64,6 @@ public class Notifications extends Base_Activity implements View.OnClickListener
 
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setHasFixedSize(false);
-
-
 
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -92,6 +97,9 @@ public class Notifications extends Base_Activity implements View.OnClickListener
                 loadRecyclerViewData();
             }
         });
+
+
+
     }
 
     private void loadRecyclerViewData(){
@@ -104,27 +112,33 @@ public class Notifications extends Base_Activity implements View.OnClickListener
         mSwipeRefreshLayout.setRefreshing(false);
     }
 
-    private List<DataAdapterVO>  getdata() {
-        List<DataAdapterVO> dataAdapterVOS =new ArrayList<>();
+    private List<CustomerNotificationVO>  getdata() {
+        List<CustomerNotificationVO> customerNotificationVOS =new ArrayList<>();
         try {
-            if (Session.check_Exists_key(Notifications.this, Session.CACHE_NOTIFICATION)) {
-                JSONArray notificationarry = new JSONArray(Session.getSessionByKey(Notifications.this, Session.CACHE_NOTIFICATION));
-                for(int i=0 ; i < notificationarry.length(); i++){
-                    JSONObject jsonObject =notificationarry.getJSONObject(i);
-                    DataAdapterVO dataAdapterVO =new DataAdapterVO();
-                    dataAdapterVO.setText(jsonObject.has("title")?jsonObject.getString("title"):"");
-                    dataAdapterVO.setText2(jsonObject.has("message")?jsonObject.getString("message"):"");
-                    dataAdapterVO.setTxnDate(jsonObject.has("timestamp")?jsonObject.getString("timestamp"):new Date().getTime()+"");
-                    dataAdapterVO.setImageUrl(jsonObject.has("smallImageUrl") && !jsonObject.getString("smallImageUrl").equals("")?jsonObject.getString("smallImageUrl"):null);
-                    dataAdapterVO.setImagename(jsonObject.has("imageUrl")&& !jsonObject.getString("imageUrl").equals("")?jsonObject.getString("imageUrl"):null);
-                    dataAdapterVOS.add(dataAdapterVO);
-                }
+            if(Session.check_Exists_key(Notifications.this,Session.CACHE_NOTIFICATION)){
+                customerNotificationVOS= (List<CustomerNotificationVO>) new Gson().fromJson(Session.getSessionByKey(Notifications.this, Session.CACHE_NOTIFICATION), new TypeToken<ArrayList<CustomerNotificationVO>>() { }.getType());
+
+            }else {
+                Gson gson =new Gson();
+                CustomerVO customerVO = gson.fromJson(Session.getSessionByKey(Notifications.this,Session.CACHE_CUSTOMER), CustomerVO.class);
+                LocalCacheVO localCacheVO = gson.fromJson(customerVO.getLocalCache(), LocalCacheVO.class);
+                customerNotificationVOS=  localCacheVO.getCustomerNotification();
+                Session.set_Data_Sharedprefence(Notifications.this, Session.CACHE_NOTIFICATION, Utility.toJson(customerNotificationVOS));
             }
+
+
         }catch (Exception e){
             e.printStackTrace();
             Utility.exceptionAlertDialog(Notifications.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
-        return dataAdapterVOS;
+
+        if(customerNotificationVOS.size()>0){
+            no_notification.setVisibility(View.GONE);
+        }else {
+            no_notification.setVisibility(View.VISIBLE);
+        }
+
+        return customerNotificationVOS;
     }
 
     @Override

@@ -78,7 +78,7 @@ public class SignUpBO implements Serializable {
     }
 
 
-    public static ConnectionVO loginByFigerprint(String loginid ,String Type) {
+    public static ConnectionVO loginByFigerprint(String loginid ,String Type,String tokenId) {
 
         HashMap<String, Object> params = new HashMap<String, Object>();
 
@@ -89,6 +89,7 @@ public class SignUpBO implements Serializable {
         }else if(Type.equals("email")){
             customerVO.setEmailId(loginid);
         }
+        customerVO.setTokenId(tokenId);
         Gson gson = new Gson();
         String json = gson.toJson(customerVO);
         params.put("volley", json);

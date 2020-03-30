@@ -198,7 +198,7 @@ public class Login extends Base_Activity implements View.OnClickListener, View.O
     }
 
     public void loginByFigerprint(String loginId,String type){
-        VolleyUtils.makeJsonObjectRequest(Login.this,SignUpBO.loginByFigerprint(loginId,type), new VolleyResponseListener() {
+        VolleyUtils.makeJsonObjectRequest(Login.this,SignUpBO.loginByFigerprint(loginId,type,Session.getSessionByKey(this,Session.CACHE_TOKENID)), new VolleyResponseListener() {
             @Override
             public void onError(String message) {
             }
@@ -349,7 +349,6 @@ public class Login extends Base_Activity implements View.OnClickListener, View.O
                     String json = gson.toJson(customerVO);
                     Session.set_Data_Sharedprefence(Login.this,Session.CACHE_USER_LOGINID,userid.getText().toString());
                     Session.set_Data_Sharedprefence(Login.this,Session.CACHE_CUSTOMER,json);
-
                     startActivity(new Intent(Login.this,Home.class));
                     finish();
 

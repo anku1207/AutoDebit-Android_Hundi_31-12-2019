@@ -8,6 +8,7 @@ public class LocalCacheVO implements Serializable {
     private List<BannerVO> banners;
     private List<ServiceTypeVO> serives;
     private List<ServiceTypeVO> utilityBills;
+    private List<CustomerNotificationVO> customerNotification;
 
     private String mobileOperator;
     private String mobileStateRegion;
@@ -156,5 +157,14 @@ public class LocalCacheVO implements Serializable {
 
     public void setDmrc(String dmrc) {
         this.dmrc = dmrc;
+    }
+
+
+    public List<CustomerNotificationVO> getCustomerNotification() {
+        return customerNotification;
+    }
+
+    public void setCustomerNotification(List<CustomerNotificationVO> customerNotification) {
+        this.customerNotification = customerNotification;
     }
 }
