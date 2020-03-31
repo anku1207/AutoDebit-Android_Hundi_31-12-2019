@@ -29,6 +29,7 @@ import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.DialogInterface;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.AuthServiceProviderVO;
+import com.uav.autodebit.vo.CCTransactionStatusVO;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerVO;
 import com.uav.autodebit.vo.OxigenQuestionsVO;
@@ -335,16 +336,23 @@ public class BillPayRequest {
     }
 
 
-    public static void onActivityResult(Context context,OxigenTransactionVO oxigenTransactionVO){
-        BillPayRequest.proceedBillPayment(oxigenTransactionVO,context,new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
-            ((Activity)context).startActivity(new Intent(context,History.class));
-            ((Activity)context).finish();
-        },(VolleyResponse.OnError)(e)->{
-        }));
+    public static void onActivityResult(Context context,Intent data){
+
+        if(data.getIntExtra("status",0)== CCTransactionStatusVO.SUCCESS){
+            OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
+            oxigenTransactionVO.setTypeId(Integer.parseInt(data.getStringExtra("oxigenTypeId")));
+            oxigenTransactionVO.setAnonymousString(data.getStringExtra("tnxid"));
+            AuthServiceProviderVO authServiceProviderVO =new AuthServiceProviderVO();
+            authServiceProviderVO.setProviderId(AuthServiceProviderVO.PAYU);
+            oxigenTransactionVO.setProvider(authServiceProviderVO);
+
+            BillPayRequest.proceedBillPayment(oxigenTransactionVO,context,new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
+                ((Activity)context).startActivity(new Intent(context,History.class));
+                ((Activity)context).finish();
+            },(VolleyResponse.OnError)(e)->{
+            }));
+        }else if(data.getIntExtra("status",0)== CCTransactionStatusVO.FAILURE){
+            Utility.showSingleButtonDialogconfirmation(context,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk) Dialog::dismiss),"",data.getStringExtra("message"));
+        }
     }
-
-
-
-
-
 }

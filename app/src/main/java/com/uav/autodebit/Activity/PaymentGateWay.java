@@ -96,12 +96,11 @@ public class PaymentGateWay extends AppCompatActivity implements MyJavaScriptInt
                         Log.w("getPaymentGateWayUrl", response.toString());
                         redirectUrl = response.getString("redirectUrl");
                         cancelUrl = response.getString("cancelUrl");
-                        String url = response.getString("url") + "&tnxid=" +id;
+                        String url = response.getString("url") + "&txnid=" +id;
                         openWebView(url);
                 }
             }
         });
-
     }
 
     @SuppressLint({"SetJavaScriptEnabled", "JavascriptInterface"})
@@ -236,11 +235,15 @@ public class PaymentGateWay extends AppCompatActivity implements MyJavaScriptInt
                             finish();
                         }),"","Something went wrong, Please try again!");
                     }else {
+
                         Intent intent =new Intent();
                         intent.putExtra("tnxid",payUVO.getOperatorTxnID());
                         intent.putExtra("oxigenTypeId",getIntent().getStringExtra("oxigenTypeId"));
+                        intent.putExtra("status",payUVO.getCcTransactionStatus().getStatusId());
+                        intent.putExtra("message",payUVO.getAnonymousString());
                         setResult(RESULT_OK,intent);
                         finish();
+
                     }
                 }
             }
@@ -272,7 +275,7 @@ public class PaymentGateWay extends AppCompatActivity implements MyJavaScriptInt
                 if(url.equals(redirectUrl)){
                     webView.loadUrl("javascript:HTMLOUT.showHTML(document.getElementById('siresp').innerHTML);");
                 }else if(url.equals(cancelUrl)){
-                    finish();
+                    webView.loadUrl("javascript:HTMLOUT.showHTML(document.getElementById('siresp').innerHTML);");
                 }
             }catch (Exception e){
 

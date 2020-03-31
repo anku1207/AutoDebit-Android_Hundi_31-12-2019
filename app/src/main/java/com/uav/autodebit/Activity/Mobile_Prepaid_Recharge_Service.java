@@ -42,6 +42,7 @@ import com.uav.autodebit.util.DialogInterface;
 import com.uav.autodebit.util.DownloadTask;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.AuthServiceProviderVO;
+import com.uav.autodebit.vo.CCTransactionStatusVO;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerVO;
 import com.uav.autodebit.vo.DataAdapterVO;
@@ -250,9 +251,14 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                     amount.setSelection(amount.getText().length());
                     break;
                 case 200: // payu response
-                    Toast.makeText(this, "success", Toast.LENGTH_SHORT).show();
                     if (data != null) {
-                        proceedToRecharge(data.getStringExtra("oxigenTypeId"),data.getStringExtra("tnxid"), AuthServiceProviderVO.PAYU);
+                        if(data.getIntExtra("status",0)== CCTransactionStatusVO.SUCCESS){
+                            proceedToRecharge(data.getStringExtra("oxigenTypeId"),data.getStringExtra("tnxid"), AuthServiceProviderVO.PAYU);
+                        }else if(data.getIntExtra("status",0)== CCTransactionStatusVO.FAILURE){
+                            Utility.showSingleButtonDialogconfirmation(Mobile_Prepaid_Recharge_Service.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                                ok.dismiss();
+                            }),"",data.getStringExtra("message"));
+                        }
                     }
             }
         }

@@ -270,13 +270,9 @@ public class LandlineBill extends Base_Activity implements View.OnClickListener 
                         break;
                     case 200:
                         if(data !=null){
-                            OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
-                            oxigenTransactionVO.setTypeId(Integer.parseInt(data.getStringExtra("oxigenTypeId")));
-                            oxigenTransactionVO.setAnonymousString(data.getStringExtra("tnxid"));
-                            AuthServiceProviderVO authServiceProviderVO =new AuthServiceProviderVO();
-                            authServiceProviderVO.setProviderId(AuthServiceProviderVO.PAYU);
-                            oxigenTransactionVO.setProvider(authServiceProviderVO);
-                            BillPayRequest.onActivityResult(this,oxigenTransactionVO);
+                            BillPayRequest.onActivityResult(this,data);
+                        }else {
+                            Utility.showSingleButtonDialog(this,"Error !","Something went wrong, Please try again!",false);
                         }
                         break;
                 }
