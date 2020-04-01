@@ -103,7 +103,6 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
     Context context =Profile_Activity.this;
     RecyclerView servicesrecy,bankrecycler;
     CircularImageView imageView1;
-
     boolean isemailverify=false;
 
     UAVProgressDialog pd;
@@ -111,8 +110,6 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
     List<ServiceTypeVO> addservice =new ArrayList<>();
 
     RecyclerViewAdapterMenu recyclerViewAdapter;
-
-
     int  REQ_IMAGE=1001,REQ_GALLERY=1002,REQ_ENACH_MANDATE=1003,PIC_CROP=1004,REQ_CHANGE_PASS=300,REQ_ADD_MORE_SERVICE=200,REQ_EMAIL_VERIFY=100;
 
     Bitmap bmp;
@@ -222,18 +219,12 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
         }
     };
 
-
-
-
-
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-
             backbuttonfun();
              return true;
         }
-
         return super.onKeyDown(keyCode, event);
     }
 
@@ -241,7 +232,6 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.back_activity_button:
-
                 backbuttonfun();
                 break;
             case R.id.downloadreport:
@@ -255,7 +245,6 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
                         dialog.dismiss();
                         resendotpfun("email",email.getText().toString());
                     }
-
                     @Override
                     public void modify(Dialog dialog) {
                         dialog.dismiss();
@@ -296,7 +285,9 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
             pictureDialog.setTitle("Select Action");
             String[] pictureDialogItems = {
                     "Select photo from gallery",
-                    "Capture photo from camera"};
+                    "Capture photo from camera",
+                    "Remove profile photo"
+            };
             pictureDialog.setItems(pictureDialogItems,
                     new android.content.DialogInterface.OnClickListener() {
                         @Override
@@ -308,10 +299,50 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
                                 case 1:
                                     cameraimage();
                                     break;
+                                case 2:
+                                    removeProfileImage();
+                                    break;
                             }
                     }
                     });
             pictureDialog.show();
+    }
+
+
+
+    private void removeProfileImage(){
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        ConnectionVO connectionVO =CustomerBO.removeProfileImage();
+
+        CustomerVO customerVO=new CustomerVO();
+        customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(this)));
+        Gson gson = new Gson();
+        String json = gson.toJson(customerVO);
+        params.put("volley", json);
+        connectionVO.setParams(params);
+        VolleyUtils.makeJsonObjectRequest(this, connectionVO, new VolleyResponseListener() {
+            @Override
+            public void onError(String message) {
+            }
+            @Override
+            public void onResponse(Object resp) throws JSONException {
+                JSONObject response = (JSONObject) resp;
+                Gson gson=new Gson();
+                CustomerVO customerVO = gson.fromJson(response.toString(), CustomerVO.class);
+                if(customerVO.getStatusCode().equals("400")){
+                    ArrayList error = (ArrayList) customerVO.getErrorMsgs();
+                    StringBuilder sb = new StringBuilder();
+                    for(int i=0; i<error.size(); i++){
+                        sb.append(error.get(i)).append("\n");
+                    }
+                    Utility.showSingleButtonDialog(Profile_Activity.this,"Alert",sb.toString(),false);
+                }else {
+                    imageView1.setImageBitmap(null);
+                    //imageView1.setImageBitmap(Utility.drawableToBitmap(getDrawable(R.drawable.noprofileimage)));
+                    imageView1.setBackgroundResource(R.drawable.ava_user);
+                }
+            }
+        });
     }
 
 
@@ -563,7 +594,7 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
                     for(int i=0; i<error.size(); i++){
                         sb.append(error.get(i)).append("\n");
                     }
-                    Utility.alertDialog(Profile_Activity.this,"Alert",sb.toString(),"Ok");
+                    Utility.showSingleButtonDialog(Profile_Activity.this,"Alert",sb.toString(),false);
                 }else {
                     scrollView.setVisibility(View.VISIBLE);
                     setServiceAndBankList(customerVO);
@@ -602,7 +633,9 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
                                 });
                     }else {
                         progressBar.setVisibility(View.GONE);
+                        //imageView1.setImageBitmap(Utility.drawableToBitmap(getDrawable(R.drawable.noprofileimage)));
                         imageView1.setBackgroundResource(R.drawable.ava_user);
+
                     }
 
 
@@ -675,25 +708,10 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
                             addservice.add(utility);
                         }
                     }
-                   /* int[] my_array = {15};
-                    Arrays.sort(my_array);
-                    for(ServiceTypeVO utility:serviceautope){
-                        int index = Arrays.binarySearch(my_array,utility.getServiceTypeId() );
-                        if(utility.getAdopted()==1 && index==-1){
-                            addservice.add(utility);
-                        }
-                    }*/
-
-
-
                 }catch (Exception e){
                     Log.e("profile_activity",e.getMessage());
                 }
-
-
-
             }
-
             @Override
             public void doPostExecute() {
                 RecyclerViewProfileBankAdapterMenu recyclerViewProfileBankAdapterMenu=new RecyclerViewProfileBankAdapterMenu(Profile_Activity.this, bankServiceList,R.layout.profile_bankservice_design);
@@ -704,10 +722,7 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
             }
         });
         backgroundAsyncService.execute();
-
     }
-
-
 
     @Override
     public void downloadComplete(File file) {
@@ -745,54 +760,7 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
     }
 
     public void bankDetails(int customerAuthId){
-
-        HashMap<String, Object> params = new HashMap<String, Object>();
-        ConnectionVO connectionVO = CustomerBO.cutomerBankDetails();
-
-        CustomerVO customerVO =new CustomerVO();
-        customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(Profile_Activity.this)));
-
-        CustomerAuthServiceVO customerAuthServiceVO=new CustomerAuthServiceVO();
-        customerAuthServiceVO.setCustomerAuthId(customerAuthId);
-        customerAuthServiceVO.setCustomer(customerVO);
-
-
-        Gson gson = new Gson();
-        String json = gson.toJson(customerAuthServiceVO);
-        params.put("volley", json);
-        connectionVO.setParams(params);
-
-        VolleyUtils.makeJsonObjectRequest(this,connectionVO , new VolleyResponseListener() {
-            @Override
-            public void onError(String message) {
-            }
-            @Override
-            public void onResponse(Object resp) throws JSONException {
-                JSONObject response = (JSONObject) resp;
-                Gson gson = new Gson();
-                CustomerAuthServiceVO customerAuthServiceVO = gson.fromJson(response.toString(), CustomerAuthServiceVO.class);
-
-
-                if(customerAuthServiceVO.getStatusCode().equals("400")){
-                    ArrayList error = (ArrayList) customerAuthServiceVO.getErrorMsgs();
-                    StringBuilder sb = new StringBuilder();
-                    for(int i=0; i<error.size(); i++){
-                        sb.append(error.get(i)).append("\n");
-                    }
-                    Utility.alertDialog(Profile_Activity.this,"Alert",sb.toString(),"Ok");
-
-                }else {
-                    try {
-                        showBankDetailsDialog(customerAuthServiceVO);
-                    }catch (Exception e){
-                        Utility.exceptionAlertDialog(Profile_Activity.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
-                    }
-
-
-                }
-            }
-        });
-
+        startActivity(new Intent(Profile_Activity.this,Confirm_Bank_Details.class).putExtra("bankid",customerAuthId));
     }
 
     public void showBankDetailsDialog(CustomerAuthServiceVO customerAuthServiceVO) throws Exception{

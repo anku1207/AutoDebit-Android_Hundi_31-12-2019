@@ -90,24 +90,26 @@ public class Login extends Base_Activity implements View.OnClickListener, View.O
         getSupportActionBar().hide();
         disableAutofill();
 
-        //PermissionHandler.checkpermission(Login.this);
+
+        //asking all permission for user
+        if(!Session.check_Exists_key(Login.this,Session.CACHE_ASK_PERMISSION)){
+            Session.set_Data_Sharedprefence_BoolenvValue(Login.this,Session.CACHE_ASK_PERMISSION,true);
+            PermissionHandler.checkpermission(Login.this);
+        }
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
             fingerprint_authentication =new Fingerprint_Authentication();
         }
 
-
-
-/*
-
-        WindowManager.LayoutParams params = getWindow().getAttributes();
+        /*WindowManager.LayoutParams params = getWindow().getAttributes();
         params.x = 0;
         params.height = 550;
         params.width = 550;
         params.y = 550;
+        this.getWindow().setAttributes(params);*/
 
-        this.getWindow().setAttributes(params);
-*/
+
+
         password=findViewById(R.id.password);
         forgorpassword=findViewById(R.id.forgorpassword);
         loginbtn=findViewById(R.id.loginbtn);
@@ -217,7 +219,6 @@ public class Login extends Base_Activity implements View.OnClickListener, View.O
                     Utility.showSingleButtonDialog(Login.this,"Alert",sb.toString(),false);
                 }else {
                     String json = gson.toJson(customerVO);
-                    Session.set_Data_Sharedprefence(Login.this,Session.CACHE_CUSTOMER,json);
                     Session.set_Data_Sharedprefence(Login.this,Session.CACHE_CUSTOMER,json);
                     startActivity(new Intent(Login.this,Home.class));
                     finish();

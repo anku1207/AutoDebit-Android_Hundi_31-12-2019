@@ -77,8 +77,6 @@ public class User_Registration extends Base_Activity {
         useremail=findViewById(R.id.useremail);
         otpgeneratebtn=findViewById(R.id.otpgeneratebtn);
 
-
-
         otpgeneratebtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

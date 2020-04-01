@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.uav.autodebit.Activity.PanVerification"
+    android:orientation="vertical"
+    >
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_awesome_toolbar"
+        android:layout_height="50dp"
+        android:layout_width="match_parent"
+        android:background="@color/appbar"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:contentInsetRight="0dp"
+        app:contentInsetEnd="0dp">
+        <ImageView
+            android:id="@+id/back_activity_button1"
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:gravity="center"
+            android:paddingLeft="10dp"
+            android:scaleType="center"
+            android:src="@drawable/rof_backbutton"
+            android:textStyle="bold"
+            android:tint="@color/white"
+
+
+            />
+
+        <LinearLayout
+            android:id="@+id/saveshipmenticonintop"
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:background="@color/appbar"
+            android:orientation="vertical"
+            android:padding="@dimen/pin_content_layout_padding">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="15dp"
+                android:paddingBottom="0dp"
+                android:tint="@color/white" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:fontFamily="@font/poppinsbold"
+            android:gravity="center"
+            android:text="Confirm Details"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            android:textStyle="bold"
+
+            />
+    </android.support.v7.widget.Toolbar>
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="20dp"
+        >
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:id="@+id/mainlayout"
+            android:orientation="vertical"
+            >
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="20dp"
+            android:id="@+id/buttonLayout"
+            android:visibility="gone">
+            <Button
+                android:layout_width="50dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="MODIFY"
+                android:textColor="@color/white"
+                android:id="@+id/modify"
+                android:fontFamily="@font/poppinssemibold"
+
+                android:background="@drawable/cornerbtn_bg_grey"
+                android:layout_marginRight="10dp"
+                />
+            <Button
+                android:layout_width="50dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="NEXT"
+                android:id="@+id/next"
+                android:textColor="@color/white"
+                android:fontFamily="@font/poppinssemibold"
+
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/cornerbtn_bg_grey"
+                />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

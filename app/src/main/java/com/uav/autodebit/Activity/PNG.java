@@ -139,7 +139,7 @@ public class PNG extends Base_Activity  implements View.OnClickListener{
 
     public ArrayList<DataAdapterVO> getDataList(){
         ArrayList<DataAdapterVO> datalist = new ArrayList<>();
-        String operator= Session.getSessionByKey(PNG.this,Session.CACHE_LANDLINE_OPERATOR);
+        String operator= Session.getSessionByKey(PNG.this,Session.CACHE_PNG_OPERATOR);
         try {
             JSONArray jsonArray =new JSONArray(operator);
             Log.w("dataoperator",jsonArray.toString());
@@ -154,7 +154,7 @@ public class PNG extends Base_Activity  implements View.OnClickListener{
                 dataAdapterVO.setMinTxnAmount(object.getInt("minTxnAmount"));
                 datalist.add(dataAdapterVO);
             }
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return  datalist;

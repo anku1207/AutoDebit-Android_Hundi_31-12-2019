@@ -23,6 +23,7 @@ public class LocalCacheVO implements Serializable {
     private String boradBand;
     private String uitiyServiceHomePage;
     private String dmrc;
+    private String png;
 
 
     private String eNachReturnURL;
@@ -166,5 +167,13 @@ public class LocalCacheVO implements Serializable {
 
     public void setCustomerNotification(List<CustomerNotificationVO> customerNotification) {
         this.customerNotification = customerNotification;
+    }
+
+    public String getPng() {
+        return png;
+    }
+
+    public void setPng(String png) {
+        this.png = png;
     }
 }

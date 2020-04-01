@@ -109,7 +109,6 @@ public class Credit_Score_Report extends Base_Activity implements FileDownloadIn
 
                     if(customerVO.getStatusCode().equals("400")){
                         //VolleyUtils.furnishErrorMsg(  "Fail" ,response, MainActivity.this);
-
                         ArrayList error = (ArrayList) customerVO.getErrorMsgs();
                         StringBuilder sb = new StringBuilder();
                         for(int i=0; i<error.size(); i++){

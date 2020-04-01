@@ -66,8 +66,7 @@ public class CircularImageView extends ImageView {
         this.invalidate();
     }
 
-    private void loadBitmap()
-    {
+    private void loadBitmap(){
         BitmapDrawable bitmapDrawable = (BitmapDrawable) this.getDrawable();
 
         if (bitmapDrawable != null)

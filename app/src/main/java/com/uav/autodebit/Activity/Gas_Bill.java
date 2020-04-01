@@ -122,9 +122,7 @@ public class Gas_Bill extends Base_Activity implements View.OnClickListener {
 
                             Gson gson = new Gson();
                             operatorListDate = gson.toJson(getDataList());
-
                             //manoj
-
                         }
                         @Override
                         public void doPostExecute() {
@@ -161,7 +159,7 @@ public class Gas_Bill extends Base_Activity implements View.OnClickListener {
                 dataAdapterVO.setMinTxnAmount(object.getInt("minTxnAmount"));
                 datalist.add(dataAdapterVO);
             }
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return  datalist;

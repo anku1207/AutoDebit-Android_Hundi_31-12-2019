@@ -17,7 +17,7 @@ public class ApplicationConstant {
 
     public final static String AUTHKEY= "G4s4cCMx2aM7lky1";
 
-    public final static  boolean IS_PRODUCTION_ENVIRONMENT=true;
+    public final static  boolean IS_PRODUCTION_ENVIRONMENT=false;
 
 
     public static int MobilePostpaid=14,d2h=17,Dmrc=2,Electricity=10,Landline=7,Water=12,Broadband=8,PNG=6,Gas=11,DTH=13;
@@ -72,8 +72,8 @@ public class ApplicationConstant {
            return "http://autope.in";
           //  return "http://164.52.192.45";
         }else{
-            //return  "http://205.147.103.18" ;
-           return "http://192.168.1.36";
+            return  "http://205.147.103.18" ;
+           //return "http://192.168.1.36";
         }
     }
 }

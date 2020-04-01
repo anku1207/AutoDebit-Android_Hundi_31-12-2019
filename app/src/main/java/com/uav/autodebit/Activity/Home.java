@@ -299,7 +299,6 @@ public class Home extends Base_Activity
         }else {
             active_notification_icon.setVisibility(View.GONE);
         }
-
     }
 
 
