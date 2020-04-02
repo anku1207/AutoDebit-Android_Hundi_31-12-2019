@@ -24,16 +24,13 @@ public class MandateBO implements Serializable {
         return connectionVO;
     }
 
-   /* public static ConnectionVO enachBankList(){
+    public static ConnectionVO getBankListAndAccountType(){
         ConnectionVO connectionVO = new ConnectionVO();
-        connectionVO.setMethodName("enachBankList");
+        connectionVO.setMethodName("getBankListAndAccountType");
         connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
-        connectionVO.setSearchKeyName("name");
-        connectionVO.setTitle("Customer");
-
         return connectionVO;
 
-    }*/
+    }
 
     public static ConnectionVO setEnachMandateId(){
         ConnectionVO connectionVO = new ConnectionVO();
@@ -42,4 +39,12 @@ public class MandateBO implements Serializable {
         return connectionVO;
 
     }
+
+    public static ConnectionVO checkValidateAdoptedServies(){
+        ConnectionVO connectionVO = new ConnectionVO();
+        connectionVO.setMethodName("checkValidateAdoptedServies");
+        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
+        return connectionVO;
+    }
+
 }

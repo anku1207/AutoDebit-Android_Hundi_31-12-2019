@@ -1,75 +1,52 @@
 package com.uav.autodebit.Activity;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v4.content.res.ResourcesCompat;
-import android.support.v4.graphics.BitmapCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
-import android.transition.Fade;
-import android.transition.Transition;
-import android.transition.TransitionManager;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.TranslateAnimation;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
-import com.uav.autodebit.Animation.DepthTransformation;
 import com.uav.autodebit.BO.MetroBO;
 import com.uav.autodebit.BO.PinCodeBO;
-import com.uav.autodebit.BO.ServiceBO;
 import com.uav.autodebit.Interface.AlertSelectDialogClick;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.R;
 import com.uav.autodebit.adpater.CustomPagerAdapter;
-import com.uav.autodebit.adpater.DMRC_List_Adpater;
-import com.uav.autodebit.adpater.ListViewItemCheckboxBaseAdapter;
 import com.uav.autodebit.constant.ApplicationConstant;
-import com.uav.autodebit.constant.ErrorMsg;
+import com.uav.autodebit.constant.Content_Message;
 import com.uav.autodebit.override.UAVProgressDialog;
 import com.uav.autodebit.permission.PermissionHandler;
 import com.uav.autodebit.permission.PermissionUtils;
@@ -78,8 +55,6 @@ import com.uav.autodebit.util.BackgroundAsyncService;
 import com.uav.autodebit.util.BackgroundAsyncServiceGetList;
 import com.uav.autodebit.util.BackgroundAsyncServiceGetListInterface;
 import com.uav.autodebit.util.BackgroundServiceInterface;
-import com.uav.autodebit.util.CommonUtils;
-import com.uav.autodebit.util.DownloadTask;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.CityVO;
 import com.uav.autodebit.vo.ConnectionVO;
@@ -87,8 +62,6 @@ import com.uav.autodebit.vo.CustomerAuthServiceVO;
 import com.uav.autodebit.vo.CustomerVO;
 import com.uav.autodebit.vo.DMRC_Customer_CardVO;
 import com.uav.autodebit.vo.DmrcCardStatusVO;
-import com.uav.autodebit.vo.LocalCacheVO;
-import com.uav.autodebit.vo.ServiceTypeVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
 import com.uav.autodebit.volley.VolleyUtils;
 
@@ -97,11 +70,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -309,7 +279,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                 break;
 
             case R.id. attachaddress:
-                permissionUtils.check_permission(PermissionHandler.imagePermissionArrayList(Dmrc_Card_Request.this), ErrorMsg.CAMERA_PERMISSION,ApplicationConstant.REQ_CAMERA_PERMISSION);
+                permissionUtils.check_permission(PermissionHandler.imagePermissionArrayList(Dmrc_Card_Request.this), Content_Message.CAMERA_PERMISSION,ApplicationConstant.REQ_CAMERA_PERMISSION);
 
 
                break;

@@ -2,21 +2,14 @@ package com.uav.autodebit.Activity;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -31,9 +24,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 import com.google.gson.Gson;
@@ -41,7 +32,7 @@ import com.uav.autodebit.BO.CustomerBO;
 import com.uav.autodebit.BO.PanCardBO;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
-import com.uav.autodebit.constant.ErrorMsg;
+import com.uav.autodebit.constant.Content_Message;
 import com.uav.autodebit.permission.PermissionHandler;
 import com.uav.autodebit.permission.PermissionUtils;
 import com.uav.autodebit.permission.Session;
@@ -57,10 +48,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 
 public class Credit_Score_Report extends Base_Activity implements FileDownloadInterface, PermissionUtils.PermissionResultCallback , ActivityCompat.OnRequestPermissionsResultCallback {
@@ -268,7 +256,7 @@ public class Credit_Score_Report extends Base_Activity implements FileDownloadIn
 
                 if(fileurl.equals("")) return;
                 creditScoreFileUrl=fileurl;
-                permissionUtils.check_permission(PermissionHandler.fileDownloadAndReadPermissionArrayList(Credit_Score_Report.this), ErrorMsg.DOWNLOAD_PERMISSION,ApplicationConstant.REQ_DOWNLOAD_PERMISSION);
+                permissionUtils.check_permission(PermissionHandler.fileDownloadAndReadPermissionArrayList(Credit_Score_Report.this), Content_Message.DOWNLOAD_PERMISSION,ApplicationConstant.REQ_DOWNLOAD_PERMISSION);
             }
         });
 

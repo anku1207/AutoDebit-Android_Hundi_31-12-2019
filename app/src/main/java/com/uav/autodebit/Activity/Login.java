@@ -1,31 +1,19 @@
 package com.uav.autodebit.Activity;
 
-import android.accessibilityservice.FingerprintGestureController;
 import android.annotation.TargetApi;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.hardware.fingerprint.FingerprintManager;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Debug;
-import android.os.Environment;
-import android.security.keystore.KeyGenParameterSpec;
-import android.security.keystore.KeyProperties;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,8 +21,7 @@ import com.google.gson.Gson;
 import com.uav.autodebit.BO.SignUpBO;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
-import com.uav.autodebit.constant.ErrorMsg;
-import com.uav.autodebit.fingerprint.FingerprintHandler;
+import com.uav.autodebit.constant.Content_Message;
 import com.uav.autodebit.fingerprint.Fingerprint_Authentication;
 import com.uav.autodebit.fingerprint.IFingerPrint;
 import com.uav.autodebit.permission.PermissionHandler;
@@ -48,21 +35,11 @@ import com.uav.autodebit.vo.OTPVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
 import com.uav.autodebit.volley.VolleyUtils;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.ProtocolException;
-import java.net.URL;
-import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import javax.crypto.KeyGenerator;
 
 public class Login extends Base_Activity implements View.OnClickListener, View.OnTouchListener {
     EditText password,userid;
@@ -191,7 +168,7 @@ public class Login extends Base_Activity implements View.OnClickListener, View.O
                 }
                 if(!checkvalid){
 
-                    Utility.showSingleButtonDialog(Login.this,"Alert",ErrorMsg.login_Valid_User_Id,false);
+                    Utility.showSingleButtonDialog(Login.this,"Alert", Content_Message.login_Valid_User_Id,false);
                     return;
                 }
                 loginByFigerprint(userid.getText().toString().trim(),type);
@@ -244,7 +221,7 @@ public class Login extends Base_Activity implements View.OnClickListener, View.O
                 break;
             case R.id.forgorpassword:
                 if(userid.getText().toString().trim().equals("")){
-                    Utility.showSingleButtonDialog(Login.this,"Alert", ErrorMsg.login_User_empty,false);
+                    Utility.showSingleButtonDialog(Login.this,"Alert", Content_Message.login_User_empty,false);
                     return;
                 }else {
                     String type=null;
@@ -260,7 +237,7 @@ public class Login extends Base_Activity implements View.OnClickListener, View.O
                         }
                     }
                     if(!checkvalid){
-                        Utility.showSingleButtonDialog(Login.this,"Alert",ErrorMsg.login_Valid_User_Id,false);
+                        Utility.showSingleButtonDialog(Login.this,"Alert", Content_Message.login_Valid_User_Id,false);
                         return;
                     }
                     forgotPasswordOTP(type,userid.getText().toString().trim());
@@ -270,11 +247,11 @@ public class Login extends Base_Activity implements View.OnClickListener, View.O
                 if(userid.getText().toString().trim().equals("") || password.getText().toString().trim().equals("")){
 
                     if(userid.getText().toString().trim().equals("")){
-                        Utility.showSingleButtonDialog(Login.this,"Alert",ErrorMsg.login_User_empty,false);
+                        Utility.showSingleButtonDialog(Login.this,"Alert", Content_Message.login_User_empty,false);
                         return;
                     }
                     if(password.getText().toString().trim().equals("")){
-                        Utility.showSingleButtonDialog(Login.this,"Alert",ErrorMsg.login_Password_empty,false);
+                        Utility.showSingleButtonDialog(Login.this,"Alert", Content_Message.login_Password_empty,false);
                         return;
                     }
 
@@ -293,7 +270,7 @@ public class Login extends Base_Activity implements View.OnClickListener, View.O
                         }
                     }
                     if(!checkvalid){
-                        Utility.showSingleButtonDialog(Login.this,"Alert",ErrorMsg.login_Valid_User_Id,false);
+                        Utility.showSingleButtonDialog(Login.this,"Alert", Content_Message.login_Valid_User_Id,false);
                         return;
                     }
                     loginviapassword(userid.getText().toString().trim(),password.getText().toString().trim(),type);
@@ -301,7 +278,7 @@ public class Login extends Base_Activity implements View.OnClickListener, View.O
             break;
             case  R.id.  loginviaotpbtn:
                 if(userid.getText().toString().equals("")){
-                    Utility.showSingleButtonDialog(Login.this,"Alert",ErrorMsg.login_User_empty,false);
+                    Utility.showSingleButtonDialog(Login.this,"Alert", Content_Message.login_User_empty,false);
                     return;
                 }else {
                     String type=null;
@@ -318,7 +295,7 @@ public class Login extends Base_Activity implements View.OnClickListener, View.O
 
                     }
                     if(!checkvalid){
-                        Utility.showSingleButtonDialog(Login.this,"Alert",ErrorMsg.login_Valid_User_Id,false);
+                        Utility.showSingleButtonDialog(Login.this,"Alert", Content_Message.login_Valid_User_Id,false);
                         return;
                     }
                     resendotpfun(type,userid.getText().toString().trim());

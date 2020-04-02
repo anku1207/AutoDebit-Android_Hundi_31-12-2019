@@ -1,31 +1,21 @@
 package com.uav.autodebit.Activity;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -39,11 +29,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
@@ -51,14 +36,10 @@ import com.squareup.picasso.Picasso;
 import com.uav.autodebit.BO.CustomerBO;
 import com.uav.autodebit.BO.SignUpBO;
 import com.uav.autodebit.R;
-import com.uav.autodebit.adpater.ListViewItemCheckboxBaseAdapter;
 import com.uav.autodebit.adpater.RecyclerViewAdapterMenu;
 import com.uav.autodebit.adpater.RecyclerViewProfileBankAdapterMenu;
-import com.uav.autodebit.adpater.UitilityAdapter;
-import com.uav.autodebit.androidFragment.Home_Menu;
-import com.uav.autodebit.androidFragment.Profile;
 import com.uav.autodebit.constant.ApplicationConstant;
-import com.uav.autodebit.constant.ErrorMsg;
+import com.uav.autodebit.constant.Content_Message;
 import com.uav.autodebit.override.CircularImageView;
 import com.uav.autodebit.override.UAVProgressDialog;
 import com.uav.autodebit.permission.PermissionHandler;
@@ -72,9 +53,7 @@ import com.uav.autodebit.util.FileDownloadInterface;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerAuthServiceVO;
-import com.uav.autodebit.vo.CustomerStatusVO;
 import com.uav.autodebit.vo.CustomerVO;
-import com.uav.autodebit.vo.DataAdapterVO;
 import com.uav.autodebit.vo.LocalCacheVO;
 import com.uav.autodebit.vo.OTPVO;
 import com.uav.autodebit.vo.ServiceTypeVO;
@@ -86,10 +65,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -110,7 +86,7 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
     List<ServiceTypeVO> addservice =new ArrayList<>();
 
     RecyclerViewAdapterMenu recyclerViewAdapter;
-    int  REQ_IMAGE=1001,REQ_GALLERY=1002,REQ_ENACH_MANDATE=1003,PIC_CROP=1004,REQ_CHANGE_PASS=300,REQ_ADD_MORE_SERVICE=200,REQ_EMAIL_VERIFY=100;
+    int  REQ_IMAGE=1001,REQ_GALLERY=1002,REQ_ENACH_MANDATE=1003,PIC_CROP=1004,REQ_CHANGE_PASS=300,REQ_ADD_MORE_SERVICE=200,REQ_EMAIL_VERIFY=100,REQ_ADDBANK_ANDSERVICE=400;
 
     Bitmap bmp;
 
@@ -235,7 +211,7 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
                 backbuttonfun();
                 break;
             case R.id.downloadreport:
-                permissionUtils.check_permission(PermissionHandler.fileDownloadAndReadPermissionArrayList(Profile_Activity.this),ErrorMsg.DOWNLOAD_PERMISSION, ApplicationConstant.REQ_DOWNLOAD_PERMISSION);
+                permissionUtils.check_permission(PermissionHandler.fileDownloadAndReadPermissionArrayList(Profile_Activity.this), Content_Message.DOWNLOAD_PERMISSION, ApplicationConstant.REQ_DOWNLOAD_PERMISSION);
                 break;
             case R.id.emailverify:
                 String[] buttons = {"No","Yes"};
@@ -255,7 +231,7 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
                 startActivityForResult(new Intent(Profile_Activity.this,AdditionalService.class),REQ_ADD_MORE_SERVICE);
                 break;
             case R.id.imageView1:
-                permissionUtils.check_permission(PermissionHandler.imagePermissionArrayList(Profile_Activity.this), ErrorMsg.CAMERA_PERMISSION,ApplicationConstant.REQ_CAMERA_PERMISSION);
+                permissionUtils.check_permission(PermissionHandler.imagePermissionArrayList(Profile_Activity.this), Content_Message.CAMERA_PERMISSION,ApplicationConstant.REQ_CAMERA_PERMISSION);
                 break;
             case R.id.changepass:
                 String[] changePass = {"No","Yes"};
@@ -275,7 +251,7 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
                 },this,null,"Would you like change pin ?","Alert",changePass);
                 break;
             case R.id.more_bankadd:
-                //startActivityForResult(new Intent(Profile_Activity.this,Enach_Mandate.class).putExtra("activity",getPackageName()+".Activity.Profile_Activity").putExtra("forresutl",true),REQ_ENACH_MANDATE);
+                startActivityForResult(new Intent(Profile_Activity.this,AddBankAndServicelist.class),REQ_ADDBANK_ANDSERVICE);
                 break;
         }
     }
@@ -470,9 +446,10 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
 
                 }else if(requestCode==REQ_CHANGE_PASS){
                     Utility.showSingleButtonDialog(Profile_Activity.this,"","Success fully update ",false);
-                }else if(requestCode==REQ_ENACH_MANDATE){
-                    Toast.makeText(context, "sfdsdfsfd", Toast.LENGTH_SHORT).show();
+                }else if(requestCode==REQ_ADDBANK_ANDSERVICE){
+                    getProfileDate(Session.getCustomerId(Profile_Activity.this));
                 }
+
             }
         }catch (Exception e) {
             e.printStackTrace();

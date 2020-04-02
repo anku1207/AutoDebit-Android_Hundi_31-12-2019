@@ -131,18 +131,12 @@ public class AdditionalService extends Base_Activity implements View.OnClickList
             }
             @Override
             public void doPostExecute() {
-                myAdapter=new ListViewItemCheckboxBaseAdapter(AdditionalService.this, newList, R.layout.checkbox_with_text,(selectServiceTypeVo!=null?selectServiceTypeVo.getServiceTypeId():null));
+                myAdapter=new ListViewItemCheckboxBaseAdapter(AdditionalService.this, newList, R.layout.checkbox_with_text);
                 listview.setAdapter(myAdapter);
                 listview.setExpanded(true);
             }
         });
-
         backgroundAsyncService.execute();
-
-
-
-
-
 
 
         navigation = findViewById(R.id.navigation);

@@ -46,6 +46,7 @@ import com.uav.autodebit.BO.MandateBO;
 import com.uav.autodebit.BO.MetroBO;
 import com.uav.autodebit.BO.ServiceBO;
 import com.uav.autodebit.BO.SignUpBO;
+import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.override.DrawableClickListener;
@@ -71,7 +72,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class Enach_Mandate extends Base_Activity{
+public class Enach_Mandate extends Base_Activity implements View.OnClickListener {
 
     EditText acholdername,acno;
     Button mandatebtn;
@@ -107,93 +108,23 @@ public class Enach_Mandate extends Base_Activity{
         setContentView(R.layout.activity_enach__mandate);
         getSupportActionBar().hide();
 
-        foractivity=getIntent().getBooleanExtra("forresutl",true);
-        selectServiceIds=getIntent().getIntegerArrayListExtra("selectservice");
-        disAmountEdittext=getIntent().getBooleanExtra("disAmountEdittext",false);
+
+        setElementId();
+        foractivity=getIntent().getBooleanExtra("forresutl",true);//success finish activity
+        selectServiceIds=getIntent().getIntegerArrayListExtra("selectservice"); // get select service list for get mandate amount and set bank id again serviceid
+        disAmountEdittext=getIntent().getBooleanExtra("disAmountEdittext",false); //disable mandate amount edittext filed
+        if(disAmountEdittext)maxamount.setEnabled(false);
+
+
 
         accountTypeJsonArray=new JSONArray();
-
-        banklist();
-
         customerAuthId=null;
         bankshortname=null;
         accountTypeValue=null;
 
-        textbox=findViewById(R.id.textbox);
+        back_activity_button1.setOnClickListener(this);
+        mandatebtn.setOnClickListener(this);
 
-
-        acholdername=findViewById(R.id.acholdername);
-        acno=findViewById(R.id.acno);
-        maxamount=findViewById(R.id.maxamount);
-        mandatebtn=findViewById(R.id.mandatebtn);
-        select_drop=findViewById(R.id.select_drop);
-        account_type=findViewById(R.id.account_type);
-
-        if(disAmountEdittext)maxamount.setEnabled(false);
-
-        back_activity_button1=findViewById(R.id.back_activity_button1);
-        back_activity_button1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-
-
-        /*maxamount.setCompoundDrawablesWithIntrinsicBounds(R.drawable.bankicon, 0, R.drawable.edit, 0);
-        maxamount.setEnabled(false);*/
-
-      //  ifsc = findViewById(R.id.ifsc);
-
-        acholdername.setText(Session.getCustomerName(Enach_Mandate.this));
-
-
-      /*  ArrayAdapter<String> adapter = new ArrayAdapter<String>
-                (this,android.R.layout.select_dialog_item,paths);*/
-
-      /*  ifsc.setThreshold(1);//will start working from first character
-        ifsc.setAdapter(adapter);//setting the adapter data into the AutoCompleteTextView
-        ifsc.setTextColor(Color.BLACK);
-
-        ifsc.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long rowId) {
-                String selection = (String) parent.getItemAtPosition(position);
-                bankshortname=selectbank.get(selection);
-            }
-        });
-*/
-
-        select_drop.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                String selection = (String) adapterView.getItemAtPosition(i);
-                bankshortname=selectbank.get(selection);
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
-        account_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                try{
-                    JSONObject jsonObject =accountTypeJsonArray.getJSONObject(i);
-                    accountTypeValue=jsonObject.getString("value");
-                }catch (Exception e){
-                    Utility.exceptionAlertDialog(Enach_Mandate.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
-                }
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
 
         maxamount.setDrawableClickListener(new DrawableClickListener() {
             @Override
@@ -201,73 +132,164 @@ public class Enach_Mandate extends Base_Activity{
                 switch (target) {
                     case RIGHT:
                         maxamount.setEnabled(true);
-                       break;
+                        break;
                     default:
-                       break;
+                        break;
                 }
             }
         });
 
 
+        banklist(new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
+            select_drop.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    String selection = (String) adapterView.getItemAtPosition(i);
+                    bankshortname=selectbank.get(selection);
+                }
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
 
+                }
+            });
 
-        mandatebtn.setOnClickListener(new View.OnClickListener() {
+            account_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    try{
+                        JSONObject jsonObject =accountTypeJsonArray.getJSONObject(i);
+                        accountTypeValue=jsonObject.getString("value");
+                    }catch (Exception e){
+                        Utility.exceptionAlertDialog(Enach_Mandate.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+                    }
+                }
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+
+                }
+            });
+
+            //add autofill Enach bank details
+            if(getIntent().getBooleanExtra("addMoreServiceMandate",false)){
+                try {
+                    acholdername.setText(getIntent().getStringExtra("accountHolderName"));
+                    acno.setText(getIntent().getStringExtra("accountNumber"));
+                    JSONObject selectBankJson =new JSONObject(getIntent().getStringExtra("bankJson"));
+
+                    // set bank list value by text
+                    ArrayAdapter myAdap = (ArrayAdapter) select_drop.getAdapter(); //cast to an ArrayAdapter
+                    int spinnerPosition = myAdap.getPosition(selectBankJson.getString("name"));
+                    select_drop.setSelection(spinnerPosition);
+
+                    JSONObject accountTypeJson =new JSONObject(getIntent().getStringExtra("accountType"));
+                    myAdap = (ArrayAdapter) account_type.getAdapter(); //cast to an ArrayAdapter
+                    spinnerPosition = myAdap.getPosition(accountTypeJson.getString("key"));
+                    account_type.setSelection(spinnerPosition);
+
+                    acholdername.setEnabled(false);
+                    acno.setEnabled(false);
+                    select_drop.setEnabled(false);
+                    account_type.setEnabled(false);
+
+                }catch (Exception e){
+                    Utility.exceptionAlertDialog(Enach_Mandate.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+                }
+            }
+        }));
+        //show edittable icon on right side
+        /*maxamount.setCompoundDrawablesWithIntrinsicBounds(R.drawable.bankicon, 0, R.drawable.edit, 0);
+        maxamount.setEnabled(false);*/
+
+      //  ifsc = findViewById(R.id.ifsc);
+
+        if(acholdername.getText().toString().equals("")) acholdername.setText(Session.getCustomerName(Enach_Mandate.this));
+      /*  ArrayAdapter<String> adapter = new ArrayAdapter<String>
+                (this,android.R.layout.select_dialog_item,paths);*/
+      /*  ifsc.setThreshold(1);//will start working from first character
+        ifsc.setAdapter(adapter);//setting the adapter data into the AutoCompleteTextView
+        ifsc.setTextColor(Color.BLACK);
+        ifsc.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
-            public void onClick(View view) {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long rowId) {
+                String selection = (String) parent.getItemAtPosition(position);
+                bankshortname=selectbank.get(selection);
+            }
+        });
+*/
+    }
 
-                boolean validation=true;
+    private  void setElementId(){
+        textbox=findViewById(R.id.textbox);
+        acholdername=findViewById(R.id.acholdername);
+        acno=findViewById(R.id.acno);
+        maxamount=findViewById(R.id.maxamount);
+        mandatebtn=findViewById(R.id.mandatebtn);
+        select_drop=findViewById(R.id.select_drop);
+        account_type=findViewById(R.id.account_type);
+        back_activity_button1=findViewById(R.id.back_activity_button1);
 
-                if(acno.getText().toString().trim().equals("")){
-                    acno.setError("this filed is required");
-                    validation=false;
-                }
+    }
 
-                if(acholdername.getText().toString().trim().equals("")){
-                    acholdername.setError("this filed is required");
-                    validation=false;
-                }
 
-                if(maxamount.getText().toString().trim().equals("")){
-                    maxamount.setError("this filed is required");
-                    validation=false;
-                }
+    @Override
+    public void onClick(View view) {
+        if(view.getId()==R.id.back_activity_button1){
+            finish();
+        }else if(view.getId()==R.id.mandatebtn){
+            boolean validation=true;
+
+            if(acno.getText().toString().trim().equals("")){
+                acno.setError("this filed is required");
+                validation=false;
+            }
+
+            if(acholdername.getText().toString().trim().equals("")){
+                acholdername.setError("this filed is required");
+                validation=false;
+            }
+
+            if(maxamount.getText().toString().trim().equals("")){
+                maxamount.setError("this filed is required");
+                validation=false;
+            }
 /*
                 if(ifsc.getText().toString().equals("")){
                     ifsc.setError("this filed is required");
                     validation=false;
                 }*/
 
-                if( bankshortname==null){
-                    Utility.alertDialog(Enach_Mandate.this,"Alert","Bank is not selected","Ok");
-                    validation=false;
-                }
-                if( accountTypeValue==null){
-                    Utility.alertDialog(Enach_Mandate.this,"Alert","Account Type is not selected","Ok");
-                    validation=false;
-                }
-                if(!maxamount.getText().toString().trim().equals("")  && Integer.parseInt(maxamount.getText().toString().trim())< minamt){
-                    Utility.showSingleButtonDialog(Enach_Mandate.this,"Alert",errormsz,false);
-                    validation=false;
-                }
-
-                if(acno.getText().toString().trim().length()<5){
-                    acno.setError("Minimum length is 5");
-                    validation=false;
-                }
-                if(!validation) return;
-
-                try {
-                    verifydialog();
-                }catch (Exception e){
-                    Log.w("error_enach",e.getMessage());
-                }
-              //  mandatebank();
+            if( bankshortname==null){
+                Utility.alertDialog(Enach_Mandate.this,"Alert","Bank is not selected","Ok");
+                validation=false;
             }
-        });
+            if( accountTypeValue==null){
+                Utility.alertDialog(Enach_Mandate.this,"Alert","Account Type is not selected","Ok");
+                validation=false;
+            }
+            if(!maxamount.getText().toString().trim().equals("")  && Integer.parseInt(maxamount.getText().toString().trim())< minamt){
+                Utility.showSingleButtonDialog(Enach_Mandate.this,"Alert",errormsz,false);
+                validation=false;
+            }
+
+            if(acno.getText().toString().trim().length()<5){
+                acno.setError("Minimum length is 5");
+                validation=false;
+            }
+            if(!validation) return;
+
+            try {
+                verifydialog();
+            }catch (Exception e){
+                Log.w("error_enach",e.getMessage());
+            }
+
+        }
 
     }
 
-    public void verifydialog() throws Exception{
+
+
+    public void verifydialog(){
 
         try{
             JSONArray jsonArray=new JSONArray();
@@ -377,8 +399,7 @@ public class Enach_Mandate extends Base_Activity{
     }
 
 
-    public void banklist(){
-
+    public void banklist(VolleyResponse volleyResponse){
 
         HashMap<String, Object> params = new HashMap<String, Object>();
         ConnectionVO connectionVO = MandateBO.enachBankList();
@@ -445,6 +466,9 @@ public class Enach_Mandate extends Base_Activity{
                     maxamount.setText((int)(Double.parseDouble(object.getString("minMandateAmt")))+"");
                     minamt=(int)(Double.parseDouble(object.getString("minMandateAmt")));
                     errormsz=object.getString("minMandateAmtFailedMsg");
+
+                    volleyResponse.onSuccess(response);
+
                 }
             }
         });

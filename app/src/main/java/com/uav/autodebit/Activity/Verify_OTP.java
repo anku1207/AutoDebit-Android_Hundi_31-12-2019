@@ -1,23 +1,17 @@
 package com.uav.autodebit.Activity;
 
-import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.Html;
 import android.text.InputType;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,20 +24,17 @@ import com.google.gson.Gson;
 import com.uav.autodebit.BO.SignUpBO;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
-import com.uav.autodebit.constant.ErrorMsg;
+import com.uav.autodebit.constant.Content_Message;
 import com.uav.autodebit.permission.PermissionHandler;
 import com.uav.autodebit.permission.PermissionUtils;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.Utility;
-import com.uav.autodebit.vo.BaseVO;
 import com.uav.autodebit.vo.ConnectionVO;
-import com.uav.autodebit.vo.CustomerStatusVO;
 import com.uav.autodebit.vo.CustomerVO;
 import com.uav.autodebit.vo.OTPVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
 import com.uav.autodebit.volley.VolleyUtils;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -77,7 +68,7 @@ public class Verify_OTP extends Base_Activity implements  TextWatcher,View.OnFoc
 
         permissionUtils=new PermissionUtils(Verify_OTP.this);
 
-        permissionUtils.check_permission(PermissionHandler.readSmsPermissionArrayList(Verify_OTP.this), ErrorMsg.SMS_PERMISSION, ApplicationConstant.REQ_READ_SMS_PERMISSION);
+        permissionUtils.check_permission(PermissionHandler.readSmsPermissionArrayList(Verify_OTP.this), Content_Message.SMS_PERMISSION, ApplicationConstant.REQ_READ_SMS_PERMISSION);
 
 
         otpverifybtn=findViewById(R.id.otpverifybtn);

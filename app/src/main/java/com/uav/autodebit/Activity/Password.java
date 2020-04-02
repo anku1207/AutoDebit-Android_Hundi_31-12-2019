@@ -76,6 +76,8 @@ public class Password extends Base_Activity {
             public void onClick(View view) {
                 boolean valid=true;
 
+                String patten = "123456789 987654321";
+
                 if(newpassword.getText().toString().equals("") && repeatpassword.getText().toString().equals("")){
                     Utility.showSingleButtonDialog(Password.this,"Error !","empty password not allow",false);
                     valid=false;
@@ -87,24 +89,20 @@ public class Password extends Base_Activity {
                     if(repeatpassword.getText().toString().equals("") ){
                         repeatpassword.setError("this filed is required");
                         valid=false;
-                    }
-
-
-                    if(!newpassword.getText().toString().trim().equals(repeatpassword.getText().toString().trim())){
+                    }else if(!newpassword.getText().toString().trim().equals(repeatpassword.getText().toString().trim())){
 
                         Log.w("value", String.valueOf(newpassword.getText().toString().trim().length()));
 
                         Utility.showSingleButtonDialog(Password.this,"Error !"," These passwords don't match",false);
                         valid=false;
                     }else if(newpassword.getText().toString().trim().length()<4){
-
-
-                        Utility.showSingleButtonDialog(Password.this,"Error !"," Password must be at least 6 characters",false);
+                        Utility.showSingleButtonDialog(Password.this,"Error !"," Password must be at least 4 characters",false);
                         valid=false;
-
+                    }else if(patten.contains(newpassword.getText().toString().trim())) {
+                        Utility.showSingleButtonDialog(Password.this,"Error !","password is week",false);
+                        valid=false;
                     }
                 }
-
                 if(valid)   savepassword();
             }
         });

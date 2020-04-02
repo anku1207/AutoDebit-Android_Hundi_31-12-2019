@@ -10,9 +10,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.v4.content.res.ResourcesCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
@@ -24,21 +22,19 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.uav.autodebit.BO.SignUpBO;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
-import com.uav.autodebit.constant.ErrorMsg;
+import com.uav.autodebit.constant.Content_Message;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.DialogInterface;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerStatusVO;
 import com.uav.autodebit.vo.CustomerVO;
-import com.uav.autodebit.vo.OTPVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
 import com.uav.autodebit.volley.VolleyUtils;
 
@@ -46,9 +42,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.sql.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 public class User_Registration extends Base_Activity {
@@ -83,15 +77,15 @@ public class User_Registration extends Base_Activity {
 
                 boolean inputvalid=true;
                 if(username.getText().toString().trim().equals("")){
-                    username.setError(ErrorMsg.user_Registration_Filed_Required);
+                    username.setError(Content_Message.user_Registration_Filed_Required);
                     inputvalid=false;
                 }
                 if(userphone.getText().toString().trim().equals("")){
-                    userphone.setError(ErrorMsg.user_Registration_Filed_Required);
+                    userphone.setError(Content_Message.user_Registration_Filed_Required);
                     inputvalid=false;
                 }
                 if(useremail.getText().toString().trim().equals("")){
-                    useremail.setError(ErrorMsg.user_Registration_Filed_Required);
+                    useremail.setError(Content_Message.user_Registration_Filed_Required);
                     inputvalid=false;
                 }
 

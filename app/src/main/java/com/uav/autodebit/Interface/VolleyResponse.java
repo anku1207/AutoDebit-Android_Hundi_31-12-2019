@@ -4,6 +4,10 @@ public class VolleyResponse {
     private OnSuccess onSuccess;
     private OnError onError;
 
+
+    public VolleyResponse() {
+    }
+
     public VolleyResponse(OnSuccess onSuccess, OnError onError){
         this.onSuccess  = onSuccess;
         this.onError = onError;

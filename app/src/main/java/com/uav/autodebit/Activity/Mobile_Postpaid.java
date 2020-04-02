@@ -1,31 +1,22 @@
 package com.uav.autodebit.Activity;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
-import android.app.Dialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.transition.Fade;
-import android.transition.Transition;
-import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.MotionEvent;
@@ -37,18 +28,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.uav.autodebit.BO.Electricity_BillBO;
-import com.uav.autodebit.BO.OxigenPlanBO;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
-import com.uav.autodebit.constant.ErrorMsg;
+import com.uav.autodebit.constant.Content_Message;
 import com.uav.autodebit.override.DrawableClickListener;
 import com.uav.autodebit.override.UAVEditText;
 import com.uav.autodebit.override.UAVProgressDialog;
@@ -57,19 +45,12 @@ import com.uav.autodebit.permission.PermissionUtils;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.BackgroundAsyncService;
 import com.uav.autodebit.util.BackgroundServiceInterface;
-import com.uav.autodebit.util.CustomTextWatcherLengthAction;
-import com.uav.autodebit.util.DialogInterface;
 import com.uav.autodebit.util.Utility;
-import com.uav.autodebit.vo.AuthServiceProviderVO;
-import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerVO;
 import com.uav.autodebit.vo.DataAdapterVO;
-import com.uav.autodebit.vo.OxigenPlanVO;
 import com.uav.autodebit.vo.OxigenQuestionsVO;
 import com.uav.autodebit.vo.OxigenTransactionVO;
 import com.uav.autodebit.vo.ServiceTypeVO;
-import com.uav.autodebit.volley.VolleyResponseListener;
-import com.uav.autodebit.volley.VolleyUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -77,7 +58,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 public class Mobile_Postpaid extends Base_Activity implements View.OnClickListener , PermissionUtils.PermissionResultCallback , ActivityCompat.OnRequestPermissionsResultCallback{
@@ -281,7 +261,7 @@ public class Mobile_Postpaid extends Base_Activity implements View.OnClickListen
                                         public void onClick(DrawablePosition target) {
                                             switch (target) {
                                                 case RIGHT:
-                                                    permissionUtils.check_permission(PermissionHandler.contactPermissionArrayList(Mobile_Postpaid.this), ErrorMsg.CONTACT_PERMISSION, ApplicationConstant.REQ_READ_CONTACT_PERMISSION);
+                                                    permissionUtils.check_permission(PermissionHandler.contactPermissionArrayList(Mobile_Postpaid.this), Content_Message.CONTACT_PERMISSION, ApplicationConstant.REQ_READ_CONTACT_PERMISSION);
                                                     break;
                                             }
                                         }

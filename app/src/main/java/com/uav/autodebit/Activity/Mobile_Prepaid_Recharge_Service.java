@@ -12,7 +12,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -23,15 +22,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.uav.autodebit.BO.OxigenPlanBO;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
-import com.uav.autodebit.constant.ErrorMsg;
+import com.uav.autodebit.constant.Content_Message;
 import com.uav.autodebit.override.DrawableClickListener;
 import com.uav.autodebit.override.UAVEditText;
 import com.uav.autodebit.permission.PermissionHandler;
@@ -39,7 +36,6 @@ import com.uav.autodebit.permission.PermissionUtils;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.CustomTextWatcherLengthAction;
 import com.uav.autodebit.util.DialogInterface;
-import com.uav.autodebit.util.DownloadTask;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.AuthServiceProviderVO;
 import com.uav.autodebit.vo.CCTransactionStatusVO;
@@ -121,7 +117,7 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                 switch (target) {
                     case RIGHT:
                         if(mobilenumber.getError() == null){
-                           permissionUtils.check_permission(PermissionHandler.contactPermissionArrayList(Mobile_Prepaid_Recharge_Service.this), ErrorMsg.CONTACT_PERMISSION, ApplicationConstant.REQ_READ_CONTACT_PERMISSION);
+                           permissionUtils.check_permission(PermissionHandler.contactPermissionArrayList(Mobile_Prepaid_Recharge_Service.this), Content_Message.CONTACT_PERMISSION, ApplicationConstant.REQ_READ_CONTACT_PERMISSION);
                         }
                         break;
                     default:

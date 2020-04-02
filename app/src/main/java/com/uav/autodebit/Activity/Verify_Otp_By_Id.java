@@ -1,17 +1,13 @@
 package com.uav.autodebit.Activity;
 
-import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -28,10 +24,9 @@ import com.google.gson.Gson;
 import com.uav.autodebit.BO.SignUpBO;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
-import com.uav.autodebit.constant.ErrorMsg;
+import com.uav.autodebit.constant.Content_Message;
 import com.uav.autodebit.permission.PermissionHandler;
 import com.uav.autodebit.permission.PermissionUtils;
-import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerVO;
@@ -68,7 +63,7 @@ public class Verify_Otp_By_Id extends Base_Activity implements TextWatcher,View.
         getSupportActionBar().hide();
 
         permissionUtils=new PermissionUtils(Verify_Otp_By_Id.this);
-        permissionUtils.check_permission(PermissionHandler.readSmsPermissionArrayList(Verify_Otp_By_Id.this), ErrorMsg.SMS_PERMISSION, ApplicationConstant.REQ_READ_SMS_PERMISSION);
+        permissionUtils.check_permission(PermissionHandler.readSmsPermissionArrayList(Verify_Otp_By_Id.this), Content_Message.SMS_PERMISSION, ApplicationConstant.REQ_READ_SMS_PERMISSION);
 
 
 

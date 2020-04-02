@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v7.widget.CardView;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,16 +32,15 @@ public class ListViewItemCheckboxBaseAdapter extends BaseAdapter implements Comp
     private LayoutInflater layoutInflater;
     private int length;
     public SparseBooleanArray mCheckStates;
-    private Integer selectServiceTypeId;
 
-    public ListViewItemCheckboxBaseAdapter(Context context, List<ServiceTypeVO> dataList, int design,Integer selectServiceTypeId) {
+
+    public ListViewItemCheckboxBaseAdapter(Context context, List<ServiceTypeVO> dataList, int design) {
         this.context = context;
         this.dataList = dataList;
         this.design = design;
         layoutInflater = ((Activity) context).getLayoutInflater();
         this.length = dataList.size();
         mCheckStates = new SparseBooleanArray(dataList.size());
-        this.selectServiceTypeId=selectServiceTypeId;
     }
 
     @Override
@@ -63,9 +63,11 @@ public class ListViewItemCheckboxBaseAdapter extends BaseAdapter implements Comp
 
         ServiceTypeVO serviceTypeVO = (ServiceTypeVO) dataList.get(position);
 
+
         convertView = LayoutInflater.from(context).inflate(this.design, parent, false);
 
-        LinearLayout mailmenu=convertView.findViewById(R.id.mailmenu);
+        CardView maincard=convertView.findViewById(R.id.maincard);
+        LinearLayout mailmenu =convertView.findViewById(R.id.mailmenu);
         CheckBox checkBox=convertView.findViewById(R.id.list_view_item_checkbox);
         UAVTextView textView =convertView.findViewById(R.id.list_view_item_text);
         ImageView imageView =convertView.findViewById(R.id.imageview);
@@ -77,12 +79,14 @@ public class ListViewItemCheckboxBaseAdapter extends BaseAdapter implements Comp
         imageView.setImageDrawable(Utility.GetImage(context,serviceTypeVO.getAppIcon()));
 
         checkBox.setTag(serviceTypeVO.getServiceTypeId());
-        checkBox.setChecked( serviceTypeVO.getAdopted()==1 || serviceTypeVO.getServiceTypeId()==selectServiceTypeId?true:false);
+        checkBox.setChecked( serviceTypeVO.getAdopted()==1 ?true:false);
         if (checkBox.isChecked()){
             checkBox.setEnabled(false); // disable checkbox
             mCheckStates.put(serviceTypeVO.getServiceTypeId(), true);
+            textView.setTextColor(Utility.getColorWrapper(context,R.color.disabledTextColor));
         }else {
             mCheckStates.put(serviceTypeVO.getServiceTypeId(), false);
+            textView.setTextColor(Utility.getColorWrapper(context,R.color.defaultTextColor));
         }
         checkBox.setOnCheckedChangeListener(this);
 

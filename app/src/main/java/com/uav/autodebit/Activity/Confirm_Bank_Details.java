@@ -1,5 +1,6 @@
 package com.uav.autodebit.Activity;
 
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,16 +42,20 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class Confirm_Bank_Details<crateBankDetailsLayout> extends AppCompatActivity {
+public class Confirm_Bank_Details<crateBankDetailsLayout> extends AppCompatActivity implements View.OnClickListener {
     LinearLayout mainlayout,buttonLayout;
+    ImageView back_activity_button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm__bank__details);
         Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
-
         getSupportActionBar().hide();
+
+        back_activity_button=findViewById(R.id.back_activity_button);
+        back_activity_button.setOnClickListener(this);
+
 
         mainlayout=findViewById(R.id.mainlayout);
         buttonLayout=findViewById(R.id.buttonLayout);
@@ -186,6 +192,7 @@ public class Confirm_Bank_Details<crateBankDetailsLayout> extends AppCompatActiv
 
             GridView gridView =new GridView(this);
             gridView.setNumColumns(2);
+
             ArrayList<String> strings= (ArrayList<String>) new Gson().fromJson(customerAuthServiceVO.getAnonymousString(), new TypeToken<ArrayList<String>>() { }.getType());
             // Create a new ArrayAdapter
             final ArrayAdapter<String> gridViewArrayAdapter = new ArrayAdapter<String>
@@ -198,5 +205,12 @@ public class Confirm_Bank_Details<crateBankDetailsLayout> extends AppCompatActiv
 
         }
 
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view.getId() == R.id.back_activity_button) {
+            finish();
+        }
     }
 }
