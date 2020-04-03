@@ -122,10 +122,6 @@ public class Splash_Screen extends Base_Activity implements BitmapInterface {
             startActivity(intent);
             finish();
         }
-
-
-
-
     }
 
     private  void loadHomeActivity(){
@@ -162,6 +158,10 @@ public class Splash_Screen extends Base_Activity implements BitmapInterface {
                     Session.set_Data_Sharedprefence(Splash_Screen.this,Session.LOCAL_CACHE,response.toString());
                     Session.set_Data_Sharedprefence(Splash_Screen.this,Session.CACHE_POSTPAID_OPERATOR,localCacheVO.getPostPaid());
                     Session.set_Data_Sharedprefence(Splash_Screen.this,Session.CACHE_PNG_OPERATOR,localCacheVO.getPng());
+                    Session.set_Data_Sharedprefence(Splash_Screen.this,Session.CACHE_INSURANCE_OPERATOR,localCacheVO.getInsuranceRenewal());
+                    Session.set_Data_Sharedprefence(Splash_Screen.this,Session.CACHE_LOAN_OPERATOR,localCacheVO.getLoanRepayment());
+                    Session.set_Data_Sharedprefence(Splash_Screen.this,Session.CACHE_FASTTAG_OPERATOR,localCacheVO.getFastTag());
+                    Session.set_Data_Sharedprefence(Splash_Screen.this,Session.CACHE_CABLETV_OPERATOR,localCacheVO.getCableTv());
 
 
 

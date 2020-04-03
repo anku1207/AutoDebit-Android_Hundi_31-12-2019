@@ -170,6 +170,10 @@ public class Home extends Base_Activity
             activityhasmap.put("15",All_Service.class);
             activityhasmap.put("16",Uber.class);
             activityhasmap.put("17",D2H.class);
+            activityhasmap.put("19",Insurance_Renewal.class);
+            activityhasmap.put("20",Loan_Repayment.class);
+            activityhasmap.put("21",Fastag.class);
+            activityhasmap.put("22",CableTV.class);
 
             activityhasmap.put("L_2",PanVerification.class);
             activityhasmap.put("L_3",Credit_Score_Report.class);

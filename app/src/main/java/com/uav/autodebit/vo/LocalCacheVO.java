@@ -25,6 +25,12 @@ public class LocalCacheVO implements Serializable {
     private String dmrc;
     private String png;
 
+    private String insuranceRenewal;
+    private String loanRepayment;
+    private String fastTag;
+    private String cableTv;
+
+
 
     private String eNachReturnURL;
     public LocalCacheVO(){
@@ -175,5 +181,37 @@ public class LocalCacheVO implements Serializable {
 
     public void setPng(String png) {
         this.png = png;
+    }
+
+    public String getInsuranceRenewal() {
+        return insuranceRenewal;
+    }
+
+    public void setInsuranceRenewal(String insuranceRenewal) {
+        this.insuranceRenewal = insuranceRenewal;
+    }
+
+    public String getLoanRepayment() {
+        return loanRepayment;
+    }
+
+    public void setLoanRepayment(String loanRepayment) {
+        this.loanRepayment = loanRepayment;
+    }
+
+    public String getFastTag() {
+        return fastTag;
+    }
+
+    public void setFastTag(String fastTag) {
+        this.fastTag = fastTag;
+    }
+
+    public String getCableTv() {
+        return cableTv;
+    }
+
+    public void setCableTv(String cableTv) {
+        this.cableTv = cableTv;
     }
 }

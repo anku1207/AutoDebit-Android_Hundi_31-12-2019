@@ -32,6 +32,11 @@ public class Session {
     public final static String CACHE_ELECTRICITY_OPERATOR = "ELECTRICITY_OPERATOR";
     public final static String CACHE_POSTPAID_OPERATOR = "POSTPAIDOPEATOR";
     public final static String CACHE_PNG_OPERATOR = "PNG_OPERATOR";
+    public final static String CACHE_INSURANCE_OPERATOR = "INSURANCE_OPERATOR";
+    public final static String CACHE_LOAN_OPERATOR = "LOAN_OPERATOR";
+    public final static String CACHE_FASTTAG_OPERATOR = "FASTTAG_OPERATOR";
+    public final static String CACHE_CABLETV_OPERATOR = "CABLETV_OPERATOR";
+
 
 
     public final static String CACHE_IS_NEW_USER = "IS_NEW_USER";

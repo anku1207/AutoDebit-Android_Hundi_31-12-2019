@@ -41,13 +41,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".Activity.CableTV"></activity>
+        <activity android:name=".Activity.Fastag" />
+        <activity android:name=".Activity.Loan_Repayment" />
+        <activity android:name=".Activity.Insurance_Renewal" />
         <activity
             android:name=".Activity.AddBankAndServicelist"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing"
-            tools:ignore="LockedOrientationActivity"
-            />
+            tools:ignore="LockedOrientationActivity" />
         <activity android:name=".Activity.Confirm_Bank_Details" />
         <activity
             android:name=".Activity.PaymentGateWay"
