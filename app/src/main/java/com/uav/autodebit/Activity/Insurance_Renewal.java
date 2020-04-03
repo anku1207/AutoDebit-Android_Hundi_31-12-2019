@@ -171,8 +171,7 @@ public class Insurance_Renewal extends Base_Activity implements View.OnClickList
                 datalist.add(dataAdapterVO);
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(this, ""+ Content_Message.error_message, Toast.LENGTH_SHORT).show();
+            Utility.showToast(this,Content_Message.error_message);
         }
         return  datalist;
     }

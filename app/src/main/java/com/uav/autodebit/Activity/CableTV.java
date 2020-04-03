@@ -172,8 +172,7 @@ public class CableTV extends Base_Activity implements View.OnClickListener , Per
                 datalist.add(dataAdapterVO);
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(this, ""+ Content_Message.error_message, Toast.LENGTH_SHORT).show();
+            Utility.showToast(this,Content_Message.error_message);
         }
         return  datalist;
     }

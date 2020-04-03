@@ -1440,6 +1440,7 @@ public class Utility {
         return bitmap;
     }
 
-
-
+    public static  void showToast(Context context,final String toast){
+        ((Activity)context).runOnUiThread(() -> Toast.makeText(context, toast, Toast.LENGTH_SHORT).show());
+    }
 }
