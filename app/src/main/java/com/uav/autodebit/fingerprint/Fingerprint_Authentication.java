@@ -12,9 +12,8 @@ import android.os.Build;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyPermanentlyInvalidatedException;
 import android.security.keystore.KeyProperties;
+
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.hardware.fingerprint.FingerprintManagerCompat;
-import android.support.v7.content.res.AppCompatResources;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;

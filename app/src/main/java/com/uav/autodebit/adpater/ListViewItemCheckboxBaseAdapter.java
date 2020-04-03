@@ -2,8 +2,7 @@ package com.uav.autodebit.adpater;
 
 import android.app.Activity;
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
+
 import android.support.v7.widget.CardView;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;

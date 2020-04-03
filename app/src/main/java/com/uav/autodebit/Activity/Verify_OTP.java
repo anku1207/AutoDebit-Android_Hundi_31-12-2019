@@ -5,10 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.CountDownTimer;
+
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.LocalBroadcastManager;
-import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -20,8 +20,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.gson.Gson;
 import com.uav.autodebit.BO.SignUpBO;
+
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.Content_Message;
@@ -41,7 +46,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Verify_OTP extends Base_Activity implements  TextWatcher,View.OnFocusChangeListener , PermissionUtils.PermissionResultCallback , ActivityCompat.OnRequestPermissionsResultCallback{
+public class Verify_OTP extends Base_Activity implements  TextWatcher,View.OnFocusChangeListener , PermissionUtils.PermissionResultCallback
+        , ActivityCompat.OnRequestPermissionsResultCallback {
 
 
     TextView resendotpbtn,otp_send;
@@ -67,7 +73,6 @@ public class Verify_OTP extends Base_Activity implements  TextWatcher,View.OnFoc
 //        getSupportActionBar().hide();
 
         permissionUtils=new PermissionUtils(Verify_OTP.this);
-
         permissionUtils.check_permission(PermissionHandler.readSmsPermissionArrayList(Verify_OTP.this), Content_Message.SMS_PERMISSION, ApplicationConstant.REQ_READ_SMS_PERMISSION);
 
 
@@ -86,6 +91,7 @@ public class Verify_OTP extends Base_Activity implements  TextWatcher,View.OnFoc
         setPINListeners();
 
 
+
         try {
             Intent intent = getIntent();
             String object=intent.getStringExtra("resp");
@@ -97,8 +103,6 @@ public class Verify_OTP extends Base_Activity implements  TextWatcher,View.OnFoc
 
             //28-11-2019
             tokenId=Session.getSessionByKey(this,Session.CACHE_TOKENID);
-
-
             if(useridtype.equals("mobile")){
                 otp_send.setText("OTP has sent on "+Utility.maskString(customerVO.getMobileNumber(),3,7,'*'));
                 startTimer(Long.parseLong(customerVO.getAnonymousString()),"mobileotp");
@@ -109,11 +113,7 @@ public class Verify_OTP extends Base_Activity implements  TextWatcher,View.OnFoc
         }catch (Exception e) {
             e.printStackTrace();
             Utility.exceptionAlertDialog(Verify_OTP.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
-
         }
-
-
-
 
         resendotpbtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -410,17 +410,17 @@ public class Verify_OTP extends Base_Activity implements  TextWatcher,View.OnFoc
 
     @Override
     public void onResume() {
-        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter("otp"));
+       // LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter("otp"));
         super.onResume();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+        //LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
     }
 
-    private BroadcastReceiver receiver = new BroadcastReceiver() {
+  /*  private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equalsIgnoreCase("otp")) {
@@ -443,14 +443,13 @@ public class Verify_OTP extends Base_Activity implements  TextWatcher,View.OnFoc
                 // phonepinverifybtn.performClick();
             }
         }
-    };
+    };*/
 
 
 
 
     //start timer function
     void startTimer(Long timeperiod,final String type) {
-
         CountDownTimer counttimetype=null;
 
         final CountDownTimer finalCounttimetype = counttimetype;
@@ -529,7 +528,6 @@ public class Verify_OTP extends Base_Activity implements  TextWatcher,View.OnFoc
 
     @Override
     public void PermissionGranted(int request_code) {
-
     }
 
     @Override
@@ -544,6 +542,6 @@ public class Verify_OTP extends Base_Activity implements  TextWatcher,View.OnFoc
 
     @Override
     public void NeverAskAgain(int request_code) {
-
     }
+
 }

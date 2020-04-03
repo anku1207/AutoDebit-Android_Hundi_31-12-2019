@@ -1,6 +1,7 @@
 package com.uav.autodebit.volley;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -11,12 +12,13 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
+
 import android.support.annotation.RequiresApi;
-import android.support.v4.content.FileProvider;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;

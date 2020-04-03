@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.MediaRouteButton;
 import android.content.Context;
 import android.content.Intent;
+
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+
 
 import com.uav.autodebit.R;
 import com.uav.autodebit.override.UAVTextView;

@@ -11,7 +11,7 @@ import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.os.Build;
 import android.provider.Settings;
-import android.support.v4.app.NotificationCompat;
+
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;

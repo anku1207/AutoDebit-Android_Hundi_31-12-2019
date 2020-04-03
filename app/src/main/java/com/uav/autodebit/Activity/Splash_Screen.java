@@ -22,6 +22,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.reflect.TypeToken;
 import com.uav.autodebit.BO.BannerBO;
+
 import com.uav.autodebit.R;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.BitmapInterface;
@@ -53,6 +54,7 @@ public class Splash_Screen extends Base_Activity implements BitmapInterface {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash__screen);
+
 
         ImageView imageView = (ImageView) findViewById( R.id.appstarticon);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);

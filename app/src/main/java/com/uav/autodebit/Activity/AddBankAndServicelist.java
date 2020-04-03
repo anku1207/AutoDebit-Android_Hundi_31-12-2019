@@ -2,9 +2,10 @@ package com.uav.autodebit.Activity;
 
 import android.content.Context;
 import android.content.Intent;
+
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.MotionEvent;
@@ -19,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.Toast;
+
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;

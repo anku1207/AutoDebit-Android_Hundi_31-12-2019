@@ -1,6 +1,6 @@
 package com.uav.autodebit.Activity;
 
-import android.support.v7.app.AppCompatActivity;
+
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;

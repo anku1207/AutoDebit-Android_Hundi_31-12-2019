@@ -9,7 +9,6 @@ import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.os.CancellationSignal;
 import android.support.v4.app.ActivityCompat;
-import android.widget.Toast;
 
 
 @TargetApi(Build.VERSION_CODES.M)
