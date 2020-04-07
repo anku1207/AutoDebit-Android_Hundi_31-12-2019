@@ -1,9 +1,9 @@
 package com.uav.autodebit.Animation;
 
 
-import android.support.v4.view.ViewPager;
 import android.view.View;
 
+import androidx.viewpager.widget.ViewPager;
 
 
 public class DepthTransformation implements ViewPager.PageTransformer{

@@ -9,7 +9,7 @@
     >
 
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/my_awesome_toolbar"
         android:layout_height="50dp"
         android:layout_width="match_parent"
@@ -66,7 +66,7 @@
             android:textStyle="bold"
 
             />
-    </android.support.v7.widget.Toolbar>
+    </androidx.appcompat.widget.Toolbar>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -100,7 +100,7 @@
                   android:layout_marginLeft="30dp"
                   android:layout_marginRight="30dp"/>
 -->
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardElevation="7dp"
@@ -120,7 +120,7 @@
                     android:cursorVisible="false"
                     style="@style/commonEdittextStyle"
                     />
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -129,7 +129,7 @@
                 android:orientation="vertical">
             </LinearLayout>
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardElevation="7dp"
@@ -173,9 +173,9 @@
                         android:textColor="@color/appbar"
                         android:padding="10dp"/>
                 </RelativeLayout>
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardElevation="7dp"
@@ -190,7 +190,7 @@
                     android:orientation="vertical"
                     android:id="@+id/fetchbilllayout">
                 </LinearLayout>
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
             <LinearLayout
                 android:layout_width="match_parent"

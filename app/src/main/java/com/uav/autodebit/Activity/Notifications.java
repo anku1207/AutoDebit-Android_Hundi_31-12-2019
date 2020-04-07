@@ -1,45 +1,25 @@
 package com.uav.autodebit.Activity;
 
-import android.app.Notification;
-import android.os.Handler;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.LinearSmoothScroller;
-import android.support.v7.widget.RecyclerView;
-import android.text.Layout;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.uav.autodebit.BO.CustomerBO;
-import com.uav.autodebit.Interface.ServiceClick;
-import com.uav.autodebit.Notification.FCMService;
 import com.uav.autodebit.R;
-import com.uav.autodebit.adpater.History_List_Adapter;
 import com.uav.autodebit.adpater.NotificationAdapter;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.Utility;
-import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerNotificationVO;
 import com.uav.autodebit.vo.CustomerVO;
-import com.uav.autodebit.vo.DataAdapterVO;
 import com.uav.autodebit.vo.LocalCacheVO;
-import com.uav.autodebit.volley.VolleyResponseListener;
-import com.uav.autodebit.volley.VolleyUtils;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 public class Notifications extends Base_Activity implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
@@ -62,8 +42,8 @@ public class Notifications extends Base_Activity implements View.OnClickListener
 
         back_activity_button.setOnClickListener(this);
 
-        recyclerView.setNestedScrollingEnabled(false);
-        recyclerView.setHasFixedSize(false);
+        recyclerView.setNestedScrollingEnabled(true);
+        recyclerView.setHasFixedSize(true);
 
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -72,11 +52,6 @@ public class Notifications extends Base_Activity implements View.OnClickListener
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
         recyclerView.setLayoutManager(linearLayoutManager);
-
-
-
-
-
 
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary,

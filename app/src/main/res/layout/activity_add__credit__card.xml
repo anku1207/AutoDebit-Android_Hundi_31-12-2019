@@ -9,7 +9,7 @@
     >
 
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/my_awesome_toolbar"
         android:layout_height="50dp"
         android:layout_width="match_parent"
@@ -60,7 +60,7 @@
             android:fontFamily="@font/poppinslight"
 
             />
-    </android.support.v7.widget.Toolbar>
+    </androidx.appcompat.widget.Toolbar>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -95,7 +95,7 @@
 
 
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardElevation="7dp"
@@ -117,13 +117,13 @@
                     android:fontFamily="@font/poppinslight"
 
                     />
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
 
 
 
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardElevation="7dp"
@@ -144,7 +144,7 @@
                     android:inputType="number|textVisiblePassword"
                     android:fontFamily="@font/poppinslight"
                     />
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
 
 
@@ -157,7 +157,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <android.support.v7.widget.CardView
+                <androidx.cardview.widget.CardView
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
@@ -179,10 +179,10 @@
                         android:fontFamily="@font/poppinslight"
                         android:inputType="number|textVisiblePassword"
                         />
-                </android.support.v7.widget.CardView>
+                </androidx.cardview.widget.CardView>
 
 
-                <android.support.v7.widget.CardView
+                <androidx.cardview.widget.CardView
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
@@ -204,7 +204,7 @@
                         android:inputType="number|textVisiblePassword"
                         android:id="@+id/cvv"
                         />
-                </android.support.v7.widget.CardView>
+                </androidx.cardview.widget.CardView>
 
 
 

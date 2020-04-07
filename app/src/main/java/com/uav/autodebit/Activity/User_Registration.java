@@ -8,8 +8,9 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
-import android.support.annotation.Nullable;
-import android.support.v4.content.res.ResourcesCompat;
+
+import androidx.annotation.Nullable;
+import androidx.core.content.res.ResourcesCompat;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -308,7 +309,6 @@ public class User_Registration extends Base_Activity {
                         sb.append(error.get(i)).append("\n");
                     }
                     Utility.showSingleButtonDialog(User_Registration.this,"Alert",sb.toString(),false);
-
                 }else {
                     customerVO.setUserid(userphone.getText().toString().trim());
                     customerVO.setLoginType("mobile");
@@ -321,12 +321,10 @@ public class User_Registration extends Base_Activity {
                         for(int i=0; i<error.size(); i++){
                             sb.append(error.get(i)).append("\n");
                         }
-
                         Utility.showSingleButtonDialogconfirmation(User_Registration.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
                             ok.dismiss();
 
                             Session.set_Data_Sharedprefence_BoolenvValue(User_Registration.this,Session.CACHE_IS_NEW_USER,false);
-
                             Intent intent =new Intent(User_Registration.this, Login.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             intent.putExtra("user_mobile",userphone.getText().toString());
@@ -342,7 +340,6 @@ public class User_Registration extends Base_Activity {
     public void otpverifyactivity(CustomerVO  customerVO){
         Gson gson = new Gson();
 
-
         Intent intent=new Intent(User_Registration.this,Verify_OTP.class);
         customerVO.setActionname("verifySignUp");
         customerVO.setAnonymousString(customerVO.getOtpExpiredMobile().toString());
@@ -350,7 +347,6 @@ public class User_Registration extends Base_Activity {
         String json = gson.toJson(customerVO); // myObject - instance of MyObject
         intent.putExtra("resp",json);
         startActivityForResult(intent,100);
-
     }
 
     @Override
@@ -371,7 +367,6 @@ public class User_Registration extends Base_Activity {
                         finish();
                     }
                 }
-
             }
         }
     }

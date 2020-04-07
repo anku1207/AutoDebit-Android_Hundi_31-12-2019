@@ -4,8 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.MotionEvent;
@@ -21,6 +20,9 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -137,6 +139,7 @@ public class AddBankAndServicelist extends AppCompatActivity implements View.OnC
         scrollview=findViewById(R.id.scrollview);
 
         nextbtn.setOnClickListener(this);
+        back_activity_button.setOnClickListener(this);
 
     }
 
@@ -211,8 +214,6 @@ public class AddBankAndServicelist extends AppCompatActivity implements View.OnC
     @Override
     public void onClick(View view) {
         if(view.getId()==R.id.nextbtn){
-
-
             ArrayList<Integer> addservice=new ArrayList<>();
             SparseBooleanArray checked = myAdapter.mCheckStates;
             int size = checked.size(); // number of name-value pairs in the array
@@ -241,6 +242,8 @@ public class AddBankAndServicelist extends AppCompatActivity implements View.OnC
             }else {
                 scrollview.fullScroll(ScrollView.FOCUS_UP);
             }
+        }else if(view.getId()==R.id.back_activity_button){
+            finish();
         }
     }
 

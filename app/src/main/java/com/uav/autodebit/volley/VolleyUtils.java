@@ -12,13 +12,12 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
-
-import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 
+import androidx.annotation.RequiresApi;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;

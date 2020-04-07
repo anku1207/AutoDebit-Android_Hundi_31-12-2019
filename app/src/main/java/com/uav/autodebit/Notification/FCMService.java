@@ -1,43 +1,28 @@
 package com.uav.autodebit.Notification;
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 
-import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.media.RingtoneManager;
-import android.os.Build;
-import android.provider.Settings;
-
-import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
+
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.uav.autodebit.Activity.MainActivity;
-import com.uav.autodebit.Activity.Splash_Screen;
-import com.uav.autodebit.R;
-import com.uav.autodebit.adpater.NotificationAdapter;
 import com.uav.autodebit.constant.GlobalApplication;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.CustomerNotificationVO;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 
 /**

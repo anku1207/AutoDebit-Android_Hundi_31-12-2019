@@ -1,14 +1,13 @@
 package com.uav.autodebit.Activity;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.CountDownTimer;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -21,12 +20,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.google.android.gms.auth.api.phone.SmsRetriever;
+import com.google.android.gms.auth.api.phone.SmsRetrieverClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.gson.Gson;
 import com.uav.autodebit.BO.SignUpBO;
 
+import com.uav.autodebit.OTP.interfaces.OtpReceivedInterface;
+import com.uav.autodebit.OTP.receiver.SmsBroadcastReceiver;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.Content_Message;
@@ -46,8 +49,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Verify_OTP extends Base_Activity implements  TextWatcher,View.OnFocusChangeListener , PermissionUtils.PermissionResultCallback
-        , ActivityCompat.OnRequestPermissionsResultCallback {
+public class Verify_OTP extends Base_Activity implements  TextWatcher,View.OnFocusChangeListener
+        , ActivityCompat.OnRequestPermissionsResultCallback , OtpReceivedInterface {
 
 
     TextView resendotpbtn,otp_send;
@@ -62,7 +65,8 @@ public class Verify_OTP extends Base_Activity implements  TextWatcher,View.OnFoc
     boolean resendotp=false;
 
     String methodname;
-    PermissionUtils permissionUtils;
+    // PermissionUtils permissionUtils;
+    SmsBroadcastReceiver mSmsBroadcastReceiver;
 
 
 
@@ -72,9 +76,9 @@ public class Verify_OTP extends Base_Activity implements  TextWatcher,View.OnFoc
         setContentView(R.layout.activity_verify__otp);
 //        getSupportActionBar().hide();
 
-        permissionUtils=new PermissionUtils(Verify_OTP.this);
+     /*   permissionUtils=new PermissionUtils(Verify_OTP.this);
         permissionUtils.check_permission(PermissionHandler.readSmsPermissionArrayList(Verify_OTP.this), Content_Message.SMS_PERMISSION, ApplicationConstant.REQ_READ_SMS_PERMISSION);
-
+*/
 
         otpverifybtn=findViewById(R.id.otpverifybtn);
         mobileotplayout=findViewById(R.id.mobileotplayout);
@@ -92,6 +96,7 @@ public class Verify_OTP extends Base_Activity implements  TextWatcher,View.OnFoc
 
 
 
+
         try {
             Intent intent = getIntent();
             String object=intent.getStringExtra("resp");
@@ -100,6 +105,9 @@ public class Verify_OTP extends Base_Activity implements  TextWatcher,View.OnFoc
             useridtype=customerVO.getLoginType();
             userid=customerVO.getUserid();
             methodname=customerVO.getActionname();
+
+            //disable Edittext
+            readOnlyEditText(customerVO.isEventIs());
 
             //28-11-2019
             tokenId=Session.getSessionByKey(this,Session.CACHE_TOKENID);
@@ -166,6 +174,15 @@ public class Verify_OTP extends Base_Activity implements  TextWatcher,View.OnFoc
         phone_pin_third_edittext.setOnFocusChangeListener(this);
         phone_pin_forth_edittext.setOnFocusChangeListener(this);
     }
+
+
+    private void readOnlyEditText(boolean type){
+        phone_pin_first_edittext.setEnabled(type);
+        phone_pin_second_edittext.setEnabled(type);
+        phone_pin_third_edittext.setEnabled(type);
+        phone_pin_forth_edittext.setEnabled(type);
+    }
+
 
     @Override
     public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -310,17 +327,13 @@ public class Verify_OTP extends Base_Activity implements  TextWatcher,View.OnFoc
                 Gson gson = new Gson();
                 CustomerVO customerVO = gson.fromJson(response.toString(), CustomerVO.class);
 
-
                 if(customerVO.getStatusCode().equals("400")){
                     //VolleyUtils.furnishErrorMsg(  "Fail" ,response, MainActivity.this);
-
                     ArrayList error = (ArrayList) customerVO.getErrorMsgs();
                     StringBuilder sb = new StringBuilder();
                     for(int i=0; i<error.size(); i++){
                         sb.append(error.get(i)).append("\n");
                     }
-
-
                     Utility.alertDialog(Verify_OTP.this,"Alert",sb.toString(),"Ok");
                 }else {
 
@@ -332,11 +345,11 @@ public class Verify_OTP extends Base_Activity implements  TextWatcher,View.OnFoc
                         for(int i=0; i<error.size(); i++){
                             sb.append(error.get(i)).append("\n");
                         }
-
-
                         Utility.alertDialog(Verify_OTP.this,"Alert",sb.toString(),"Ok");
-
                     }else {
+                        // update customer cache 04-04-2020
+                        Session.set_Data_Sharedprefence(Verify_OTP.this,Session.CACHE_CUSTOMER,new Gson().toJson(customerVO));
+                        customerVO.setLocalCache(null);
                         Intent intent12 = new Intent();
                         intent12.putExtra("key",customerVO.getStatus().getStatusId().toString());
 
@@ -393,6 +406,9 @@ public class Verify_OTP extends Base_Activity implements  TextWatcher,View.OnFoc
                     Utility.alertDialog(Verify_OTP.this,"Alert",sb.toString(),"Ok");
 
                 }else {
+
+                    //start for read otp
+                    startSMSListener();
                     if(type.equals("mobile")){
                         startTimer(Long.parseLong(customerVO.getAnonymousString()),"mobileotp");
 
@@ -405,18 +421,31 @@ public class Verify_OTP extends Base_Activity implements  TextWatcher,View.OnFoc
                 }
             }
         });
+
+
+
     }
 
 
     @Override
     public void onResume() {
-       // LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter("otp"));
         super.onResume();
+        // LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter("otp"));
+        // init broadcast receiver
+
+        mSmsBroadcastReceiver = new SmsBroadcastReceiver();
+        mSmsBroadcastReceiver.setOnOtpListeners(this);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(SmsRetriever.SMS_RETRIEVED_ACTION);
+        getApplicationContext().registerReceiver(mSmsBroadcastReceiver, intentFilter);
+         startSMSListener();
+
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        getApplicationContext().unregisterReceiver(mSmsBroadcastReceiver);
         //LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
     }
 
@@ -516,32 +545,48 @@ public class Verify_OTP extends Base_Activity implements  TextWatcher,View.OnFoc
             otpverifybtn.setText("verify");*/
             resendotpbtn.setVisibility(View.GONE);
         }
-
     }
+
 
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        permissionUtils.onRequestPermissionsResult(requestCode,permissions,grantResults);
+    public void onOtpReceived(String message) {
+
+        String otp=message.substring(0,4);
+        cancelTimer("mobile");
+        char[] array = otp.toCharArray();
+
+        for(int i = 0; i < array.length; i++) {
+            if(i==0){
+                phone_pin_first_edittext.setText(String.valueOf(array[i]));
+            }else if(i==1){
+                phone_pin_second_edittext.setText(String.valueOf(array[i]));
+            }else if(i==2){
+                phone_pin_third_edittext.setText(String.valueOf(array[i]));
+            }else if(i==3){
+                phone_pin_forth_edittext.setText(String.valueOf(array[i]));
+            }
+        }
     }
 
     @Override
-    public void PermissionGranted(int request_code) {
+    public void onOtpTimeout() {
+
     }
 
-    @Override
-    public void PartialPermissionGranted(int request_code, ArrayList<String> granted_permissions) {
-        Toast.makeText(Verify_OTP.this, "Permission not granted!!!", Toast.LENGTH_LONG).show();
-    }
+    public void startSMSListener() {
+        SmsRetrieverClient mClient = SmsRetriever.getClient(this);
+        Task<Void> mTask = mClient.startSmsRetriever();
+        mTask.addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override public void onSuccess(Void aVoid) {
 
-    @Override
-    public void PermissionDenied(int request_code) {
-        Toast.makeText(Verify_OTP.this, "Permission not granted!!!", Toast.LENGTH_LONG).show();
+              //Toast.makeText(Verify_OTP.this, "SMS Retriever starts", Toast.LENGTH_LONG).show();
+            }
+        });
+        mTask.addOnFailureListener(new OnFailureListener() {
+            @Override public void onFailure(@NonNull Exception e) {
+                Toast.makeText(Verify_OTP.this, "Error", Toast.LENGTH_LONG).show();
+            }
+        });
     }
-
-    @Override
-    public void NeverAskAgain(int request_code) {
-    }
-
 }

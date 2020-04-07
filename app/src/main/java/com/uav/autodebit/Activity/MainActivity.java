@@ -1,8 +1,8 @@
 package com.uav.autodebit.Activity;
 
-import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,11 +14,11 @@ import android.os.Build;
 import android.os.CountDownTimer;
 
 import android.provider.Settings;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import android.os.Bundle;
 import android.text.Html;
 import android.text.InputType;
@@ -962,6 +962,7 @@ public class MainActivity extends Base_Activity {
 
     @Override
     public void onResume() {
+
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, new IntentFilter("otp"));
         super.onResume();
     }

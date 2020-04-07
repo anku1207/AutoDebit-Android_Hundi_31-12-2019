@@ -1,6 +1,7 @@
 package com.uav.autodebit.Activity;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.database.Cursor;
@@ -8,10 +9,11 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.ContactsContract;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -53,6 +55,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements View.OnClickListener , PermissionUtils.PermissionResultCallback , ActivityCompat.OnRequestPermissionsResultCallback{
@@ -188,74 +191,74 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
         return  datalist;
     }
 
-
+    //ApplicationConstant.REQ_ENACH_MANDATE
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if(resultCode==RESULT_OK){
-            switch (requestCode) {
-                case 100: // operator list response
-                    operatorname =data.getStringExtra("operatorname");
-                    operatorcode=data.getStringExtra("operator");
 
-                    ConnectionVO connectionVO = new ConnectionVO();
-                    connectionVO.setTitle("Select State");
-                    connectionVO.setSharedPreferenceKey(Session.MOBILE_STATE_LIST);
-                    connectionVO.setEntityIdKey("RegionAlias");
-                    connectionVO.setEntityTextKey("RegionName");
-                    Intent intent = new Intent(getApplicationContext(),ListViewSingleText.class);
-                    intent.putExtra(ApplicationConstant.INTENT_EXTRA_CONNECTION,  connectionVO);
-                    startActivityForResult(intent,1000);
+            if(requestCode==100){
+                operatorname =data.getStringExtra("operatorname");
+                operatorcode=data.getStringExtra("operator");
 
-                    break;
-                case 1000 : // state list response
-                        amount.requestFocus();
-                        browseplan.setVisibility(View.VISIBLE);
-                        regionname=data.getStringExtra("valueName");
-                        regioncode=data.getStringExtra("valueId");
-                        operator.setText(operatorcode+"-"+data.getStringExtra("valueName"));
-                        operator.setError(null);
-                        amount.setError(null);
-                        if (!mobilenumber.getText().toString().equals("") &&  Utility.validatePattern(mobilenumber.getText().toString().trim(),ApplicationConstant.MOBILENO_VALIDATION)!=null){
-                            mobilenumber.setError(Utility.validatePattern(mobilenumber.getText().toString().trim(),ApplicationConstant.MOBILENO_VALIDATION));
+                ConnectionVO connectionVO = new ConnectionVO();
+                connectionVO.setTitle("Select State");
+                connectionVO.setSharedPreferenceKey(Session.MOBILE_STATE_LIST);
+                connectionVO.setEntityIdKey("RegionAlias");
+                connectionVO.setEntityTextKey("RegionName");
+                Intent intent = new Intent(getApplicationContext(),ListViewSingleText.class);
+                intent.putExtra(ApplicationConstant.INTENT_EXTRA_CONNECTION,  connectionVO);
+                startActivityForResult(intent,1000);
+
+            }else if(requestCode==1000){
+                amount.requestFocus();
+                browseplan.setVisibility(View.VISIBLE);
+                regionname=data.getStringExtra("valueName");
+                regioncode=data.getStringExtra("valueId");
+                operator.setText(operatorcode+"-"+data.getStringExtra("valueName"));
+                operator.setError(null);
+                amount.setError(null);
+                if (!mobilenumber.getText().toString().equals("") &&  Utility.validatePattern(mobilenumber.getText().toString().trim(),ApplicationConstant.MOBILENO_VALIDATION)!=null){
+                    mobilenumber.setError(Utility.validatePattern(mobilenumber.getText().toString().trim(),ApplicationConstant.MOBILENO_VALIDATION));
+                }
+            }else if(requestCode==101){
+                Uri contactData = data.getData();
+                Cursor c = getContentResolver().query(contactData, null, null, null, null);
+                if (c.moveToFirst()) {
+                    String contactId = c.getString(c.getColumnIndex(ContactsContract.Contacts._ID));
+                    String hasNumber = c.getString(c.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
+                    String num = "";
+                    if (Integer.valueOf(hasNumber) == 1) {
+                        Cursor numbers = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + contactId, null, null);
+                        while (numbers.moveToNext()) {
+                            num = numbers.getString(numbers.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)).replaceAll("\\s+","");
                         }
-                    break;
-                case 101: // select contact list response
-                        Uri contactData = data.getData();
-                        Cursor c = getContentResolver().query(contactData, null, null, null, null);
-                        if (c.moveToFirst()) {
-                            String contactId = c.getString(c.getColumnIndex(ContactsContract.Contacts._ID));
-                            String hasNumber = c.getString(c.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
-                            String num = "";
-                            if (Integer.valueOf(hasNumber) == 1) {
-                                Cursor numbers = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + contactId, null, null);
-                                while (numbers.moveToNext()) {
-                                    num = numbers.getString(numbers.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)).replaceAll("\\s+","");
-                                }
-                                if (num.length()>10) {
-                                    num=num.substring(num.length() - 10);
-                                }
-                                mobilenumber.setText(num);
-                                mobilenumber.setSelection( mobilenumber.getText().toString().length());
-                            }
+                        if (num.length()>10) {
+                            num=num.substring(num.length() - 10);
                         }
-                        break;
-                case 102: // browse plan response
-                    amount.setText(data.getStringExtra("amount"));
-                    amount.setSelection(amount.getText().length());
-                    break;
-                case 200: // payu response
-                    if (data != null) {
-                        if(data.getIntExtra("status",0)== CCTransactionStatusVO.SUCCESS){
-                            proceedToRecharge(data.getStringExtra("oxigenTypeId"),data.getStringExtra("tnxid"), AuthServiceProviderVO.PAYU);
-                        }else if(data.getIntExtra("status",0)== CCTransactionStatusVO.FAILURE){
-                            Utility.showSingleButtonDialogconfirmation(Mobile_Prepaid_Recharge_Service.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
-                                ok.dismiss();
-                            }),"",data.getStringExtra("message"));
-                        }
+                        mobilenumber.setText(num);
+                        mobilenumber.setSelection( mobilenumber.getText().toString().length());
                     }
+                }
+
+            }else if(requestCode==102){
+                amount.setText(data.getStringExtra("amount"));
+                amount.setSelection(amount.getText().length());
+            }else if(requestCode==200){
+                if (data != null) {
+                    if(data.getIntExtra("status",0)== CCTransactionStatusVO.SUCCESS){
+                        proceedToRecharge(data.getStringExtra("oxigenTypeId"),data.getStringExtra("tnxid"), AuthServiceProviderVO.PAYU);
+                    }else if(data.getIntExtra("status",0)== CCTransactionStatusVO.FAILURE){
+                        Utility.showSingleButtonDialogconfirmation(Mobile_Prepaid_Recharge_Service.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                            ok.dismiss();
+                        }),"",data.getStringExtra("message"));
+                    }
+                }
+            }else if(requestCode==ApplicationConstant.REQ_ENACH_MANDATE){
+                startActivity(new Intent(this,History.class));
+                finish();
             }
         }
     }
@@ -308,7 +311,6 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                         }
                     }
                 });
-
                 break;
         }
 
@@ -493,22 +495,47 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
 
                     JSONObject response = (JSONObject) resp;
                     Gson gson = new Gson();
-                    OxigenTransactionVO oxigenPlanresp = gson.fromJson(response.toString(), OxigenTransactionVO.class);
+                    OxigenTransactionVO oxigenTransactionVOresp = gson.fromJson(response.toString(), OxigenTransactionVO.class);
 
-                    if(oxigenPlanresp.getStatusCode().equals("400")){
+                    if(oxigenTransactionVOresp.getStatusCode().equals("400")){
                         StringBuffer stringBuffer= new StringBuffer();
-                        for(int i=0;i<oxigenPlanresp.getErrorMsgs().size();i++){
-                            stringBuffer.append(oxigenPlanresp.getErrorMsgs().get(i));
+                        for(int i=0;i<oxigenTransactionVOresp.getErrorMsgs().size();i++){
+                            stringBuffer.append(oxigenTransactionVOresp.getErrorMsgs().get(i));
                         }
                         Utility.showSingleButtonDialog(Mobile_Prepaid_Recharge_Service.this,"Error !",stringBuffer.toString(),false);
                     }else {
-                        Utility.showSingleButtonDialogconfirmation(Mobile_Prepaid_Recharge_Service.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(s)->{
+                      /*  Utility.showSingleButtonDialogconfirmation(Mobile_Prepaid_Recharge_Service.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(s)->{
                             s.dismiss();
                             startActivity(new Intent(Mobile_Prepaid_Recharge_Service.this,HistorySummary.class).putExtra("historyId",oxigenPlanresp.getAnonymousInteger().toString()));
                             finish();
                         },(ConfirmationDialogInterface.OnCancel)(c)->{
                             c.dismiss();
-                        }),"Success !",oxigenPlanresp.getAnonymousString());;
+                        }),"Success !",oxigenPlanresp.getAnonymousString());*/
+
+
+                        // ask to customer for bank mandate
+                        if(oxigenTransactionVOresp.isEventIs()){
+                            String [] btnname={"No","Yes"};
+                            BillPayRequest.showDoubleButtonDialogConfirmation(new DialogInterface() {
+                                @Override
+                                public void confirm(Dialog dialog) {
+                                    dialog.dismiss();
+                                    startActivityForResult(new Intent(Mobile_Prepaid_Recharge_Service.this,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(oxigenTransactionVOresp.getServiceId()))), ApplicationConstant.REQ_ENACH_MANDATE);
+                                }
+                                @Override
+                                public void modify(Dialog dialog) {
+                                    dialog.dismiss();
+                                    startActivity(new Intent(Mobile_Prepaid_Recharge_Service.this,HistorySummary.class).putExtra("historyId",oxigenTransactionVOresp.getAnonymousInteger().toString()));
+                                    finish();
+                                }
+                            },Mobile_Prepaid_Recharge_Service.this,oxigenTransactionVOresp.getAnonymousString(),"",btnname);
+                        }else {
+                            Utility.showSingleButtonDialogconfirmation(Mobile_Prepaid_Recharge_Service.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                               startActivity(new Intent(Mobile_Prepaid_Recharge_Service.this,HistorySummary.class).putExtra("historyId",oxigenTransactionVOresp.getAnonymousInteger().toString()));
+                                finish();
+                            }),"",oxigenTransactionVOresp.getAnonymousString());
+                        }
+
                     }
             }
         });

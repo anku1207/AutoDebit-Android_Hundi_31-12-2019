@@ -1,42 +1,25 @@
 package com.uav.autodebit.Activity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Typeface;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
-import android.view.animation.LayoutAnimationController;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
 import com.uav.autodebit.BO.CustomerBO;
-import com.uav.autodebit.BO.Electricity_BillBO;
-import com.uav.autodebit.BO.PanCardBO;
-import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.Interface.ServiceClick;
 import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
-import com.uav.autodebit.adpater.DMRC_List_Adpater;
 import com.uav.autodebit.adpater.History_List_Adapter;
-import com.uav.autodebit.override.TransparentProgressDialog;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerVO;
-import com.uav.autodebit.vo.DMRC_Customer_CardVO;
 import com.uav.autodebit.vo.DataAdapterVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
 import com.uav.autodebit.volley.VolleyUtils;
@@ -48,8 +31,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import static com.uav.autodebit.Activity.Home.clickServiceId;
 
 public class History extends Base_Activity implements View.OnClickListener {
     RecyclerView recyclerView;

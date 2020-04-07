@@ -3,12 +3,13 @@ package com.uav.autodebit.adpater;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.uav.autodebit.Activity.Home;
 import com.uav.autodebit.R;
@@ -61,9 +62,6 @@ public class UitilityAdapter extends RecyclerView.Adapter<UitilityAdapter.Prodec
         holder.textViewTitle.setText(pro.getTitle());
         holder.imageView.setImageDrawable(Utility.GetImage(mctx,pro.getAppIcon()));
 
-
-
-
         if(pro.getAdopted()==1 && pro.getServiceAdopteBMA()!=null ){
             holder.serviceactive.setVisibility(View.VISIBLE);
         }else {
@@ -75,14 +73,11 @@ public class UitilityAdapter extends RecyclerView.Adapter<UitilityAdapter.Prodec
             public void onClick(View v) {
                 level=null;
                 Utility.enableDisableView(v,false);
-
                 BackgroundAsyncService backgroundAsyncService = new BackgroundAsyncService(pd,true, new BackgroundServiceInterface() {
                     @Override
                     public void doInBackGround() {
-
                          level= Session.getCustomerLevel(mctx);
                     }
-
                     @Override
                     public void doPostExecute() {
                                 Intent intent;

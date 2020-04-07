@@ -1,11 +1,6 @@
 package com.uav.autodebit.adpater;
 
 import android.content.Context;
-import android.content.Intent;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,16 +8,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.squareup.picasso.Picasso;
-import com.uav.autodebit.Activity.DTH_Recharge_Service;
-import com.uav.autodebit.Activity.Dmrc_Card_Request;
-import com.uav.autodebit.Activity.Mobile_Prepaid_Recharge_Service;
 import com.uav.autodebit.R;
-import com.uav.autodebit.override.UAVTextView;
-import com.uav.autodebit.permission.Session;
-import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.DMRC_Customer_CardVO;
-import com.uav.autodebit.vo.ServiceTypeVO;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

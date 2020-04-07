@@ -1,26 +1,16 @@
 package com.uav.autodebit.util;
 
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
-import android.support.v4.content.FileProvider;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.uav.autodebit.Activity.Splash_Screen;
 import com.uav.autodebit.R;
 import com.uav.autodebit.vo.BitmapVO;
 
@@ -30,8 +20,6 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
-
-import de.greenrobot.event.EventBus;
 
 public class DownloadTask {
 

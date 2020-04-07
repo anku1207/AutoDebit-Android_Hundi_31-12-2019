@@ -7,13 +7,14 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.ContactsContract;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -34,6 +35,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.Interface.VolleyResponse;
+import com.uav.autodebit.OTP.helper.AppSignatureHelper;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.Content_Message;
@@ -61,7 +63,6 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Mobile_Postpaid extends Base_Activity implements View.OnClickListener , PermissionUtils.PermissionResultCallback , ActivityCompat.OnRequestPermissionsResultCallback{
-
 
     EditText amount,operator;
     ImageView back_activity_button;
@@ -186,128 +187,125 @@ public class Mobile_Postpaid extends Base_Activity implements View.OnClickListen
             operator.setEnabled(true);
 
             if(resultCode==RESULT_OK){
-                switch (requestCode) {
-                    case 100:
-                        //clear element maplist
-                        eleMap.clear();
 
-                        operatorname =data.getStringExtra("operatorname");
-                        operatorcode=data.getStringExtra("operator");
+                if(requestCode==100){
+                    //clear element maplist
+                    eleMap.clear();
 
-                        amountlayout.setVisibility(View.VISIBLE);
+                    operatorname =data.getStringExtra("operatorname");
+                    operatorcode=data.getStringExtra("operator");
 
-                        DataAdapterVO dataAdapterVO = (DataAdapterVO) data.getSerializableExtra("datavo");
-                        operator.setError(null);
-                        amount.setError(null);
-                        operator.setText(operatorname);
-                        operator.setTag(operatorcode);
+                    amountlayout.setVisibility(View.VISIBLE);
 
-                        amount.setText("");
+                    DataAdapterVO dataAdapterVO = (DataAdapterVO) data.getSerializableExtra("datavo");
+                    operator.setError(null);
+                    amount.setError(null);
+                    operator.setText(operatorname);
+                    operator.setTag(operatorcode);
 
-                        //add fetch bill btn
-                        if (dataAdapterVO.getIsbillFetch().equals("1")) {
-                            fetchbill.setVisibility(View.VISIBLE);
-                            amount.setEnabled(false);
-                            isFetchBill=true;
-                        } else {
-                            fetchbill.setVisibility(View.GONE);
-                            amount.setEnabled(true);
-                            isFetchBill=false;
-                        }
+                    amount.setText("");
 
-                        //add min Amt Layout
-                        if(dataAdapterVO.getMinTxnAmount()!=null){
-                            if(min_amt_layout.getChildCount()>0)min_amt_layout.removeAllViews();
-                            minAmt=dataAdapterVO.getMinTxnAmount();
+                    //add fetch bill btn
+                    if (dataAdapterVO.getIsbillFetch().equals("1")) {
+                        fetchbill.setVisibility(View.VISIBLE);
+                        amount.setEnabled(false);
+                        isFetchBill=true;
+                    } else {
+                        fetchbill.setVisibility(View.GONE);
+                        amount.setEnabled(true);
+                        isFetchBill=false;
+                    }
 
-                            Animation animFadeIn = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fadein);
-                            min_amt_layout.startAnimation(animFadeIn);
-                            min_amt_layout.setVisibility(View.VISIBLE);
-                            min_amt_layout.setBackgroundColor(Utility.getColorWithAlpha(Color.rgb(224,224,224), 0.5f));
-                            min_amt_layout.setPadding(Utility.getPixelsFromDPs(Mobile_Postpaid.this,15),Utility.getPixelsFromDPs(Mobile_Postpaid.this,15),0,Utility.getPixelsFromDPs(Mobile_Postpaid.this,15));
+                    //add min Amt Layout
+                    if(dataAdapterVO.getMinTxnAmount()!=null){
+                        if(min_amt_layout.getChildCount()>0)min_amt_layout.removeAllViews();
+                        minAmt=dataAdapterVO.getMinTxnAmount();
 
-                            min_amt_layout.addView(DynamicLayout.billMinLayout(Mobile_Postpaid.this,dataAdapterVO));
-                        }else {
-                            min_amt_layout.setVisibility(View.GONE);
-                        }
+                        Animation animFadeIn = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fadein);
+                        min_amt_layout.startAnimation(animFadeIn);
+                        min_amt_layout.setVisibility(View.VISIBLE);
+                        min_amt_layout.setBackgroundColor(Utility.getColorWithAlpha(Color.rgb(224,224,224), 0.5f));
+                        min_amt_layout.setPadding(Utility.getPixelsFromDPs(Mobile_Postpaid.this,15),Utility.getPixelsFromDPs(Mobile_Postpaid.this,15),0,Utility.getPixelsFromDPs(Mobile_Postpaid.this,15));
 
-                        //Remove dynamic cards from the layout and arraylist
-                        if(dynamicCardViewContainer.getChildCount()>0) dynamicCardViewContainer.removeAllViews();
-                        removefetchbilllayout();
-                        questionsVOS.clear();
-                        //Create dynamic cards of edit text
-                        if(dataAdapterVO.getQuestionsData() !=null){
-                            JSONArray jsonArray = new JSONArray(dataAdapterVO.getQuestionsData());
-                            for(int i=0; i<jsonArray.length(); i++){
-                                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                OxigenQuestionsVO oxigenQuestionsVO = gson.fromJson(jsonObject.toString(), OxigenQuestionsVO.class);
+                        min_amt_layout.addView(DynamicLayout.billMinLayout(Mobile_Postpaid.this,dataAdapterVO));
+                    }else {
+                        min_amt_layout.setVisibility(View.GONE);
+                    }
 
-                                CardView cardView = Utility.getCardViewStyle(this);
-                                UAVEditText et = Utility.getUavEditText(Mobile_Postpaid.this);
-                                et.setId(View.generateViewId());
-                                et.setHint(oxigenQuestionsVO.getQuestionLabel());
+                    //Remove dynamic cards from the layout and arraylist
+                    if(dynamicCardViewContainer.getChildCount()>0) dynamicCardViewContainer.removeAllViews();
+                    removefetchbilllayout();
+                    questionsVOS.clear();
+                    //Create dynamic cards of edit text
+                    if(dataAdapterVO.getQuestionsData() !=null){
+                        JSONArray jsonArray = new JSONArray(dataAdapterVO.getQuestionsData());
+                        for(int i=0; i<jsonArray.length(); i++){
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+                            OxigenQuestionsVO oxigenQuestionsVO = gson.fromJson(jsonObject.toString(), OxigenQuestionsVO.class);
 
-                                changeEdittextValue(et);
+                            CardView cardView = Utility.getCardViewStyle(this);
+                            UAVEditText et = Utility.getUavEditText(Mobile_Postpaid.this);
+                            et.setId(View.generateViewId());
+                            et.setHint(oxigenQuestionsVO.getQuestionLabel());
 
-                                if(oxigenQuestionsVO.getQuestionLabel().contains("Mobile")){
-                                    eleMap.put("mobile",et);
-                                    Drawable drawable = getResources().getDrawable(R.drawable.contacts);
-                                    drawable = DrawableCompat.wrap(drawable);
-                                    DrawableCompat.setTint(drawable, getResources().getColor(R.color.appbar));
+                            changeEdittextValue(et);
 
-                                    et.setCompoundDrawablesWithIntrinsicBounds(R.drawable.mobile,0 , R.drawable.contacts, 0);
-                                    et.setDrawableClickListener(new DrawableClickListener() {
-                                        @Override
-                                        public void onClick(DrawablePosition target) {
-                                            switch (target) {
-                                                case RIGHT:
-                                                    permissionUtils.check_permission(PermissionHandler.contactPermissionArrayList(Mobile_Postpaid.this), Content_Message.CONTACT_PERMISSION, ApplicationConstant.REQ_READ_CONTACT_PERMISSION);
-                                                    break;
-                                            }
+                            if(oxigenQuestionsVO.getQuestionLabel().contains("Mobile")){
+                                eleMap.put("mobile",et);
+                                Drawable drawable = getResources().getDrawable(R.drawable.contacts);
+                                drawable = DrawableCompat.wrap(drawable);
+                                DrawableCompat.setTint(drawable, getResources().getColor(R.color.appbar));
+
+                                et.setCompoundDrawablesWithIntrinsicBounds(R.drawable.mobile,0 , R.drawable.contacts, 0);
+                                et.setDrawableClickListener(new DrawableClickListener() {
+                                    @Override
+                                    public void onClick(DrawablePosition target) {
+                                        switch (target) {
+                                            case RIGHT:
+                                                permissionUtils.check_permission(PermissionHandler.contactPermissionArrayList(Mobile_Postpaid.this), Content_Message.CONTACT_PERMISSION, ApplicationConstant.REQ_READ_CONTACT_PERMISSION);
+                                                break;
                                         }
-                                    });
-                                }
-                                cardView.addView(et);
-                                dynamicCardViewContainer.addView(cardView);
-                                if(oxigenQuestionsVO.getInstructions()!=null){
-                                    TextView tv = Utility.getTextView(this, oxigenQuestionsVO.getInstructions());
-                                    dynamicCardViewContainer.addView(tv);
-                                }
-                                oxigenQuestionsVO.setElementId(et.getId());
-                                questionsVOS.add(oxigenQuestionsVO);
+                                    }
+                                });
                             }
-                            EditText editText =(EditText) findViewById(questionsVOS.get(0).getElementId());
-                            editText.requestFocus();
-                        }
-                        break;
-                    case 101:
-                        Uri contactData = data.getData();
-                        Cursor c = getContentResolver().query(contactData, null, null, null, null);
-                        if (c.moveToFirst()) {
-                            String contactId = c.getString(c.getColumnIndex(ContactsContract.Contacts._ID));
-                            String hasNumber = c.getString(c.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
-                            String num = "";
-                            if (Integer.valueOf(hasNumber) == 1) {
-                                Cursor numbers = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + contactId, null, null);
-                                while (numbers.moveToNext()) {
-                                    num = numbers.getString(numbers.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)).replaceAll("\\s+","");
-                                }
-                                if (num.length()>10) {
-                                    num=num.substring(num.length() - 10);
-                                }
-                                ((EditText)eleMap.get("mobile")).setText(num);
-                                ((EditText)eleMap.get("mobile")).setSelection( ((EditText)eleMap.get("mobile")).getText().toString().length());
-                                amount.setText("");
+                            cardView.addView(et);
+                            dynamicCardViewContainer.addView(cardView);
+                            if(oxigenQuestionsVO.getInstructions()!=null){
+                                TextView tv = Utility.getTextView(this, oxigenQuestionsVO.getInstructions());
+                                dynamicCardViewContainer.addView(tv);
                             }
+                            oxigenQuestionsVO.setElementId(et.getId());
+                            questionsVOS.add(oxigenQuestionsVO);
                         }
-                        break;
-                    case 200:
-                        if(data !=null){
-                            BillPayRequest.onActivityResult(Mobile_Postpaid.this,data);
-                        }else {
-                            Utility.showSingleButtonDialog(Mobile_Postpaid.this,"Error !","Something went wrong, Please try again!",false);
+                        EditText editText =(EditText) findViewById(questionsVOS.get(0).getElementId());
+                        editText.requestFocus();
+                    }
+                }else if(requestCode==101){
+                    Uri contactData = data.getData();
+                    Cursor c = getContentResolver().query(contactData, null, null, null, null);
+                    if (c.moveToFirst()) {
+                        String contactId = c.getString(c.getColumnIndex(ContactsContract.Contacts._ID));
+                        String hasNumber = c.getString(c.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
+                        String num = "";
+                        if (Integer.valueOf(hasNumber) == 1) {
+                            Cursor numbers = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + contactId, null, null);
+                            while (numbers.moveToNext()) {
+                                num = numbers.getString(numbers.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)).replaceAll("\\s+","");
+                            }
+                            if (num.length()>10) {
+                                num=num.substring(num.length() - 10);
+                            }
+                            ((EditText)eleMap.get("mobile")).setText(num);
+                            ((EditText)eleMap.get("mobile")).setSelection( ((EditText)eleMap.get("mobile")).getText().toString().length());
+                            amount.setText("");
                         }
-                        break;
+                    }
+                }else if(requestCode==200 || requestCode== ApplicationConstant.REQ_ENACH_MANDATE){
+                    if(data !=null){
+                        BillPayRequest.onActivityResult(Mobile_Postpaid.this,data,requestCode);
+                    }else {
+                        Utility.showSingleButtonDialog(Mobile_Postpaid.this,"Error !","Something went wrong, Please try again!",false);
+                    }
                 }
             }
         }catch (Exception e){
@@ -315,8 +313,6 @@ public class Mobile_Postpaid extends Base_Activity implements View.OnClickListen
             Utility.exceptionAlertDialog(Mobile_Postpaid.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
     }
-
-
 
     @Override
     public void onClick(View view) {
@@ -427,8 +423,7 @@ public class Mobile_Postpaid extends Base_Activity implements View.OnClickListen
     }
 
     private JSONObject getQuestionLabelDate(boolean fetchBill) throws Exception{
-        Toast.makeText(this, ""+minAmt, Toast.LENGTH_SHORT).show();
-        return BillPayRequest.getQuestionLabelData(Mobile_Postpaid.this,operator,amount,fetchBill,isFetchBill, questionsVOS,minAmt);
+       return BillPayRequest.getQuestionLabelData(Mobile_Postpaid.this,operator,amount,fetchBill,isFetchBill, questionsVOS,minAmt);
     }
 
     public void removefetchbilllayout(){

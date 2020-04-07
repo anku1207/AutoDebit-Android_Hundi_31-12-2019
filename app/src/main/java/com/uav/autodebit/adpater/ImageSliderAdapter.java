@@ -1,18 +1,16 @@
 package com.uav.autodebit.adpater;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.support.v4.view.PagerAdapter;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import androidx.viewpager.widget.PagerAdapter;
+
 import com.squareup.picasso.Picasso;
 import com.uav.autodebit.R;
-import com.uav.autodebit.util.DiskLruImageCache;
-import com.uav.autodebit.util.Utils_Cache;
-import com.uav.autodebit.vo.BannerVO;
 
 import java.util.List;
 

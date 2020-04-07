@@ -4,10 +4,10 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
-import android.support.annotation.Nullable;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -16,6 +16,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
 import com.uav.autodebit.BO.SignUpBO;
@@ -379,19 +381,10 @@ public class Login extends Base_Activity implements View.OnClickListener, View.O
                         intent.putExtra("resp",json);
                         startActivityForResult(intent,200);
                     }
-
-
-
                 }
             }
         });
-
     }
-
-
-
-
-
 
     public void resendotpfun(final String type, String value){
         HashMap<String, Object> params = new HashMap<String, Object>();
@@ -440,11 +433,15 @@ public class Login extends Base_Activity implements View.OnClickListener, View.O
                         intent.putExtra("resp",json);
                         startActivityForResult(intent,100);
                     }else {
-                        Intent intent=new Intent(Login.this,Verify_OTP.class);
-                        customerVO.setActionname("signInViaOTP");
-                        String json = gson.toJson(customerVO); // myObject - instance of MyObject
-                        intent.putExtra("resp",json);
-                        startActivityForResult(intent,100);
+                            Intent intent=new Intent(Login.this,Verify_OTP.class);
+                            customerVO.setActionname("signInViaOTP");
+                            String json = gson.toJson(customerVO); // myObject - instance of MyObject
+                            intent.putExtra("resp",json);
+                            startActivityForResult(intent,100);
+
+                            // startActivityForResult(new Intent(Login.this,Verify_OTP.class),12000);
+
+
                     }
 
                 }
@@ -465,7 +462,7 @@ public class Login extends Base_Activity implements View.OnClickListener, View.O
                       intent.putExtra("methodname","setCustomerPassword");
                       startActivity(intent);
                   }else if(Integer.parseInt(data.getStringExtra("key"))==(CustomerStatusVO.CUSTOMER_VERFIED)){
-                     Session.set_Data_Sharedprefence(Login.this,Session.CACHE_CUSTOMER,data.getStringExtra("value"));
+                     //Session.set_Data_Sharedprefence(Login.this,Session.CACHE_CUSTOMER,data.getStringExtra("value"));
                      Intent intent =new Intent(Login.this, Home.class);
                      intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                      intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

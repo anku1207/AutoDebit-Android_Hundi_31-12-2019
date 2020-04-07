@@ -3,57 +3,43 @@ package com.uav.autodebit.androidFragment;
 
 
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 import com.uav.autodebit.Activity.AdditionalService;
 import com.uav.autodebit.Activity.All_Service;
-import com.uav.autodebit.Activity.Broadband;
 import com.uav.autodebit.Activity.Credit_Score_Report;
 import com.uav.autodebit.Activity.DMRC_Cards_List;
-import com.uav.autodebit.Activity.DTH_Recharge_Service;
 import com.uav.autodebit.Activity.DividerItemDecorator;
 import com.uav.autodebit.Activity.Dmrc_Card_Request;
-import com.uav.autodebit.Activity.Electricity_Bill;
 import com.uav.autodebit.Activity.Enach_Mandate;
-import com.uav.autodebit.Activity.Gas_Bill;
-import com.uav.autodebit.Activity.Home;
 import com.uav.autodebit.Activity.Hyd_Metro;
 import com.uav.autodebit.Activity.IRCTC;
-import com.uav.autodebit.Activity.LandlineBill;
-import com.uav.autodebit.Activity.Mobile_Postpaid;
-import com.uav.autodebit.Activity.Mobile_Prepaid_Recharge_Service;
 import com.uav.autodebit.Activity.Mum_Metro;
 import com.uav.autodebit.Activity.PanVerification;
-import com.uav.autodebit.Activity.Paynimo_HDFC;
 import com.uav.autodebit.Activity.SI_First_Data;
-import com.uav.autodebit.Activity.Water;
 import com.uav.autodebit.BO.MetroBO;
-import com.uav.autodebit.BO.PanCardBO;
 import com.uav.autodebit.R;
 import com.uav.autodebit.adpater.BannerAdapter;
 import com.uav.autodebit.adpater.UitilityAdapter;
@@ -68,8 +54,6 @@ import com.uav.autodebit.vo.BannerVO;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerVO;
 import com.uav.autodebit.vo.DMRC_Customer_CardVO;
-import com.uav.autodebit.vo.DataAdapterVO;
-import com.uav.autodebit.vo.DmrcCardStatusVO;
 import com.uav.autodebit.vo.LocalCacheVO;
 import com.uav.autodebit.vo.ServiceTypeVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
@@ -78,18 +62,10 @@ import com.uav.autodebit.volley.VolleyUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
-
-import static android.app.Activity.RESULT_OK;
 
 
 /**

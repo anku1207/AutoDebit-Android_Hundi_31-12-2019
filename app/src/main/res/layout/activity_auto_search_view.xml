@@ -8,8 +8,7 @@
     android:orientation="vertical"
     >
 
-
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/my_awesome_toolbar"
         android:layout_height="50dp"
         android:layout_width="match_parent"
@@ -22,7 +21,6 @@
             android:textStyle="bold"
             android:id="@+id/back_activity_button"
             android:tint="@color/white"
-
             />
 
         <LinearLayout
@@ -60,7 +58,7 @@
             android:fontFamily="@font/poppinslight"
 
             />
-    </android.support.v7.widget.Toolbar>
+    </androidx.appcompat.widget.Toolbar>
 
 
 

@@ -1,30 +1,27 @@
 package com.uav.autodebit.Activity;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
-import android.support.v4.widget.NestedScrollView;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.widget.NestedScrollView;
 import android.util.Log;
 import android.view.View;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
+
 import android.view.MenuItem;
 import android.view.WindowManager;
 import android.view.animation.TranslateAnimation;
@@ -32,13 +29,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+
+
+import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 import com.uav.autodebit.BO.MetroBO;
 import com.uav.autodebit.BO.ServiceBO;
@@ -58,7 +57,6 @@ import com.uav.autodebit.util.BackgroundServiceInterface;
 import com.uav.autodebit.util.DialogInterface;
 import com.uav.autodebit.util.ExceptionHandler;
 import com.uav.autodebit.util.Utility;
-import com.uav.autodebit.vo.AuthStatusVO;
 import com.uav.autodebit.vo.BannerVO;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerAuthServiceVO;
@@ -73,7 +71,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -271,7 +268,6 @@ public class Home extends Base_Activity
 
 
        // loadFragment(new Home_Menu());
-
         navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
@@ -674,8 +670,6 @@ public class Home extends Base_Activity
             CustomerVO customerVO =(CustomerVO) o;
             if(view!=null)Utility.enableDisableView(view,true);
 
-            Toast.makeText(Home.this, ""+customerVO.getStatusCode(), Toast.LENGTH_SHORT).show();
-
             if(!customerVO.getStatusCode().equals("200") && !customerVO.getStatusCode().equals("ap104")){
                 if(customerVO.getStatusCode().equals("ap105") || customerVO.getStatusCode().equals("ap107") ||customerVO.getStatusCode().equals("ap102")){
                     String[] buttons = {"OK"};
@@ -903,8 +897,7 @@ public class Home extends Base_Activity
         switch (view.getId()){
 
             case R.id.mainwallet:
-
-                try {
+             /*   try {
                     String uri ="https://r.uber.com/FfNRcXC111";
                     //String uri = "https://www.amazon.in/Infinity-Glide-500-Wireless-Headphones/dp/B07W5MZY9J/ref=ac_session_sims_23_3/262-5272901-5384510?_encoding=UTF8&pd_rd_i=B07W6NDVSR&pd_rd_r=5a607169-3605-4bbd-858b-3fe49d3b2d57&pd_rd_w=RloOb&pd_rd_wg=EuSlK&pf_rd_p=a6472ab3-4fb9-4298-9be8-6a9080bff261&pf_rd_r=J4EWD6QHMA9EBX8AG94R&psc=1&refRID=J4EWD6QHMA9EBX8AG94R&th=1";
                    // String uri = "uber://?action=setPickup&pickup=my_location";
@@ -917,50 +910,32 @@ public class Home extends Base_Activity
                     } catch (android.content.ActivityNotFoundException anfe) {
                         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=com.ubercab")));
                     }
-                }
-
-
-                Toast.makeText(this, "mainwallet", Toast.LENGTH_SHORT).show();
+                }*/
                 break;
             case R.id.profile:
                 startActivity(new Intent(this,Profile_Activity.class));
                 break;
 
             case R.id.linked  :
-                Toast.makeText(this, "linked", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.regular  :
-                Toast.makeText(this, "regular", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.all  :
-                startActivity(new Intent(this,All_Service.class));
                 break;
             case R.id.wallet  :
-                Toast.makeText(this, "wallet", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.delinkservice  :
-                Toast.makeText(this, "delinkservice", Toast.LENGTH_SHORT).show();
                 break;
-
-
             case R.id.faqs  :
-                Toast.makeText(this, "faqs", Toast.LENGTH_SHORT).show();
                 break;
-
-
             case R.id.reportbug  :
-                Toast.makeText(this, "reportbug", Toast.LENGTH_SHORT).show();
                 break;
-
             case R.id.condition  :
-                Toast.makeText(this, "condition", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.setting  :
-                Toast.makeText(this, "setting", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.closemenuactivity:
                 break;
-
             case R.id.notification_layout:
                 GlobalApplication.notificationCount=0;
                 startActivity(new Intent(Home.this,Notifications.class));

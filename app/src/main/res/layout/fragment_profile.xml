@@ -335,7 +335,7 @@
                     android:layout_weight=".1"
                     android:tint="@color/appbar" />-->
 
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/bankrecycler"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -343,7 +343,7 @@
 
                    >
 
-                </android.support.v7.widget.RecyclerView>
+                </androidx.recyclerview.widget.RecyclerView>
             </LinearLayout>
 
 
@@ -394,14 +394,14 @@
                     android:layout_weight=".1"
                     android:tint="@color/appbar" />
 
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/servicerecycler"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     >
 
-                </android.support.v7.widget.RecyclerView>
+                </androidx.recyclerview.widget.RecyclerView>
             </LinearLayout>
 
 

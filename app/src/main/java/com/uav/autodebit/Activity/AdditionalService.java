@@ -5,12 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.nfc.Tag;
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.BottomNavigationView;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.KeyEvent;
@@ -25,10 +20,16 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
 import com.uav.autodebit.BO.BannerBO;
 import com.uav.autodebit.BO.CustomerBO;
+import com.uav.autodebit.BO.MandateBO;
 import com.uav.autodebit.BO.MetroBO;
+import com.uav.autodebit.BO.ServiceBO;
 import com.uav.autodebit.Interface.AlertSelectDialogClick;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.R;
@@ -75,9 +76,7 @@ public class AdditionalService extends Base_Activity implements View.OnClickList
     BottomNavigationView navigation;
 
     UAVProgressDialog pd;
-    List<ServiceTypeVO> newList;
-
-    boolean onActivityResult=false;
+    List<ServiceTypeVO> serviceTypeVOS;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,17 +86,11 @@ public class AdditionalService extends Base_Activity implements View.OnClickList
 
         pd=new UAVProgressDialog(this);
 
-
         listview=findViewById(R.id.listview);
         btnadd=findViewById(R.id.btnadd);
         btnskip=findViewById(R.id.btnskip);
         back_activity_button=findViewById(R.id.back_activity_button);
 
-
-        selectServiceTypeVo=null;
-
-        onActivityResult=getIntent().getBooleanExtra("onactivityresult",false);
-        selectServiceTypeVo=(ServiceTypeVO) getIntent().getSerializableExtra("servicelist");
 
 
 
@@ -111,27 +104,20 @@ public class AdditionalService extends Base_Activity implements View.OnClickList
                 utilityServices = localCacheVO.getUtilityBills();
                 servicelist=localCacheVO.getSerives();
 
-                newList = new ArrayList<ServiceTypeVO>();
-                newList.addAll(utilityServices);
-                newList.addAll(servicelist);
-
-                if(selectServiceTypeVo!=null){
-                   newList.clear();
-                   newList.add(selectServiceTypeVo);
-
-                   ArrayList<ServiceTypeVO> serviceTypeVOS =new ArrayList<>();
-                   serviceTypeVOS.addAll(utilityServices);
-                   serviceTypeVOS.addAll(servicelist);
-                   for(ServiceTypeVO serviceTypeVO :serviceTypeVOS){
-                       if(!serviceTypeVO.getServiceTypeId().equals(selectServiceTypeVo.getServiceTypeId()) && serviceTypeVO.getLevel().getLevelId()<=Session.getCustomerLevel(AdditionalService.this  ) && serviceTypeVO.getAdopted()==0){
-                           newList.add(serviceTypeVO);
-                       }
+                serviceTypeVOS =new ArrayList<>();
+                serviceTypeVOS.addAll(utilityServices);
+                serviceTypeVOS.addAll(servicelist);
+                for(ServiceTypeVO serviceTypeVO :serviceTypeVOS){
+                   if(serviceTypeVO.getAdopted()==1 && serviceTypeVO.getServiceAdopteBMA()!=null){
+                       serviceTypeVO.setAdopted(1);
+                   }else {
+                       serviceTypeVO.setAdopted(0);
                    }
                 }
             }
             @Override
             public void doPostExecute() {
-                myAdapter=new ListViewItemCheckboxBaseAdapter(AdditionalService.this, newList, R.layout.checkbox_with_text);
+                myAdapter=new ListViewItemCheckboxBaseAdapter(AdditionalService.this, serviceTypeVOS, R.layout.checkbox_with_text);
                 listview.setAdapter(myAdapter);
                 listview.setExpanded(true);
             }
@@ -147,13 +133,11 @@ public class AdditionalService extends Base_Activity implements View.OnClickList
         btnskip.setOnClickListener(this);
         btnadd.setOnClickListener(this);
         back_activity_button.setOnClickListener(this);
-
    }
 
     BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener =new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
             Intent intent;
             switch (item.getItemId()) {
                 case R.id.bottom_home:
@@ -166,12 +150,11 @@ public class AdditionalService extends Base_Activity implements View.OnClickList
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                     break;
-
                 case R.id.bottom_history:
-                    Toast.makeText(AdditionalService.this, "bottom_history", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(AdditionalService.this,History.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                     break;
                 case R.id.bottom_help:
-                    Toast.makeText(AdditionalService.this, "bottom_help", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(AdditionalService.this,Help.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                     break;
             }
             return true;
@@ -260,7 +243,7 @@ public class AdditionalService extends Base_Activity implements View.OnClickList
                                     Utility.alertselectdialog(AdditionalService.this, "Choose from existing Bank", customerAuthServiceArry, new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess) (s) -> {
                                         if (!s.equals("0")) {
                                             Log.w("Home_value", s);
-                                            //setBankForService(--, Integer.parseInt(Session.getCustomerId(AdditionalService.this)), Integer.parseInt(s));
+                                            setBankForServiceList(Integer.parseInt(Session.getCustomerId(AdditionalService.this)), arrayList,Integer.parseInt(s));
                                         } else {
                                             startActivityForResult(new Intent(AdditionalService.this, Enach_Mandate.class).putExtra("forresutl", true).putExtra("selectservice",arrayList), ApplicationConstant.REQ_ENACH_MANDATE);
                                         }
@@ -284,6 +267,49 @@ public class AdditionalService extends Base_Activity implements View.OnClickList
         }
     }
 
+    private  void setBankForServiceList(int customerId,List serviceTypeVOS,int bankId){
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        ConnectionVO connectionVO = MandateBO.setBankForServiceList();
+
+        CustomerVO customerVO=new CustomerVO();
+        customerVO.setCustomerId(customerId);
+        customerVO.setAnonymousString(Utility.toJson(serviceTypeVOS));
+        customerVO.setAnonymousInteger(bankId);
+        Gson gson =new Gson();
+        String json = gson.toJson(customerVO);
+        params.put("volley", json);
+        connectionVO.setParams(params);
+        Log.w("setBankForService",params.toString());
+        VolleyUtils.makeJsonObjectRequest(this,connectionVO , new VolleyResponseListener() {
+            @Override
+            public void onError(String message) {
+            }
+            @Override
+            public void onResponse(Object resp) throws JSONException {
+                JSONObject response = (JSONObject) resp;
+                Gson gson = new Gson();
+                CustomerVO customerVO = gson.fromJson(response.toString(), CustomerVO.class);
+
+                if(customerVO.getStatusCode().equals("400")){
+                    ArrayList error = (ArrayList) customerVO.getErrorMsgs();
+                    StringBuilder sb = new StringBuilder();
+                    for(int i=0; i<error.size(); i++){
+                        sb.append(error.get(i)).append("\n");
+                    }
+                    Utility.showSingleButtonDialog(AdditionalService.this,"Alert",sb.toString(),false);
+                }else {
+                    //set session customer or local cache
+                    String json = new Gson().toJson(customerVO);
+                    Session.set_Data_Sharedprefence(AdditionalService.this,Session.CACHE_CUSTOMER,json);
+                    Session.set_Data_Sharedprefence(AdditionalService.this, Session.LOCAL_CACHE,customerVO.getLocalCache());
+
+                    Intent intent =new Intent();
+                    setResult(RESULT_OK,intent);
+                    finish();
+                }
+            }
+        });
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -310,10 +336,8 @@ public class AdditionalService extends Base_Activity implements View.OnClickList
                 finish();*/
                 backbuttonfun();
 
-
                 break;
             case R.id.btnadd :
-
                 ArrayList<Integer> addservice=new ArrayList<>();
                 SparseBooleanArray checked = myAdapter.mCheckStates;
                 int size = checked.size(); // number of name-value pairs in the array
@@ -324,24 +348,13 @@ public class AdditionalService extends Base_Activity implements View.OnClickList
                         addservice.add(myAdapter.mCheckStates.keyAt(i));
                     }
                 }
-                if(!onActivityResult){
-                    saveServiceAdd(addservice);
-                }else {
-                    Intent intent =new Intent();
-                    intent.putIntegerArrayListExtra("selectservice",addservice);
-                    setResult(RESULT_OK,intent);
-                    finish();
-                }
+                saveServiceAdd(addservice);
                 break;
             case R.id.back_activity_button :
-                /*startActivity(new Intent(AdditionalService.this,Home.class));
-                finish();*/
                 backbuttonfun();
                 break;
         }
     }
-
-
     public void backbuttonfun(){
        finish();
     }

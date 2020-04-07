@@ -10,7 +10,7 @@
     >
 
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/my_awesome_toolbar"
         android:layout_height="50dp"
         android:layout_width="match_parent"
@@ -60,7 +60,7 @@
             android:textAlignment="center"
             android:gravity="center"
             android:layout_gravity="center"
-            android:text="DMRC Card Request"
+            android:text="Credit Card Bill"
             android:textStyle="bold"
             android:textSize="20dp"
             android:id="@+id/title"
@@ -68,6 +68,27 @@
             android:fontFamily="@font/poppinsbold"
 
             />
-    </android.support.v7.widget.Toolbar>
+    </androidx.appcompat.widget.Toolbar>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_margin="20dp"
+        android:background="@drawable/round_border_bg_white"
+        android:padding="15dp"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="This service is not active"
+            android:padding="20dp"
+            android:fontFamily="@font/poppinsbold"
+            android:textSize="18dp"/>
+
+    </LinearLayout>
 
 </LinearLayout>

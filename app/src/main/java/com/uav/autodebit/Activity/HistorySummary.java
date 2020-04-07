@@ -2,10 +2,10 @@ package com.uav.autodebit.Activity;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v7.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
 import android.view.View;
@@ -13,10 +13,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.squareup.picasso.Picasso;
 import com.uav.autodebit.BO.CustomerBO;
 import com.uav.autodebit.Interface.VolleyResponse;
@@ -25,7 +23,6 @@ import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerVO;
-import com.uav.autodebit.vo.DataAdapterVO;
 import com.uav.autodebit.vo.StatusVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
 import com.uav.autodebit.volley.VolleyUtils;
@@ -174,6 +171,8 @@ public class HistorySummary extends Base_Activity implements View.OnClickListene
             Gson gson = new Gson();
             String json = gson.toJson(request_data);
             params.put("volley", json);
+
+            Log.w("getHistorySummaryById",params.toString());
             connectionVO.setParams(params);
 
             VolleyUtils.makeJsonObjectRequest(HistorySummary.this,connectionVO, new VolleyResponseListener() {

@@ -7,11 +7,11 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 
-import android.support.v7.widget.AppCompatEditText;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.EditText;
 
+import androidx.appcompat.widget.AppCompatEditText;
 
 
 public class UAVEditText extends AppCompatEditText {

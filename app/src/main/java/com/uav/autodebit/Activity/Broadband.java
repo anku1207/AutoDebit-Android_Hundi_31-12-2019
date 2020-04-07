@@ -3,11 +3,11 @@ package com.uav.autodebit.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.support.annotation.Nullable;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
+import androidx.core.content.res.ResourcesCompat;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -23,37 +23,28 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.uav.autodebit.BO.Electricity_BillBO;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
-import com.uav.autodebit.override.UAVEditText;
 import com.uav.autodebit.override.UAVProgressDialog;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.BackgroundAsyncService;
 import com.uav.autodebit.util.BackgroundServiceInterface;
 import com.uav.autodebit.util.Utility;
-import com.uav.autodebit.vo.AuthServiceProviderVO;
-import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerVO;
-import com.uav.autodebit.vo.DMRC_Customer_CardVO;
 import com.uav.autodebit.vo.DataAdapterVO;
 import com.uav.autodebit.vo.OxigenQuestionsVO;
 import com.uav.autodebit.vo.OxigenTransactionVO;
 import com.uav.autodebit.vo.ServiceTypeVO;
-import com.uav.autodebit.volley.VolleyResponseListener;
-import com.uav.autodebit.volley.VolleyUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class Broadband extends Base_Activity implements View.OnClickListener {
@@ -173,90 +164,87 @@ public class Broadband extends Base_Activity implements View.OnClickListener {
             operator.setEnabled(true);
 
             if(resultCode==RESULT_OK){
-                switch (requestCode) {
-                    case 100:
 
-                        operatorname =data.getStringExtra("operatorname");
-                        operatorcode=data.getStringExtra("operator");
+                if(requestCode==100){
+                    operatorname =data.getStringExtra("operatorname");
+                    operatorcode=data.getStringExtra("operator");
 
-                        amountlayout.setVisibility(View.VISIBLE);
-
-
-                        DataAdapterVO dataAdapterVO = (DataAdapterVO) data.getSerializableExtra("datavo");
-                        operator.setText(operatorname);
-                        operator.setTag(operatorcode);
-
-                        operator.setError(null);
-                        amount.setError(null);
-
-                        //add fetch bill btn
-                        if (dataAdapterVO.getIsbillFetch().equals("1")) {
-                            fetchbill.setVisibility(View.VISIBLE);
-                            amount.setEnabled(false);
-                            isFetchBill=true;
-                        } else {
-                            fetchbill.setVisibility(View.GONE);
-                            amount.setEnabled(true);
-                            isFetchBill=false;
-                        }
+                    amountlayout.setVisibility(View.VISIBLE);
 
 
-                        //add min Amt Layout
-                        if(dataAdapterVO.getMinTxnAmount()!=null){
-                            if(min_amt_layout.getChildCount()>0)min_amt_layout.removeAllViews();
-                            minAmt=dataAdapterVO.getMinTxnAmount();
-                            Animation animFadeIn = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fadein);
-                            min_amt_layout.startAnimation(animFadeIn);
-                            min_amt_layout.setVisibility(View.VISIBLE);
-                            min_amt_layout.setBackgroundColor(Utility.getColorWithAlpha(Color.rgb(224,224,224), 0.5f));
-                            min_amt_layout.setPadding(Utility.getPixelsFromDPs(Broadband.this,15),Utility.getPixelsFromDPs(Broadband.this,15),0,Utility.getPixelsFromDPs(Broadband.this,15));
+                    DataAdapterVO dataAdapterVO = (DataAdapterVO) data.getSerializableExtra("datavo");
+                    operator.setText(operatorname);
+                    operator.setTag(operatorcode);
 
-                            min_amt_layout.addView(DynamicLayout.billMinLayout(Broadband.this,dataAdapterVO));
+                    operator.setError(null);
+                    amount.setError(null);
 
-                        }else {
-                            min_amt_layout.setVisibility(View.GONE);
-                        }
-                        //Remove dynamic cards from the layout and arraylist
-                        if(dynamicCardViewContainer.getChildCount()>0) dynamicCardViewContainer.removeAllViews();
-                        removefetchbilllayout();
+                    //add fetch bill btn
+                    if (dataAdapterVO.getIsbillFetch().equals("1")) {
+                        fetchbill.setVisibility(View.VISIBLE);
+                        amount.setEnabled(false);
+                        isFetchBill=true;
+                    } else {
+                        fetchbill.setVisibility(View.GONE);
+                        amount.setEnabled(true);
+                        isFetchBill=false;
+                    }
 
-                        questionsVOS.clear();
 
-                        //Create dynamic cards of edit text
-                        if(dataAdapterVO.getQuestionsData() !=null){
-                            JSONArray jsonArray = new JSONArray(dataAdapterVO.getQuestionsData());
-                            for(int i=0; i<jsonArray.length(); i++){
-                                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                Gson gson = new Gson();
-                                OxigenQuestionsVO oxigenQuestionsVO = gson.fromJson(jsonObject.toString(), OxigenQuestionsVO.class);
+                    //add min Amt Layout
+                    if(dataAdapterVO.getMinTxnAmount()!=null){
+                        if(min_amt_layout.getChildCount()>0)min_amt_layout.removeAllViews();
+                        minAmt=dataAdapterVO.getMinTxnAmount();
+                        Animation animFadeIn = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fadein);
+                        min_amt_layout.startAnimation(animFadeIn);
+                        min_amt_layout.setVisibility(View.VISIBLE);
+                        min_amt_layout.setBackgroundColor(Utility.getColorWithAlpha(Color.rgb(224,224,224), 0.5f));
+                        min_amt_layout.setPadding(Utility.getPixelsFromDPs(Broadband.this,15),Utility.getPixelsFromDPs(Broadband.this,15),0,Utility.getPixelsFromDPs(Broadband.this,15));
 
-                                CardView cardView = Utility.getCardViewStyle(this);
-                                //EditText et = new EditText(new ContextThemeWrapper(this,R.style.edittext));
+                        min_amt_layout.addView(DynamicLayout.billMinLayout(Broadband.this,dataAdapterVO));
 
-                                EditText et = Utility.getEditText(Broadband.this);
-                                et.setId(View.generateViewId());
-                                et.setHint(oxigenQuestionsVO.getQuestionLabel());
-                                changeEdittextValue(et);
-                                cardView.addView(et);
-                                dynamicCardViewContainer.addView(cardView);
-                                if(oxigenQuestionsVO.getInstructions()!=null){
-                                    TextView tv = Utility.getTextView(this, oxigenQuestionsVO.getInstructions());
-                                    dynamicCardViewContainer.addView(tv);
-                                }
-                                oxigenQuestionsVO.setElementId(et.getId());
-                                questionsVOS.add(oxigenQuestionsVO);
+                    }else {
+                        min_amt_layout.setVisibility(View.GONE);
+                    }
+                    //Remove dynamic cards from the layout and arraylist
+                    if(dynamicCardViewContainer.getChildCount()>0) dynamicCardViewContainer.removeAllViews();
+                    removefetchbilllayout();
+
+                    questionsVOS.clear();
+
+                    //Create dynamic cards of edit text
+                    if(dataAdapterVO.getQuestionsData() !=null){
+                        JSONArray jsonArray = new JSONArray(dataAdapterVO.getQuestionsData());
+                        for(int i=0; i<jsonArray.length(); i++){
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+                            Gson gson = new Gson();
+                            OxigenQuestionsVO oxigenQuestionsVO = gson.fromJson(jsonObject.toString(), OxigenQuestionsVO.class);
+
+                            CardView cardView = Utility.getCardViewStyle(this);
+                            //EditText et = new EditText(new ContextThemeWrapper(this,R.style.edittext));
+
+                            EditText et = Utility.getEditText(Broadband.this);
+                            et.setId(View.generateViewId());
+                            et.setHint(oxigenQuestionsVO.getQuestionLabel());
+                            changeEdittextValue(et);
+                            cardView.addView(et);
+                            dynamicCardViewContainer.addView(cardView);
+                            if(oxigenQuestionsVO.getInstructions()!=null){
+                                TextView tv = Utility.getTextView(this, oxigenQuestionsVO.getInstructions());
+                                dynamicCardViewContainer.addView(tv);
                             }
-                            EditText editText =(EditText) findViewById(questionsVOS.get(0).getElementId());
-                            editText.requestFocus();
+                            oxigenQuestionsVO.setElementId(et.getId());
+                            questionsVOS.add(oxigenQuestionsVO);
                         }
-                        break;
-                    case 200:
-                        if(data !=null){
-                            BillPayRequest.onActivityResult(this,data);
-                        }else {
-                            Utility.showSingleButtonDialog(this,"Error !","Something went wrong, Please try again!",false);
-                        }
-                        break;
+                        EditText editText =(EditText) findViewById(questionsVOS.get(0).getElementId());
+                        editText.requestFocus();
+                    }
+                }else if(requestCode==200 || requestCode== ApplicationConstant.REQ_ENACH_MANDATE){
+                    if(data !=null){
+                        BillPayRequest.onActivityResult(this,data,requestCode);
+                    }else {
+                        Utility.showSingleButtonDialog(this,"Error !","Something went wrong, Please try again!",false);
+                    }
                 }
             }
         }catch (Exception e){

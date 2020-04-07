@@ -40,18 +40,50 @@
         android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:usesCleartextTraffic="true">
-        <activity android:name=".Activity.CableTV"></activity>
-        <activity android:name=".Activity.Fastag" />
-        <activity android:name=".Activity.Loan_Repayment" />
-        <activity android:name=".Activity.Insurance_Renewal" />
+        android:usesCleartextTraffic="true"
+
+        >
+        <activity
+            android:name=".Activity.CableTV"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"
+            tools:ignore="LockedOrientationActivity"
+            />
+        <activity
+            android:name=".Activity.Fastag"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"
+            tools:ignore="LockedOrientationActivity"
+            />
+        <activity
+            android:name=".Activity.Loan_Repayment"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"
+            tools:ignore="LockedOrientationActivity"
+            />
+        <activity
+            android:name=".Activity.Insurance_Renewal"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"
+            tools:ignore="LockedOrientationActivity"
+            />
         <activity
             android:name=".Activity.AddBankAndServicelist"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing"
             tools:ignore="LockedOrientationActivity" />
-        <activity android:name=".Activity.Confirm_Bank_Details" />
+        <activity
+            android:name=".Activity.Confirm_Bank_Details"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"
+            tools:ignore="LockedOrientationActivity"
+            />
         <activity
             android:name=".Activity.PaymentGateWay"
             android:configChanges="orientation"
@@ -211,7 +243,6 @@
         <activity
             android:name=".Activity.AdditionalService"
             android:configChanges="orientation"
-            android:noHistory="true"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
@@ -323,11 +354,11 @@
             </intent-filter>
         </activity>
 
-     <!--   <receiver android:name=".BroadCastReceiver.MySMSBroadCastReceiver">
+        <receiver android:name=".BroadCastReceiver.MySMSBroadCastReceiver">
             <intent-filter android:priority="999">
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
-        </receiver>-->
+        </receiver>
 
         <receiver
             android:name=".OTP.receiver.SmsBroadcastReceiver"
@@ -336,9 +367,8 @@
                 <action android:name="com.google.android.gms.auth.api.phone.SMS_RETRIEVE" />
             </intent-filter>
         </receiver>
-
         <provider
-            android:name="android.support.v4.content.FileProvider"
+            android:name="androidx.core.content.FileProvider"
             android:authorities="com.uav.autodebit.provider"
             android:enabled="true"
             android:exported="false"

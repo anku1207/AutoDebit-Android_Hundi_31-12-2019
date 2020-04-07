@@ -3,7 +3,6 @@ package com.uav.autodebit.adpater;
 import android.app.Activity;
 import android.content.Context;
 
-import android.support.v7.widget.CardView;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.cardview.widget.CardView;
 
 import com.uav.autodebit.R;
 import com.uav.autodebit.override.UAVTextView;

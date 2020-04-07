@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-
-
-
-
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -14,13 +11,9 @@
     android:background="@color/activitybackground"
     android:orientation="vertical">
 
-
-
-
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
@@ -32,7 +25,7 @@
 
 
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/my_awesome_toolbar"
         android:layout_height="50dp"
         android:layout_width="match_parent"
@@ -94,7 +87,7 @@
                 android:fontFamily="@font/poppinsbold"
 
                 />
-        </android.support.v7.widget.Toolbar>
+        </androidx.appcompat.widget.Toolbar>
 
         <ScrollView
             android:layout_width="match_parent"
@@ -526,7 +519,7 @@
                         android:layout_weight=".1"
                         android:tint="@color/appbar" />
 
-                    <android.support.v7.widget.RecyclerView
+                    <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/bankrecycler"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -534,7 +527,7 @@
 
                         >
 
-                    </android.support.v7.widget.RecyclerView>
+                    </androidx.recyclerview.widget.RecyclerView>
                 </LinearLayout>
 
 
@@ -593,16 +586,15 @@
                         android:layout_weight=".1"
                         android:tint="@color/appbar" />
 
-                    <android.support.v7.widget.RecyclerView
+                    <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/servicerecycler"
                         android:layout_height="wrap_content"
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:orientation="horizontal"
-                        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
                         >
 
-                    </android.support.v7.widget.RecyclerView>
+                    </androidx.recyclerview.widget.RecyclerView>
 
                    <!-- <ImageView
                         android:layout_width="1dp"
@@ -622,7 +614,7 @@
 
 
 
-   <android.support.design.widget.BottomNavigationView
+   <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigation"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -638,4 +630,4 @@
         app:itemIconTint="@color/bottom_nav_color"
         />
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

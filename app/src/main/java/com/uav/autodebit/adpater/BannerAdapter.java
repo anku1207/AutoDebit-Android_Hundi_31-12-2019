@@ -1,33 +1,19 @@
 package com.uav.autodebit.adpater;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.util.Log;
+
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.viewpager.widget.PagerAdapter;
 
 import com.squareup.picasso.Picasso;
-import com.uav.autodebit.Activity.Splash_Screen;
 import com.uav.autodebit.R;
-import com.uav.autodebit.androidFragment.Home_Menu;
-import com.uav.autodebit.util.DiskLruImageCache;
-import com.uav.autodebit.util.DownloadTask;
-import com.uav.autodebit.util.Utils_Cache;
 import com.uav.autodebit.vo.BannerVO;
-import com.uav.autodebit.vo.ServiceTypeVO;
 
-import java.io.InputStream;
-import java.net.URL;
 import java.util.List;
 
 public class BannerAdapter extends PagerAdapter {

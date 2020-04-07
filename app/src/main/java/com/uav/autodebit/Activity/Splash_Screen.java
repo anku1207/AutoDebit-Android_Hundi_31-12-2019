@@ -3,14 +3,14 @@ package com.uav.autodebit.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -23,6 +23,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.reflect.TypeToken;
 import com.uav.autodebit.BO.BannerBO;
 
+import com.uav.autodebit.OTP.helper.AppSignatureHelper;
 import com.uav.autodebit.R;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.BitmapInterface;
@@ -55,6 +56,9 @@ public class Splash_Screen extends Base_Activity implements BitmapInterface {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash__screen);
 
+
+        AppSignatureHelper appSignatureHelper =new AppSignatureHelper(this);
+        Log.w("AppSignatureHelper",appSignatureHelper.getAppSignatures().get(0));
 
         ImageView imageView = (ImageView) findViewById( R.id.appstarticon);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
