@@ -153,8 +153,6 @@ public class Credit_Score extends Base_Activity {
                           Utility.showSingleButtonDialog(Credit_Score.this,"Error !", "Mobile Number is not matching with credit bureau records.",false);
                           return;
                       }
-
-
                        updatemobilenumber(mobileno.getText().toString().trim());
             }
         });

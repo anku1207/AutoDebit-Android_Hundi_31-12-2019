@@ -1,12 +1,12 @@
 package com.uav.autodebit.Activity;
 
+import androidx.annotation.Nullable;
+import androidx.core.content.res.ResourcesCompat;
+
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
-
-import androidx.annotation.Nullable;
-import androidx.core.content.res.ResourcesCompat;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -19,8 +19,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import com.google.gson.Gson;
 import com.uav.autodebit.BO.D2HBO;
+import com.uav.autodebit.BO.DishTVBO;
 import com.uav.autodebit.BO.ServiceBO;
 import com.uav.autodebit.Interface.AlertSelectDialogClick;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
@@ -33,39 +35,38 @@ import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerAuthServiceVO;
 import com.uav.autodebit.vo.CustomerVO;
 import com.uav.autodebit.vo.D2HVO;
+import com.uav.autodebit.vo.DishTvVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
 import com.uav.autodebit.volley.VolleyUtils;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 
-public class D2H extends Base_Activity implements View.OnClickListener {
-
+public class Dish_Tv  extends Base_Activity implements View.OnClickListener  {
     EditText accountnumber;
     Button proceed;
-
     Context context;
     LinearLayout plandetailslayout;
-
     String monthlySubscriptionAmount;
-    D2HVO response_D2HVO;
-
+    DishTvVO response_DishTVVO;
     ImageView back_activity_button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dto_h);
+        setContentView(R.layout.activity_dish__tv);
         getSupportActionBar().hide();
 
-        context=D2H.this;
+        context=Dish_Tv.this;
 
         monthlySubscriptionAmount=null;
-        response_D2HVO=null;
+        response_DishTVVO=null;
 
         accountnumber=findViewById(R.id.accountnumber);
         proceed=findViewById(R.id.proceed);
@@ -79,27 +80,24 @@ public class D2H extends Base_Activity implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.proceed:
-                Utility.hideKeyboard(D2H.this);
-                getPlanDetail();
+        if(view.getId()==R.id.back_activity_button){
+            finish();
 
-
-                break;
-            case R.id.back_activity_button:
-                finish();
-                break;
+        }else if(view.getId()==R.id.proceed){
+            Utility.hideKeyboard(this);
+            getPlanDetail();
         }
     }
 
-    private void getPlanDetail(){ 
+
+    private void getPlanDetail(){
         try {
             Gson gson =new Gson();
 
             HashMap<String, Object> params = new HashMap<String, Object>();
-            ConnectionVO connectionVO = D2HBO.getD2HPlanDetail();
+            ConnectionVO connectionVO = DishTVBO.getDishTvPlanDetail();
             CustomerVO customerVO =new CustomerVO();
-            customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(D2H.this)));
+            customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(context)));
 
             D2HVO d2HVO=new D2HVO();
             d2HVO.setVcNo(accountnumber.getText().toString());
@@ -118,20 +116,20 @@ public class D2H extends Base_Activity implements View.OnClickListener {
                     Log.w("responce",response.toString());
 
                     Gson gson = new Gson();
-                    response_D2HVO = gson.fromJson(response.toString(), D2HVO.class);
+                    response_DishTVVO = gson.fromJson(response.toString(), DishTvVO.class);
 
-                    if(response_D2HVO.getStatusCode().equals("400")){
-                        ArrayList error = (ArrayList) response_D2HVO.getErrorMsgs();
+                    if(response_DishTVVO.getStatusCode().equals("400")){
+                        ArrayList error = (ArrayList) response_DishTVVO.getErrorMsgs();
                         StringBuilder sb = new StringBuilder();
                         for(int i=0; i<error.size(); i++){
                             sb.append(error.get(i)).append("\n");
                         }
                         Utility.showSingleButtonDialog(context,"Error !",sb.toString(),false);
                     }else{
-                        if(response_D2HVO.getEnachMandateId()==null || response_D2HVO.getEnachMandateId().equals("")){
+                        if(response_DishTVVO.getEnachMandateId()==null || response_DishTVVO.getEnachMandateId().equals("")){
                             Utility.removeEle(proceed);
                             Utility.removeEle(accountnumber);
-                            JSONObject detailJson=(new JSONObject(response_D2HVO.getVcdetails())).getJSONObject("Result");
+                            JSONObject detailJson=(new JSONObject(response_DishTVVO.getVcDetails())).getJSONObject("Result");
                             JSONArray planDetailarr= new JSONArray();
                             JSONObject jsonObject ;
                             if(detailJson.has("SubscriberName") && !detailJson.getString("SubscriberName").equals("")){
@@ -176,7 +174,7 @@ public class D2H extends Base_Activity implements View.OnClickListener {
                             }
                             createLayout(planDetailarr,false,null);
                         }else {
-                            getD2HTvPostMandate();
+                            getDishTvPostMandate();
                         }
                     }
                 }
@@ -279,7 +277,7 @@ public class D2H extends Base_Activity implements View.OnClickListener {
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Utility.hideKeyboard(D2H.this);
+                        Utility.hideKeyboard(Dish_Tv.this);
                         boolean valid=true;
                         if(editText.getText().toString().equals("")){
                             editText.setError(  Utility.getErrorSpannableStringDynamicEditText(context, "this field is required"));
@@ -289,7 +287,7 @@ public class D2H extends Base_Activity implements View.OnClickListener {
                             if(Double.parseDouble(monthlySubscriptionAmount) > Double.parseDouble(editText.getText().toString()) ){
                                 Utility.showSingleButtonDialog(context,"Error !","Mandate Amount Should Be Greater then or equal Rs." +Math.ceil(Double.parseDouble(monthlySubscriptionAmount)),false);
                             }else {
-                              //  addBank(button,editText.getText().toString());
+                                //  addBank(button,editText.getText().toString());
 
                                 Utility.confirmationDialog(new DialogInterface() {
                                     @Override
@@ -302,7 +300,7 @@ public class D2H extends Base_Activity implements View.OnClickListener {
                                         dialog.dismiss();
 
                                     }
-                                },D2H.this,planDetailarr,null,"Confirmation");
+                                },Dish_Tv.this,planDetailarr,null,"Confirmation");
                             }
                         }
                     }
@@ -314,6 +312,8 @@ public class D2H extends Base_Activity implements View.OnClickListener {
             Utility.exceptionAlertDialog(context,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
     }
+
+
     private void addBank(Button button,String mandateAmt) {
 
         try {
@@ -323,7 +323,7 @@ public class D2H extends Base_Activity implements View.OnClickListener {
             ConnectionVO connectionVO = D2HBO.mandateAmountOverrideByServiceId();
             CustomerVO customerVO=new CustomerVO();
             customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(context)));
-            customerVO.setServiceId(ApplicationConstant.d2h);
+            customerVO.setServiceId(ApplicationConstant.DISHTV);
             customerVO.setAnonymousInteger(Integer.parseInt(mandateAmt));
 
             params.put("volley",gson.toJson(customerVO));
@@ -339,11 +339,11 @@ public class D2H extends Base_Activity implements View.OnClickListener {
 
                     Log.w("responce",response.toString());
                     Gson gson = new Gson();
-                    D2HVO d2HVO = gson.fromJson(response.toString(), D2HVO.class);
+                    DishTvVO dishTvVO = gson.fromJson(response.toString(), DishTvVO.class);
 
 
-                    if(d2HVO.getStatusCode().equals("400")){
-                        ArrayList error = (ArrayList) d2HVO.getErrorMsgs();
+                    if(dishTvVO.getStatusCode().equals("400")){
+                        ArrayList error = (ArrayList) dishTvVO.getErrorMsgs();
                         StringBuilder sb = new StringBuilder();
                         for(int i=0; i<error.size(); i++){
                             sb.append(error.get(i)).append("\n");
@@ -351,21 +351,21 @@ public class D2H extends Base_Activity implements View.OnClickListener {
                         Utility.showSingleButtonDialog(context,"Error !",sb.toString(),false);
                     }else {
 
-                        if(!d2HVO.getStatusCode().equals("200") && !d2HVO.getStatusCode().equals("ap104")){
-                            if(d2HVO.getStatusCode().equals("ap105") || d2HVO.getStatusCode().equals("ap107") ||d2HVO.getStatusCode().equals("ap102")){
+                        if(!dishTvVO.getStatusCode().equals("200") && !dishTvVO.getStatusCode().equals("ap104")){
+                            if(dishTvVO.getStatusCode().equals("ap105") || dishTvVO.getStatusCode().equals("ap107") ||dishTvVO.getStatusCode().equals("ap102")){
                                 String[] buttons = {"OK"};
                                 Utility.showSingleButtonDialogconfirmation(context, new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
                                     ok.dismiss();
-                                    startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(ApplicationConstant.d2h))).putExtra("disAmountEdittext",true),ApplicationConstant.REQ_ENACH_MANDATE);
-                                }),"Alert",d2HVO.getErrorMsgs().get(0),buttons);
-                            }else if(d2HVO.getStatusCode().equals("ap106") || d2HVO.getStatusCode().equals("ap103") || d2HVO.getStatusCode().equals("ap108")) {
+                                    startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(ApplicationConstant.DISHTV))).putExtra("disAmountEdittext",true),ApplicationConstant.REQ_ENACH_MANDATE);
+                                }),"Alert",dishTvVO.getErrorMsgs().get(0),buttons);
+                            }else if(dishTvVO.getStatusCode().equals("ap106") || dishTvVO.getStatusCode().equals("ap103") || dishTvVO.getStatusCode().equals("ap108")) {
                                 String[] buttons = {"New Mandate", "Choose Bank"};
                                 Utility.showDoubleButtonDialogConfirmation(new com.uav.autodebit.util.DialogInterface() {
                                     @Override
                                     public void confirm(Dialog dialog) {
                                         dialog.dismiss();
                                         try {
-                                            JSONArray arryjson = new JSONArray(d2HVO.getAnonymousString());
+                                            JSONArray arryjson = new JSONArray(dishTvVO.getAnonymousString());
                                             ArrayList<CustomerAuthServiceVO> customerAuthServiceArry = new ArrayList<>();
                                             for (int i = 0; i < arryjson.length(); i++) {
                                                 JSONObject jsonObject = arryjson.getJSONObject(i);
@@ -387,7 +387,7 @@ public class D2H extends Base_Activity implements View.OnClickListener {
                                                 if (!s.equals("0")) {
                                                     setBankForService(ApplicationConstant.d2h, Integer.parseInt(Session.getCustomerId(context)), Integer.parseInt(s));
                                                 } else {
-                                                    startActivityForResult(new Intent(context, Enach_Mandate.class).putExtra("forresutl", true).putExtra("selectservice", new ArrayList<Integer>(Arrays.asList(ApplicationConstant.d2h))).putExtra("disAmountEdittext",true), ApplicationConstant.REQ_ENACH_MANDATE);
+                                                    startActivityForResult(new Intent(context, Enach_Mandate.class).putExtra("forresutl", true).putExtra("selectservice", new ArrayList<Integer>(Arrays.asList(ApplicationConstant.DISHTV))).putExtra("disAmountEdittext",true), ApplicationConstant.REQ_ENACH_MANDATE);
                                                 }
                                             }));
                                         } catch (Exception e) {
@@ -398,15 +398,15 @@ public class D2H extends Base_Activity implements View.OnClickListener {
                                     @Override
                                     public void modify(Dialog dialog) {
                                         dialog.dismiss();
-                                        startActivityForResult(new Intent(context, Enach_Mandate.class).putExtra("forresutl", true).putExtra("selectservice", new ArrayList<Integer>(Arrays.asList(ApplicationConstant.d2h))).putExtra("disAmountEdittext",true), ApplicationConstant.REQ_ENACH_MANDATE);
+                                        startActivityForResult(new Intent(context, Enach_Mandate.class).putExtra("forresutl", true).putExtra("selectservice", new ArrayList<Integer>(Arrays.asList(ApplicationConstant.DISHTV))).putExtra("disAmountEdittext",true), ApplicationConstant.REQ_ENACH_MANDATE);
                                     }
-                                }, context, d2HVO.getErrorMsgs().get(0), "Alert", buttons);
+                                }, context, dishTvVO.getErrorMsgs().get(0), "Alert", buttons);
                             }
                         }else {
-                            getD2HTvPostMandate();
+                            getDishTvPostMandate();
                         }
 
-                    
+
                     }
                 }
 
@@ -452,23 +452,23 @@ public class D2H extends Base_Activity implements View.OnClickListener {
                     String json = new Gson().toJson(customerVO);
                     Session.set_Data_Sharedprefence(context,Session.CACHE_CUSTOMER,json);
                     Session.set_Data_Sharedprefence(context, Session.LOCAL_CACHE,customerVO.getLocalCache());
-                    getD2HTvPostMandate();
+                    getDishTvPostMandate();
                 }
             }
         });
     }
 
-    public void getD2HTvPostMandate(){
+    public void getDishTvPostMandate(){
         HashMap<String, Object> params = new HashMap<String, Object>();
-        ConnectionVO connectionVO = D2HBO.getD2HTvPostMandate();
+        ConnectionVO connectionVO = DishTVBO.getDishTvPostMandate();
         CustomerVO customerVO=new CustomerVO();
         customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(context)));
 
-        D2HVO d2HVO =new D2HVO();
-        d2HVO.setCustomer(customerVO);
-        d2HVO.setD2hId(response_D2HVO.getD2hId());
+        DishTvVO dishTvVO =new DishTvVO();
+        dishTvVO.setCustomer(customerVO);
+        dishTvVO.setDishtvId(response_DishTVVO.getDishtvId());
         Gson gson =new Gson();
-        String json = gson.toJson(d2HVO);
+        String json = gson.toJson(dishTvVO);
         params.put("volley", json);
         connectionVO.setParams(params);
         VolleyUtils.makeJsonObjectRequest(this,connectionVO , new VolleyResponseListener() {
@@ -479,10 +479,10 @@ public class D2H extends Base_Activity implements View.OnClickListener {
             public void onResponse(Object resp) throws JSONException {
                 JSONObject response = (JSONObject) resp;
                 Gson gson = new Gson();
-                D2HVO d2HVO = gson.fromJson(response.toString(), D2HVO.class);
+                DishTvVO dishTvVO1 = gson.fromJson(response.toString(), DishTvVO.class);
 
-                if(d2HVO.getStatusCode().equals("400")){
-                    ArrayList error = (ArrayList) d2HVO.getErrorMsgs();
+                if(dishTvVO1.getStatusCode().equals("400")){
+                    ArrayList error = (ArrayList) dishTvVO1.getErrorMsgs();
                     StringBuilder sb = new StringBuilder();
                     for(int i=0; i<error.size(); i++){
                         sb.append(error.get(i)).append("\n");
@@ -500,50 +500,46 @@ public class D2H extends Base_Activity implements View.OnClickListener {
                     JSONObject jsonObject;
                     JSONArray jsonArray =new JSONArray();
 
-                    if(d2HVO.getSubscriberName()!=null){
+                    if(dishTvVO1.getSubscriberName()!=null){
                         jsonObject=new JSONObject();
                         jsonObject.put("key","SubscriberName");
-                        jsonObject.put("value",d2HVO.getSubscriberName());
+                        jsonObject.put("value",dishTvVO1.getSubscriberName());
                         jsonArray.put(jsonObject);
                     }
 
-                    if(d2HVO.getSwitchOffDate()!=null){
+                    if(dishTvVO1.getSwitchOffDate()!=null){
                         jsonObject=new JSONObject();
                         jsonObject.put("key","SwitchOffDate");
-                        jsonObject.put("value",Utility.convertDate2String(new Date(d2HVO.getSwitchOffDate()),"dd/MM/YYYY"));
+                        jsonObject.put("value",Utility.convertDate2String(new Date(dishTvVO1.getSwitchOffDate()),"dd/MM/YYYY"));
                         jsonArray.put(jsonObject);
                     }
 
-                    if(d2HVO.getVcNo()!=null){
+                    if(dishTvVO1.getVcNo()!=null){
                         jsonObject=new JSONObject();
                         jsonObject.put("key","Customer Id");
-                        jsonObject.put("value",d2HVO.getVcNo());
+                        jsonObject.put("value",dishTvVO1.getVcNo());
                         jsonArray.put(jsonObject);
                     }
 
-                    if(d2HVO.getRechargeAmt()!=null){
+                    if(dishTvVO1.getRechargeAmt()!=null){
                         jsonObject=new JSONObject();
                         jsonObject.put("key","Plan Amount");
-                        jsonObject.put("value",d2HVO.getRechargeAmt());
+                        jsonObject.put("value",dishTvVO1.getRechargeAmt());
                         jsonArray.put(jsonObject);
                     }
 
-                    if(d2HVO.getEnachMandateAmount()!=null){
+                    if(dishTvVO1.getEnachMandateAmount()!=null){
                         jsonObject=new JSONObject();
                         jsonObject.put("key","Mandate Amount");
-                        jsonObject.put("value",d2HVO.getEnachMandateAmount());
+                        jsonObject.put("value",dishTvVO1.getEnachMandateAmount());
                         jsonArray.put(jsonObject);
                     }
-                   createLayout(jsonArray,true,d2HVO.getAnonymousString());
+                    createLayout(jsonArray,true,dishTvVO1.getAnonymousString());
                 }
             }
         });
     }
 
-
-    
-    
-    
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -557,3 +553,9 @@ public class D2H extends Base_Activity implements View.OnClickListener {
         }
     }
 }
+
+
+
+
+
+

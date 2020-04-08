@@ -306,7 +306,6 @@ public class Login extends Base_Activity implements View.OnClickListener, View.O
         }
     }
 
-
     public void loginviapassword(String loginid,String pass,String Type){
         VolleyUtils.makeJsonObjectRequest(this,SignUpBO.loginViaPassword(loginid,pass,Type,Session.getSessionByKey(this,Session.CACHE_TOKENID)), new VolleyResponseListener() {
             @Override
