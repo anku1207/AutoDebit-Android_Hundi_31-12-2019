@@ -1,13 +1,27 @@
 package com.uav.autodebit.Activity;
 
 import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.provider.ContactsContract;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.core.graphics.drawable.DrawableCompat;
+
 import com.uav.autodebit.R;
+import com.uav.autodebit.constant.ApplicationConstant;
+import com.uav.autodebit.constant.Content_Message;
+import com.uav.autodebit.override.DrawableClickListener;
+import com.uav.autodebit.override.UAVEditText;
+import com.uav.autodebit.permission.PermissionHandler;
+import com.uav.autodebit.permission.PermissionUtils;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.DataAdapterVO;
 
@@ -41,5 +55,47 @@ public class DynamicLayout {
         parent.addView(text1);
         parent_min_layout.addView(parent);
         return parent_min_layout;
+    }
+
+
+    static  void addContectIconEdittext(Context context, PermissionUtils permissionUtils, UAVEditText et){
+        try {
+            Drawable drawable = Utility.getDrawableResources(context, R.drawable.contacts);
+            drawable = DrawableCompat.wrap(drawable);
+            DrawableCompat.setTint(drawable, context.getResources().getColor(R.color.appbar));
+
+            et.setCompoundDrawablesWithIntrinsicBounds(R.drawable.mobile,0 , R.drawable.contacts, 0);
+            et.setDrawableClickListener(new DrawableClickListener() {
+                @Override
+                public void onClick(DrawablePosition target) {
+                    switch (target) {
+                        case RIGHT:
+                            permissionUtils.check_permission(PermissionHandler.contactPermissionArrayList(context), Content_Message.CONTACT_PERMISSION, ApplicationConstant.REQ_READ_CONTACT_PERMISSION);
+                            break;
+                    }
+                }
+            });
+        }catch (Exception e){
+        }
+    }
+    static String addMobileNumberInEdittext(Context context ,Intent data){
+        String num = "";
+        Uri contactData = data.getData();
+        Cursor c = context.getContentResolver().query(contactData, null, null, null, null);
+        if (c.moveToFirst()) {
+            String contactId = c.getString(c.getColumnIndex(ContactsContract.Contacts._ID));
+            String hasNumber = c.getString(c.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
+            if (Integer.valueOf(hasNumber) == 1) {
+                Cursor numbers = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + contactId, null, null);
+                while (numbers.moveToNext()) {
+                    num = numbers.getString(numbers.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)).replaceAll("\\s+","");
+                }
+                if (num.length()>10) {
+                    num=num.substring(num.length() - 10);
+                }
+            }
+        }
+        return num;
+
     }
 }

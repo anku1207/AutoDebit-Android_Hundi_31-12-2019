@@ -524,6 +524,7 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
                         intent.putExtra("selectservice",selectServiceIds);
                         intent.putExtra("msg",customerVO.getAnonymousString());
                         intent.putExtra("mandate_status",customerVO.isEventIs());
+                        intent.putExtra("bankMandateId",customerVO.getAnonymousInteger().toString());
                         setResult(RESULT_OK,intent);
                         finish();
                     }

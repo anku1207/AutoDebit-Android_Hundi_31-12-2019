@@ -1425,4 +1425,16 @@ public class Utility {
     public static  void showToast(Context context,final String toast){
         ((Activity)context).runOnUiThread(() -> Toast.makeText(context, toast, Toast.LENGTH_SHORT).show());
     }
+
+
+
+    public static Drawable getDrawableResources(Context context,int id){
+        Drawable myDrawable;
+        if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP){
+            myDrawable = context.getResources().getDrawable(id, context.getTheme());
+        } else {
+            myDrawable = context.getResources().getDrawable(id);
+        }
+        return myDrawable;
+    }
 }

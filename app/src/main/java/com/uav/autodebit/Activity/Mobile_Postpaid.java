@@ -251,24 +251,14 @@ public class Mobile_Postpaid extends Base_Activity implements View.OnClickListen
                             changeEdittextValue(et);
 
                             if(oxigenQuestionsVO.getQuestionLabel().contains("Mobile")){
-                                eleMap.put("mobile",et);
-                                Drawable drawable = getResources().getDrawable(R.drawable.contacts);
-                                drawable = DrawableCompat.wrap(drawable);
-                                DrawableCompat.setTint(drawable, getResources().getColor(R.color.appbar));
-
-                                et.setCompoundDrawablesWithIntrinsicBounds(R.drawable.mobile,0 , R.drawable.contacts, 0);
-                                et.setDrawableClickListener(new DrawableClickListener() {
-                                    @Override
-                                    public void onClick(DrawablePosition target) {
-                                        switch (target) {
-                                            case RIGHT:
-                                                permissionUtils.check_permission(PermissionHandler.contactPermissionArrayList(Mobile_Postpaid.this), Content_Message.CONTACT_PERMISSION, ApplicationConstant.REQ_READ_CONTACT_PERMISSION);
-                                                break;
-                                        }
-                                    }
-                                });
+                                // Add mobileicon on Edittext for mobile
+                                if(oxigenQuestionsVO.getQuestionLabel().contains("Mobile")){
+                                    eleMap.put("mobile",et);
+                                    DynamicLayout.addContectIconEdittext(Mobile_Postpaid.this,permissionUtils,et);
+                                }
                             }
                             cardView.addView(et);
+
                             dynamicCardViewContainer.addView(cardView);
                             if(oxigenQuestionsVO.getInstructions()!=null){
                                 TextView tv = Utility.getTextView(this, oxigenQuestionsVO.getInstructions());
@@ -280,27 +270,12 @@ public class Mobile_Postpaid extends Base_Activity implements View.OnClickListen
                         EditText editText =(EditText) findViewById(questionsVOS.get(0).getElementId());
                         editText.requestFocus();
                     }
+
                 }else if(requestCode==101){
-                    Uri contactData = data.getData();
-                    Cursor c = getContentResolver().query(contactData, null, null, null, null);
-                    if (c.moveToFirst()) {
-                        String contactId = c.getString(c.getColumnIndex(ContactsContract.Contacts._ID));
-                        String hasNumber = c.getString(c.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
-                        String num = "";
-                        if (Integer.valueOf(hasNumber) == 1) {
-                            Cursor numbers = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + contactId, null, null);
-                            while (numbers.moveToNext()) {
-                                num = numbers.getString(numbers.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)).replaceAll("\\s+","");
-                            }
-                            if (num.length()>10) {
-                                num=num.substring(num.length() - 10);
-                            }
-                            ((EditText)eleMap.get("mobile")).setText(num);
-                            ((EditText)eleMap.get("mobile")).setSelection( ((EditText)eleMap.get("mobile")).getText().toString().length());
-                            amount.setText("");
-                        }
-                    }
-                }else if(requestCode==200 || requestCode== ApplicationConstant.REQ_ENACH_MANDATE){
+                    ((EditText)eleMap.get("mobile")).setText(DynamicLayout.addMobileNumberInEdittext(Mobile_Postpaid.this,data));
+                    ((EditText)eleMap.get("mobile")).setSelection( ((EditText)eleMap.get("mobile")).getText().toString().length());
+                    amount.setText("");
+                }else if(requestCode==200 || requestCode== ApplicationConstant.REQ_ENACH_MANDATE || requestCode==ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE){
                     if(data !=null){
                         BillPayRequest.onActivityResult(Mobile_Postpaid.this,data,requestCode);
                     }else {

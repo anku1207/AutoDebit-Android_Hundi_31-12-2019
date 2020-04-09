@@ -68,6 +68,7 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
     String serviceid;
 
     PermissionUtils permissionUtils ;
+    static  OxigenTransactionVO oxigenValidateResponce;
 
     @TargetApi(Build.VERSION_CODES.O)
     private void disableAutofill() {
@@ -257,8 +258,21 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                     }
                 }
             }else if(requestCode==ApplicationConstant.REQ_ENACH_MANDATE){
-                startActivity(new Intent(this,History.class));
-                finish();
+                boolean enachMandateStatus=data.getBooleanExtra("mandate_status",false);
+                if(enachMandateStatus){
+                    startActivity(new Intent(this,History.class));
+                    finish();
+                }else{
+                    Utility.showSingleButtonDialog(Mobile_Prepaid_Recharge_Service.this,"Alert",data.getStringExtra("msg"),false);
+                }
+
+            }else if(requestCode==ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE){
+                boolean enachMandateStatus=data.getBooleanExtra("mandate_status",false);
+                if(enachMandateStatus){
+                    proceedToRecharge(oxigenValidateResponce.getTypeId().toString(),data.getStringExtra("bankMandateId"), AuthServiceProviderVO.ENACHIDFC);
+                }else{
+                    Utility.showSingleButtonDialog(Mobile_Prepaid_Recharge_Service.this,"Alert",data.getStringExtra("msg"),false);
+                }
             }
         }
     }
@@ -267,6 +281,9 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
 
         switch (view.getId()){
             case R.id.proceed :
+                oxigenValidateResponce=new OxigenTransactionVO();
+
+
                 rechargeProceed();
                 break;
             case R.id.browseplan :
@@ -420,38 +437,53 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
 
                 JSONObject response = (JSONObject) resp;
                 Gson gson = new Gson();
-                OxigenTransactionVO oxigenPlanresp = gson.fromJson(response.toString(), OxigenTransactionVO.class);
+                oxigenValidateResponce = gson.fromJson(response.toString(), OxigenTransactionVO.class);
 
-                if(oxigenPlanresp.getStatusCode().equals("400")){
+                if(oxigenValidateResponce.getStatusCode().equals("400")){
                     StringBuffer stringBuffer= new StringBuffer();
-                    for(int i=0;i<oxigenPlanresp.getErrorMsgs().size();i++){
-                        stringBuffer.append(oxigenPlanresp.getErrorMsgs().get(i));
+                    for(int i=0;i<oxigenValidateResponce.getErrorMsgs().size();i++){
+                        stringBuffer.append(oxigenValidateResponce.getErrorMsgs().get(i));
                     }
                     Utility.showSingleButtonDialog(Mobile_Prepaid_Recharge_Service.this,"Error !",stringBuffer.toString(),false);
                 }else {
 
-                    if(oxigenPlanresp.getTypeId()==null){
+                    if(oxigenValidateResponce.getTypeId()==null){
                         Utility.showSingleButtonDialog(Mobile_Prepaid_Recharge_Service.this,"Error !","Something went wrong, Please try again!",false);
                         return;
                     }
-                    if(oxigenPlanresp.isEventIs()){
+                    if(oxigenValidateResponce.isEventIs()){
                         String [] btn ={"PG","Mandate"};
+                        Utility.showDoubleButtonDialogConfirmation(new DialogInterface() {
+                            @Override
+                            public void confirm(Dialog dialog) {
+                                dialog.dismiss();
+                                proceedToRecharge(oxigenValidateResponce.getTypeId().toString(),oxigenValidateResponce.getAnonymousInteger().toString(), AuthServiceProviderVO.ENACHIDFC);
+                            }
+                            @Override
+                            public void modify(Dialog dialog) {
+                                dialog.dismiss();
+                                startActivityForResult(new Intent(Mobile_Prepaid_Recharge_Service.this,PaymentGateWay.class).putExtra("oxigenTypeId",oxigenValidateResponce.getTypeId().toString()),200);
+                            }
+                        },Mobile_Prepaid_Recharge_Service.this,oxigenValidateResponce.getAnonymousString(),"",btn);
+                    }else {
 
+                        String [] btn ={"PG","Mandate"};
                         Utility.showDoubleButtonDialogConfirmation(new DialogInterface() {
                             @Override
                             public void confirm(Dialog dialog) {
                                 dialog.dismiss();
 
-                                proceedToRecharge(oxigenPlanresp.getTypeId().toString(),oxigenPlanresp.getAnonymousInteger().toString(), AuthServiceProviderVO.ENACHIDFC);
+                                //open enach mandate activity for customer mandate
+                                startActivityForResult(new Intent(Mobile_Prepaid_Recharge_Service.this,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(oxigenValidateResponce.getServiceId()))), ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE);
                             }
                             @Override
                             public void modify(Dialog dialog) {
                                 dialog.dismiss();
-                                startActivityForResult(new Intent(Mobile_Prepaid_Recharge_Service.this,PaymentGateWay.class).putExtra("oxigenTypeId",oxigenPlanresp.getTypeId().toString()),200);
+
+                                //open payment gateway activity
+                                startActivityForResult(new Intent(Mobile_Prepaid_Recharge_Service.this,PaymentGateWay.class).putExtra("oxigenTypeId",oxigenValidateResponce.getTypeId().toString()),200);
                             }
-                        },Mobile_Prepaid_Recharge_Service.this,oxigenPlanresp.getAnonymousString(),"",btn);
-                    }else {
-                        startActivityForResult(new Intent(Mobile_Prepaid_Recharge_Service.this,PaymentGateWay.class).putExtra("oxigenTypeId",oxigenPlanresp.getTypeId().toString()),200);
+                        },Mobile_Prepaid_Recharge_Service.this,oxigenValidateResponce.getAnonymousString(),"",btn);
                     }
                 }
             }

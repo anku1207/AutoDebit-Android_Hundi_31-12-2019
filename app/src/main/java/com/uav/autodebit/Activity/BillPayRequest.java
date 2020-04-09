@@ -47,7 +47,7 @@ import static com.uav.autodebit.util.Utility.showDoubleButtonDialogConfirmation;
 
 public class BillPayRequest {
 
-
+    private static OxigenTransactionVO oxigenValidateResponce;
 
 
     public static void proceedFetchBill(OxigenTransactionVO oxigenTransactionVO,Context context,VolleyResponse volleyResponse) throws Exception{
@@ -99,8 +99,7 @@ public class BillPayRequest {
         }
     }
 
-    public static void proceedBillPayment(OxigenTransactionVO oxigenTransactionVO, Context context,VolleyResponse volleyResponse) {
-
+    private static void proceedBillPayment(OxigenTransactionVO oxigenTransactionVO, Context context,VolleyResponse volleyResponse) {
         try {
             Gson gson =new Gson();
 
@@ -108,7 +107,7 @@ public class BillPayRequest {
             ConnectionVO connectionVO = OxigenPlanBO.oxiBillPayment();
             params.put("volley",gson.toJson(oxigenTransactionVO));
             connectionVO.setParams(params);
-            Log.w("requestData",gson.toJson(oxigenTransactionVO));
+            Log.w("proceedBillPayment",gson.toJson(oxigenTransactionVO));
             VolleyUtils.makeJsonObjectRequest(context,connectionVO, new VolleyResponseListener() {
                 @Override
                 public void onError(String message) {
@@ -137,7 +136,6 @@ public class BillPayRequest {
             Utility.exceptionAlertDialog(context,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
     }
-
 
     static JSONObject getQuestionLabelData(Activity activity, EditText operator, EditText amount, boolean fetchBill, boolean isFetchBill, List<OxigenQuestionsVO> questionsVOS,int minamt) throws  JSONException {
 
@@ -243,6 +241,8 @@ public class BillPayRequest {
     }
 
     static   void proceedRecharge(Context context,boolean isFetchBill,OxigenTransactionVO oxigenTransactionVO ){
+        oxigenValidateResponce=new OxigenTransactionVO();
+
         if(oxigenTransactionVO==null){
             Utility.showSingleButtonDialogconfirmation(context,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
                 ok.dismiss();
@@ -253,12 +253,34 @@ public class BillPayRequest {
             }),"Alert","Bill Fetch Is required!");
         }else {
            BillPayRequest.oxiBillPaymentValdated(context,oxigenTransactionVO,new PaymentGatewayResponse((PaymentGatewayResponse.OnPg)(pg)->{
-               ((Activity)context).startActivityForResult(new Intent(context,PaymentGateWay.class).putExtra("oxigenTypeId",((OxigenTransactionVO)pg).getTypeId().toString()),200);
-           },(PaymentGatewayResponse.OnEnach)(onEnach)->{
+
+               //show two button dialog on customer for first time pay bill
+               OxigenTransactionVO oxigenPlanresp=(OxigenTransactionVO) pg;
+               if(!oxigenPlanresp.isEventIs()){
+                   String [] btn ={"PG","Mandate"};
+                   Utility.showDoubleButtonDialogConfirmation(new DialogInterface() {
+                       @Override
+                       public void confirm(Dialog dialog) {
+                           dialog.dismiss();
+                           ((Activity)context).startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(oxigenPlanresp.getServiceId()))), ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE);
+                       }
+                       @Override
+                       public void modify(Dialog dialog) {
+                           dialog.dismiss();
+                           ((Activity)context).startActivityForResult(new Intent(context,PaymentGateWay.class).putExtra("oxigenTypeId",((OxigenTransactionVO)pg).getTypeId().toString()),200);
+                       }
+                   },context,oxigenPlanresp.getAnonymousString(),"",btn);
+               }else {
+                   ((Activity)context).startActivityForResult(new Intent(context,PaymentGateWay.class).putExtra("oxigenTypeId",((OxigenTransactionVO)pg).getTypeId().toString()),200);
+               }
+
+               },(PaymentGatewayResponse.OnEnach)(onEnach)->{
+
                BillPayRequest.proceedBillPayment((OxigenTransactionVO)onEnach,context,new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
                    handelRechargeSuccess(context,(OxigenTransactionVO)s);
                },(VolleyResponse.OnError)(e)->{
                }));
+
            }));
         }
     }
@@ -283,20 +305,20 @@ public class BillPayRequest {
 
                 JSONObject response = (JSONObject) resp;
                 Gson gson = new Gson();
-                OxigenTransactionVO oxigenPlanresp = gson.fromJson(response.toString(), OxigenTransactionVO.class);
+                oxigenValidateResponce = gson.fromJson(response.toString(), OxigenTransactionVO.class);
 
-                if(oxigenPlanresp.getStatusCode().equals("400")){
+                if(oxigenValidateResponce.getStatusCode().equals("400")){
                     StringBuffer stringBuffer= new StringBuffer();
-                    for(int i=0;i<oxigenPlanresp.getErrorMsgs().size();i++){
-                        stringBuffer.append(oxigenPlanresp.getErrorMsgs().get(i));
+                    for(int i=0;i<oxigenValidateResponce.getErrorMsgs().size();i++){
+                        stringBuffer.append(oxigenValidateResponce.getErrorMsgs().get(i));
                     }
                     Utility.showSingleButtonDialog(context,"Error !",stringBuffer.toString(),false);
                 }else {
-                    if(oxigenPlanresp.getTypeId()==null){
+                    if(oxigenValidateResponce.getTypeId()==null){
                         Utility.showSingleButtonDialog(context,"Error !","Something went wrong, Please try again!",false);
                         return;
                     }
-                    if(oxigenPlanresp.isEventIs()){
+                    if(oxigenValidateResponce.isEventIs()){
                         String [] btn ={"PG","Mandate"};
                         Utility.showDoubleButtonDialogConfirmation(new DialogInterface() {
                             @Override
@@ -307,19 +329,21 @@ public class BillPayRequest {
                                 authServiceProviderVO.setProviderId(AuthServiceProviderVO.ENACHIDFC);
 
                                 OxigenTransactionVO responseOxigenTransactionVO =new OxigenTransactionVO();
-                                responseOxigenTransactionVO.setTypeId(oxigenPlanresp.getTypeId());
-                                responseOxigenTransactionVO.setAnonymousString(oxigenPlanresp.getAnonymousInteger().toString());
+                                responseOxigenTransactionVO.setTypeId(oxigenValidateResponce.getTypeId());
+                                responseOxigenTransactionVO.setAnonymousString(oxigenValidateResponce.getAnonymousInteger().toString());
                                 responseOxigenTransactionVO.setProvider(authServiceProviderVO);
                                 paymentGatewayResponse.onEnach(responseOxigenTransactionVO);
                             }
                             @Override
                             public void modify(Dialog dialog) {
                                 dialog.dismiss();
-                                paymentGatewayResponse.onPg(oxigenPlanresp);
+                                paymentGatewayResponse.onPg(oxigenValidateResponce);
                             }
-                        },context,oxigenPlanresp.getAnonymousString(),"",btn);
+                        },context,oxigenValidateResponce.getAnonymousString(),"",btn);
                     }else {
-                        paymentGatewayResponse.onPg(oxigenPlanresp);
+
+                        //first time payment show two btn dialog on customer
+                        paymentGatewayResponse.onPg(oxigenValidateResponce);
 
                     }
                 }
@@ -408,9 +432,6 @@ public class BillPayRequest {
 
 
 
-
-
-
     public static void onActivityResult(Context context,Intent data,int requestCode){
         if(requestCode==200){
             if(data.getIntExtra("status",0)== CCTransactionStatusVO.SUCCESS){
@@ -429,8 +450,37 @@ public class BillPayRequest {
                 Utility.showSingleButtonDialogconfirmation(context,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk) Dialog::dismiss),"",data.getStringExtra("message"));
             }
         }else if(requestCode== ApplicationConstant.REQ_ENACH_MANDATE){
-            ((Activity)context).startActivity(new Intent(context,History.class));
-            ((Activity)context).finish();
+            boolean enachMandateStatus=data.getBooleanExtra("mandate_status",false);
+            if(enachMandateStatus){
+                ((Activity)context).startActivity(new Intent(context,History.class));
+                ((Activity)context).finish();
+            }else{
+                Utility.showSingleButtonDialog(context,"Alert",data.getStringExtra("msg"),false);
+            }
+        }else if(requestCode==ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE){
+
+            boolean enachMandateStatus=data.getBooleanExtra("mandate_status",false);
+            if(enachMandateStatus){
+                AuthServiceProviderVO authServiceProviderVO =new AuthServiceProviderVO();
+                authServiceProviderVO.setProviderId(AuthServiceProviderVO.ENACHIDFC);
+                OxigenTransactionVO responseOxigenTransactionVO =new OxigenTransactionVO();
+                responseOxigenTransactionVO.setTypeId(oxigenValidateResponce.getTypeId());
+                responseOxigenTransactionVO.setAnonymousString(data.getStringExtra("bankMandateId"));
+                responseOxigenTransactionVO.setProvider(authServiceProviderVO);
+                //recharge for after enach mandate
+                BillPayRequest.proceedBillPayment(responseOxigenTransactionVO,context,new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
+                    handelRechargeSuccess(context,(OxigenTransactionVO)s);
+                },(VolleyResponse.OnError)(e)->{
+                }));
+            }else{
+                Utility.showSingleButtonDialog(context,"Alert",data.getStringExtra("msg"),false);
+            }
         }
     }
+
+
+
+
+
+
 }

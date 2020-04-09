@@ -237,7 +237,7 @@ public class PNG extends Base_Activity  implements View.OnClickListener{
                         EditText editText =(EditText) findViewById(questionsVOS.get(0).getElementId());
                         editText.requestFocus();
                     }
-                }else if(requestCode==200 || requestCode== ApplicationConstant.REQ_ENACH_MANDATE){
+                }else if(requestCode==200 || requestCode== ApplicationConstant.REQ_ENACH_MANDATE || requestCode==ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE){
                     if(data !=null){
                         BillPayRequest.onActivityResult(this,data,requestCode);
                     }else {

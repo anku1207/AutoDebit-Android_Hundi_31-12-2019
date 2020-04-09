@@ -1,13 +1,21 @@
 package com.uav.autodebit.Activity;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Typeface;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
+
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -29,7 +37,12 @@ import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
+import com.uav.autodebit.constant.Content_Message;
+import com.uav.autodebit.override.DrawableClickListener;
+import com.uav.autodebit.override.UAVEditText;
 import com.uav.autodebit.override.UAVProgressDialog;
+import com.uav.autodebit.permission.PermissionHandler;
+import com.uav.autodebit.permission.PermissionUtils;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.BackgroundAsyncService;
 import com.uav.autodebit.util.BackgroundServiceInterface;
@@ -45,9 +58,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-public class DTH_Recharge_Service extends Base_Activity implements View.OnClickListener{
+public class DTH_Recharge_Service extends Base_Activity implements View.OnClickListener, PermissionUtils.PermissionResultCallback , ActivityCompat.OnRequestPermissionsResultCallback{
     EditText amount,operator;
     ImageView back_activity_button;
     String operatorcode,operatorname=null;
@@ -65,6 +79,10 @@ public class DTH_Recharge_Service extends Base_Activity implements View.OnClickL
     UAVProgressDialog pd;
     OxigenTransactionVO oxigenTransactionVOresp;
     int minAmt;
+
+    HashMap<String,Object> eleMap;
+    PermissionUtils permissionUtils;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,8 +111,11 @@ public class DTH_Recharge_Service extends Base_Activity implements View.OnClickL
 
         amountlayout.setVisibility(View.GONE);
         oxigenTransactionVOresp=new OxigenTransactionVO();
-        minAmt=0;
 
+        eleMap=new HashMap<>();
+        permissionUtils=new PermissionUtils(DTH_Recharge_Service.this);
+
+        minAmt=0;
 
         back_activity_button.setOnClickListener(this);
         proceed.setOnClickListener(this);
@@ -168,6 +189,9 @@ public class DTH_Recharge_Service extends Base_Activity implements View.OnClickL
 
 
                 if(requestCode==100){
+                    //clear element maplist
+                    eleMap.clear();
+
                     operatorname =data.getStringExtra("operatorname");
                     operatorcode=data.getStringExtra("operator");
 
@@ -226,11 +250,21 @@ public class DTH_Recharge_Service extends Base_Activity implements View.OnClickL
                             CardView cardView = Utility.getCardViewStyle(this);
                             //EditText et = new EditText(new ContextThemeWrapper(this,R.style.edittext));
 
-                            EditText et = Utility.getEditText(DTH_Recharge_Service.this);
+                            UAVEditText et = Utility.getUavEditText(this);
                             et.setId(View.generateViewId());
                             et.setHint(oxigenQuestionsVO.getQuestionLabel());
                             changeEdittextValue(et);
+
+
+                            // Add mobileicon on Edittext for mobile
+                            if(oxigenQuestionsVO.getQuestionLabel().contains("Mobile")){
+                                eleMap.put("mobile",et);
+                                DynamicLayout.addContectIconEdittext(DTH_Recharge_Service.this,permissionUtils,et);
+                            }
+
                             cardView.addView(et);
+
+
                             dynamicCardViewContainer.addView(cardView);
                             if(oxigenQuestionsVO.getInstructions()!=null){
                                 TextView tv = Utility.getTextView(this, oxigenQuestionsVO.getInstructions());
@@ -243,7 +277,13 @@ public class DTH_Recharge_Service extends Base_Activity implements View.OnClickL
                         editText.requestFocus();
                     }
 
-                }else if(requestCode==200 || requestCode== ApplicationConstant.REQ_ENACH_MANDATE){
+                }else if(requestCode==101){
+
+                    ((EditText)eleMap.get("mobile")).setText(DynamicLayout.addMobileNumberInEdittext(DTH_Recharge_Service.this,data));
+                    ((EditText)eleMap.get("mobile")).setSelection( ((EditText)eleMap.get("mobile")).getText().toString().length());
+                    amount.setText("");
+
+                }else if(requestCode==200 || requestCode== ApplicationConstant.REQ_ENACH_MANDATE || requestCode==ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE){
                     if(data !=null){
                         BillPayRequest.onActivityResult(this,data,requestCode);
                     }else {
@@ -394,6 +434,35 @@ public class DTH_Recharge_Service extends Base_Activity implements View.OnClickL
             public void afterTextChanged(Editable editable) {
             }
         });
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        permissionUtils.onRequestPermissionsResult(requestCode,permissions,grantResults);
+    }
+
+    @Override
+    public void PermissionGranted(int request_code) {
+        if(request_code==ApplicationConstant.REQ_READ_CONTACT_PERMISSION){
+            Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+            startActivityForResult(intent, 101);
+        }
+    }
+
+    @Override
+    public void PartialPermissionGranted(int request_code, ArrayList<String> granted_permissions) {
+
+    }
+
+    @Override
+    public void PermissionDenied(int request_code) {
+
+    }
+
+    @Override
+    public void NeverAskAgain(int request_code) {
 
     }
 }

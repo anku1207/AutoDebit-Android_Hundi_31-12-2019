@@ -251,7 +251,7 @@ public class Water extends Base_Activity implements View.OnClickListener {
                         editText.requestFocus();
                     }
 
-                }else if(requestCode==200 || requestCode== ApplicationConstant.REQ_ENACH_MANDATE){
+                }else if(requestCode==200 || requestCode== ApplicationConstant.REQ_ENACH_MANDATE || requestCode==ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE){
                     if(data !=null){
                         BillPayRequest.onActivityResult(this,data,requestCode);
                     }else {
