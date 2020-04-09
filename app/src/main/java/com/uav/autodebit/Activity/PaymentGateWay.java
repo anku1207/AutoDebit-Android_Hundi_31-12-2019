@@ -252,6 +252,11 @@ public class PaymentGateWay extends AppCompatActivity implements MyJavaScriptInt
 
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        webView.stopLoading();
+    }
 
     public class MyBrowser extends WebViewClient {
         final ProgressDialog progressBar = ProgressDialog.show(PaymentGateWay.this, null, " Please wait...", false, false);

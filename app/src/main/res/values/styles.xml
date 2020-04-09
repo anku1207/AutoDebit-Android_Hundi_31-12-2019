@@ -242,9 +242,10 @@
 
 
 
-
-
-
-
+    <style name="MyCheckBox" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorControlNormal">@color/colorPrimary</item>   <!-- normal border color change as you wish -->
+        <item name="colorControlActivated">@color/colorPrimary</item> <!-- activated color change as you wish -->
+        <item name="android:textColor">#CF221E</item> <!-- checkbox text color -->
+    </style>
 
 </resources>

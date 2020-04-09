@@ -18,6 +18,7 @@ import androidx.core.text.HtmlCompat;
 import com.google.gson.Gson;
 import com.uav.autodebit.BO.Electricity_BillBO;
 import com.uav.autodebit.BO.OxigenPlanBO;
+import com.uav.autodebit.Interface.AlertSelectDialogClick;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.Interface.PaymentGatewayResponse;
 import com.uav.autodebit.Interface.VolleyResponse;
@@ -28,6 +29,7 @@ import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.AuthServiceProviderVO;
 import com.uav.autodebit.vo.CCTransactionStatusVO;
 import com.uav.autodebit.vo.ConnectionVO;
+import com.uav.autodebit.vo.DataAdapterVO;
 import com.uav.autodebit.vo.OxigenQuestionsVO;
 import com.uav.autodebit.vo.OxigenTransactionVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
@@ -257,7 +259,32 @@ public class BillPayRequest {
                //show two button dialog on customer for first time pay bill
                OxigenTransactionVO oxigenPlanresp=(OxigenTransactionVO) pg;
                if(!oxigenPlanresp.isEventIs()){
-                   String [] btn ={"PG","Mandate"};
+
+                   ArrayList<DataAdapterVO> dataAdapterVOS =new ArrayList<>();
+
+                   DataAdapterVO dataAdapterVO =new DataAdapterVO();
+                   dataAdapterVO.setText("Add Bank Mandate");
+                   dataAdapterVOS.add(dataAdapterVO);
+
+                   dataAdapterVO =new DataAdapterVO();
+                   dataAdapterVO.setText("Credit Card / Debit Card");
+                   dataAdapterVOS.add(dataAdapterVO);
+
+                   dataAdapterVO =new DataAdapterVO();
+                   dataAdapterVO.setText("Net Banking");
+                   dataAdapterVOS.add(dataAdapterVO);
+
+                   Utility.showSelectPaymentTypeDialog(context,"Payment Type",dataAdapterVOS,new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess)(position)->{
+                        int selectPosition=Integer.parseInt(position);
+
+                        if(selectPosition==0 ){
+                            ((Activity)context).startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(oxigenPlanresp.getServiceId()))), ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE);
+                        }else {
+                            ((Activity)context).startActivityForResult(new Intent(context,PaymentGateWay.class).putExtra("oxigenTypeId",((OxigenTransactionVO)pg).getTypeId().toString()),200);
+                        }
+                   }));
+
+                 /*  String [] btn ={"PG","Mandate"};
                    Utility.showDoubleButtonDialogConfirmation(new DialogInterface() {
                        @Override
                        public void confirm(Dialog dialog) {
@@ -269,7 +296,12 @@ public class BillPayRequest {
                            dialog.dismiss();
                            ((Activity)context).startActivityForResult(new Intent(context,PaymentGateWay.class).putExtra("oxigenTypeId",((OxigenTransactionVO)pg).getTypeId().toString()),200);
                        }
-                   },context,oxigenPlanresp.getAnonymousString(),"",btn);
+                   },context,oxigenPlanresp.getAnonymousString(),"",btn);*/
+
+
+
+
+
                }else {
                    ((Activity)context).startActivityForResult(new Intent(context,PaymentGateWay.class).putExtra("oxigenTypeId",((OxigenTransactionVO)pg).getTypeId().toString()),200);
                }
@@ -341,7 +373,6 @@ public class BillPayRequest {
                             }
                         },context,oxigenValidateResponce.getAnonymousString(),"",btn);
                     }else {
-
                         //first time payment show two btn dialog on customer
                         paymentGatewayResponse.onPg(oxigenValidateResponce);
 
@@ -360,7 +391,7 @@ public class BillPayRequest {
             showDoubleButtonDialogConfirmation(new DialogInterface() {
                 @Override
                 public void confirm(Dialog dialog) {
-                    dialog.dismiss();
+                    //dialog.dismiss();
                     ((Activity)context).startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(oxigenTransactionVOresp.getServiceId()))), ApplicationConstant.REQ_ENACH_MANDATE);
                 }
 

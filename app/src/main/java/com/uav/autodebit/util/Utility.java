@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -70,6 +71,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -88,8 +91,10 @@ import com.uav.autodebit.Notification.NotificationUtils;
 import com.uav.autodebit.R;
 import com.uav.autodebit.adpater.ListViewAlertSelectListBaseAdapter;
 import com.uav.autodebit.constant.ApplicationConstant;
+import com.uav.autodebit.override.ExpandableHeightListView;
 import com.uav.autodebit.override.UAVEditText;
 import com.uav.autodebit.vo.CustomerAuthServiceVO;
+import com.uav.autodebit.vo.DataAdapterVO;
 import com.uav.autodebit.volley.VolleyUtils;
 
 
@@ -121,6 +126,7 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -1437,4 +1443,67 @@ public class Utility {
         }
         return myDrawable;
     }
+
+
+    public static void showSelectPaymentTypeDialog(Context context ,String title ,ArrayList<DataAdapterVO> dataAdapterVOS ,AlertSelectDialogClick alertSelectDialogClick){
+
+        int   selectItemPossion;
+
+        final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(1);
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(0));
+        dialog.setContentView(R.layout.select_payment_type_stype);
+        dialog.setCanceledOnTouchOutside(false);
+
+        TextView title_text = (TextView)dialog.findViewById(R.id.dialog_one_tv_title);
+        title_text.setText(title);
+
+        Button proceed= dialog.findViewById(R.id.proceed);
+
+        RadioGroup radiogroup = dialog.findViewById(R.id.radiogroup);
+        LinearLayout main_layout = (LinearLayout) dialog.findViewById(R.id.main_layout);
+
+
+        for(int j=0;j<dataAdapterVOS.size();j++){
+            DataAdapterVO dataAdapterVO = dataAdapterVOS.get(j);
+            RadioButton rdbtn = new RadioButton(context);
+            rdbtn.setId(j);
+            rdbtn.setText(dataAdapterVO.getText());
+            rdbtn.setChecked(false);
+            RadioGroup.LayoutParams params = new RadioGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.setMargins(15, 15, 15, 15);
+            rdbtn.setLayoutParams(params);
+            rdbtn.setPadding(50,0,0,0);
+
+            rdbtn.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(context, R.color.colorPrimary)));
+            radiogroup.addView(rdbtn);
+        }
+        radiogroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                proceed.setVisibility(View.VISIBLE);
+            }
+        });
+
+        proceed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                alertSelectDialogClick.onSuccess(radiogroup.getCheckedRadioButtonId()+"");
+            }
+        });
+
+
+
+
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+
+        dialog.show();
+        dialog.getWindow().setAttributes(lp);
+    }
+
+
 }
