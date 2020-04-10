@@ -69,7 +69,6 @@ public class Login extends Base_Activity implements View.OnClickListener, View.O
         getSupportActionBar().hide();
         disableAutofill();
 
-
         //asking all permission for user
         if(!Session.check_Exists_key(Login.this,Session.CACHE_ASK_PERMISSION)){
             Session.set_Data_Sharedprefence_BoolenvValue(Login.this,Session.CACHE_ASK_PERMISSION,true);

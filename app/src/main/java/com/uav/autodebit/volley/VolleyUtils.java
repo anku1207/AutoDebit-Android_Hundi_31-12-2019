@@ -32,6 +32,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.uav.autodebit.Activity.Mobile_Prepaid_Recharge_Service;
+import com.uav.autodebit.Activity.PaymentGateWay;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.permission.PermissionHandler;
@@ -168,7 +169,11 @@ public class VolleyUtils {
         AlertDialog alert= builder.create();
         alert.setCanceledOnTouchOutside(false);
         alert.setCancelable(false);
-        alert.show();
+        if(!((Activity)context).isFinishing()){
+            //show dialog
+            alert.show();
+        }
+
     }
 }
 

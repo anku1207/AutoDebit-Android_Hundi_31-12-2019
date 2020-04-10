@@ -2,6 +2,7 @@ package com.uav.autodebit.Activity;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -33,6 +34,7 @@ import com.uav.autodebit.BO.OxigenPlanBO;
 import com.uav.autodebit.BO.PaymentGateWayBO;
 import com.uav.autodebit.BO.SiBO;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
+import com.uav.autodebit.Interface.PaymentGatewayResponse;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.permission.Session;
@@ -271,7 +273,10 @@ public class PaymentGateWay extends AppCompatActivity implements MyJavaScriptInt
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
             Log.w("pagestart", url);
-            progressBar.show();
+            if(!PaymentGateWay.this.isFinishing()){
+                //show dialog
+                progressBar.show();
+            }
         }
         @Override
         public void onPageFinished(WebView view, String url) {

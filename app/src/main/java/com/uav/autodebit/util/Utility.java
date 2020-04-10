@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapShader;
@@ -64,6 +65,9 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.view.inputmethod.InputMethodManager;
+import android.webkit.JavascriptInterface;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -1446,9 +1450,6 @@ public class Utility {
 
 
     public static void showSelectPaymentTypeDialog(Context context ,String title ,ArrayList<DataAdapterVO> dataAdapterVOS ,AlertSelectDialogClick alertSelectDialogClick){
-
-        int   selectItemPossion;
-
         final Dialog dialog = new Dialog(context);
         dialog.requestWindowFeature(1);
         Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(0));
@@ -1461,8 +1462,6 @@ public class Utility {
         Button proceed= dialog.findViewById(R.id.proceed);
 
         RadioGroup radiogroup = dialog.findViewById(R.id.radiogroup);
-        LinearLayout main_layout = (LinearLayout) dialog.findViewById(R.id.main_layout);
-
 
         for(int j=0;j<dataAdapterVOS.size();j++){
             DataAdapterVO dataAdapterVO = dataAdapterVOS.get(j);
@@ -1493,9 +1492,6 @@ public class Utility {
             }
         });
 
-
-
-
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
         lp.copyFrom(dialog.getWindow().getAttributes());
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
@@ -1504,6 +1500,68 @@ public class Utility {
         dialog.show();
         dialog.getWindow().setAttributes(lp);
     }
+
+
+    public static void showWebviewAlertDialog(Context context ,String html, ConfirmationDialogInterface confirmationDialogInterface){
+
+       Log.w("serverhtml",html);
+
+        final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(1);
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(0));
+        dialog.setContentView(R.layout.webview_alert_dialog);
+        dialog.setCanceledOnTouchOutside(false);
+       // dialog.setCancelable(false);
+        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+
+        WebView webview = dialog.findViewById(R.id.webview);
+        webview.getSettings().setJavaScriptEnabled( true ) ;
+
+        WebSettings ws = webview.getSettings() ;
+        ws.setJavaScriptEnabled( true ) ;
+
+
+        webview.setVerticalScrollBarEnabled(false);
+        webview.setHorizontalScrollBarEnabled(false);
+        webview.getSettings().setBuiltInZoomControls(false);
+
+        webview.getSettings().setLoadsImagesAutomatically(true);
+        webview.getSettings().setDomStorageEnabled(true);
+        webview.setInitialScale(1);
+        webview.getSettings().setUseWideViewPort(true);
+
+
+
+        webview.loadData(html, "text/html; charset=utf-8", "UTF-8");
+        webview.addJavascriptInterface( new Object() {
+            @JavascriptInterface // For API 17+
+            public void performClick (String message) {
+               if(message.equalsIgnoreCase("ok")){
+                    confirmationDialogInterface.onOk(null);
+                }else if(message.equalsIgnoreCase("cancel")){
+                   dialog.dismiss();
+                    confirmationDialogInterface.onCancel(null);
+                }
+            }
+        } , "ok" ) ;
+
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = (WindowManager.LayoutParams.MATCH_PARENT);
+        lp.height = (WindowManager.LayoutParams.WRAP_CONTENT);
+
+        dialog.show();
+        dialog.getWindow().setAttributes(lp);
+    }
+
+    public static int getActionBarHeight(Context context) {
+        final TypedArray ta = context.getTheme().obtainStyledAttributes(
+                new int[] {android.R.attr.actionBarSize});
+        int actionBarHeight = (int) ta.getDimension(0, 0);
+        return actionBarHeight;
+    }
+
+
 
 
 }
