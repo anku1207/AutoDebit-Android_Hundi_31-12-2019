@@ -1511,7 +1511,7 @@ public class Utility {
         Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(0));
         dialog.setContentView(R.layout.webview_alert_dialog);
         dialog.setCanceledOnTouchOutside(false);
-       // dialog.setCancelable(false);
+        dialog.setCancelable(false);
         dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
 
         WebView webview = dialog.findViewById(R.id.webview);
