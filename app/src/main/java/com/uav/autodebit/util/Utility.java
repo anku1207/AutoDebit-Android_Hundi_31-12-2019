@@ -1449,7 +1449,7 @@ public class Utility {
     }
 
 
-    public static void showSelectPaymentTypeDialog(Context context ,String title ,ArrayList<DataAdapterVO> dataAdapterVOS ,AlertSelectDialogClick alertSelectDialogClick){
+    public static void showSelectPaymentTypeDialog(Context context ,String title ,List<String> strings ,AlertSelectDialogClick alertSelectDialogClick){
         final Dialog dialog = new Dialog(context);
         dialog.requestWindowFeature(1);
         Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(0));
@@ -1463,11 +1463,11 @@ public class Utility {
 
         RadioGroup radiogroup = dialog.findViewById(R.id.radiogroup);
 
-        for(int j=0;j<dataAdapterVOS.size();j++){
-            DataAdapterVO dataAdapterVO = dataAdapterVOS.get(j);
+        for(int j=0;j<strings.size();j++){
+            String text = strings.get(j);
             RadioButton rdbtn = new RadioButton(context);
             rdbtn.setId(j);
-            rdbtn.setText(dataAdapterVO.getText());
+            rdbtn.setText(text);
             rdbtn.setChecked(false);
             RadioGroup.LayoutParams params = new RadioGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             params.setMargins(15, 15, 15, 15);
@@ -1502,19 +1502,17 @@ public class Utility {
     }
 
 
-    public static void showWebviewAlertDialog(Context context ,String html, ConfirmationDialogInterface confirmationDialogInterface){
+    public static void showWebviewAlertDialog(Context context ,String html,boolean backBtnCloseDialog, ConfirmationDialogInterface confirmationDialogInterface){
 
-       Log.w("serverhtml",html);
+        final Dialog cusdialog = new Dialog(context);
+        cusdialog.requestWindowFeature(1);
+        Objects.requireNonNull(cusdialog.getWindow()).setBackgroundDrawable(new ColorDrawable(0));
+        cusdialog.setContentView(R.layout.webview_alert_dialog);
+        cusdialog.setCanceledOnTouchOutside(false);
+        cusdialog.setCancelable(backBtnCloseDialog);
+        cusdialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
 
-        final Dialog dialog = new Dialog(context);
-        dialog.requestWindowFeature(1);
-        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(0));
-        dialog.setContentView(R.layout.webview_alert_dialog);
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.setCancelable(false);
-        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
-
-        WebView webview = dialog.findViewById(R.id.webview);
+        WebView webview = cusdialog.findViewById(R.id.webview);
         webview.getSettings().setJavaScriptEnabled( true ) ;
 
         WebSettings ws = webview.getSettings() ;
@@ -1536,22 +1534,26 @@ public class Utility {
         webview.addJavascriptInterface( new Object() {
             @JavascriptInterface // For API 17+
             public void performClick (String message) {
-               if(message.equalsIgnoreCase("ok")){
-                    confirmationDialogInterface.onOk(null);
-                }else if(message.equalsIgnoreCase("cancel")){
-                   dialog.dismiss();
-                    confirmationDialogInterface.onCancel(null);
-                }
+                ((Activity)context).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(message.equalsIgnoreCase("ok")){
+                            confirmationDialogInterface.onOk(cusdialog);
+                        }else if(message.equalsIgnoreCase("cancel")){
+                            confirmationDialogInterface.onCancel(cusdialog);
+                        }
+                    }
+                });
             }
         } , "ok" ) ;
 
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.copyFrom(cusdialog.getWindow().getAttributes());
         lp.width = (WindowManager.LayoutParams.MATCH_PARENT);
         lp.height = (WindowManager.LayoutParams.WRAP_CONTENT);
 
-        dialog.show();
-        dialog.getWindow().setAttributes(lp);
+        cusdialog.show();
+        cusdialog.getWindow().setAttributes(lp);
     }
 
     public static int getActionBarHeight(Context context) {

@@ -209,56 +209,68 @@ public class AdditionalService extends Base_Activity implements View.OnClickList
                         }
                         Utility.showSingleButtonDialog(AdditionalService.this, "Error !", sb.toString(), false);
                     } else if (customerVO1.getStatusCode().equals("ap102")) {
-                        String[] buttons = {"OK"};
-                        Utility.showSingleButtonDialogconfirmation(AdditionalService.this, new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk) (ok) -> {
-                            ok.dismiss();
+                        // 12/04/2020
+                        Utility.showWebviewAlertDialog(AdditionalService.this, customerVO1.getHtmlString(),false,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(dialog)->{
+                            dialog.dismiss();
                             startActivityForResult(new Intent(AdditionalService.this, Enach_Mandate.class).putExtra("forresutl", true).putExtra("selectservice",arrayList), ApplicationConstant.REQ_ENACH_MANDATE);
-                        }), "Alert", customerVO1.getErrorMsgs().get(0), buttons);
+                        },(ConfirmationDialogInterface.OnCancel)(cancel)->{
+                            cancel.dismiss();
+                        }));
+
+
+
                     } else if (customerVO1.getStatusCode().equals("ap103")) {
-                        String[] buttons = {"New Mandate", "Choose Bank"};
-                        Utility.showDoubleButtonDialogConfirmation(new DialogInterface() {
-                            @Override
-                            public void confirm(Dialog dialog) {
-                                dialog.dismiss();
-                                try {
-                                    JSONArray arryjson = new JSONArray(customerVO1.getAnonymousString());
-                                    ArrayList<CustomerAuthServiceVO> customerAuthServiceArry = new ArrayList<>();
-                                    for (int i = 0; i < arryjson.length(); i++) {
-                                        JSONObject jsonObject = arryjson.getJSONObject(i);
-                                        CustomerAuthServiceVO customerAuthServiceVO = new CustomerAuthServiceVO();
-                                        customerAuthServiceVO.setBankName(jsonObject.getString("bankName"));
-                                        customerAuthServiceVO.setProviderTokenId(jsonObject.getString("mandateId"));
-                                        customerAuthServiceVO.setCustomerAuthId(jsonObject.getInt("id"));
-                                        customerAuthServiceVO.setAnonymousString(jsonObject.getString("status"));
-                                        customerAuthServiceArry.add(customerAuthServiceVO);
-                                    }
 
-                                    CustomerAuthServiceVO customerAuthServiceVO = new CustomerAuthServiceVO();
-                                    customerAuthServiceVO.setBankName(null);
-                                    customerAuthServiceVO.setProviderTokenId("Add New Mandate");
-                                    customerAuthServiceVO.setCustomerAuthId(0);
-                                    customerAuthServiceVO.setAnonymousString(null);
-                                    customerAuthServiceArry.add(customerAuthServiceVO);
+                        Utility.showWebviewAlertDialog(AdditionalService.this, customerVO1.getHtmlString(),false,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(dialog)->{
+                            dialog.dismiss();
 
-                                    Utility.alertselectdialog(AdditionalService.this, "Choose from existing Bank", customerAuthServiceArry, new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess) (s) -> {
-                                        if (!s.equals("0")) {
-                                            Log.w("Home_value", s);
-                                            setBankForServiceList(Integer.parseInt(Session.getCustomerId(AdditionalService.this)), arrayList,Integer.parseInt(s));
-                                        } else {
-                                            startActivityForResult(new Intent(AdditionalService.this, Enach_Mandate.class).putExtra("forresutl", true).putExtra("selectservice",arrayList), ApplicationConstant.REQ_ENACH_MANDATE);
+                            String[] buttons = {"New Bank","Existing Bank"};
+                            Utility.showDoubleButtonDialogConfirmation(new DialogInterface() {
+                                @Override
+                                public void confirm(Dialog dialog) {
+                                    dialog.dismiss();
+                                    try {
+                                        JSONArray arryjson = new JSONArray(customerVO1.getAnonymousString());
+                                        ArrayList<CustomerAuthServiceVO> customerAuthServiceArry = new ArrayList<>();
+                                        for (int i = 0; i < arryjson.length(); i++) {
+                                            JSONObject jsonObject = arryjson.getJSONObject(i);
+                                            CustomerAuthServiceVO customerAuthServiceVO = new CustomerAuthServiceVO();
+                                            customerAuthServiceVO.setBankName(jsonObject.getString("bankName"));
+                                            customerAuthServiceVO.setProviderTokenId(jsonObject.getString("mandateId"));
+                                            customerAuthServiceVO.setCustomerAuthId(jsonObject.getInt("id"));
+                                            customerAuthServiceVO.setAnonymousString(jsonObject.getString("status"));
+                                            customerAuthServiceArry.add(customerAuthServiceVO);
                                         }
-                                    }));
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                    Utility.exceptionAlertDialog(AdditionalService.this, "Alert!", "Something went wrong, Please try again!", "Report", Utility.getStackTrace(e));
+
+                                        CustomerAuthServiceVO customerAuthServiceVO = new CustomerAuthServiceVO();
+                                        customerAuthServiceVO.setBankName(null);
+                                        customerAuthServiceVO.setProviderTokenId("Add New Mandate");
+                                        customerAuthServiceVO.setCustomerAuthId(0);
+                                        customerAuthServiceVO.setAnonymousString(null);
+                                        customerAuthServiceArry.add(customerAuthServiceVO);
+
+                                        Utility.alertselectdialog(AdditionalService.this, "Choose from existing Bank", customerAuthServiceArry, new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess) (s) -> {
+                                            if (!s.equals("0")) {
+                                                Log.w("Home_value", s);
+                                                setBankForServiceList(Integer.parseInt(Session.getCustomerId(AdditionalService.this)), arrayList,Integer.parseInt(s));
+                                            } else {
+                                                startActivityForResult(new Intent(AdditionalService.this, Enach_Mandate.class).putExtra("forresutl", true).putExtra("selectservice",arrayList), ApplicationConstant.REQ_ENACH_MANDATE);
+                                            }
+                                        }));
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                        Utility.exceptionAlertDialog(AdditionalService.this, "Alert!", "Something went wrong, Please try again!", "Report", Utility.getStackTrace(e));
+                                    }
                                 }
-                            }
-                            @Override
-                            public void modify(Dialog dialog) {
-                                dialog.dismiss();
-                                startActivityForResult(new Intent(AdditionalService.this, Enach_Mandate.class).putExtra("forresutl", true).putExtra("selectservice",arrayList), ApplicationConstant.REQ_ENACH_MANDATE);
-                            }
-                        }, AdditionalService.this, customerVO1.getErrorMsgs().get(0), "Alert", buttons);
+                                @Override
+                                public void modify(Dialog dialog) {
+                                    dialog.dismiss();
+                                    startActivityForResult(new Intent(AdditionalService.this, Enach_Mandate.class).putExtra("forresutl", true).putExtra("selectservice",arrayList), ApplicationConstant.REQ_ENACH_MANDATE);
+                                }
+                            }, AdditionalService.this, customerVO1.getErrorMsgs().get(0), "", buttons);
+                        },(ConfirmationDialogInterface.OnCancel)(cancel)->{
+                            cancel.dismiss();
+                        }));
                     }
                 }
             });

@@ -17,6 +17,8 @@ public class BaseVO {
     private Integer serviceId;
     private Double serviceAdopteBMA;
     private boolean eventIs;
+    private List<String> paymentType;
+    private String htmlString;
 
 
 
@@ -126,5 +128,21 @@ public class BaseVO {
 
     public void setEventIs(boolean eventIs) {
         this.eventIs = eventIs;
+    }
+
+    public List<String> getPaymentType() {
+        return paymentType;
+    }
+
+    public void setPaymentType(List<String> paymentType) {
+        this.paymentType = paymentType;
+    }
+
+    public String getHtmlString() {
+        return htmlString;
+    }
+
+    public void setHtmlString(String htmlString) {
+        this.htmlString = htmlString;
     }
 }

@@ -1,6 +1,7 @@
 package com.uav.autodebit.Activity;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -24,6 +25,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.Html;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -37,12 +39,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 import com.uav.autodebit.BO.MetroBO;
 import com.uav.autodebit.BO.PinCodeBO;
+import com.uav.autodebit.HtmlPage.HtmlPages;
 import com.uav.autodebit.Interface.AlertSelectDialogClick;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.R;
@@ -487,55 +491,69 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                         finish();*/
                         if(!dmrc_customer_cardVO.getStatusCode().equals("200") && !dmrc_customer_cardVO.getStatusCode().equals("ap104")){
                             if(dmrc_customer_cardVO.getStatusCode().equals("ap105") || dmrc_customer_cardVO.getStatusCode().equals("ap107") ||dmrc_customer_cardVO.getStatusCode().equals("ap102")){
-                                String[] buttons = {"OK"};
-                                Utility.showSingleButtonDialogconfirmation(Dmrc_Card_Request.this, new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
-                                    ok.dismiss();
-                                    startActivityForResult(new Intent(Dmrc_Card_Request.this,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(serviceId))),ApplicationConstant.REQ_ENACH_MANDATE);
-                                }),"Alert",dmrc_customer_cardVO.getErrorMsgs().get(0),buttons);
-                            }else if(dmrc_customer_cardVO.getStatusCode().equals("ap106") || dmrc_customer_cardVO.getStatusCode().equals("ap103") || dmrc_customer_cardVO.getStatusCode().equals("ap108")) {
-                                String[] buttons = {"New Mandate", "Choose Bank"};
-                                Utility.showDoubleButtonDialogConfirmation(new com.uav.autodebit.util.DialogInterface() {
-                                    @Override
-                                    public void confirm(Dialog dialog) {
-                                        dialog.dismiss();
-                                        try {
-                                            JSONArray arryjson = new JSONArray(dmrc_customer_cardVO.getAnonymousString());
-                                            ArrayList<CustomerAuthServiceVO> customerAuthServiceArry = new ArrayList<>();
-                                            for (int i = 0; i < arryjson.length(); i++) {
-                                                JSONObject jsonObject = arryjson.getJSONObject(i);
-                                                CustomerAuthServiceVO customerAuthServiceVO = new CustomerAuthServiceVO();
-                                                customerAuthServiceVO.setBankName(jsonObject.getString("bankName"));
-                                                customerAuthServiceVO.setProviderTokenId(jsonObject.getString("mandateId"));
-                                                customerAuthServiceVO.setCustomerAuthId(jsonObject.getInt("id"));
-                                                customerAuthServiceVO.setAnonymousString(jsonObject.getString("status"));
-                                                customerAuthServiceArry.add(customerAuthServiceVO);
-                                            }
-                                            CustomerAuthServiceVO customerAuthServiceVO = new CustomerAuthServiceVO();
-                                            customerAuthServiceVO.setBankName(null);
-                                            customerAuthServiceVO.setProviderTokenId("Add New Mandate");
-                                            customerAuthServiceVO.setCustomerAuthId(0);
-                                            customerAuthServiceVO.setAnonymousString(null);
-                                            customerAuthServiceArry.add(customerAuthServiceVO);
 
-                                            Utility.alertselectdialog(Dmrc_Card_Request.this, "Choose from existing Bank", customerAuthServiceArry, new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess) (s) -> {
-                                                if (!s.equals("0")) {
-                                                    Log.w("Home_value", s);
-                                                    allotDmrcCard(Integer.parseInt(s));
-                                                } else {
-                                                    startActivityForResult(new Intent(Dmrc_Card_Request.this, Enach_Mandate.class).putExtra("forresutl", true).putExtra("selectservice", new ArrayList<Integer>(Arrays.asList(serviceId))), ApplicationConstant.REQ_ENACH_MANDATE);
+                               // 12/04/2020
+                                Utility.showWebviewAlertDialog(Dmrc_Card_Request.this, dmrc_customer_cardVO.getHtmlString(),false,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(dialog)->{
+                                    dialog.dismiss();
+                                    startActivityForResult(new Intent(Dmrc_Card_Request.this,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(serviceId))),ApplicationConstant.REQ_ENACH_MANDATE);
+                                },(ConfirmationDialogInterface.OnCancel)(cancel)->{
+                                    cancel.dismiss();
+                                }));
+
+                            }else if(dmrc_customer_cardVO.getStatusCode().equals("ap106") || dmrc_customer_cardVO.getStatusCode().equals("ap103") || dmrc_customer_cardVO.getStatusCode().equals("ap108")) {
+
+                                // 12/04/2020
+                                Utility.showWebviewAlertDialog(Dmrc_Card_Request.this, dmrc_customer_cardVO.getHtmlString(), false, new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk) (dialog) -> {
+                                    dialog.dismiss();
+                                    String[] buttons = {"New Bank","Existing Bank"};
+                                    Utility.showDoubleButtonDialogConfirmation(new com.uav.autodebit.util.DialogInterface() {
+                                        @Override
+                                        public void confirm(Dialog dialog) {
+                                            dialog.dismiss();
+                                            try {
+                                                JSONArray arryjson = new JSONArray(dmrc_customer_cardVO.getAnonymousString());
+                                                ArrayList<CustomerAuthServiceVO> customerAuthServiceArry = new ArrayList<>();
+                                                for (int i = 0; i < arryjson.length(); i++) {
+                                                    JSONObject jsonObject = arryjson.getJSONObject(i);
+                                                    CustomerAuthServiceVO customerAuthServiceVO = new CustomerAuthServiceVO();
+                                                    customerAuthServiceVO.setBankName(jsonObject.getString("bankName"));
+                                                    customerAuthServiceVO.setProviderTokenId(jsonObject.getString("mandateId"));
+                                                    customerAuthServiceVO.setCustomerAuthId(jsonObject.getInt("id"));
+                                                    customerAuthServiceVO.setAnonymousString(jsonObject.getString("status"));
+                                                    customerAuthServiceArry.add(customerAuthServiceVO);
                                                 }
-                                            }));
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                            Utility.exceptionAlertDialog(Dmrc_Card_Request.this, "Alert!", "Something went wrong, Please try again!", "Report", Utility.getStackTrace(e));
+                                                CustomerAuthServiceVO customerAuthServiceVO = new CustomerAuthServiceVO();
+                                                customerAuthServiceVO.setBankName(null);
+                                                customerAuthServiceVO.setProviderTokenId("Add New Mandate");
+                                                customerAuthServiceVO.setCustomerAuthId(0);
+                                                customerAuthServiceVO.setAnonymousString(null);
+                                                customerAuthServiceArry.add(customerAuthServiceVO);
+
+                                                Utility.alertselectdialog(Dmrc_Card_Request.this, "Choose from existing Bank", customerAuthServiceArry, new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess) (s) -> {
+                                                    if (!s.equals("0")) {
+                                                        Log.w("Home_value", s);
+                                                        allotDmrcCard(Integer.parseInt(s));
+                                                    } else {
+                                                        startActivityForResult(new Intent(Dmrc_Card_Request.this, Enach_Mandate.class).putExtra("forresutl", true).putExtra("selectservice", new ArrayList<Integer>(Arrays.asList(serviceId))), ApplicationConstant.REQ_ENACH_MANDATE);
+                                                    }
+                                                }));
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                                Utility.exceptionAlertDialog(Dmrc_Card_Request.this, "Alert!", "Something went wrong, Please try again!", "Report", Utility.getStackTrace(e));
+                                            }
                                         }
-                                    }
-                                    @Override
-                                    public void modify(Dialog dialog) {
-                                        dialog.dismiss();
-                                        startActivityForResult(new Intent(Dmrc_Card_Request.this, Enach_Mandate.class).putExtra("forresutl", true).putExtra("selectservice", new ArrayList<Integer>(Arrays.asList(serviceId))), ApplicationConstant.REQ_ENACH_MANDATE);
-                                    }
-                                }, Dmrc_Card_Request.this, dmrc_customer_cardVO.getErrorMsgs().get(0), "Alert", buttons);
+                                        @Override
+                                        public void modify(Dialog dialog) {
+                                            dialog.dismiss();
+                                            startActivityForResult(new Intent(Dmrc_Card_Request.this, Enach_Mandate.class).putExtra("forresutl", true).putExtra("selectservice", new ArrayList<Integer>(Arrays.asList(serviceId))), ApplicationConstant.REQ_ENACH_MANDATE);
+                                        }
+                                    }, Dmrc_Card_Request.this, dmrc_customer_cardVO.getErrorMsgs().get(0), "", buttons);
+
+                                  }, (ConfirmationDialogInterface.OnCancel) (cancel) -> {
+                                    cancel.dismiss();
+                                }));
+
+
                             }
                         }else {
                             allotDmrcCard(null);

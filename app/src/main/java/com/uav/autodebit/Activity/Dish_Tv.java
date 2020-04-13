@@ -353,54 +353,64 @@ public class Dish_Tv  extends Base_Activity implements View.OnClickListener  {
 
                         if(!dishTvVO.getStatusCode().equals("200") && !dishTvVO.getStatusCode().equals("ap104")){
                             if(dishTvVO.getStatusCode().equals("ap105") || dishTvVO.getStatusCode().equals("ap107") ||dishTvVO.getStatusCode().equals("ap102")){
-                                String[] buttons = {"OK"};
-                                Utility.showSingleButtonDialogconfirmation(context, new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
-                                    ok.dismiss();
+                                // 12/04/2020
+                                Utility.showWebviewAlertDialog(Dish_Tv.this, dishTvVO.getHtmlString(),false,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(dialog)->{
+                                    dialog.dismiss();
                                     startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(ApplicationConstant.DISHTV))).putExtra("disAmountEdittext",true),ApplicationConstant.REQ_ENACH_MANDATE);
-                                }),"Alert",dishTvVO.getErrorMsgs().get(0),buttons);
+                                },(ConfirmationDialogInterface.OnCancel)(cancel)->{
+                                    cancel.dismiss();
+                                }));
                             }else if(dishTvVO.getStatusCode().equals("ap106") || dishTvVO.getStatusCode().equals("ap103") || dishTvVO.getStatusCode().equals("ap108")) {
-                                String[] buttons = {"New Mandate", "Choose Bank"};
-                                Utility.showDoubleButtonDialogConfirmation(new com.uav.autodebit.util.DialogInterface() {
-                                    @Override
-                                    public void confirm(Dialog dialog) {
-                                        dialog.dismiss();
-                                        try {
-                                            JSONArray arryjson = new JSONArray(dishTvVO.getAnonymousString());
-                                            ArrayList<CustomerAuthServiceVO> customerAuthServiceArry = new ArrayList<>();
-                                            for (int i = 0; i < arryjson.length(); i++) {
-                                                JSONObject jsonObject = arryjson.getJSONObject(i);
-                                                CustomerAuthServiceVO customerAuthServiceVO = new CustomerAuthServiceVO();
-                                                customerAuthServiceVO.setBankName(jsonObject.getString("bankName"));
-                                                customerAuthServiceVO.setProviderTokenId(jsonObject.getString("mandateId"));
-                                                customerAuthServiceVO.setCustomerAuthId(jsonObject.getInt("id"));
-                                                customerAuthServiceVO.setAnonymousString(jsonObject.getString("status"));
-                                                customerAuthServiceArry.add(customerAuthServiceVO);
-                                            }
-                                            CustomerAuthServiceVO customerAuthServiceVO = new CustomerAuthServiceVO();
-                                            customerAuthServiceVO.setBankName(null);
-                                            customerAuthServiceVO.setProviderTokenId("Add New Mandate");
-                                            customerAuthServiceVO.setCustomerAuthId(0);
-                                            customerAuthServiceVO.setAnonymousString(null);
-                                            customerAuthServiceArry.add(customerAuthServiceVO);
 
-                                            Utility.alertselectdialog(context, "Choose from existing Bank", customerAuthServiceArry, new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess) (s) -> {
-                                                if (!s.equals("0")) {
-                                                    setBankForService(ApplicationConstant.d2h, Integer.parseInt(Session.getCustomerId(context)), Integer.parseInt(s));
-                                                } else {
-                                                    startActivityForResult(new Intent(context, Enach_Mandate.class).putExtra("forresutl", true).putExtra("selectservice", new ArrayList<Integer>(Arrays.asList(ApplicationConstant.DISHTV))).putExtra("disAmountEdittext",true), ApplicationConstant.REQ_ENACH_MANDATE);
+                                // 12/04/2020
+                                Utility.showWebviewAlertDialog(Dish_Tv.this, dishTvVO.getHtmlString(),false,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(dialog)->{
+                                    dialog.dismiss();
+                                    String[] buttons = {"New Bank","Existing Bank"};
+                                    Utility.showDoubleButtonDialogConfirmation(new com.uav.autodebit.util.DialogInterface() {
+                                        @Override
+                                        public void confirm(Dialog dialog) {
+                                            dialog.dismiss();
+                                            try {
+                                                JSONArray arryjson = new JSONArray(dishTvVO.getAnonymousString());
+                                                ArrayList<CustomerAuthServiceVO> customerAuthServiceArry = new ArrayList<>();
+                                                for (int i = 0; i < arryjson.length(); i++) {
+                                                    JSONObject jsonObject = arryjson.getJSONObject(i);
+                                                    CustomerAuthServiceVO customerAuthServiceVO = new CustomerAuthServiceVO();
+                                                    customerAuthServiceVO.setBankName(jsonObject.getString("bankName"));
+                                                    customerAuthServiceVO.setProviderTokenId(jsonObject.getString("mandateId"));
+                                                    customerAuthServiceVO.setCustomerAuthId(jsonObject.getInt("id"));
+                                                    customerAuthServiceVO.setAnonymousString(jsonObject.getString("status"));
+                                                    customerAuthServiceArry.add(customerAuthServiceVO);
                                                 }
-                                            }));
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                            Utility.exceptionAlertDialog(context, "Alert!", "Something went wrong, Please try again!", "Report", Utility.getStackTrace(e));
+                                                CustomerAuthServiceVO customerAuthServiceVO = new CustomerAuthServiceVO();
+                                                customerAuthServiceVO.setBankName(null);
+                                                customerAuthServiceVO.setProviderTokenId("Add New Mandate");
+                                                customerAuthServiceVO.setCustomerAuthId(0);
+                                                customerAuthServiceVO.setAnonymousString(null);
+                                                customerAuthServiceArry.add(customerAuthServiceVO);
+
+                                                Utility.alertselectdialog(context, "Choose from existing Bank", customerAuthServiceArry, new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess) (s) -> {
+                                                    if (!s.equals("0")) {
+                                                        setBankForService(ApplicationConstant.d2h, Integer.parseInt(Session.getCustomerId(context)), Integer.parseInt(s));
+                                                    } else {
+                                                        startActivityForResult(new Intent(context, Enach_Mandate.class).putExtra("forresutl", true).putExtra("selectservice", new ArrayList<Integer>(Arrays.asList(ApplicationConstant.DISHTV))).putExtra("disAmountEdittext",true), ApplicationConstant.REQ_ENACH_MANDATE);
+                                                    }
+                                                }));
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                                Utility.exceptionAlertDialog(context, "Alert!", "Something went wrong, Please try again!", "Report", Utility.getStackTrace(e));
+                                            }
                                         }
-                                    }
-                                    @Override
-                                    public void modify(Dialog dialog) {
-                                        dialog.dismiss();
-                                        startActivityForResult(new Intent(context, Enach_Mandate.class).putExtra("forresutl", true).putExtra("selectservice", new ArrayList<Integer>(Arrays.asList(ApplicationConstant.DISHTV))).putExtra("disAmountEdittext",true), ApplicationConstant.REQ_ENACH_MANDATE);
-                                    }
-                                }, context, dishTvVO.getErrorMsgs().get(0), "Alert", buttons);
+                                        @Override
+                                        public void modify(Dialog dialog) {
+                                            dialog.dismiss();
+                                            startActivityForResult(new Intent(context, Enach_Mandate.class).putExtra("forresutl", true).putExtra("selectservice", new ArrayList<Integer>(Arrays.asList(ApplicationConstant.DISHTV))).putExtra("disAmountEdittext",true), ApplicationConstant.REQ_ENACH_MANDATE);
+                                        }
+                                    }, context, dishTvVO.getErrorMsgs().get(0), "", buttons);
+                                },(ConfirmationDialogInterface.OnCancel)(cancel)->{
+                                    cancel.dismiss();
+                                }));
+
                             }
                         }else {
                             getDishTvPostMandate();
