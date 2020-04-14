@@ -670,23 +670,23 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
                         bankServiceList.add(serviceTypeVO);
                     }
 
+
+                    // change this active service To server
                     LocalCacheVO localCacheVO = gson.fromJson(customerVO.getLocalCache(), LocalCacheVO.class);
                     List<ServiceTypeVO> serviceautope = localCacheVO.getUtilityBills();
 
                     List<ServiceTypeVO> utilityServices = localCacheVO.getSerives();
-
                     for(ServiceTypeVO serviceTypeVO : utilityServices){
                         if(serviceTypeVO.getAdopted()==1){
                             addservice.add(serviceTypeVO);
                         }
                     }
-
-
                     for(ServiceTypeVO utility:serviceautope){
                         if(utility.getAdopted()==1){
                             addservice.add(utility);
                         }
                     }
+
                 }catch (Exception e){
                     Log.e("profile_activity",e.getMessage());
                 }

@@ -42,7 +42,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Verify_Otp_By_Id extends Base_Activity implements TextWatcher,View.OnFocusChangeListener,PermissionUtils.PermissionResultCallback , ActivityCompat.OnRequestPermissionsResultCallback{
+public class Verify_Otp_By_Id extends Base_Activity implements TextWatcher,View.OnFocusChangeListener {
 
     TextView resendotpbtn,otp_send;
     ImageView back_activity_button;
@@ -57,15 +57,12 @@ public class Verify_Otp_By_Id extends Base_Activity implements TextWatcher,View.
 
     String methodname;
     Integer userid;
-    PermissionUtils permissionUtils;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verify__otp__by__id);
         getSupportActionBar().hide();
 
-        permissionUtils=new PermissionUtils(Verify_Otp_By_Id.this);
-        permissionUtils.check_permission(PermissionHandler.readSmsPermissionArrayList(Verify_Otp_By_Id.this), Content_Message.SMS_PERMISSION, ApplicationConstant.REQ_READ_SMS_PERMISSION);
 
 
 
@@ -479,34 +476,6 @@ public class Verify_Otp_By_Id extends Base_Activity implements TextWatcher,View.
             resendotpbtn.setVisibility(View.GONE);
         }
 
-    }
-
-
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        permissionUtils.onRequestPermissionsResult(requestCode,permissions,grantResults);
-    }
-
-    @Override
-    public void PermissionGranted(int request_code) {
-
-    }
-
-    @Override
-    public void PartialPermissionGranted(int request_code, ArrayList<String> granted_permissions) {
-        Toast.makeText(Verify_Otp_By_Id.this, "Permission not granted!!!", Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void PermissionDenied(int request_code) {
-        Toast.makeText(Verify_Otp_By_Id.this, "Permission not granted!!!", Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void NeverAskAgain(int request_code) {
     }
 }
 
