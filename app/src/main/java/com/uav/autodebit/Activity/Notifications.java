@@ -2,6 +2,7 @@ package com.uav.autodebit.Activity;
 
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -29,6 +30,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class Notifications extends Base_Activity implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
@@ -105,7 +107,6 @@ public class Notifications extends Base_Activity implements View.OnClickListener
                 customerNotificationVOS= GetSqlLiteData.getNotification(Notifications.this);
             }else {
 
-                Toast.makeText(this, "main", Toast.LENGTH_SHORT).show();
                 Gson gson =new Gson();
                 CustomerVO customerVO = gson.fromJson(Session.getSessionByKey(Notifications.this,Session.CACHE_CUSTOMER), CustomerVO.class);
                 LocalCacheVO localCacheVO = gson.fromJson(customerVO.getLocalCache(), LocalCacheVO.class);
@@ -116,11 +117,12 @@ public class Notifications extends Base_Activity implements View.OnClickListener
                     jsonObject.put("title",customerNotificationVO.getTitle());
                     jsonObject.put("message",customerNotificationVO.getMessage());
                     jsonObject.put("ImageUrl",customerNotificationVO.getImage());
-                    jsonObject.put("TimeStamp",customerNotificationVO.getCreatedAt());
-                    jsonObject.put("SmallImage",customerNotificationVO.getServiceIcon());
-                    jsonObject.put("ActivityName",customerNotificationVO.getActivityName());
+                    jsonObject.put("timestamp",Utility.convertDate2String(new Date(Long.parseLong(customerNotificationVO.getCreatedAt())),"dd-MM-yyyy hh:mm:ss"));
+                    jsonObject.put("smallImageUrl",customerNotificationVO.getServiceIcon());
+                    jsonObject.put("activityname",customerNotificationVO.getActivityName());
                     InsertDateOnSqlLite.insertNotification(Notifications.this,jsonObject);
                 }
+                customerNotificationVOS= GetSqlLiteData.getNotification(Notifications.this);
             }
         }catch (Exception e){
             e.printStackTrace();

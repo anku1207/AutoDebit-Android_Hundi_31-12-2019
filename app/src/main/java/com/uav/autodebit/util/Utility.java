@@ -566,8 +566,15 @@ public class Utility {
     }
 
     public static String convertDate2String(Date dtValue , String format){
-        SimpleDateFormat dateFormat = new SimpleDateFormat(format);
-        return dateFormat.format(dtValue);
+        String date=null;
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat(format);
+            date= dateFormat.format(dtValue);
+        }catch (Exception e){
+
+        }
+        return  date;
+
     }
 
     public static int getDiffYears(Date first, Date last) {
