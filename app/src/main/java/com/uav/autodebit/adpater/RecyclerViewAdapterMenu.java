@@ -63,22 +63,17 @@ public class RecyclerViewAdapterMenu extends RecyclerView.Adapter<RecyclerViewAd
          holder.imageView.setImageDrawable(Utility.GetImage(mctx,pro.getAppIcon()));
          holder.mainlayout.setEnabled(true);
 
-        /* holder.mailmenu.setOnClickListener(new View.OnClickListener() {
+
+         /* holder.mailmenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                if(pro.getActivityname()!=null){
                    mctx.startActivity(new Intent(mctx,pro.getActivityname()));
                }else {
                    Toast.makeText(mctx, "Something is wrong ", Toast.LENGTH_SHORT).show();
                }
-
-
             }
         });*/
-
-
-
     }
 
     @Override

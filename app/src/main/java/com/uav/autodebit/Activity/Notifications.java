@@ -1,9 +1,11 @@
 package com.uav.autodebit.Activity;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,12 +14,19 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.uav.autodebit.R;
+import com.uav.autodebit.SQlLite.DataBaseHelper;
+import com.uav.autodebit.SQlLite.GetSqlLiteData;
+import com.uav.autodebit.SQlLite.InsertDateOnSqlLite;
 import com.uav.autodebit.adpater.NotificationAdapter;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.CustomerNotificationVO;
 import com.uav.autodebit.vo.CustomerVO;
 import com.uav.autodebit.vo.LocalCacheVO;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,23 +94,34 @@ public class Notifications extends Base_Activity implements View.OnClickListener
         recyclerView.getAdapter().notifyDataSetChanged();
         recyclerView.scheduleLayoutAnimation();
         mSwipeRefreshLayout.setRefreshing(false);
+
     }
 
     private List<CustomerNotificationVO>  getdata() {
         List<CustomerNotificationVO> customerNotificationVOS =new ArrayList<>();
         try {
-            if(Session.check_Exists_key(Notifications.this,Session.CACHE_NOTIFICATION)){
-                customerNotificationVOS= (List<CustomerNotificationVO>) new Gson().fromJson(Session.getSessionByKey(Notifications.this, Session.CACHE_NOTIFICATION), new TypeToken<ArrayList<CustomerNotificationVO>>() { }.getType());
 
+            if(DataBaseHelper.checkDataBase()){
+                customerNotificationVOS= GetSqlLiteData.getNotification(Notifications.this);
             }else {
+
+                Toast.makeText(this, "main", Toast.LENGTH_SHORT).show();
                 Gson gson =new Gson();
                 CustomerVO customerVO = gson.fromJson(Session.getSessionByKey(Notifications.this,Session.CACHE_CUSTOMER), CustomerVO.class);
                 LocalCacheVO localCacheVO = gson.fromJson(customerVO.getLocalCache(), LocalCacheVO.class);
                 customerNotificationVOS=  localCacheVO.getCustomerNotification();
-                Session.set_Data_Sharedprefence(Notifications.this, Session.CACHE_NOTIFICATION, Utility.toJson(customerNotificationVOS));
+
+                for(CustomerNotificationVO customerNotificationVO:customerNotificationVOS){
+                    JSONObject jsonObject =new JSONObject();
+                    jsonObject.put("title",customerNotificationVO.getTitle());
+                    jsonObject.put("message",customerNotificationVO.getMessage());
+                    jsonObject.put("ImageUrl",customerNotificationVO.getImage());
+                    jsonObject.put("TimeStamp",customerNotificationVO.getCreatedAt());
+                    jsonObject.put("SmallImage",customerNotificationVO.getServiceIcon());
+                    jsonObject.put("ActivityName",customerNotificationVO.getActivityName());
+                    InsertDateOnSqlLite.insertNotification(Notifications.this,jsonObject);
+                }
             }
-
-
         }catch (Exception e){
             e.printStackTrace();
             Utility.exceptionAlertDialog(Notifications.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));

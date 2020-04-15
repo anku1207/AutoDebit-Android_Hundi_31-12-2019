@@ -13,6 +13,7 @@ import com.google.firebase.messaging.RemoteMessage;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.uav.autodebit.SQlLite.InsertDateOnSqlLite;
 import com.uav.autodebit.constant.GlobalApplication;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.Utility;
@@ -154,7 +155,9 @@ public class FCMService extends FirebaseMessagingService {
         try {
             if(data.has("storeData") && data.getString("storeData").equals("1")){
                 GlobalApplication.notificationCount++;
-                if (Session.check_Exists_key(FCMService.this, Session.CACHE_NOTIFICATION)) {
+
+                InsertDateOnSqlLite.insertNotification(getApplicationContext(),data);
+              /*  if (Session.check_Exists_key(FCMService.this, Session.CACHE_NOTIFICATION)) {
 
                     ArrayList<CustomerNotificationVO> customerNotificationVOS= (ArrayList<CustomerNotificationVO>) new Gson().fromJson(Session.getSessionByKey(FCMService.this, Session.CACHE_NOTIFICATION), new TypeToken<ArrayList<CustomerNotificationVO>>() { }.getType());
 
@@ -179,7 +182,7 @@ public class FCMService extends FirebaseMessagingService {
                     customerNotificationVO.setActivityName(data.has("activityname")? data.getString("activityname"):"SplashScreen");
                     notificationarry.add(customerNotificationVO);
                     Session.set_Data_Sharedprefence(FCMService.this, Session.CACHE_NOTIFICATION, Utility.toJson(notificationarry));
-                }
+                }*/
             }
         } catch (Exception e) {
             Log.w("error",e.getMessage());

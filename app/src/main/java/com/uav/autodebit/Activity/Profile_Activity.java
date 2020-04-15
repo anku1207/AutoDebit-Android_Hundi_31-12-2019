@@ -31,6 +31,7 @@ import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
@@ -55,6 +56,7 @@ import com.uav.autodebit.util.FileDownloadInterface;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerAuthServiceVO;
+import com.uav.autodebit.vo.CustomerNotificationVO;
 import com.uav.autodebit.vo.CustomerVO;
 import com.uav.autodebit.vo.LocalCacheVO;
 import com.uav.autodebit.vo.OTPVO;
@@ -672,20 +674,10 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
 
 
                     // change this active service To server
-                    LocalCacheVO localCacheVO = gson.fromJson(customerVO.getLocalCache(), LocalCacheVO.class);
-                    List<ServiceTypeVO> serviceautope = localCacheVO.getUtilityBills();
+                    List<ServiceTypeVO> serviceautope  =new Gson().fromJson(customerVO.getAnonymousString(), new TypeToken<ArrayList<ServiceTypeVO>>() { }.getType());
+                    addservice.addAll(serviceautope);
 
-                    List<ServiceTypeVO> utilityServices = localCacheVO.getSerives();
-                    for(ServiceTypeVO serviceTypeVO : utilityServices){
-                        if(serviceTypeVO.getAdopted()==1){
-                            addservice.add(serviceTypeVO);
-                        }
-                    }
-                    for(ServiceTypeVO utility:serviceautope){
-                        if(utility.getAdopted()==1){
-                            addservice.add(utility);
-                        }
-                    }
+
 
                 }catch (Exception e){
                     Log.e("profile_activity",e.getMessage());
