@@ -196,8 +196,8 @@
                     android:backgroundTint="@color/white"
                     android:textColor="@color/appbar"/>
             </RelativeLayout>
-
             </androidx.cardview.widget.CardView>
+
             <Button
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
@@ -210,8 +210,6 @@
                 android:textColor="@color/white"
                 android:layout_margin="10dp"
                 />
-
-
             <include
                 layout="@layout/offers_and_recharge_layout"
                 android:layout_width="match_parent"
