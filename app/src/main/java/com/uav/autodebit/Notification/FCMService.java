@@ -156,9 +156,9 @@ public class FCMService extends FirebaseMessagingService {
         try {
             if(data.has("storeData") && data.getString("storeData").equals("1")){
                 GlobalApplication.notificationCount++;
-
                 InsertDateOnSqlLite.insertNotification(getApplicationContext(),data);
-                Session.set_Data_Sharedprefence_BoolenvValue(getApplicationContext(),Session.CACHE_NOTIFICATION,true);
+
+
               /*  if (Session.check_Exists_key(FCMService.this, Session.CACHE_NOTIFICATION)) {
 
                     ArrayList<CustomerNotificationVO> customerNotificationVOS= (ArrayList<CustomerNotificationVO>) new Gson().fromJson(Session.getSessionByKey(FCMService.this, Session.CACHE_NOTIFICATION), new TypeToken<ArrayList<CustomerNotificationVO>>() { }.getType());

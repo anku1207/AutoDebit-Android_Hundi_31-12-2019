@@ -116,7 +116,7 @@ public class Notifications extends Base_Activity implements View.OnClickListener
                     JSONObject jsonObject =new JSONObject();
                     jsonObject.put("title",customerNotificationVO.getTitle());
                     jsonObject.put("message",customerNotificationVO.getMessage());
-                    jsonObject.put("ImageUrl",customerNotificationVO.getImage());
+                    jsonObject.put("imageUrl",customerNotificationVO.getImage());
                     jsonObject.put("timestamp",Utility.convertDate2String(new Date(Long.parseLong(customerNotificationVO.getCreatedAt())),"dd-MM-yyyy hh:mm:ss"));
                     jsonObject.put("smallImageUrl",customerNotificationVO.getServiceIcon());
                     jsonObject.put("activityname",customerNotificationVO.getActivityName());

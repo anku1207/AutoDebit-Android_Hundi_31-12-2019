@@ -14,22 +14,34 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
+
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 import com.uav.autodebit.BO.OxigenPlanBO;
 import com.uav.autodebit.Interface.AlertSelectDialogClick;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.R;
+import com.uav.autodebit.adpater.BrowsePlanAdapter;
+import com.uav.autodebit.androidFragment.Offers_recent_Fragment;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.Content_Message;
 import com.uav.autodebit.override.DrawableClickListener;
@@ -58,6 +70,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements View.OnClickListener , PermissionUtils.PermissionResultCallback , ActivityCompat.OnRequestPermissionsResultCallback{
     UAVEditText mobilenumber;
@@ -70,6 +83,7 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
 
     PermissionUtils permissionUtils ;
     static  OxigenTransactionVO oxigenValidateResponce;
+
 
     @TargetApi(Build.VERSION_CODES.O)
     private void disableAutofill() {
@@ -109,6 +123,15 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
 
         Intent intent =getIntent();
         serviceid=intent.getStringExtra("serviceid");
+
+
+        //create offers and recent fragment
+        View offer_fragment;
+        offer_fragment=findViewById(R.id.offer_fragment);
+        Offers_recent_Fragment.createOfferAndRecentLayout(Mobile_Prepaid_Recharge_Service.this);
+        offer_fragment.setVisibility(View.VISIBLE);
+
+
 
 
         Drawable drawable = getResources().getDrawable(R.drawable.contacts);
@@ -170,7 +193,11 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
             }
         });
 
+
+
     }
+
+
 
     public ArrayList<DataAdapterVO> getDataList(){
         ArrayList<DataAdapterVO> datalist = new ArrayList<>();
@@ -331,7 +358,6 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                 });
                 break;
         }
-
     }
 
 

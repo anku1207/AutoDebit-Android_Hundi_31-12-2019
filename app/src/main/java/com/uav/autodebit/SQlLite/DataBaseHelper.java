@@ -92,11 +92,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
         super.close();
     }
-
-
-
-
-
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
     }
