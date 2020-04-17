@@ -25,7 +25,8 @@ public class PermissionHandler {
             Manifest.permission.CAMERA,
             Manifest.permission.BLUETOOTH,
             Manifest.permission.BLUETOOTH_ADMIN,
-            Manifest.permission.READ_CONTACTS};
+            Manifest.permission.READ_CONTACTS,
+            Manifest.permission.READ_PHONE_STATE};
 
 
     public static void checkpermission(Context context) {
@@ -53,6 +54,8 @@ public class PermissionHandler {
                         ActivityCompat.checkSelfPermission(context, mPermission[9])
                                 != PackageManager.PERMISSION_GRANTED ||
                         ActivityCompat.checkSelfPermission(context, mPermission[10])
+                                != PackageManager.PERMISSION_GRANTED ||
+                        ActivityCompat.checkSelfPermission(context, mPermission[11])
                                 != PackageManager.PERMISSION_GRANTED) {
                                          ActivityCompat.requestPermissions((Activity) context, mPermission, 100);
                     // If any permission aboe not allowed by user, this condition will execute every tim, else your else part will work
@@ -95,6 +98,14 @@ public class PermissionHandler {
         permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
         permissions.add(Manifest.permission.CAMERA);
+        return permissions;
+
+    }
+
+
+    public static ArrayList<String> getSimSerialNumber(Context context) {
+        ArrayList<String> permissions=new ArrayList<>();
+        permissions.add(Manifest.permission.READ_PHONE_STATE);
         return permissions;
 
     }

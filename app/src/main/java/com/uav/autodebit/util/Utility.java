@@ -43,6 +43,9 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
+import android.telephony.SubscriptionInfo;
+import android.telephony.SubscriptionManager;
+import android.telephony.TelephonyManager;
 import android.text.InputType;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -1566,11 +1569,56 @@ public class Utility {
     public static int getActionBarHeight(Context context) {
         final TypedArray ta = context.getTheme().obtainStyledAttributes(
                 new int[] {android.R.attr.actionBarSize});
-        int actionBarHeight = (int) ta.getDimension(0, 0);
-        return actionBarHeight;
+        return (int) ta.getDimension(0, 0);
     }
 
 
+   public static StringBuilder getDeviceDetail(){
+        StringBuilder errorReport =new StringBuilder();
+       try {
+           String LINE_SEPARATOR = System.getProperty("line.separator");
+           errorReport.append(LINE_SEPARATOR+ "************ DEVICE INFORMATION ***********" + LINE_SEPARATOR);
+           errorReport.append("Brand: "+Build.BRAND);
+           errorReport.append(LINE_SEPARATOR);
+           errorReport.append("Device: "+Build.DEVICE);
+           errorReport.append(LINE_SEPARATOR);
+           errorReport.append("Model: "+Build.MODEL);
+           errorReport.append(LINE_SEPARATOR);
+           errorReport.append("Id: "+Build.ID);
+           errorReport.append(LINE_SEPARATOR);
+           errorReport.append("Product: "+Build.PRODUCT);
+           errorReport.append(LINE_SEPARATOR);
+           errorReport.append(LINE_SEPARATOR + "************ BUILD INFO ************" + LINE_SEPARATOR);
+           errorReport.append("SDK: "+Build.VERSION.SDK);
+           errorReport.append(LINE_SEPARATOR);
+           errorReport.append("Release: "+Build.VERSION.RELEASE);
+           errorReport.append(LINE_SEPARATOR);
+           errorReport.append("Incremental: "+Build.VERSION.INCREMENTAL);
+           errorReport.append(LINE_SEPARATOR);
+       }catch (Exception ignored){
+       }
+       return errorReport;
+    }
 
-
+    @SuppressLint("MissingPermission")
+    public static boolean isSimAvailable(Context context){
+           try {
+               if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+                   SubscriptionManager sManager = (SubscriptionManager) context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
+                   SubscriptionInfo infoSim1 = sManager.getActiveSubscriptionInfoForSimSlotIndex(0);
+                   SubscriptionInfo infoSim2 = sManager.getActiveSubscriptionInfoForSimSlotIndex(1);
+                   if(infoSim1 != null || infoSim2 != null) {
+                       return true;
+                   }
+               }else{
+                   TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+                   if (telephonyManager.getSimSerialNumber() != null){
+                       return true;
+                   }
+               }
+           }catch (Exception ignored){
+           }
+        return false;
+    }
 }
+

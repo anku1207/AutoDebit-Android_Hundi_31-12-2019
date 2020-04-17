@@ -43,6 +43,7 @@ public class Offers_recent_Fragment {
         ViewPager mViewPager;
 
         TabLayout tabLayout =  ((Activity) context).findViewById(R.id.tabs);
+
         try {
             for (String s : CategoryName) {
                 tabLayout.addTab(tabLayout.newTab().setText(s));
@@ -101,8 +102,6 @@ public class Offers_recent_Fragment {
 
             return  textView;
         }
-
-
     }
 
     public static class SectionsPagerAdapter extends FragmentPagerAdapter {
