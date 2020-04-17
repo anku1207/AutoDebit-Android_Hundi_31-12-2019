@@ -16,6 +16,8 @@ public class OxigenTransactionVO extends BannerVO  implements Serializable {
     private String operateName;
     private AuthServiceProviderVO provider;
     private Integer providerAuthKeyId;
+    private Double netAmount;
+
 
     public OxigenTransactionVO() {
     }
@@ -101,5 +103,13 @@ public class OxigenTransactionVO extends BannerVO  implements Serializable {
 
     public void setProviderAuthKeyId(Integer providerAuthKeyId) {
         this.providerAuthKeyId = providerAuthKeyId;
+    }
+
+    public Double getNetAmount() {
+        return netAmount;
+    }
+
+    public void setNetAmount(Double netAmount) {
+        this.netAmount = netAmount;
     }
 }

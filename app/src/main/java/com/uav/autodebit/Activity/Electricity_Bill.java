@@ -313,7 +313,7 @@ public class Electricity_Bill extends Base_Activity  implements View.OnClickList
                         try {
                             oxigenTransactionVOresp=(OxigenTransactionVO)s;
                             fetchbill.setVisibility(View.GONE);
-                            amount.setText(oxigenTransactionVOresp.getAmount()+"");
+                            amount.setText(oxigenTransactionVOresp.getNetAmount().toString());
 
                             JSONArray dataArry =new JSONArray(oxigenTransactionVOresp.getAnonymousString());
 

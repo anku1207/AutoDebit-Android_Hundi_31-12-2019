@@ -329,7 +329,7 @@ public class Insurance_Renewal extends Base_Activity implements View.OnClickList
                         try {
                             oxigenTransactionVOresp=(OxigenTransactionVO)s;
                             fetchbill.setVisibility(View.GONE);
-                            amount.setText(oxigenTransactionVOresp.getAmount()+"");
+                            amount.setText(oxigenTransactionVOresp.getNetAmount()+"");
 
                             JSONArray dataArry =new JSONArray(oxigenTransactionVOresp.getAnonymousString());
 

@@ -160,7 +160,7 @@
                         android:backgroundTint="@color/white"
                         android:hint="Amount"
                         android:singleLine="true"
-                        android:maxLength="5"
+                        android:maxLength="8"
                         android:inputType="number|numberDecimal"
                         android:digits="@string/NumberDigits"
                         android:maxLines="1"

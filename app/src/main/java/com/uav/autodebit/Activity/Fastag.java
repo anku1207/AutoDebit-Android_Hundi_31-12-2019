@@ -330,7 +330,7 @@ public class Fastag extends Base_Activity implements View.OnClickListener , Perm
                         try {
                             oxigenTransactionVOresp=(OxigenTransactionVO)s;
                             fetchbill.setVisibility(View.GONE);
-                            amount.setText(oxigenTransactionVOresp.getAmount()+"");
+                            amount.setText(oxigenTransactionVOresp.getNetAmount()+"");
 
                             JSONArray dataArry =new JSONArray(oxigenTransactionVOresp.getAnonymousString());
 
