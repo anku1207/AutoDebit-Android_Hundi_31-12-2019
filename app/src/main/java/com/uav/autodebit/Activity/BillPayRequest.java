@@ -329,22 +329,18 @@ public class BillPayRequest {
                 } else if(checkMandateResponse.getStatusCode().equals("ap102")){
 
                         // 12/04/2020
-                        Utility.showWebviewAlertDialog(context, checkMandateResponse.getHtmlString(),false,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(dialog)->{
-                            dialog.dismiss();
-                            if(isRecharge){
-                                ((Activity)context).startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(serivceId))), ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE);
-                            }else{
-                                ((Activity)context).startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(serivceId))), ApplicationConstant.REQ_ENACH_MANDATE);
-                            }
-                        },(ConfirmationDialogInterface.OnCancel)(cancel)->{
-                            cancel.dismiss();
-                        }));
+
+                        if(isRecharge){
+                            ((Activity)context).startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(serivceId))), ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE);
+                        }else{
+                            ((Activity)context).startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(serivceId))), ApplicationConstant.REQ_ENACH_MANDATE);
+                        }
+
 
                     }else if(checkMandateResponse.getStatusCode().equals("ap103")) {
 
                         // 12/04/2020
-                        Utility.showWebviewAlertDialog(context, checkMandateResponse.getHtmlString(), false, new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk) (dialog) -> {
-                            dialog.dismiss();
+
                             String[] buttons = {"New Bank", "Existing Bank"};
                             Utility.showDoubleButtonDialogConfirmation(new com.uav.autodebit.util.DialogInterface() {
                                 @Override
@@ -416,9 +412,6 @@ public class BillPayRequest {
                                     }
                                 }
                             }, context, checkMandateResponse.getErrorMsgs().get(0), "", buttons);
-                        }, (ConfirmationDialogInterface.OnCancel) (cancel) -> {
-                            cancel.dismiss();
-                        }));
                     }
                 }
         });
@@ -495,55 +488,6 @@ public class BillPayRequest {
 
     }
 
-    public static void showDoubleButtonDialogConfirmation(com.uav.autodebit.util.DialogInterface mcxtinter, Context context , String Msg , String title,  String... buttons){
-        String leftButton= (buttons.length==0 ?"Modify":buttons[0]);//(leftButton ==null?"Modify": leftButton);
-        String rightButton=(buttons.length<=1 ?"Next":buttons[1]);//(rightButton==null?"Next":rightButton);
-        try{
-            final com.uav.autodebit.util.DialogInterface dialogInterface =mcxtinter;
-            final Dialog var3 = new Dialog(context);
-            var3.requestWindowFeature(1);
-            var3.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            var3.setContentView(R.layout.showdoublebuttondialogconfirmation);
-            var3.setCanceledOnTouchOutside(false);
-            var3.setCancelable(false);
-            var3.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
-
-
-            TextView titletext=var3.findViewById(R.id.dialog_one_tv_title);
-            TextView msg=var3.findViewById(R.id.dialog_one_tv_text);
-            Button modify=var3.findViewById(R.id.button1);
-            Button next=var3.findViewById(R.id.button2);
-
-            modify.setText(leftButton);
-            next.setText(rightButton);
-
-            titletext.setText(title);
-           /* if(title==null || title.equals("") ){
-                titletext.setVisibility(View.GONE);
-            }else {
-                titletext.setVisibility(View.VISIBLE);
-            }*/
-            msg.setText(Msg);
-
-            modify.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    dialogInterface.modify(var3);
-                }
-            });
-
-            next.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    dialogInterface.confirm(var3);
-                }
-            });
-
-            if(!var3.isShowing())  var3.show();
-        }catch (Exception e){
-            Utility.exceptionAlertDialog(context,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
-        }
-    }
 
 
 

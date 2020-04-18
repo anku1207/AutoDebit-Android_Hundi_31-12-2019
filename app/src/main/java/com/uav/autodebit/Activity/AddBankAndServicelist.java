@@ -285,12 +285,14 @@ public class AddBankAndServicelist extends AppCompatActivity implements View.OnC
             validation=false;
         }
 
-        if( selectBankType.length()==0){
-            Utility.alertDialog(this,"Alert","Bank is not selected","Ok");
-            validation=false;
-        }
-
         if( selectBankJson.length()==0){
+            if(!bankname.getText().toString().equals("") ){
+                Utility.alertDialog(this,"Alert","Bank is not selected","Ok");
+                validation=false;
+            }
+       }
+
+        if( selectBankType.length()==0){
             Utility.alertDialog(this,"Alert","Account Type is not selected","Ok");
             validation=false;
         }
@@ -349,9 +351,12 @@ public class AddBankAndServicelist extends AppCompatActivity implements View.OnC
                 if(data !=null){
                     Utility.showSingleButtonDialogconfirmation(this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
                         if(data.getBooleanExtra("mandate_status",false)){
+                            ok.dismiss();
                             Intent intent =  new Intent();
                             setResult(RESULT_OK,intent);
                             finish();
+                        }else {
+                            ok.dismiss();
                         }
                     }),"", Content_Message.mandate_Success_Message);
                 }else {
@@ -361,6 +366,7 @@ public class AddBankAndServicelist extends AppCompatActivity implements View.OnC
             }else if(requestCode==ApplicationConstant.REQ_POPAPACTIVITYRESULT){
                 if(data!=null){
                     try {
+                        bankname.setError(null);
                         bankname.setText(data.getStringExtra("operatorname"));
 
                         selectBankJson.put("name",data.getStringExtra("operatorname"));
