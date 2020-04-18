@@ -58,4 +58,12 @@ public class OxigenPlanBO implements Serializable {
     }
 
 
+    public static ConnectionVO oxiServiceMandateCheck() {
+        ConnectionVO connectionVO = new ConnectionVO();
+        connectionVO.setMethodName("oxiServiceMandateCheck");
+        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
+        return connectionVO;
+    }
+
+
 }

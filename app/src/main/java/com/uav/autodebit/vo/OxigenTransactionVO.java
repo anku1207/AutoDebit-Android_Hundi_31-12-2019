@@ -2,7 +2,7 @@ package com.uav.autodebit.vo;
 
 import java.io.Serializable;
 
-public class OxigenTransactionVO extends BannerVO  implements Serializable {
+public class OxigenTransactionVO extends BaseVO  implements Serializable {
 
 
     private Integer typeId;

@@ -30,13 +30,20 @@
     </style>
 
 
-    <style name="popup" parent="Theme.AppCompat.Light.Dialog.Alert">
-        <!-- &lt;!&ndash; Customize your theme here. &ndash;&gt;-->
+    <style name="AppTheme.pop">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
+
+
+    <!--<style name="popup" parent="Theme.AppCompat.Light.Dialog.Alert">
+        &lt;!&ndash; &lt;!&ndash; Customize your theme here. &ndash;&gt;&ndash;&gt;
         <item name="windowNoTitle">true</item>
         <item name="android:windowFullscreen">true</item>
-        <!--  <item name="android:background">#FFFF</item-->>
+        &lt;!&ndash;  <item name="android:background">#FFFF</item&ndash;&gt;>
 
-    </style>
+    </style>-->
 
 
     <style name="inputIcons">

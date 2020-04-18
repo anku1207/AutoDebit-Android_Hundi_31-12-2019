@@ -135,46 +135,48 @@
                 android:layout_margin="10dp"
                 app:cardCornerRadius="15dp"
                 >
-              <!-- <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+               <EditText
+                   android:id="@+id/bankname"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/ifsc"
-                    android:backgroundTint="@color/white"
-                    android:hint="IFSC Code"
-                    android:drawablePadding="10dp"
+                   android:backgroundTint="@color/white"
+                   android:hint="IFSC Code"
                     android:singleLine="true"
-                    android:layout_marginLeft="10dp"
-                    android:id="@+id/ifsc"
-                    android:maxLength="20"
-                    android:inputType="textCapCharacters"
-                    android:fontFamily="@font/poppinslight"
+                   android:maxLength="20"
+                   android:inputType="number"
+                   android:maxLines="1"
+                   android:digits="@string/AccountNumerDigits"
+                   style="@style/commonEdittextStyle"
                     />
-                <EditText
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/ifscid"
-                    android:visibility="gone"/>
--->
 
 
-               <!-- <AutoCompleteTextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/ifsc"
-                    android:backgroundTint="@color/white"
-                    android:hint="Bank Name"
-                    android:singleLine="true"
-                    android:id="@+id/ifsc"
-                    android:inputType="textCapCharacters"
-                    style="@style/commonEdittextStyle"
-                    />-->
-                <Spinner
+                <!--     <EditText
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/ifscid"
+                        android:visibility="gone"/>
+
+
+
+                   <AutoCompleteTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@drawable/ifsc"
+                        android:backgroundTint="@color/white"
+                        android:hint="Bank Name"
+                        android:singleLine="true"
+                        android:id="@+id/ifsc"
+                        android:inputType="textCapCharacters"
+                        style="@style/commonEdittextStyle"
+                        />-->
+              <!--  <Spinner
                     android:id="@+id/select_drop"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:spinnerMode="dialog"
 
-                    />
+                    />-->
             </androidx.cardview.widget.CardView>
 
 

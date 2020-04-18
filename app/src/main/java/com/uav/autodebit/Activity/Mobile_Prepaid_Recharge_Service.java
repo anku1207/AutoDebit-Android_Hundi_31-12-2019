@@ -126,13 +126,11 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
 
 
         //create offers and recent fragment
-        View offer_fragment;
+      /*  View offer_fragment;
         offer_fragment=findViewById(R.id.offer_fragment);
         Offers_recent_Fragment.createOfferAndRecentLayout(Mobile_Prepaid_Recharge_Service.this);
         offer_fragment.setVisibility(View.VISIBLE);
-
-
-
+      */
 
         Drawable drawable = getResources().getDrawable(R.drawable.contacts);
         drawable = DrawableCompat.wrap(drawable);

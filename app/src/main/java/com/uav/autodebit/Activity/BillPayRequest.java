@@ -24,14 +24,18 @@ import com.uav.autodebit.Interface.PaymentGatewayResponse;
 import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
+import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.DialogInterface;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.AuthServiceProviderVO;
 import com.uav.autodebit.vo.CCTransactionStatusVO;
 import com.uav.autodebit.vo.ConnectionVO;
+import com.uav.autodebit.vo.CustomerAuthServiceVO;
+import com.uav.autodebit.vo.CustomerVO;
 import com.uav.autodebit.vo.DataAdapterVO;
 import com.uav.autodebit.vo.OxigenQuestionsVO;
 import com.uav.autodebit.vo.OxigenTransactionVO;
+import com.uav.autodebit.vo.ServiceTypeVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
 import com.uav.autodebit.volley.VolleyUtils;
 
@@ -88,6 +92,7 @@ public class BillPayRequest {
                     }else if(oxigenTransactionVOresp.getStatusCode().equals("01")){
                         Utility.showSingleButtonDialogconfirmation(context,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
                             ok.dismiss();
+                            ((Activity)context).finish();
                         }),"Alert",oxigenTransactionVOresp.getAnonymousString());
                         volleyResponse.onError(null);
                     }else {
@@ -255,6 +260,7 @@ public class BillPayRequest {
             }),"Alert","Bill Fetch Is required!");
         }else {
            BillPayRequest.oxiBillPaymentValdated(context,oxigenTransactionVO,new PaymentGatewayResponse((PaymentGatewayResponse.OnPg)(pg)->{
+
                 //  recharge to payu payment gateway
                  OxigenTransactionVO oxigenPlanresp=(OxigenTransactionVO) pg;
                 ((Activity)context).startActivityForResult(new Intent(context,PaymentGateWay.class).putExtra("oxigenTypeId",oxigenPlanresp.getTypeId().toString()),200);
@@ -274,11 +280,148 @@ public class BillPayRequest {
                        },(VolleyResponse.OnError)(e)->{
                        }));
                    }else {
-                       ((Activity)context).startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(((OxigenTransactionVO)onEnach).getServiceId()))), ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE);
+                      // ((Activity)context).startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(((OxigenTransactionVO)onEnach).getServiceId()))), ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE);
+                       oxiServiceMandateCheck(context,((OxigenTransactionVO)onEnach).getServiceId(),true);
                    }
                  
            }));
         }
+    }
+
+    private static void oxiServiceMandateCheck(Context context,Integer serivceId ,boolean isRecharge) {
+
+        // isrecharge is true is before recharge  and fleas alter recharge
+
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        ConnectionVO connectionVO =OxigenPlanBO.oxiServiceMandateCheck();
+        OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
+        CustomerVO customerVO =new CustomerVO();
+        customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(context)));
+        oxigenTransactionVO.setCustomer(customerVO);
+
+        ServiceTypeVO serviceTypeVO =new ServiceTypeVO();
+        serviceTypeVO.setServiceTypeId(serivceId);
+        oxigenTransactionVO.setServiceType(serviceTypeVO);
+
+        Gson gson=new Gson();
+        String json = gson.toJson(oxigenTransactionVO);
+        params.put("volley", json);
+        connectionVO.setParams(params);
+        Log.w("request",params.toString());
+
+        VolleyUtils.makeJsonObjectRequest(context, connectionVO, new VolleyResponseListener() {
+            @Override
+            public void onError(String message) {
+            }
+            @Override
+            public void onResponse(Object resp) throws JSONException {
+
+                JSONObject response = (JSONObject) resp;
+                Gson gson = new Gson();
+                OxigenTransactionVO checkMandateResponse = gson.fromJson(response.toString(), OxigenTransactionVO.class);
+
+                if (checkMandateResponse.getStatusCode().equals("400")) {
+                    StringBuffer stringBuffer = new StringBuffer();
+                    for (int i = 0; i < checkMandateResponse.getErrorMsgs().size(); i++) {
+                        stringBuffer.append(checkMandateResponse.getErrorMsgs().get(i));
+                    }
+                    Utility.showSingleButtonDialog(context, "Error !", stringBuffer.toString(), false);
+                } else if(checkMandateResponse.getStatusCode().equals("ap102")){
+
+                        // 12/04/2020
+                        Utility.showWebviewAlertDialog(context, checkMandateResponse.getHtmlString(),false,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(dialog)->{
+                            dialog.dismiss();
+                            if(isRecharge){
+                                ((Activity)context).startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(serivceId))), ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE);
+                            }else{
+                                ((Activity)context).startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(serivceId))), ApplicationConstant.REQ_ENACH_MANDATE);
+                            }
+                        },(ConfirmationDialogInterface.OnCancel)(cancel)->{
+                            cancel.dismiss();
+                        }));
+
+                    }else if(checkMandateResponse.getStatusCode().equals("ap103")) {
+
+                        // 12/04/2020
+                        Utility.showWebviewAlertDialog(context, checkMandateResponse.getHtmlString(), false, new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk) (dialog) -> {
+                            dialog.dismiss();
+                            String[] buttons = {"New Bank", "Existing Bank"};
+                            Utility.showDoubleButtonDialogConfirmation(new com.uav.autodebit.util.DialogInterface() {
+                                @Override
+                                public void confirm(Dialog dialog) {
+                                    dialog.dismiss();
+                                    try {
+                                        JSONArray arryjson = new JSONArray(checkMandateResponse.getAnonymousString());
+                                        ArrayList<CustomerAuthServiceVO> customerAuthServiceArry = new ArrayList<>();
+                                        for (int i = 0; i < arryjson.length(); i++) {
+                                            JSONObject jsonObject = arryjson.getJSONObject(i);
+                                            CustomerAuthServiceVO customerAuthServiceVO = new CustomerAuthServiceVO();
+                                            customerAuthServiceVO.setBankName(jsonObject.getString("bankName"));
+                                            customerAuthServiceVO.setProviderTokenId(jsonObject.getString("mandateId"));
+                                            customerAuthServiceVO.setCustomerAuthId(jsonObject.getInt("id"));
+                                            customerAuthServiceVO.setAnonymousString(jsonObject.getString("status"));
+                                            customerAuthServiceArry.add(customerAuthServiceVO);
+                                        }
+                                        CustomerAuthServiceVO customerAuthServiceVO = new CustomerAuthServiceVO();
+                                        customerAuthServiceVO.setBankName(null);
+                                        customerAuthServiceVO.setProviderTokenId("Add New Mandate");
+                                        customerAuthServiceVO.setCustomerAuthId(0);
+                                        customerAuthServiceVO.setAnonymousString(null);
+                                        customerAuthServiceArry.add(customerAuthServiceVO);
+
+                                        Utility.alertselectdialog(context, "Choose from existing Bank", customerAuthServiceArry, new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess) (bankId) -> {
+                                            if (!bankId.equals("0")) {
+                                                CheckMandateAndShowDialog.allotBnakForService(context,serivceId,Integer.parseInt(bankId),new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
+
+                                                    if(isRecharge){
+                                                        AuthServiceProviderVO authServiceProviderVO =new AuthServiceProviderVO();
+                                                        authServiceProviderVO.setProviderId(AuthServiceProviderVO.ENACHIDFC);
+                                                        OxigenTransactionVO responseOxigenTransactionVO =new OxigenTransactionVO();
+                                                        responseOxigenTransactionVO.setTypeId(oxigenValidateResponce.getTypeId());
+                                                        responseOxigenTransactionVO.setAnonymousString(bankId);
+                                                        responseOxigenTransactionVO.setProvider(authServiceProviderVO);
+                                                        //recharge for after enach mandate
+                                                        BillPayRequest.proceedBillPayment(responseOxigenTransactionVO,context,new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
+                                                            handelRechargeSuccess(context,(OxigenTransactionVO)s);
+                                                        },(VolleyResponse.OnError)(e)->{
+                                                        }));
+                                                    }else {
+
+                                                        // move to history activity
+                                                        ((Activity)context).startActivity(new Intent(context,History.class));
+                                                        ((Activity)context).finish();
+                                                    }
+
+                                                }));
+                                            } else {
+                                                if(isRecharge){
+                                                    ((Activity)context).startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(serivceId))), ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE);
+                                                }else {
+                                                    ((Activity)context).startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(serivceId))), ApplicationConstant.REQ_ENACH_MANDATE);
+                                                }
+                                            }
+                                        }));
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                        Utility.exceptionAlertDialog(context, "Alert!", "Something went wrong, Please try again!", "Report", Utility.getStackTrace(e));
+                                    }
+                                }
+                                @Override
+                                public void modify(Dialog dialog) {
+                                    dialog.dismiss();
+                                    if(isRecharge){
+                                        ((Activity)context).startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(serivceId))), ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE);
+                                    }else {
+                                        ((Activity)context).startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(serivceId))), ApplicationConstant.REQ_ENACH_MANDATE);
+                                    }
+                                }
+                            }, context, checkMandateResponse.getErrorMsgs().get(0), "", buttons);
+                        }, (ConfirmationDialogInterface.OnCancel) (cancel) -> {
+                            cancel.dismiss();
+                        }));
+                    }
+                }
+        });
     }
 
     private static void oxiBillPaymentValdated(Context context, OxigenTransactionVO oxigenTransactionVO, PaymentGatewayResponse paymentGatewayResponse) {
@@ -335,8 +478,8 @@ public class BillPayRequest {
         if(oxigenTransactionVOresp.isEventIs()){
 
          Utility.showWebviewAlertDialog(context,oxigenTransactionVOresp.getAnonymousString(),false,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
-             ((Activity)context).startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(oxigenTransactionVOresp.getServiceId()))), ApplicationConstant.REQ_ENACH_MANDATE);
-
+           //  ((Activity)context).startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(oxigenTransactionVOresp.getServiceId()))), ApplicationConstant.REQ_ENACH_MANDATE);
+             oxiServiceMandateCheck(context,oxigenTransactionVOresp.getServiceId(),false);
          },(ConfirmationDialogInterface.OnCancel)(cancel)->{
              cancel.dismiss();
              ((Activity)context).startActivity(new Intent(context,HistorySummary.class).putExtra("historyId",oxigenTransactionVOresp.getAnonymousInteger().toString()));
@@ -451,32 +594,6 @@ public class BillPayRequest {
     }
 
 
-    public static ArrayList getPaymentType(boolean ismandate){
-        ArrayList<DataAdapterVO> dataAdapterVOS =new ArrayList<>();
-
-        DataAdapterVO dataAdapterVO;
-        if(ismandate){
-            dataAdapterVO =new DataAdapterVO();
-            dataAdapterVO.setText("Recharge for mandate");
-            dataAdapterVOS.add(dataAdapterVO);
-        }else {
-            dataAdapterVO =new DataAdapterVO();
-            dataAdapterVO.setText("Add Bank Mandate");
-            dataAdapterVOS.add(dataAdapterVO);
-        }
-
-
-        dataAdapterVO =new DataAdapterVO();
-        dataAdapterVO.setText("Credit Card / Debit Card");
-        dataAdapterVOS.add(dataAdapterVO);
-
-        dataAdapterVO =new DataAdapterVO();
-        dataAdapterVO.setText("Net Banking");
-        dataAdapterVOS.add(dataAdapterVO);
-
-       return dataAdapterVOS;
-
-    }
 
 
 

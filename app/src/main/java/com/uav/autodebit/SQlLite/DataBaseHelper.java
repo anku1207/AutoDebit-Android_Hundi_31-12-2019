@@ -79,9 +79,10 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         String myPath = DB_PATH + DB_NAME;
         myDataBase = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READWRITE);
 
-
         //create a notification table
         myDataBase.execSQL("create table if not exists notification (ID INTEGER PRIMARY KEY AUTOINCREMENT, Title TEXT,Message TEXT,ImageUrl TEXT,TimeStamp TEXT,SmallImage TEXT,ActivityName TEXT)");
+        //myDataBase.execSQL("create table if not exists notification (ID INTEGER PRIMARY KEY AUTOINCREMENT, Title TEXT,Message TEXT,ImageUrl TEXT,TimeStamp TEXT,SmallImage TEXT,ActivityName TEXT)");
+
 
     }
 

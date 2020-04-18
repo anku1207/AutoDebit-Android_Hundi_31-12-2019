@@ -5,6 +5,7 @@ import android.content.Intent;
 
 import android.os.Bundle;
 
+import android.text.Layout;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.MotionEvent;
@@ -39,6 +40,7 @@ import com.uav.autodebit.util.ExceptionHandler;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerVO;
+import com.uav.autodebit.vo.DataAdapterVO;
 import com.uav.autodebit.vo.ServiceTypeVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
 import com.uav.autodebit.volley.VolleyUtils;
@@ -55,7 +57,7 @@ public class AddBankAndServicelist extends AppCompatActivity implements View.OnC
     LinearLayout mainlayout;
 
     EditText acno,acholdername;
-    Spinner bankname,account_type;
+    Spinner account_type;
     ImageView back_activity_button;
     JSONArray accountTypeJsonArray,bankJsonArray;
 
@@ -64,6 +66,9 @@ public class AddBankAndServicelist extends AppCompatActivity implements View.OnC
     Button nextbtn;
     ListViewItemCheckboxBaseAdapter myAdapter;
     ScrollView scrollview;
+
+    EditText bankname;
+    ArrayList<DataAdapterVO> datalist;
 
 
     @Override
@@ -77,7 +82,7 @@ public class AddBankAndServicelist extends AppCompatActivity implements View.OnC
         accountTypeJsonArray=new JSONArray();
         bankJsonArray=new JSONArray();
 
-
+        selectBankJson = new JSONObject();
 
         scrollview.setOnTouchListener(new View.OnTouchListener(){
             @Override
@@ -98,19 +103,31 @@ public class AddBankAndServicelist extends AppCompatActivity implements View.OnC
             scrollview.setVisibility(View.VISIBLE);
             CustomerVO customerVO =(CustomerVO) success;
 
-            bankname.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+
+            bankname.setOnTouchListener(new View.OnTouchListener() {
                 @Override
-                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    try {
-                        selectBankJson =bankJsonArray.getJSONObject(i);
-                    }catch (Exception e){
-                        Toast.makeText(AddBankAndServicelist.this, "Something went wrong, Please try again!", Toast.LENGTH_SHORT).show();
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    if(MotionEvent.ACTION_UP == motionEvent.getAction()) {
+
+                        Layout layout = ((EditText) view).getLayout();
+                        int  x = (int) motionEvent.getX();
+                        int  y = (int) motionEvent.getY();
+
+                        Intent intent =new Intent(AddBankAndServicelist.this, PopapSimpleList.class);
+                        intent.putExtra("datalist", new Gson().toJson( datalist));
+                        intent.putExtra("title","Operator");
+                        intent.putExtra("x",x);
+                        intent.putExtra("y",y);
+                        startActivityForResult(intent, ApplicationConstant.REQ_POPAPACTIVITYRESULT);
+
                     }
-                }
-                @Override
-                public void onNothingSelected(AdapterView<?> adapterView) {
+                    return false;
                 }
             });
+
+
+
 
             account_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
@@ -140,6 +157,9 @@ public class AddBankAndServicelist extends AppCompatActivity implements View.OnC
 
         nextbtn.setOnClickListener(this);
         back_activity_button.setOnClickListener(this);
+
+        datalist = new ArrayList<>();
+
 
     }
 
@@ -177,15 +197,14 @@ public class AddBankAndServicelist extends AppCompatActivity implements View.OnC
                     JSONObject object = new JSONObject(jsonObject.getString("result"));
                     bankJsonArray=object.getJSONArray("data");
 
-                    List<String> paths = new ArrayList<String>();
                     for(int i=0;i<bankJsonArray.length();i++){
-                        JSONObject object1=(bankJsonArray.getJSONObject(i));
-                        paths.add(object1.getString("name"));
+                        JSONObject bankjson=(bankJsonArray.getJSONObject(i));
+                        DataAdapterVO dataAdapterVO = new DataAdapterVO();
+                        dataAdapterVO.setText(bankjson.getString("name"));
+                        dataAdapterVO.setAssociatedValue(bankjson.getString("id"));
+                        datalist.add(dataAdapterVO);
                     }
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(AddBankAndServicelist.this,
-                            R.layout.spinner_item,paths);
-                    adapter.setDropDownViewResource(R.layout.spinner_item);
-                    bankname.setAdapter(adapter);
+
 
                     accountTypeJsonArray =new JSONArray(jsonObject.getString("accountType"));
                     ArrayList accountList=new ArrayList();
@@ -193,7 +212,7 @@ public class AddBankAndServicelist extends AppCompatActivity implements View.OnC
                         JSONObject object1=(accountTypeJsonArray.getJSONObject(i));
                         accountList.add(object1.getString("key"));
                     }
-                    adapter = new ArrayAdapter<String>(AddBankAndServicelist.this,
+                    ArrayAdapter adapter = new ArrayAdapter<String>(AddBankAndServicelist.this,
                             R.layout.spinner_item,accountList);
                     adapter.setDropDownViewResource(R.layout.spinner_item);
                     account_type.setAdapter(adapter);
@@ -255,17 +274,23 @@ public class AddBankAndServicelist extends AppCompatActivity implements View.OnC
             validation=false;
         }
 
+
+        if(bankname.getText().toString().trim().equals("")){
+            bankname.setError("this filed is required");
+            validation=false;
+        }
+
         if(acholdername.getText().toString().trim().equals("")){
             acholdername.setError("this filed is required");
             validation=false;
         }
 
-        if( accountTypeJsonArray.length()==0){
+        if( selectBankType.length()==0){
             Utility.alertDialog(this,"Alert","Bank is not selected","Ok");
             validation=false;
         }
 
-        if( bankJsonArray.length()==0){
+        if( selectBankJson.length()==0){
             Utility.alertDialog(this,"Alert","Account Type is not selected","Ok");
             validation=false;
         }
@@ -333,6 +358,19 @@ public class AddBankAndServicelist extends AppCompatActivity implements View.OnC
                     Toast.makeText(this, Content_Message.error_message, Toast.LENGTH_SHORT).show();
                 }
 
+            }else if(requestCode==ApplicationConstant.REQ_POPAPACTIVITYRESULT){
+                if(data!=null){
+                    try {
+                        bankname.setText(data.getStringExtra("operatorname"));
+
+                        selectBankJson.put("name",data.getStringExtra("operatorname"));
+                        selectBankJson.put("id",data.getStringExtra("operator"));
+                    }catch (Exception ignored){
+
+                    };
+                }else {
+                    Toast.makeText(this, "Bank Name Is Null Selected", Toast.LENGTH_SHORT).show();
+                }
             }
         }
     }

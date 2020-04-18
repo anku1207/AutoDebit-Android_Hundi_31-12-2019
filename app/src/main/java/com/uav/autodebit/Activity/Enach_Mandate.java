@@ -4,7 +4,9 @@ import android.app.Dialog;
 import android.content.Intent;
 
 import android.os.Bundle;
+import android.text.Layout;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -14,21 +16,28 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.uav.autodebit.BO.MandateBO;
 import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
+import com.uav.autodebit.constant.ApplicationConstant;
+import com.uav.autodebit.constant.ErrorMsg;
 import com.uav.autodebit.override.DrawableClickListener;
 import com.uav.autodebit.override.UAVEditText;
 import com.uav.autodebit.permission.Session;
+import com.uav.autodebit.util.BackgroundAsyncService;
+import com.uav.autodebit.util.BackgroundServiceInterface;
 import com.uav.autodebit.util.DialogInterface;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerAuthServiceVO;
 import com.uav.autodebit.vo.CustomerVO;
+import com.uav.autodebit.vo.DataAdapterVO;
 import com.uav.autodebit.vo.LocalCacheVO;
 import com.uav.autodebit.vo.ServiceChargesVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
@@ -61,15 +70,17 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
 
 
 
-    HashMap<String,String> selectbank=new HashMap<>();
+    //HashMap<String,String> selectbank=new HashMap<>();
 
     ArrayList<Integer> selectServiceIds=new ArrayList<>();
 
 
-    Spinner select_drop,account_type;
+    Spinner account_type;
     JSONArray accountTypeJsonArray;
 
+    EditText bankname;
 
+    ArrayList<DataAdapterVO> datalist;
 
 
     @Override
@@ -111,17 +122,28 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
 
 
         banklist(new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
-            select_drop.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    String selection = (String) adapterView.getItemAtPosition(i);
-                    bankshortname=selectbank.get(selection);
-                }
-                @Override
-                public void onNothingSelected(AdapterView<?> adapterView) {
 
+            bankname.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    if(MotionEvent.ACTION_UP == motionEvent.getAction()) {
+
+                        Layout layout = ((EditText) view).getLayout();
+                        int  x = (int) motionEvent.getX();
+                        int  y = (int) motionEvent.getY();
+
+                        Intent intent =new Intent(Enach_Mandate.this, PopapSimpleList.class);
+                        intent.putExtra("datalist", new Gson().toJson( datalist));
+                        intent.putExtra("title","Operator");
+                        intent.putExtra("x",x);
+                        intent.putExtra("y",y);
+                        startActivityForResult(intent, ApplicationConstant.REQ_POPAPACTIVITYRESULT);
+
+                    }
+                    return false;
                 }
             });
+
 
             account_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
@@ -147,19 +169,20 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
                     JSONObject selectBankJson =new JSONObject(getIntent().getStringExtra("bankJson"));
 
                     // set bank list value by text
-                    ArrayAdapter myAdap = (ArrayAdapter) select_drop.getAdapter(); //cast to an ArrayAdapter
-                    int spinnerPosition = myAdap.getPosition(selectBankJson.getString("name"));
-                    select_drop.setSelection(spinnerPosition);
+                    bankname.setText(selectBankJson.getString("name"));
+                    bankshortname = selectBankJson.getString("id");
+
 
                     JSONObject accountTypeJson =new JSONObject(getIntent().getStringExtra("accountType"));
-                    myAdap = (ArrayAdapter) account_type.getAdapter(); //cast to an ArrayAdapter
-                    spinnerPosition = myAdap.getPosition(accountTypeJson.getString("key"));
+                    ArrayAdapter myAdap = (ArrayAdapter) account_type.getAdapter(); //cast to an ArrayAdapter
+                    int spinnerPosition = myAdap.getPosition(accountTypeJson.getString("key"));
                     account_type.setSelection(spinnerPosition);
 
                     acholdername.setEnabled(false);
                     acno.setEnabled(false);
-                    select_drop.setEnabled(false);
                     account_type.setEnabled(false);
+                    bankname.setEnabled(false);
+
 
                 }catch (Exception e){
                     Utility.exceptionAlertDialog(Enach_Mandate.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
@@ -194,9 +217,13 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
         acno=findViewById(R.id.acno);
         maxamount=findViewById(R.id.maxamount);
         mandatebtn=findViewById(R.id.mandatebtn);
-        select_drop=findViewById(R.id.select_drop);
         account_type=findViewById(R.id.account_type);
         back_activity_button1=findViewById(R.id.back_activity_button1);
+        bankname=findViewById(R.id.bankname);
+        bankname.setClickable(false);
+
+
+        datalist = new ArrayList<>();
 
     }
 
@@ -222,11 +249,10 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
                 maxamount.setError("this filed is required");
                 validation=false;
             }
-/*
-                if(ifsc.getText().toString().equals("")){
-                    ifsc.setError("this filed is required");
-                    validation=false;
-                }*/
+            if(bankname.getText().toString().equals("")){
+                ifsc.setError("this filed is required");
+                validation=false;
+            }
 
             if( bankshortname==null){
                 Utility.alertDialog(Enach_Mandate.this,"Alert","Bank is not selected","Ok");
@@ -256,8 +282,6 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
         }
 
     }
-
-
 
     public void verifydialog(){
 
@@ -409,17 +433,15 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
                     JSONObject object = new JSONObject(response.getString("result"));
                     JSONArray jsonArray=object.getJSONArray("data");
 
-                    List<String> paths = new ArrayList<String>();
                     for(int i=0;i<jsonArray.length();i++){
-                        JSONObject object1=(jsonArray.getJSONObject(i));
-                        selectbank.put(object1.getString("name"),object1.getString("id"));
-                        paths.add(object1.getString("name"));
+                       JSONObject bankjson=(jsonArray.getJSONObject(i));
+                        DataAdapterVO dataAdapterVO = new DataAdapterVO();
+                        dataAdapterVO.setText(bankjson.getString("name"));
+                        dataAdapterVO.setAssociatedValue(bankjson.getString("id"));
+                        datalist.add(dataAdapterVO);
                     }
 
-                    ArrayAdapter<String>adapter = new ArrayAdapter<String>(Enach_Mandate.this,
-                            R.layout.spinner_item,paths);
-                    adapter.setDropDownViewResource(R.layout.spinner_item);
-                    select_drop.setAdapter(adapter);
+
 
                     accountTypeJsonArray =new JSONArray(response.getString("accountType"));
                     ArrayList accountList=new ArrayList();
@@ -428,7 +450,7 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
                         accountList.add(object1.getString("key"));
                     }
 
-                    adapter = new ArrayAdapter<String>(Enach_Mandate.this,
+                    ArrayAdapter adapter = new ArrayAdapter<String>(Enach_Mandate.this,
                             R.layout.spinner_item,accountList);
                     adapter.setDropDownViewResource(R.layout.spinner_item);
                     account_type.setAdapter(adapter);
@@ -461,6 +483,13 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
                         e.printStackTrace();
                         Utility.exceptionAlertDialog(Enach_Mandate.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
                     }
+                }
+            }else if(requestCode==ApplicationConstant.REQ_POPAPACTIVITYRESULT){
+                if(data!=null){
+                    bankname.setText(data.getStringExtra("operatorname"));
+                    bankshortname=data.getStringExtra("operator");
+                }else {
+                    Toast.makeText(this, "Bank Name Is Null Selected", Toast.LENGTH_SHORT).show();
                 }
             }
         }
@@ -524,7 +553,10 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
                         intent.putExtra("selectservice",selectServiceIds);
                         intent.putExtra("msg",customerVO.getAnonymousString());
                         intent.putExtra("mandate_status",customerVO.isEventIs());
-                        intent.putExtra("bankMandateId",customerVO.getAnonymousInteger().toString());
+                        if(customerVO.isEventIs()){
+                            intent.putExtra("bankMandateId",customerVO.getAnonymousInteger().toString());
+                        }
+
                         setResult(RESULT_OK,intent);
                         finish();
                     }

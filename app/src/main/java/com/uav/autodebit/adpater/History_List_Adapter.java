@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -92,6 +93,7 @@ public class History_List_Adapter  extends RecyclerView.Adapter<History_List_Ada
         }*/
 
         }catch (Exception e){
+            Toast.makeText(mctx, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
 
         }
 

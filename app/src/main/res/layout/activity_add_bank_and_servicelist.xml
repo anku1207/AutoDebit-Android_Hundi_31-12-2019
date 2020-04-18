@@ -110,12 +110,19 @@
                 android:layout_margin="10dp"
                 app:cardCornerRadius="15dp"
                 >
-                <Spinner
+                <EditText
                     android:id="@+id/bankname"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:spinnerMode="dialog"
-
+                    android:drawableLeft="@drawable/ifsc"
+                    android:backgroundTint="@color/white"
+                    android:hint="IFSC Code"
+                    android:singleLine="true"
+                    android:maxLength="20"
+                    android:inputType="number"
+                    android:maxLines="1"
+                    android:digits="@string/AccountNumerDigits"
+                    style="@style/commonEdittextStyle"
                     />
             </androidx.cardview.widget.CardView>
 
