@@ -33,6 +33,7 @@ import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.BackgroundAsyncService;
 import com.uav.autodebit.util.BackgroundServiceInterface;
 import com.uav.autodebit.util.DialogInterface;
+import com.uav.autodebit.util.ExceptionHandler;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerAuthServiceVO;
@@ -86,6 +87,7 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
         setContentView(R.layout.activity_enach__mandate);
         getSupportActionBar().hide();
 
@@ -250,11 +252,11 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
                 validation=false;
             }
             if(bankname.getText().toString().equals("")){
-                ifsc.setError("this filed is required");
+                bankname.setError("this filed is required");
                 validation=false;
             }
 
-            if( bankshortname==null){
+            if( bankshortname==null && !bankname.getText().toString().equals("")){
                 Utility.alertDialog(Enach_Mandate.this,"Alert","Bank is not selected","Ok");
                 validation=false;
             }
@@ -486,6 +488,7 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
                 }
             }else if(requestCode==ApplicationConstant.REQ_POPAPACTIVITYRESULT){
                 if(data!=null){
+                    bankname.setError(null);
                     bankname.setText(data.getStringExtra("operatorname"));
                     bankshortname=data.getStringExtra("operator");
                 }else {

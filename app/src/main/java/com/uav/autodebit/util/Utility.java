@@ -1042,7 +1042,7 @@ public class Utility {
                 confirmationDialogInterface.onOk(var3);
             }
         });
-        var3.show();
+        if(!var3.isShowing())var3.show();
     }
 
 
