@@ -143,49 +143,45 @@
                 android:layout_margin="10dp"
                 app:cardCornerRadius="15dp"
                 android:id="@+id/amountlayout"
-                android:visibility="visible"
+                android:visibility="gone"
                 >
-                <RelativeLayout
-                    xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:layout_width="wrap_content"
+                <EditText
+                    android:id="@+id/amount"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    >
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:drawableLeft="@drawable/amount"
+                    android:backgroundTint="@color/white"
+                    android:hint="Amount"
+                    android:singleLine="true"
+                    android:maxLength="8"
+                    android:inputType="number|numberDecimal"
+                    android:digits="@string/NumberDigits"
+                    android:maxLines="1"
+                    style="@style/commonEdittextStyle"
+                    android:enabled="false"
+                   />
 
 
-                    <EditText
-                        android:id="@+id/amount"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentTop="true"
-                        android:drawableLeft="@drawable/amount"
-                        android:backgroundTint="@color/white"
-                        android:hint="Amount"
-                        android:singleLine="true"
-                        android:maxLength="8"
-                        android:inputType="number|numberDecimal"
-                        android:digits="@string/NumberDigits"
-                        android:maxLines="1"
-                        style="@style/commonEdittextStyle"/>
-
-                    <TextView
-                        android:id="@+id/fetchbill"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignBaseline="@+id/amount"
-                        android:layout_alignBottom="@+id/amount"
-                        android:layout_alignParentRight="true"
-                        android:layout_marginRight="5dp"
-                        android:layout_marginBottom="0dp"
-                        android:text="FetchBill"
-                        android:textSize="10dp"
-                        android:backgroundTint="@color/white"
-                        android:textColor="@color/appbar"
-                        android:padding="10dp"/>
-                </RelativeLayout>
 
             </androidx.cardview.widget.CardView>
 
+
+
+            <Button
+                android:id="@+id/fetchbill"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/cornerbutton"
+                android:text="Confirm"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+
+                />
 
 
 
@@ -217,22 +213,6 @@
             </LinearLayout>
 
 
-
-
-            <Button
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/proceed"
-                android:text="Proceed"
-                android:layout_gravity="center"
-                android:layout_marginBottom="20dp"
-                android:layout_marginTop="30dp"
-                android:background="@drawable/cornerbutton"
-                android:textColor="@color/white"
-
-                />
-
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -241,7 +221,8 @@
                 android:paddingEnd="20dp"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:layout_marginBottom="20dp">
+                android:layout_marginBottom="20dp"
+                android:paddingTop="10dp">
 
 
                 <ImageView
@@ -253,18 +234,8 @@
 
 
             </LinearLayout>
-
-
         </LinearLayout>
-
-
-
-
-
     </ScrollView>
-
-
-
 </LinearLayout>
 
 

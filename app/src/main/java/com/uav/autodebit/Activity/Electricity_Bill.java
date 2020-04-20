@@ -49,17 +49,15 @@ import java.util.List;
 
 public class Electricity_Bill extends Base_Activity  implements View.OnClickListener {
 
-    EditText amount,operator;
+    EditText operator,netAmount;
     ImageView back_activity_button;
     String operatorcode,operatorname=null;
-    Button proceed;
-    TextView fetchbill;
-    CardView amountlayout;
+    Button  fetchbill;
 
     LinearLayout dynamicCardViewContainer , fetchbilllayout,min_amt_layout;
 
     List<OxigenQuestionsVO> questionsVOS= new ArrayList<OxigenQuestionsVO>();
-    CardView fetchbillcard;
+    CardView fetchbillcard,amountlayout;
 
     boolean isFetchBill=true;
     String operatorListDate;
@@ -67,7 +65,6 @@ public class Electricity_Bill extends Base_Activity  implements View.OnClickList
     OxigenTransactionVO oxigenTransactionVOresp;
     Gson gson;
     int minAmt;
-
 
 
     @Override
@@ -79,29 +76,28 @@ public class Electricity_Bill extends Base_Activity  implements View.OnClickList
         operatorListDate=null;
         pd=new UAVProgressDialog(this);
 
-        amount=findViewById(R.id.amount);
         back_activity_button=findViewById(R.id.back_activity_button1);
 
-        amount.setEnabled(false);
 
-        proceed=findViewById(R.id.proceed);
-        fetchbill=findViewById(R.id.fetchbill);
-        amountlayout=findViewById(R.id.amountlayout);
         operator=findViewById(R.id.operator);
         dynamicCardViewContainer =findViewById(R.id.dynamiccards);
         fetchbilllayout=findViewById(R.id.fetchbilllayout);
         fetchbillcard =findViewById(R.id.fetchbillcard);
         min_amt_layout=findViewById(R.id.min_amt_layout);
 
+        fetchbill=findViewById(R.id.fetchbill);
+        amountlayout =findViewById(R.id.amountlayout);
+        netAmount=findViewById(R.id.amount);
+
         oxigenTransactionVOresp=new OxigenTransactionVO();
         minAmt=0;
         gson =new Gson();
 
-        amountlayout.setVisibility(View.GONE);
 
         back_activity_button.setOnClickListener(this);
-        proceed.setOnClickListener(this);
         fetchbill.setOnClickListener(this);
+
+        fetchbill.setVisibility(View.GONE);
 
         operator.setClickable(false);
 
@@ -166,30 +162,23 @@ public class Electricity_Bill extends Base_Activity  implements View.OnClickList
             operator.setEnabled(true);
 
             if(resultCode==RESULT_OK){
-
-
                 if(requestCode==100){
                     operatorname =data.getStringExtra("operatorname");
                     operatorcode=data.getStringExtra("operator");
-
-                    amountlayout.setVisibility(View.VISIBLE);
 
                     DataAdapterVO dataAdapterVO = (DataAdapterVO) data.getSerializableExtra("datavo");
                     operator.setText(operatorname);
                     operator.setTag(operatorcode);
 
                     operator.setError(null);
-                    amount.setError(null);
 
                     //add fetch bill btn
                     if (dataAdapterVO.getIsbillFetch().equals("1")) {
-                        fetchbill.setVisibility(View.VISIBLE);
-                        amount.setEnabled(false);
                         isFetchBill=true;
+                        fetchbill.setVisibility(View.VISIBLE);
                     } else {
-                        fetchbill.setVisibility(View.GONE);
-                        amount.setEnabled(true);
                         isFetchBill=false;
+                        fetchbill.setVisibility(View.GONE);
                     }
 
                     //add min Amt Layout
@@ -210,6 +199,8 @@ public class Electricity_Bill extends Base_Activity  implements View.OnClickList
 
                     //Remove dynamic cards from the layout and arraylist
                     if(dynamicCardViewContainer.getChildCount()>0) dynamicCardViewContainer.removeAllViews();
+
+                    //remove fetch bill layout and remove amount layout and amount value is set null  and show bill fetch button
                     removefetchbilllayout();
 
                     questionsVOS.clear();
@@ -262,37 +253,6 @@ public class Electricity_Bill extends Base_Activity  implements View.OnClickList
             case R.id.back_activity_button1:
                 finish();
                 break;
-            case R.id.proceed:
-                try {
-                    JSONObject dataarray=getQuestionLabelDate(true);
-                    if(dataarray==null)return;
-                    if(isFetchBill){
-                        BillPayRequest.proceedRecharge(this,isFetchBill,oxigenTransactionVOresp);
-                    }else {
-                        BillPayRequest.confirmationDialogBillPay(this, operator, amount ,dataarray , new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
-                            OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
-                            oxigenTransactionVO.setOperateName(operatorcode);
-                            oxigenTransactionVO.setAmount(Double.valueOf(amount.getText().toString()));
-                            oxigenTransactionVO.setAnonymousString(dataarray.toString());
-
-                            ServiceTypeVO serviceTypeVO =new ServiceTypeVO();
-                            serviceTypeVO.setServiceTypeId(ApplicationConstant.Electricity);
-                            oxigenTransactionVO.setServiceType(serviceTypeVO);
-
-                            CustomerVO customerVO =new CustomerVO();
-                            customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(this)));
-                            oxigenTransactionVO.setCustomer(customerVO);
-
-                            BillPayRequest.proceedRecharge(this,isFetchBill,oxigenTransactionVO);
-                        }));
-                    }
-
-                }catch (Exception e){
-                    e.printStackTrace();
-                    Utility.exceptionAlertDialog(Electricity_Bill.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
-                }
-
-                break;
             case R.id.fetchbill:
                 try {
                     JSONObject dataarray=getQuestionLabelDate(false);
@@ -312,11 +272,14 @@ public class Electricity_Bill extends Base_Activity  implements View.OnClickList
                     BillPayRequest.proceedFetchBill(oxigenTransactionVO,Electricity_Bill.this,new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
                         try {
                             oxigenTransactionVOresp=(OxigenTransactionVO)s;
+
+
+                            //hide fetch bill button and show amount layout and set amount value
                             fetchbill.setVisibility(View.GONE);
-                            amount.setText(oxigenTransactionVOresp.getNetAmount().toString());
+                            amountlayout.setVisibility(View.VISIBLE);
+                            netAmount.setText(oxigenTransactionVOresp.getNetAmount().toString());
 
                             JSONArray dataArry =new JSONArray(oxigenTransactionVOresp.getAnonymousString());
-
                             Typeface typeface = ResourcesCompat.getFont(Electricity_Bill.this, R.font.poppinssemibold);
                             for(int i=0 ;i<dataArry.length();i++){
                                 JSONObject jsonObject =dataArry.getJSONObject(i);
@@ -345,6 +308,17 @@ public class Electricity_Bill extends Base_Activity  implements View.OnClickList
                                 fetchbilllayout.addView(et);
                             }
 
+                            Button billPaybtn=Utility.getButton(Electricity_Bill.this);
+                            billPaybtn.setText("Proceed");
+                            fetchbilllayout.addView(billPaybtn);
+
+                            billPaybtn.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    proceedBillPay();
+                                }
+                            });
+
                             Animation animFadeIn = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fadein);
                             fetchbillcard.startAnimation(animFadeIn);
                             fetchbillcard.setVisibility(View.VISIBLE);
@@ -353,11 +327,12 @@ public class Electricity_Bill extends Base_Activity  implements View.OnClickList
                             e.printStackTrace();
                             Utility.exceptionAlertDialog(Electricity_Bill.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
                         }
-
                     },(VolleyResponse.OnError)(e)->{
+                        // hide amount layout layout and net amount is null set and show fetch bill button
                         fetchbill.setVisibility(View.VISIBLE);
+                        amountlayout.setVisibility(View.GONE);
+                        netAmount.setText(null);
                     }));
-
 
                 }catch (Exception e){
                     e.printStackTrace();
@@ -369,18 +344,51 @@ public class Electricity_Bill extends Base_Activity  implements View.OnClickList
     }
 
     private JSONObject getQuestionLabelDate(boolean fetchBill) throws Exception{
-        return BillPayRequest.getQuestionLabelData(Electricity_Bill.this,operator,amount,fetchBill,isFetchBill, questionsVOS,minAmt);
+        return BillPayRequest.getNewTypeQuestionLabelData(Electricity_Bill.this,operator,netAmount.getText().toString(),fetchBill,isFetchBill, questionsVOS,minAmt);
+    }
+
+    public void proceedBillPay(){
+        try {
+            JSONObject dataarray=getQuestionLabelDate(true);
+            if(dataarray==null)return;
+            if(isFetchBill){
+                BillPayRequest.proceedRecharge(this,isFetchBill,oxigenTransactionVOresp);
+            }else {
+                BillPayRequest.confirmationDialogBillPay(this, operator, netAmount ,dataarray , new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                    OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
+                    oxigenTransactionVO.setOperateName(operatorcode);
+                    oxigenTransactionVO.setAmount(Double.valueOf(netAmount.getText().toString()));
+                    oxigenTransactionVO.setAnonymousString(dataarray.toString());
+
+                    ServiceTypeVO serviceTypeVO =new ServiceTypeVO();
+                    serviceTypeVO.setServiceTypeId(ApplicationConstant.Electricity);
+                    oxigenTransactionVO.setServiceType(serviceTypeVO);
+
+                    CustomerVO customerVO =new CustomerVO();
+                    customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(this)));
+                    oxigenTransactionVO.setCustomer(customerVO);
+
+                    BillPayRequest.proceedRecharge(this,isFetchBill,oxigenTransactionVO);
+                }));
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+            Utility.exceptionAlertDialog(Electricity_Bill.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+        }
     }
 
     public void removefetchbilllayout(){
-
         oxigenTransactionVOresp=new OxigenTransactionVO();
+
+        //if fetch bill is true and fetch bill layout not = null
 
         if(fetchbilllayout.getChildCount()>0) {
             fetchbilllayout.removeAllViews();
-            amount.setText("");
             fetchbill.setVisibility(View.VISIBLE);
             fetchbillcard.setVisibility(View.GONE);
+            amountlayout.setVisibility(View.GONE);
+            netAmount.setText(null);
         }
     }
 

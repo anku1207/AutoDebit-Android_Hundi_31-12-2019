@@ -147,12 +147,10 @@ public class BillPayRequest {
 
     // fetchbill key is showing bill fetch bill is required or not required and isFetchBill key is showing use bill fetch or not fetch
     static JSONObject getQuestionLabelData(Activity activity, EditText operator, EditText amount, boolean fetchBill, boolean isFetchBill, List<OxigenQuestionsVO> questionsVOS,int minamt) throws  JSONException {
-
         amount.setError(null);
         operator.setError(null);
 
         boolean valid=true;
-
         if(operator.getText().toString().equals("")){
             operator.setError("this filed is required");
             valid=false;
@@ -180,7 +178,7 @@ public class BillPayRequest {
             if(amount.getText().toString().equals("")){
                 amount.setError("this filed is required");
                 valid=false;
-            }else if(!amount.getText().toString().equals("") && Integer.parseInt(amount.getText().toString())<minamt){
+            }else if(!amount.getText().toString().equals("") && Double.parseDouble(amount.getText().toString())<minamt){
                 amount.setError("Amount Must be greater then " +activity.getString(R.string.Rs)+" "+minamt);
                 valid=false;
             }
@@ -188,13 +186,56 @@ public class BillPayRequest {
             if(amount.getText().toString().equals("")){
                 Utility.showSingleButtonDialogconfirmation(activity,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk) Dialog::dismiss),"Alert","Bill Amount is null ");
                 valid=false;
-            }else if(!amount.getText().toString().equals("") && ((int)Double.parseDouble(amount.getText().toString()))<minamt){
+            }else if(!amount.getText().toString().equals("") && (Double.parseDouble(amount.getText().toString()))<minamt){
                 Utility.showSingleButtonDialogconfirmation(activity,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk) Dialog::dismiss),"Alert","Amount Must be greater then " +activity.getString(R.string.Rs)+" "+minamt);
                 valid=false;
             }
         }
         return valid ?jsonObject:null;
     }
+
+
+
+
+    // fetchbill key is showing bill fetch bill is required or not required and isFetchBill key is showing use bill fetch or not fetch
+    static JSONObject getNewTypeQuestionLabelData(Activity activity, EditText operator, String amount, boolean fetchBill, boolean isFetchBill, List<OxigenQuestionsVO> questionsVOS,int minamt) throws  JSONException {
+        operator.setError(null);
+
+        boolean valid=true;
+
+        if(operator.getText().toString().equals("")){
+            operator.setError("this filed is required");
+            valid=false;
+        }
+        JSONObject jsonObject =new JSONObject();
+        for(OxigenQuestionsVO oxigenQuestionsVO:questionsVOS){
+            EditText editText =(EditText) activity.findViewById(oxigenQuestionsVO.getElementId());
+            editText.clearFocus();
+            editText.setError(null);
+            if(editText.getText().toString().equals("")){
+                editText.setError(  Utility.getErrorSpannableStringDynamicEditText(activity, "this field is required"));
+                valid=false;
+            }else if(oxigenQuestionsVO.getMinLength()!=null && (editText.getText().toString().length() < Integer.parseInt(oxigenQuestionsVO.getMinLength()))){
+                editText.setError(oxigenQuestionsVO.getMinLength());
+                valid=false;
+            }else if(oxigenQuestionsVO.getMaxLength()!=null && (editText.getText().toString().length() > Integer.parseInt(oxigenQuestionsVO.getMaxLength()))){
+                editText.setError(oxigenQuestionsVO.getMaxLength());
+                valid=false;
+            }
+            jsonObject.put(oxigenQuestionsVO.getQuestionLabel(),editText.getText().toString());
+        }
+        if(fetchBill && valid){
+            if(amount==null){
+                Utility.showSingleButtonDialogconfirmation(activity,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk) Dialog::dismiss),"Alert","Bill Amount is null ");
+                valid=false;
+            }else if(amount!=null && Double.parseDouble(amount)< minamt){
+                Utility.showSingleButtonDialogconfirmation(activity,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk) Dialog::dismiss),"Alert","Amount Must be greater then " +activity.getString(R.string.Rs)+" "+minamt);
+                valid=false;
+            }
+        }
+        return valid ?jsonObject:null;
+    }
+
 
 
 

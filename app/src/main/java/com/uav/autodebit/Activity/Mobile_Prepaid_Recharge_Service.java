@@ -577,13 +577,6 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
 
 
 
-
-
-
-
-
-
-
     public void oxiPripaidServiceMandateCheck(Context context, Integer serivceId, boolean isRecharge, OxigenTransactionVO oxigenValidateResponce) {
         // isrecharge is true is before recharge  and fleas alter recharge
         HashMap<String, Object> params = new HashMap<String, Object>();
