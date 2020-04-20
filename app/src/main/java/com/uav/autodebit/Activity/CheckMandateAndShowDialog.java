@@ -124,7 +124,7 @@ public class CheckMandateAndShowDialog {
                                                 }));
                                             }else {
                                                 // move to history activity
-                                                ((Activity)context).startActivity(new Intent(context,History.class));
+                                                ((Activity)context).startActivity(new Intent(context,HistorySummary.class).putExtra("historyId",oxigenValidateResponce.getAnonymousInteger().toString()));
                                                 ((Activity)context).finish();
                                             }
                                         }));

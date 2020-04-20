@@ -91,9 +91,10 @@ public class ListViewSingleText extends Base_Activity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                //listView.getItemAtPosition(i).toString()
 
                 Intent intent = new Intent();
-                intent.putExtra("valueName",listView.getItemAtPosition(i).toString());
+                intent.putExtra("valueName",entityText.get(i));
                 intent.putExtra("valueId",entityId.get(i).toString());
                 setResult(RESULT_OK,intent);
                 finish() ;

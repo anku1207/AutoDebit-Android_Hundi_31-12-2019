@@ -144,6 +144,8 @@ public class BillPayRequest {
         }
     }
 
+
+    // fetchbill key is showing bill fetch bill is required or not required and isFetchBill key is showing use bill fetch or not fetch
     static JSONObject getQuestionLabelData(Activity activity, EditText operator, EditText amount, boolean fetchBill, boolean isFetchBill, List<OxigenQuestionsVO> questionsVOS,int minamt) throws  JSONException {
 
         amount.setError(null);
@@ -338,24 +340,27 @@ public class BillPayRequest {
         });
     }
 
-    public static void handelRechargeSuccess(Context context,OxigenTransactionVO oxigenTransactionVOresp) {
+    public static void handelRechargeSuccess(Context context,OxigenTransactionVO oxigenTransactionVOSuccess) {
         // ask to customer for bank mandate
-        if(oxigenTransactionVOresp.isEventIs()){
 
-         Utility.showWebviewAlertDialog(context,oxigenTransactionVOresp.getAnonymousString(),false,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+        //replace oxigenValidateResponce change on oxigenTransactionVOresp
+        oxigenValidateResponce=oxigenTransactionVOSuccess;
+        if(oxigenTransactionVOSuccess.isEventIs()){
+
+         Utility.showWebviewAlertDialog(context,oxigenTransactionVOSuccess.getAnonymousString(),false,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
            //  ((Activity)context).startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(oxigenTransactionVOresp.getServiceId()))), ApplicationConstant.REQ_ENACH_MANDATE);
-             CheckMandateAndShowDialog.oxiServiceMandateCheck(context,oxigenTransactionVOresp.getServiceId(),false,oxigenValidateResponce);
+             CheckMandateAndShowDialog.oxiServiceMandateCheck(context,oxigenTransactionVOSuccess.getServiceId(),false,oxigenValidateResponce);
          },(ConfirmationDialogInterface.OnCancel)(cancel)->{
              cancel.dismiss();
-             ((Activity)context).startActivity(new Intent(context,HistorySummary.class).putExtra("historyId",oxigenTransactionVOresp.getAnonymousInteger().toString()));
+             ((Activity)context).startActivity(new Intent(context,HistorySummary.class).putExtra("historyId",oxigenTransactionVOSuccess.getAnonymousInteger().toString()));
              ((Activity)context).finish();
          }));
 
         }else {
             Utility.showSingleButtonDialogconfirmation(context,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
-                ((Activity)context).startActivity(new Intent(context,HistorySummary.class).putExtra("historyId",oxigenTransactionVOresp.getAnonymousInteger().toString()));
+                ((Activity)context).startActivity(new Intent(context,HistorySummary.class).putExtra("historyId",oxigenTransactionVOSuccess.getAnonymousInteger().toString()));
                 ((Activity)context).finish();
-            }),"",oxigenTransactionVOresp.getAnonymousString());
+            }),"",oxigenTransactionVOSuccess.getAnonymousString());
         }
 
     }
@@ -383,7 +388,7 @@ public class BillPayRequest {
         }else if(requestCode== ApplicationConstant.REQ_ENACH_MANDATE){
             boolean enachMandateStatus=data.getBooleanExtra("mandate_status",false);
             if(enachMandateStatus){
-                ((Activity)context).startActivity(new Intent(context,History.class));
+                ((Activity)context).startActivity(new Intent(context,HistorySummary.class).putExtra("historyId",oxigenValidateResponce.getAnonymousInteger().toString()));
                 ((Activity)context).finish();
             }else{
                 Utility.showSingleButtonDialog(context,"Alert",data.getStringExtra("msg"),false);

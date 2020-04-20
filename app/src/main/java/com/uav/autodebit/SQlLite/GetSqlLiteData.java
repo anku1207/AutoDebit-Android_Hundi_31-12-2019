@@ -1,5 +1,6 @@
 package com.uav.autodebit.SQlLite;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.widget.Toast;
@@ -49,4 +50,54 @@ public class GetSqlLiteData {
         }
          return customerNotificationVOS;
     }
+
+
+
+
+    public  static String getOxigenDataByTypeId(Context context , int txnId){
+        StringBuilder stringBuilder =new StringBuilder();
+        try {
+            DataBaseHelper dataBaseHelper =new DataBaseHelper(context);
+            dataBaseHelper.createDataBase();
+            dataBaseHelper.openDataBase();
+
+            String sql= "Select * ,oxigenbillerfilter.TypeFilterId as tm from  'oxigentransaction' INNER JOIN  oxigenbillerfilter  on oxigenbillerfilter.OxigenTxnId=oxigentransaction.TypeId where TypeId='"+txnId+"'";
+            Cursor cursor= DataBaseHelper.myDataBase.rawQuery(sql, null);
+
+
+            if (cursor.moveToFirst()) {
+                while (!cursor.isAfterLast()) {
+
+
+                    int id = cursor.getInt(cursor.getColumnIndex("TypeId"));
+                    int cid=cursor.getInt(cursor.getColumnIndex("CustomerId"));
+                    int sid=cursor.getInt(cursor.getColumnIndex("ServiceTypeId"));
+                    double amount=cursor.getDouble(cursor.getColumnIndex("Amount"));
+                    String operator=cursor.getString(cursor.getColumnIndex("ServiceTypeId"));
+
+
+
+
+                    stringBuilder.append(id + " ");
+                    stringBuilder.append(cid + " ");
+                    stringBuilder.append(sid + " ");
+                    stringBuilder.append(amount + " ");
+                    stringBuilder.append(operator + " ");
+
+                    stringBuilder.append(cursor.getInt(cursor.getColumnIndex("tm")) +"table 2" + "\n");
+
+
+
+
+                    cursor.moveToNext();
+                }
+            }
+            dataBaseHelper.close();
+        }catch (Exception e){
+            Toast.makeText(context, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+        return stringBuilder.toString();
+    }
+
+
 }

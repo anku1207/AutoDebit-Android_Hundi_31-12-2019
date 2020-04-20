@@ -103,7 +103,7 @@ public class Notifications extends Base_Activity implements View.OnClickListener
         List<CustomerNotificationVO> customerNotificationVOS =new ArrayList<>();
         try {
 
-            if(DataBaseHelper.checkDataBase()){
+            if(DataBaseHelper.checkDataBase() && (GetSqlLiteData.getNotification(Notifications.this)).size()>0){
                 customerNotificationVOS= GetSqlLiteData.getNotification(Notifications.this);
             }else {
 

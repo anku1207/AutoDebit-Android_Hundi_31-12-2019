@@ -34,6 +34,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
@@ -288,7 +289,7 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
             }else if(requestCode==ApplicationConstant.REQ_ENACH_MANDATE){
                 boolean enachMandateStatus=data.getBooleanExtra("mandate_status",false);
                 if(enachMandateStatus){
-                    startActivity(new Intent(this,History.class));
+                    startActivity(new Intent(Mobile_Prepaid_Recharge_Service.this,HistorySummary.class).putExtra("historyId",oxigenValidateResponce.getAnonymousInteger().toString()));
                     finish();
                 }else{
                     Utility.showSingleButtonDialog(Mobile_Prepaid_Recharge_Service.this,"Alert",data.getStringExtra("msg"),false);
@@ -309,7 +310,6 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
         switch (view.getId()){
             case R.id.proceed :
                 oxigenValidateResponce=new OxigenTransactionVO();
-
 
                 rechargeProceed();
                 break;
@@ -488,7 +488,6 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                                 // if first time mandate is false open bank mandate activity
                                 //startActivityForResult(new Intent(Mobile_Prepaid_Recharge_Service.this, Enach_Mandate.class).putExtra("forresutl", true).putExtra("selectservice", new ArrayList<Integer>(Arrays.asList(oxigenValidateResponce.getServiceId()))), ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE);
                                 oxiPripaidServiceMandateCheck(Mobile_Prepaid_Recharge_Service.this,oxigenValidateResponce.getServiceId(),true,oxigenValidateResponce);
-
                             }
 
                         } else {
@@ -549,6 +548,8 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                         Utility.showSingleButtonDialog(Mobile_Prepaid_Recharge_Service.this,"Error !",stringBuffer.toString(),false);
                     }else {
 
+                        // replace oxigenValidateResponce object on success on recharge
+                        oxigenValidateResponce=oxigenTransactionVOresp;
 
                         // ask to customer for bank mandate
                         if(oxigenTransactionVOresp.isEventIs()){
@@ -662,8 +663,8 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                                                 proceedToRecharge(oxigenValidateResponce.getTypeId().toString(), bankId, AuthServiceProviderVO.ENACHIDFC);
                                             }else {
                                                 // move to history activity
-                                                ((Activity)context).startActivity(new Intent(context,History.class));
-                                                ((Activity)context).finish();
+                                                startActivity(new Intent(Mobile_Prepaid_Recharge_Service.this,HistorySummary.class).putExtra("historyId",oxigenValidateResponce.getAnonymousInteger().toString()));
+                                                finish();
                                             }
                                         }));
                                     } else {
