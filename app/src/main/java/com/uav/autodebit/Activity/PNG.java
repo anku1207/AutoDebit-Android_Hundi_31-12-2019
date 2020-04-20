@@ -48,22 +48,21 @@ import java.util.List;
 
 public class PNG extends Base_Activity  implements View.OnClickListener{
 
-    EditText amount,operator;
+    EditText operator,netAmount;
     ImageView back_activity_button;
     String operatorcode,operatorname=null;
-    Button proceed;
-    TextView fetchbill;
-    CardView amountlayout;
+    Button  fetchbill;
 
     LinearLayout dynamicCardViewContainer , fetchbilllayout,min_amt_layout;
 
     List<OxigenQuestionsVO> questionsVOS= new ArrayList<OxigenQuestionsVO>();
-    CardView fetchbillcard;
+    CardView fetchbillcard,amountlayout;
 
     boolean isFetchBill=true;
     String operatorListDate;
     UAVProgressDialog pd;
     OxigenTransactionVO oxigenTransactionVOresp;
+    Gson gson;
     int minAmt;
 
     @Override
@@ -75,30 +74,31 @@ public class PNG extends Base_Activity  implements View.OnClickListener{
         operatorListDate=null;
         pd=new UAVProgressDialog(this);
 
-        amount=findViewById(R.id.amount);
         back_activity_button=findViewById(R.id.back_activity_button1);
 
-        amount.setEnabled(false);
 
-        proceed=findViewById(R.id.proceed);
-        fetchbill=findViewById(R.id.fetchbill);
-        amountlayout=findViewById(R.id.amountlayout);
         operator=findViewById(R.id.operator);
         dynamicCardViewContainer =findViewById(R.id.dynamiccards);
         fetchbilllayout=findViewById(R.id.fetchbilllayout);
+        fetchbillcard =findViewById(R.id.fetchbillcard);
         min_amt_layout=findViewById(R.id.min_amt_layout);
 
-        fetchbillcard =findViewById(R.id.fetchbillcard);
+        fetchbill=findViewById(R.id.fetchbill);
+        amountlayout =findViewById(R.id.amountlayout);
+        netAmount=findViewById(R.id.amount);
 
-        amountlayout.setVisibility(View.GONE);
         oxigenTransactionVOresp=new OxigenTransactionVO();
         minAmt=0;
+        gson =new Gson();
+
 
         back_activity_button.setOnClickListener(this);
-        proceed.setOnClickListener(this);
         fetchbill.setOnClickListener(this);
 
+        fetchbill.setVisibility(View.GONE);
+
         operator.setClickable(false);
+
 
         operator.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -163,31 +163,23 @@ public class PNG extends Base_Activity  implements View.OnClickListener{
             if(resultCode==RESULT_OK){
 
                 if(requestCode==100){
-
                     operatorname =data.getStringExtra("operatorname");
                     operatorcode=data.getStringExtra("operator");
-
-                    amountlayout.setVisibility(View.VISIBLE);
-
 
                     DataAdapterVO dataAdapterVO = (DataAdapterVO) data.getSerializableExtra("datavo");
                     operator.setText(operatorname);
                     operator.setTag(operatorcode);
 
                     operator.setError(null);
-                    amount.setError(null);
 
                     //add fetch bill btn
                     if (dataAdapterVO.getIsbillFetch().equals("1")) {
-                        fetchbill.setVisibility(View.VISIBLE);
-                        amount.setEnabled(false);
                         isFetchBill=true;
+                        fetchbill.setVisibility(View.VISIBLE);
                     } else {
-                        fetchbill.setVisibility(View.GONE);
-                        amount.setEnabled(true);
                         isFetchBill=false;
+                        fetchbill.setVisibility(View.GONE);
                     }
-
 
                     //add min Amt Layout
                     if(dataAdapterVO.getMinTxnAmount()!=null){
@@ -197,15 +189,18 @@ public class PNG extends Base_Activity  implements View.OnClickListener{
                         min_amt_layout.startAnimation(animFadeIn);
                         min_amt_layout.setVisibility(View.VISIBLE);
                         min_amt_layout.setBackgroundColor(Utility.getColorWithAlpha(Color.rgb(224,224,224), 0.5f));
-                        min_amt_layout.setPadding(Utility.getPixelsFromDPs(PNG.this,15),Utility.getPixelsFromDPs(PNG.this,15),0,Utility.getPixelsFromDPs(PNG.this,15));
+                        min_amt_layout.setPadding(Utility.getPixelsFromDPs(this,15),Utility.getPixelsFromDPs(this,15),0,Utility.getPixelsFromDPs(this,15));
 
-                        min_amt_layout.addView(DynamicLayout.billMinLayout(PNG.this,dataAdapterVO));
+                        min_amt_layout.addView(DynamicLayout.billMinLayout(this,dataAdapterVO));
 
                     }else {
                         min_amt_layout.setVisibility(View.GONE);
                     }
+
                     //Remove dynamic cards from the layout and arraylist
                     if(dynamicCardViewContainer.getChildCount()>0) dynamicCardViewContainer.removeAllViews();
+
+                    //remove fetch bill layout and remove amount layout and amount value is set null  and show bill fetch button
                     removefetchbilllayout();
 
                     questionsVOS.clear();
@@ -215,16 +210,16 @@ public class PNG extends Base_Activity  implements View.OnClickListener{
                         JSONArray jsonArray = new JSONArray(dataAdapterVO.getQuestionsData());
                         for(int i=0; i<jsonArray.length(); i++){
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
-                            Gson gson = new Gson();
                             OxigenQuestionsVO oxigenQuestionsVO = gson.fromJson(jsonObject.toString(), OxigenQuestionsVO.class);
 
                             CardView cardView = Utility.getCardViewStyle(this);
-                            //EditText et = new EditText(new ContextThemeWrapper(this,R.style.edittext));
 
-                            EditText et = Utility.getEditText(PNG.this);
+                            EditText et = Utility.getEditText(this);
                             et.setId(View.generateViewId());
                             et.setHint(oxigenQuestionsVO.getQuestionLabel());
+
                             changeEdittextValue(et);
+
                             cardView.addView(et);
                             dynamicCardViewContainer.addView(cardView);
                             if(oxigenQuestionsVO.getInstructions()!=null){
@@ -258,42 +253,12 @@ public class PNG extends Base_Activity  implements View.OnClickListener{
             case R.id.back_activity_button1:
                 finish();
                 break;
-            case R.id.proceed:
-                try {
-                    JSONObject dataarray=getQuestionLabelDate(true);
-                    if(dataarray==null)return;
-                    if(isFetchBill){
-                        BillPayRequest.proceedRecharge(this,isFetchBill,oxigenTransactionVOresp);
-                    }else {
-                        BillPayRequest.confirmationDialogBillPay(this, operator, amount ,dataarray , new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
-                            OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
-                            oxigenTransactionVO.setOperateName(operatorcode);
-                            oxigenTransactionVO.setAmount(Double.valueOf(amount.getText().toString()));
-                            oxigenTransactionVO.setAnonymousString(dataarray.toString());
-
-                            ServiceTypeVO serviceTypeVO =new ServiceTypeVO();
-                            serviceTypeVO.setServiceTypeId(ApplicationConstant.PNG);
-                            oxigenTransactionVO.setServiceType(serviceTypeVO);
-
-                            CustomerVO customerVO =new CustomerVO();
-                            customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(this)));
-                            oxigenTransactionVO.setCustomer(customerVO);
-
-                            BillPayRequest.proceedRecharge(this,isFetchBill,oxigenTransactionVO);
-                        }));
-                    }
-                }catch (Exception e){
-                    e.printStackTrace();
-                    Utility.exceptionAlertDialog(PNG.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
-
-                }
-                break;
             case R.id.fetchbill:
                 try {
                     JSONObject dataarray=getQuestionLabelDate(false);
                     if(dataarray==null)return;
                     CustomerVO customerVO =new CustomerVO();
-                    customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(PNG.this)));
+                    customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(this)));
 
                     ServiceTypeVO serviceTypeVO =new ServiceTypeVO();
                     serviceTypeVO.setServiceTypeId(ApplicationConstant.PNG);
@@ -304,23 +269,26 @@ public class PNG extends Base_Activity  implements View.OnClickListener{
                     oxigenTransactionVO.setServiceType(serviceTypeVO);
                     oxigenTransactionVO.setAnonymousString(dataarray.toString());
 
-                    BillPayRequest.proceedFetchBill(oxigenTransactionVO,PNG.this,new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
+                    BillPayRequest.proceedFetchBill(oxigenTransactionVO,this,new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
                         try {
                             oxigenTransactionVOresp=(OxigenTransactionVO)s;
+
+
+                            //hide fetch bill button and show amount layout and set amount value
                             fetchbill.setVisibility(View.GONE);
-                            amount.setText(oxigenTransactionVOresp.getNetAmount()+"");
+                            amountlayout.setVisibility(View.VISIBLE);
+                            netAmount.setText(oxigenTransactionVOresp.getNetAmount().toString());
 
                             JSONArray dataArry =new JSONArray(oxigenTransactionVOresp.getAnonymousString());
-
-                            Typeface typeface = ResourcesCompat.getFont(PNG.this, R.font.poppinssemibold);
+                            Typeface typeface = ResourcesCompat.getFont(this, R.font.poppinssemibold);
                             for(int i=0 ;i<dataArry.length();i++){
                                 JSONObject jsonObject =dataArry.getJSONObject(i);
 
-                                LinearLayout et = new LinearLayout(new ContextThemeWrapper(PNG.this,R.style.confirmation_dialog_layout));
+                                LinearLayout et = new LinearLayout(new ContextThemeWrapper(this,R.style.confirmation_dialog_layout));
 
-                                et.setPadding(Utility.getPixelsFromDPs(PNG.this,10),Utility.getPixelsFromDPs(PNG.this,10),Utility.getPixelsFromDPs(PNG.this,10),Utility.getPixelsFromDPs(PNG.this,10));
+                                et.setPadding(Utility.getPixelsFromDPs(this,10),Utility.getPixelsFromDPs(this,10),Utility.getPixelsFromDPs(this,10),Utility.getPixelsFromDPs(this,10));
 
-                                TextView text = new TextView(new ContextThemeWrapper(PNG.this, R.style.confirmation_dialog_filed));
+                                TextView text = new TextView(new ContextThemeWrapper(this, R.style.confirmation_dialog_filed));
                                 text.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float) 1));
                                 text.setText(jsonObject.getString("key"));
                                 text.setMaxLines(1);
@@ -328,7 +296,8 @@ public class PNG extends Base_Activity  implements View.OnClickListener{
                                 text.setTypeface(typeface);
                                 text.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
-                                TextView value = new TextView(new ContextThemeWrapper(PNG.this, R.style.confirmation_dialog_value));
+
+                                TextView value = new TextView(new ContextThemeWrapper(this, R.style.confirmation_dialog_value));
                                 value.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,1));
                                 value.setText(jsonObject.getString("value"));
                                 value.setTypeface(typeface);
@@ -338,16 +307,33 @@ public class PNG extends Base_Activity  implements View.OnClickListener{
                                 et.addView(value);
                                 fetchbilllayout.addView(et);
                             }
+
+                            Button billPaybtn=Utility.getButton(this);
+                            billPaybtn.setText("Proceed");
+                            fetchbilllayout.addView(billPaybtn);
+
+                            billPaybtn.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    proceedBillPay();
+                                }
+                            });
+
                             Animation animFadeIn = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fadein);
                             fetchbillcard.startAnimation(animFadeIn);
                             fetchbillcard.setVisibility(View.VISIBLE);
+
                         }catch (Exception e){
                             e.printStackTrace();
-                            Utility.exceptionAlertDialog(PNG.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+                            Utility.exceptionAlertDialog(this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
                         }
                     },(VolleyResponse.OnError)(e)->{
+                        // hide amount layout layout and net amount is null set and show fetch bill button
                         fetchbill.setVisibility(View.VISIBLE);
+                        amountlayout.setVisibility(View.GONE);
+                        netAmount.setText(null);
                     }));
+
                 }catch (Exception e){
                     e.printStackTrace();
                     Utility.exceptionAlertDialog(PNG.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
@@ -355,18 +341,52 @@ public class PNG extends Base_Activity  implements View.OnClickListener{
                 break;
         }
     }
-
     private JSONObject getQuestionLabelDate(boolean fetchBill) throws Exception{
-        return BillPayRequest.getQuestionLabelData(PNG.this,operator,amount,fetchBill,isFetchBill, questionsVOS,minAmt);
+        return BillPayRequest.getNewTypeQuestionLabelData(this,operator,netAmount.getText().toString(),fetchBill,isFetchBill, questionsVOS,minAmt);
     }
 
+    public void proceedBillPay(){
+        try {
+            JSONObject dataarray=getQuestionLabelDate(true);
+            if(dataarray==null)return;
+            if(isFetchBill){
+                BillPayRequest.proceedRecharge(this,isFetchBill,oxigenTransactionVOresp);
+            }else {
+                BillPayRequest.confirmationDialogBillPay(this, operator, netAmount ,dataarray , new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                    OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
+                    oxigenTransactionVO.setOperateName(operatorcode);
+                    oxigenTransactionVO.setAmount(Double.valueOf(netAmount.getText().toString()));
+                    oxigenTransactionVO.setAnonymousString(dataarray.toString());
+
+                    ServiceTypeVO serviceTypeVO =new ServiceTypeVO();
+                    serviceTypeVO.setServiceTypeId(ApplicationConstant.PNG);
+                    oxigenTransactionVO.setServiceType(serviceTypeVO);
+
+                    CustomerVO customerVO =new CustomerVO();
+                    customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(this)));
+                    oxigenTransactionVO.setCustomer(customerVO);
+
+                    BillPayRequest.proceedRecharge(this,isFetchBill,oxigenTransactionVO);
+                }));
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+            Utility.exceptionAlertDialog(this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+        }
+    }
 
     public void removefetchbilllayout(){
+        oxigenTransactionVOresp=new OxigenTransactionVO();
+
+        //if fetch bill is true and fetch bill layout not = null
+
         if(fetchbilllayout.getChildCount()>0) {
             fetchbilllayout.removeAllViews();
-            amount.setText("");
             fetchbill.setVisibility(View.VISIBLE);
             fetchbillcard.setVisibility(View.GONE);
+            amountlayout.setVisibility(View.GONE);
+            netAmount.setText(null);
         }
     }
 

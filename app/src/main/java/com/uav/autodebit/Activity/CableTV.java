@@ -295,7 +295,7 @@ public class CableTV extends Base_Activity implements View.OnClickListener , Per
                             oxigenTransactionVO.setAnonymousString(dataarray.toString());
 
                             ServiceTypeVO serviceTypeVO =new ServiceTypeVO();
-                            serviceTypeVO.setServiceTypeId(ApplicationConstant.MobilePostpaid);
+                            serviceTypeVO.setServiceTypeId(ApplicationConstant.CABLE_TV);
                             oxigenTransactionVO.setServiceType(serviceTypeVO);
 
                             CustomerVO customerVO =new CustomerVO();
@@ -320,7 +320,7 @@ public class CableTV extends Base_Activity implements View.OnClickListener , Per
                     customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(CableTV.this)));
 
                     ServiceTypeVO serviceTypeVO =new ServiceTypeVO();
-                    serviceTypeVO.setServiceTypeId(ApplicationConstant.MobilePostpaid);
+                    serviceTypeVO.setServiceTypeId(ApplicationConstant.CABLE_TV);
 
                     OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
                     oxigenTransactionVO.setOperateName(operatorcode);
@@ -382,7 +382,6 @@ public class CableTV extends Base_Activity implements View.OnClickListener , Per
     }
 
     private JSONObject getQuestionLabelDate(boolean fetchBill) throws Exception{
-        Toast.makeText(this, ""+minAmt, Toast.LENGTH_SHORT).show();
         return BillPayRequest.getQuestionLabelData(CableTV.this,operator,amount,fetchBill,isFetchBill, questionsVOS,minAmt);
     }
 

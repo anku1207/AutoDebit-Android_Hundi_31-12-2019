@@ -72,17 +72,19 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
 
 
         <LinearLayout
-            android:id="@+id/main"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:orientation="vertical"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:orientation="vertical"
-            android:paddingTop="50dp">
+            android:paddingTop="50dp"
+            android:id="@+id/main">
 
 
             <!--  <TextView
@@ -102,100 +104,104 @@
   -->
 
 
+
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:cardElevation="7dp"
                 android:layout_margin="10dp"
                 app:cardCornerRadius="15dp"
-                app:cardElevation="7dp">
-
+                >
                 <EditText
-                    android:id="@+id/operator"
-                    style="@style/commonEdittextStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/white"
-                    android:cursorVisible="false"
                     android:drawableLeft="@drawable/operator"
+                    android:backgroundTint="@color/white"
                     android:hint="Operator"
+                    android:singleLine="true"
+                    android:id="@+id/operator"
                     android:inputType="textCapCharacters"
                     android:maxLines="1"
-                    android:singleLine="true"
+                    android:cursorVisible="false"
+                    style="@style/commonEdittextStyle"
 
                     />
             </androidx.cardview.widget.CardView>
 
             <LinearLayout
-                android:id="@+id/dynamiccards"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"></LinearLayout>
+                android:id="@+id/dynamiccards"
+                android:orientation="vertical">
+            </LinearLayout>
+
+
 
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/amountlayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:cardElevation="7dp"
                 android:layout_margin="10dp"
-                android:visibility="visible"
                 app:cardCornerRadius="15dp"
-                app:cardElevation="7dp">
+                android:id="@+id/amountlayout"
+                android:visibility="gone"
+                >
+                <EditText
+                    android:id="@+id/amount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:drawableLeft="@drawable/amount"
+                    android:backgroundTint="@color/white"
+                    android:hint="Amount"
+                    android:singleLine="true"
+                    android:maxLength="8"
+                    android:inputType="number|numberDecimal"
+                    android:digits="@string/NumberDigits"
+                    android:maxLines="1"
+                    style="@style/commonEdittextStyle"
+                    android:enabled="false"
+                    />
 
-                <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
 
-
-                    <EditText
-                        android:id="@+id/amount"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentTop="true"
-                        android:drawableLeft="@drawable/amount"
-                        android:backgroundTint="@color/white"
-                        android:hint="Amount"
-                        android:singleLine="true"
-                        android:maxLength="8"
-                        android:inputType="number|numberDecimal"
-                        android:digits="@string/NumberDigits"
-                        android:maxLines="1"
-                        style="@style/commonEdittextStyle"/>
-
-                    <TextView
-                        android:id="@+id/fetchbill"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignBaseline="@+id/amount"
-                        android:layout_alignBottom="@+id/amount"
-                        android:layout_alignParentRight="true"
-                        android:layout_marginRight="5dp"
-                        android:layout_marginBottom="0dp"
-                        android:text="FetchBill"
-                        android:textSize="10dp"
-                        android:backgroundTint="@color/white"
-                        android:textColor="@color/appbar"
-                        android:padding="10dp"/>
-                </RelativeLayout>
 
             </androidx.cardview.widget.CardView>
 
 
+
+            <Button
+                android:id="@+id/fetchbill"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/cornerbutton"
+                android:text="Confirm"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+
+                />
+
+
+
             <androidx.cardview.widget.CardView
-                android:id="@+id/fetchbillcard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:cardElevation="7dp"
                 android:layout_margin="10dp"
-                android:visibility="gone"
                 app:cardCornerRadius="15dp"
-                app:cardElevation="7dp">
+                android:id="@+id/fetchbillcard"
+                android:visibility="gone"
+                >
 
                 <LinearLayout
-                    android:id="@+id/fetchbilllayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
+                    android:orientation="vertical"
+                    android:id="@+id/fetchbilllayout">
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -209,48 +215,29 @@
             </LinearLayout>
 
 
-
-            <Button
-                android:id="@+id/proceed"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="20dp"
-                android:layout_marginTop="30dp"
-                android:background="@drawable/cornerbutton"
-                android:text="Proceed"
-                android:textColor="@color/white"
-
-                />
-
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="20dp"
-                android:gravity="center"
                 android:orientation="horizontal"
+                android:paddingLeft="20dp"
                 android:paddingEnd="20dp"
-                android:paddingLeft="20dp">
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_marginBottom="20dp"
+                android:paddingTop="10dp">
 
 
                 <ImageView
                     android:layout_width="100dp"
                     android:layout_height="30dp"
-                    android:layout_gravity="center"
                     android:scaleType="fitXY"
-                    android:src="@drawable/bbpslogo" />
+                    android:src="@drawable/bbpslogo"
+                    android:layout_gravity="center"/>
 
 
             </LinearLayout>
-
-
         </LinearLayout>
-
-
     </ScrollView>
-
 
 </LinearLayout>
 

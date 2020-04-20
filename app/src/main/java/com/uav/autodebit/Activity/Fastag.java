@@ -293,7 +293,7 @@ public class Fastag extends Base_Activity implements View.OnClickListener , Perm
                             oxigenTransactionVO.setAnonymousString(dataarray.toString());
 
                             ServiceTypeVO serviceTypeVO =new ServiceTypeVO();
-                            serviceTypeVO.setServiceTypeId(ApplicationConstant.MobilePostpaid);
+                            serviceTypeVO.setServiceTypeId(ApplicationConstant.FASTAG);
                             oxigenTransactionVO.setServiceType(serviceTypeVO);
 
                             CustomerVO customerVO =new CustomerVO();
@@ -318,7 +318,7 @@ public class Fastag extends Base_Activity implements View.OnClickListener , Perm
                     customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(Fastag.this)));
 
                     ServiceTypeVO serviceTypeVO =new ServiceTypeVO();
-                    serviceTypeVO.setServiceTypeId(ApplicationConstant.MobilePostpaid);
+                    serviceTypeVO.setServiceTypeId(ApplicationConstant.FASTAG);
 
                     OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
                     oxigenTransactionVO.setOperateName(operatorcode);
@@ -380,7 +380,6 @@ public class Fastag extends Base_Activity implements View.OnClickListener , Perm
     }
 
     private JSONObject getQuestionLabelDate(boolean fetchBill) throws Exception{
-        Toast.makeText(this, ""+minAmt, Toast.LENGTH_SHORT).show();
         return BillPayRequest.getQuestionLabelData(Fastag.this,operator,amount,fetchBill,isFetchBill, questionsVOS,minAmt);
     }
 

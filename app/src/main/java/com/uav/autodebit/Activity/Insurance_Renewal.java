@@ -60,28 +60,24 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class Insurance_Renewal extends Base_Activity implements View.OnClickListener , PermissionUtils.PermissionResultCallback , ActivityCompat.OnRequestPermissionsResultCallback {
+public class Insurance_Renewal extends Base_Activity implements View.OnClickListener {
 
 
-    EditText amount,operator;
+    EditText operator,netAmount;
     ImageView back_activity_button;
     String operatorcode,operatorname=null;
-    Button proceed;
-    TextView fetchbill;
-    CardView amountlayout;
+    Button  fetchbill;
 
     LinearLayout dynamicCardViewContainer , fetchbilllayout,min_amt_layout;
 
     List<OxigenQuestionsVO> questionsVOS= new ArrayList<OxigenQuestionsVO>();
-    CardView fetchbillcard;
+    CardView fetchbillcard,amountlayout;
 
     boolean isFetchBill=true;
     String operatorListDate;
     UAVProgressDialog pd;
     OxigenTransactionVO oxigenTransactionVOresp;
     Gson gson;
-    PermissionUtils permissionUtils;
-
     int minAmt;
 
     @Override
@@ -90,37 +86,30 @@ public class Insurance_Renewal extends Base_Activity implements View.OnClickList
         setContentView(R.layout.activity_insurance__renewal);
 
         getSupportActionBar().hide();
-
         operatorListDate=null;
         pd=new UAVProgressDialog(this);
 
-        amount=findViewById(R.id.amount);
         back_activity_button=findViewById(R.id.back_activity_button1);
 
-        amount.setEnabled(false);
-
-
-        proceed=findViewById(R.id.proceed);
-        fetchbill=findViewById(R.id.fetchbill);
-        amountlayout=findViewById(R.id.amountlayout);
         operator=findViewById(R.id.operator);
         dynamicCardViewContainer =findViewById(R.id.dynamiccards);
         fetchbilllayout=findViewById(R.id.fetchbilllayout);
         fetchbillcard =findViewById(R.id.fetchbillcard);
         min_amt_layout=findViewById(R.id.min_amt_layout);
-        minAmt=0;
+
+        fetchbill=findViewById(R.id.fetchbill);
+        amountlayout =findViewById(R.id.amountlayout);
+        netAmount=findViewById(R.id.amount);
 
         oxigenTransactionVOresp=new OxigenTransactionVO();
+        minAmt=0;
         gson =new Gson();
 
 
-        permissionUtils=new PermissionUtils(Insurance_Renewal.this);
-
-        amountlayout.setVisibility(View.GONE);
-
         back_activity_button.setOnClickListener(this);
-        proceed.setOnClickListener(this);
         fetchbill.setOnClickListener(this);
+
+        fetchbill.setVisibility(View.GONE);
 
         operator.setClickable(false);
 
@@ -186,47 +175,45 @@ public class Insurance_Renewal extends Base_Activity implements View.OnClickList
                     operatorname =data.getStringExtra("operatorname");
                     operatorcode=data.getStringExtra("operator");
 
-                    amountlayout.setVisibility(View.VISIBLE);
-
                     DataAdapterVO dataAdapterVO = (DataAdapterVO) data.getSerializableExtra("datavo");
-                    operator.setError(null);
-                    amount.setError(null);
                     operator.setText(operatorname);
                     operator.setTag(operatorcode);
 
-                    amount.setText("");
+                    operator.setError(null);
 
                     //add fetch bill btn
                     if (dataAdapterVO.getIsbillFetch().equals("1")) {
-                        fetchbill.setVisibility(View.VISIBLE);
-                        amount.setEnabled(false);
                         isFetchBill=true;
+                        fetchbill.setVisibility(View.VISIBLE);
                     } else {
-                        fetchbill.setVisibility(View.GONE);
-                        amount.setEnabled(true);
                         isFetchBill=false;
+                        fetchbill.setVisibility(View.GONE);
                     }
 
                     //add min Amt Layout
                     if(dataAdapterVO.getMinTxnAmount()!=null){
                         if(min_amt_layout.getChildCount()>0)min_amt_layout.removeAllViews();
                         minAmt=dataAdapterVO.getMinTxnAmount();
-
                         Animation animFadeIn = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fadein);
                         min_amt_layout.startAnimation(animFadeIn);
                         min_amt_layout.setVisibility(View.VISIBLE);
                         min_amt_layout.setBackgroundColor(Utility.getColorWithAlpha(Color.rgb(224,224,224), 0.5f));
-                        min_amt_layout.setPadding(Utility.getPixelsFromDPs(Insurance_Renewal.this,15),Utility.getPixelsFromDPs(Insurance_Renewal.this,15),0,Utility.getPixelsFromDPs(Insurance_Renewal.this,15));
+                        min_amt_layout.setPadding(Utility.getPixelsFromDPs(this,15),Utility.getPixelsFromDPs(this,15),0,Utility.getPixelsFromDPs(this,15));
 
-                        min_amt_layout.addView(DynamicLayout.billMinLayout(Insurance_Renewal.this,dataAdapterVO));
+                        min_amt_layout.addView(DynamicLayout.billMinLayout(this,dataAdapterVO));
+
                     }else {
                         min_amt_layout.setVisibility(View.GONE);
                     }
 
                     //Remove dynamic cards from the layout and arraylist
                     if(dynamicCardViewContainer.getChildCount()>0) dynamicCardViewContainer.removeAllViews();
+
+                    //remove fetch bill layout and remove amount layout and amount value is set null  and show bill fetch button
                     removefetchbilllayout();
+
                     questionsVOS.clear();
+
                     //Create dynamic cards of edit text
                     if(dataAdapterVO.getQuestionsData() !=null){
                         JSONArray jsonArray = new JSONArray(dataAdapterVO.getQuestionsData());
@@ -235,14 +222,15 @@ public class Insurance_Renewal extends Base_Activity implements View.OnClickList
                             OxigenQuestionsVO oxigenQuestionsVO = gson.fromJson(jsonObject.toString(), OxigenQuestionsVO.class);
 
                             CardView cardView = Utility.getCardViewStyle(this);
-                            UAVEditText et = Utility.getUavEditText(Insurance_Renewal.this);
+
+                            EditText et = Utility.getEditText(this);
                             et.setId(View.generateViewId());
                             et.setHint(oxigenQuestionsVO.getQuestionLabel());
 
                             changeEdittextValue(et);
+
                             cardView.addView(et);
                             dynamicCardViewContainer.addView(cardView);
-
                             if(oxigenQuestionsVO.getInstructions()!=null){
                                 TextView tv = Utility.getTextView(this, oxigenQuestionsVO.getInstructions());
                                 dynamicCardViewContainer.addView(tv);
@@ -277,47 +265,15 @@ public class Insurance_Renewal extends Base_Activity implements View.OnClickList
             case R.id.back_activity_button1:
                 finish();
                 break;
-            case R.id.proceed:
-                try {
-                    JSONObject dataarray=getQuestionLabelDate(true);
-                    if(dataarray==null)return;
-
-                    if(isFetchBill){
-                        BillPayRequest.proceedRecharge(Insurance_Renewal.this,isFetchBill,oxigenTransactionVOresp);
-                    }else {
-                        BillPayRequest.confirmationDialogBillPay(Insurance_Renewal.this, operator, amount ,dataarray , new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
-                            OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
-                            oxigenTransactionVO.setOperateName(operatorcode);
-                            oxigenTransactionVO.setAmount(Double.valueOf(amount.getText().toString()));
-                            oxigenTransactionVO.setAnonymousString(dataarray.toString());
-
-                            ServiceTypeVO serviceTypeVO =new ServiceTypeVO();
-                            serviceTypeVO.setServiceTypeId(ApplicationConstant.MobilePostpaid);
-                            oxigenTransactionVO.setServiceType(serviceTypeVO);
-
-                            CustomerVO customerVO =new CustomerVO();
-                            customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(Insurance_Renewal.this)));
-                            oxigenTransactionVO.setCustomer(customerVO);
-
-                            BillPayRequest.proceedRecharge(Insurance_Renewal.this,isFetchBill,oxigenTransactionVO);
-                        }));
-                    }
-                }catch (Exception e){
-                    e.printStackTrace();
-                    Utility.exceptionAlertDialog(Insurance_Renewal.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
-                }
-                break;
             case R.id.fetchbill:
                 try {
-
                     JSONObject dataarray=getQuestionLabelDate(false);
                     if(dataarray==null)return;
-
                     CustomerVO customerVO =new CustomerVO();
-                    customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(Insurance_Renewal.this)));
+                    customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(this)));
 
                     ServiceTypeVO serviceTypeVO =new ServiceTypeVO();
-                    serviceTypeVO.setServiceTypeId(ApplicationConstant.MobilePostpaid);
+                    serviceTypeVO.setServiceTypeId(ApplicationConstant.INSURANCE_RENEWAL);
 
                     OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
                     oxigenTransactionVO.setOperateName(operatorcode);
@@ -325,22 +281,25 @@ public class Insurance_Renewal extends Base_Activity implements View.OnClickList
                     oxigenTransactionVO.setServiceType(serviceTypeVO);
                     oxigenTransactionVO.setAnonymousString(dataarray.toString());
 
-                    BillPayRequest.proceedFetchBill(oxigenTransactionVO,Insurance_Renewal.this,new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
+                    BillPayRequest.proceedFetchBill(oxigenTransactionVO,this,new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
                         try {
                             oxigenTransactionVOresp=(OxigenTransactionVO)s;
+
+                            //hide fetch bill button and show amount layout and set amount value
                             fetchbill.setVisibility(View.GONE);
-                            amount.setText(oxigenTransactionVOresp.getNetAmount()+"");
+                            amountlayout.setVisibility(View.VISIBLE);
+                            netAmount.setText(oxigenTransactionVOresp.getNetAmount().toString());
 
                             JSONArray dataArry =new JSONArray(oxigenTransactionVOresp.getAnonymousString());
-
-                            Typeface typeface = ResourcesCompat.getFont(Insurance_Renewal.this, R.font.poppinssemibold);
+                            Typeface typeface = ResourcesCompat.getFont(this, R.font.poppinssemibold);
                             for(int i=0 ;i<dataArry.length();i++){
                                 JSONObject jsonObject =dataArry.getJSONObject(i);
 
-                                LinearLayout et = new LinearLayout(new ContextThemeWrapper(Insurance_Renewal.this,R.style.confirmation_dialog_layout));
-                                et.setPadding(Utility.getPixelsFromDPs(Insurance_Renewal.this,10),Utility.getPixelsFromDPs(Insurance_Renewal.this,10),Utility.getPixelsFromDPs(Insurance_Renewal.this,10),Utility.getPixelsFromDPs(Insurance_Renewal.this,10));
+                                LinearLayout et = new LinearLayout(new ContextThemeWrapper(this,R.style.confirmation_dialog_layout));
 
-                                TextView text = new TextView(new ContextThemeWrapper(Insurance_Renewal.this, R.style.confirmation_dialog_filed));
+                                et.setPadding(Utility.getPixelsFromDPs(this,10),Utility.getPixelsFromDPs(this,10),Utility.getPixelsFromDPs(this,10),Utility.getPixelsFromDPs(this,10));
+
+                                TextView text = new TextView(new ContextThemeWrapper(this, R.style.confirmation_dialog_filed));
                                 text.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float) 1));
                                 text.setText(jsonObject.getString("key"));
                                 text.setMaxLines(1);
@@ -349,7 +308,7 @@ public class Insurance_Renewal extends Base_Activity implements View.OnClickList
                                 text.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
 
-                                TextView value = new TextView(new ContextThemeWrapper(Insurance_Renewal.this, R.style.confirmation_dialog_value));
+                                TextView value = new TextView(new ContextThemeWrapper(this, R.style.confirmation_dialog_value));
                                 value.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,1));
                                 value.setText(jsonObject.getString("value"));
                                 value.setTypeface(typeface);
@@ -359,37 +318,86 @@ public class Insurance_Renewal extends Base_Activity implements View.OnClickList
                                 et.addView(value);
                                 fetchbilllayout.addView(et);
                             }
+
+                            Button billPaybtn=Utility.getButton(this);
+                            billPaybtn.setText("Proceed");
+                            fetchbilllayout.addView(billPaybtn);
+
+                            billPaybtn.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    proceedBillPay();
+                                }
+                            });
+
                             Animation animFadeIn = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fadein);
                             fetchbillcard.startAnimation(animFadeIn);
                             fetchbillcard.setVisibility(View.VISIBLE);
 
                         }catch (Exception e){
                             e.printStackTrace();
-                            Utility.exceptionAlertDialog(Insurance_Renewal.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+                            Utility.exceptionAlertDialog(this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
                         }
                     },(VolleyResponse.OnError)(e)->{
+                        // hide amount layout layout and net amount is null set and show fetch bill button
                         fetchbill.setVisibility(View.VISIBLE);
+                        amountlayout.setVisibility(View.GONE);
+                        netAmount.setText(null);
                     }));
                 }catch (Exception e){
                     e.printStackTrace();
-                    Utility.exceptionAlertDialog(Insurance_Renewal.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+                    Utility.exceptionAlertDialog(this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
                 }
                 break;
         }
     }
 
     private JSONObject getQuestionLabelDate(boolean fetchBill) throws Exception{
-        Toast.makeText(this, ""+minAmt, Toast.LENGTH_SHORT).show();
-        return BillPayRequest.getQuestionLabelData(Insurance_Renewal.this,operator,amount,fetchBill,isFetchBill, questionsVOS,minAmt);
+        return BillPayRequest.getNewTypeQuestionLabelData(this,operator,netAmount.getText().toString(),fetchBill,isFetchBill, questionsVOS,minAmt);
+    }
+
+    public void proceedBillPay(){
+        try {
+            JSONObject dataarray=getQuestionLabelDate(true);
+            if(dataarray==null)return;
+            if(isFetchBill){
+                BillPayRequest.proceedRecharge(this,isFetchBill,oxigenTransactionVOresp);
+            }else {
+                BillPayRequest.confirmationDialogBillPay(this, operator, netAmount ,dataarray , new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                    OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
+                    oxigenTransactionVO.setOperateName(operatorcode);
+                    oxigenTransactionVO.setAmount(Double.valueOf(netAmount.getText().toString()));
+                    oxigenTransactionVO.setAnonymousString(dataarray.toString());
+
+                    ServiceTypeVO serviceTypeVO =new ServiceTypeVO();
+                    serviceTypeVO.setServiceTypeId(ApplicationConstant.INSURANCE_RENEWAL);
+                    oxigenTransactionVO.setServiceType(serviceTypeVO);
+
+                    CustomerVO customerVO =new CustomerVO();
+                    customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(this)));
+                    oxigenTransactionVO.setCustomer(customerVO);
+
+                    BillPayRequest.proceedRecharge(this,isFetchBill,oxigenTransactionVO);
+                }));
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+            Utility.exceptionAlertDialog(this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+        }
     }
 
     public void removefetchbilllayout(){
         oxigenTransactionVOresp=new OxigenTransactionVO();
+
+        //if fetch bill is true and fetch bill layout not = null
+
         if(fetchbilllayout.getChildCount()>0) {
             fetchbilllayout.removeAllViews();
-            amount.setText("");
             fetchbill.setVisibility(View.VISIBLE);
             fetchbillcard.setVisibility(View.GONE);
+            amountlayout.setVisibility(View.GONE);
+            netAmount.setText(null);
         }
     }
 
@@ -407,31 +415,6 @@ public class Insurance_Renewal extends Base_Activity implements View.OnClickList
             public void afterTextChanged(Editable editable) {
             }
         });
-    }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        permissionUtils.onRequestPermissionsResult(requestCode,permissions,grantResults);
     }
-
-    @Override
-    public void PermissionGranted(int request_code) {
-        if(request_code==ApplicationConstant.REQ_READ_CONTACT_PERMISSION){
-            Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-            startActivityForResult(intent, 101);
-        }
-    }
-    @Override
-    public void PartialPermissionGranted(int request_code, ArrayList<String> granted_permissions) {
-    }
-    @Override
-    public void PermissionDenied(int request_code) {
-    }
-    @Override
-    public void NeverAskAgain(int request_code) {
-    }
-
-
-
 }
