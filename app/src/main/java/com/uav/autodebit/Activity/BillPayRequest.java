@@ -389,7 +389,8 @@ public class BillPayRequest {
         if(oxigenTransactionVOSuccess.isEventIs()){
 
          Utility.showWebviewAlertDialog(context,oxigenTransactionVOSuccess.getAnonymousString(),false,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
-           //  ((Activity)context).startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(oxigenTransactionVOresp.getServiceId()))), ApplicationConstant.REQ_ENACH_MANDATE);
+              //((Activity)context).startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(oxigenTransactionVOresp.getServiceId()))), ApplicationConstant.REQ_ENACH_MANDATE);
+             ok.dismiss();
              CheckMandateAndShowDialog.oxiServiceMandateCheck(context,oxigenTransactionVOSuccess.getServiceId(),false,oxigenValidateResponce);
          },(ConfirmationDialogInterface.OnCancel)(cancel)->{
              cancel.dismiss();

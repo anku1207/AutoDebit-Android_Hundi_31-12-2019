@@ -1562,7 +1562,7 @@ public class Utility {
         lp.width = (WindowManager.LayoutParams.MATCH_PARENT);
         lp.height = (WindowManager.LayoutParams.WRAP_CONTENT);
 
-        cusdialog.show();
+        if(!cusdialog.isShowing())cusdialog.show();
         cusdialog.getWindow().setAttributes(lp);
     }
 

@@ -157,34 +157,6 @@ public class FCMService extends FirebaseMessagingService {
             if(data.has("storeData") && data.getString("storeData").equals("1")){
                 GlobalApplication.notificationCount++;
                 InsertDateOnSqlLite.insertNotification(getApplicationContext(),data);
-
-
-              /*  if (Session.check_Exists_key(FCMService.this, Session.CACHE_NOTIFICATION)) {
-
-                    ArrayList<CustomerNotificationVO> customerNotificationVOS= (ArrayList<CustomerNotificationVO>) new Gson().fromJson(Session.getSessionByKey(FCMService.this, Session.CACHE_NOTIFICATION), new TypeToken<ArrayList<CustomerNotificationVO>>() { }.getType());
-
-
-                    CustomerNotificationVO customerNotificationVO =new CustomerNotificationVO();
-                    customerNotificationVO.setTitle(data.getString("title"));
-                    customerNotificationVO.setMessage(data.getString("message"));
-                    customerNotificationVO.setImage(data.has("imageUrl")&& !data.getString("imageUrl").equals("")?data.getString("imageUrl"):null);
-                    customerNotificationVO.setCreatedAt(data.getString("timestamp"));
-                    customerNotificationVO.setServiceIcon(data.has("smallImageUrl") && !data.getString("smallImageUrl").equals("")?data.getString("smallImageUrl"):null);
-                    customerNotificationVO.setActivityName(data.has("activityname")? data.getString("activityname"):"SplashScreen");
-                    customerNotificationVOS.add(customerNotificationVO);
-                    Session.set_Data_Sharedprefence(FCMService.this, Session.CACHE_NOTIFICATION, Utility.toJson(customerNotificationVOS));
-                } else {
-                    List<CustomerNotificationVO> notificationarry = new ArrayList<>();
-                    CustomerNotificationVO customerNotificationVO =new CustomerNotificationVO();
-                    customerNotificationVO.setTitle(data.getString("title"));
-                    customerNotificationVO.setMessage(data.getString("message"));
-                    customerNotificationVO.setImage(data.has("imageUrl")&& !data.getString("imageUrl").equals("")?data.getString("imageUrl"):null);
-                    customerNotificationVO.setCreatedAt(data.getString("timestamp"));
-                    customerNotificationVO.setServiceIcon(data.has("smallImageUrl") && !data.getString("smallImageUrl").equals("")?data.getString("smallImageUrl"):null);
-                    customerNotificationVO.setActivityName(data.has("activityname")? data.getString("activityname"):"SplashScreen");
-                    notificationarry.add(customerNotificationVO);
-                    Session.set_Data_Sharedprefence(FCMService.this, Session.CACHE_NOTIFICATION, Utility.toJson(notificationarry));
-                }*/
             }
         } catch (Exception e) {
             Log.w("error",e.getMessage());
