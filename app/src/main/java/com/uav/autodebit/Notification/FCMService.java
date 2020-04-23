@@ -15,6 +15,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.uav.autodebit.Activity.Login;
 import com.uav.autodebit.SQlLite.InsertDateOnSqlLite;
+import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.GlobalApplication;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.Utility;
@@ -105,7 +106,9 @@ public class FCMService extends FirebaseMessagingService {
             String timestamp = data.getString("timestamp");
             String smallImageurl =data.getString("smallImageUrl");
             String activityname =data.has("activityname")? data.getString("activityname"):"SplashScreen";
-          //  JSONObject payload = data.getJSONObject("payload");
+            //  JSONObject payload = data.getJSONObject("payload");
+
+            String moveactivityjson=data.has("moveactivity")?data.getString("moveactivity"):null;
 
             Log.e(TAG, "title: " + title);
             Log.e(TAG, "message: " + message);
@@ -131,6 +134,10 @@ public class FCMService extends FirebaseMessagingService {
                 Class <?>clazz = Class.forName(getApplicationContext().getPackageName()+".Activity."+activityname);
                 Intent resultIntent = new Intent(getApplicationContext(), clazz);
                 resultIntent.putExtra("message", message);
+                if(moveactivityjson!=null){
+                    resultIntent.putExtra(ApplicationConstant.NOTIFICATION_ACTION, moveactivityjson);
+                }
+
 
                 // check for image attachment
                 if (TextUtils.isEmpty(imageUrl)) {

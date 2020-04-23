@@ -176,6 +176,20 @@ public class Home extends Base_Activity
             activityhasmap.put("L_5",Enach_Mandate.class);
             activityhasmap.put("L_6",SI_First_Data.class);
 
+
+
+
+            //check notification send  activity move
+            if(getIntent().getStringExtra(ApplicationConstant.NOTIFICATION_ACTION)!=null){
+                JSONObject jsonObject =new JSONObject(getIntent().getStringExtra(ApplicationConstant.NOTIFICATION_ACTION));
+                Class <?>clazz = Class.forName(getApplicationContext().getPackageName()+".Activity."+jsonObject.getString("key"));
+                Intent intent =new Intent(this, clazz);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra(ApplicationConstant.NOTIFICATION_ACTION,jsonObject.toString());
+                startActivity(intent);
+            }
+
             //check customer level and start activity
             Gson gson =new Gson();
             CustomerVO customerVO = gson.fromJson(Session.getSessionByKey(Home.this,Session.CACHE_CUSTOMER), CustomerVO.class);

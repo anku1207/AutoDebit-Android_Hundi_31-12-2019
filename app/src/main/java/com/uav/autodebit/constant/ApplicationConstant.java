@@ -25,6 +25,8 @@ public class ApplicationConstant {
     public static int  REQ_CAMERA_PERMISSION=2001, REQ_DOWNLOAD_PERMISSION=2002,REQ_READ_SMS_PERMISSION=2003,REQ_READ_CONTACT_PERMISSION=2004;
 
 
+    public static String NOTIFICATION_ACTION="notification_act";
+
 
     public final static  String SI_SERVICE="avenue";
 
@@ -41,6 +43,8 @@ public class ApplicationConstant {
     public static final String STATUS_PAN_VERIFIED="Pan_Verified";
 
     public static final String INTENT_EXTRA_CONNECTION = "connection";
+
+
 
 
 

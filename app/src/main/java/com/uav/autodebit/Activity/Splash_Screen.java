@@ -25,6 +25,7 @@ import com.uav.autodebit.BO.BannerBO;
 
 import com.uav.autodebit.OTP.helper.AppSignatureHelper;
 import com.uav.autodebit.R;
+import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.BitmapInterface;
 import com.uav.autodebit.util.DiskLruImageCache;
@@ -131,9 +132,34 @@ public class Splash_Screen extends Base_Activity implements BitmapInterface {
     }
 
     private  void loadHomeActivity(){
-        Intent intent=new Intent(Splash_Screen.this,Login.class);
-        startActivity(intent);
-        finish();
+
+
+        try {
+            if(getIntent().getStringExtra(ApplicationConstant.NOTIFICATION_ACTION)!=null){
+                Intent intent=new Intent(Splash_Screen.this,Login.class);
+                intent.putExtra(ApplicationConstant.NOTIFICATION_ACTION,getIntent().getStringExtra(ApplicationConstant.NOTIFICATION_ACTION));
+                startActivity(intent);
+                finish();
+
+            }else {
+                Intent intent=new Intent(Splash_Screen.this,Login.class);
+                startActivity(intent);
+                finish();
+            }
+
+
+
+
+        }catch (Exception e){
+            e.printStackTrace();
+            Toast.makeText(this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+
+        }
+
+
+
+
+
     }
 
 

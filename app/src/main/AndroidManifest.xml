@@ -43,19 +43,24 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".Activity.PopapSimpleList"
-            android:theme="@style/AppTheme.pop"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden"
-            tools:ignore="LockedOrientationActivity"
-            >
-         </activity>
-        <activity
-            android:name=".Activity.Dish_Tv"
+            android:name=".Activity.PayBillByNotification"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden"
             tools:ignore="LockedOrientationActivity"
             />
+        <activity
+            android:name=".Activity.PopapSimpleList"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.pop"
+            android:windowSoftInputMode="stateHidden"
+            tools:ignore="LockedOrientationActivity">
+
+        </activity>
+        <activity
+            android:name=".Activity.Dish_Tv"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".Activity.CableTV"
             android:configChanges="orientation"

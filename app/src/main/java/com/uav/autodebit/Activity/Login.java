@@ -20,6 +20,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.uav.autodebit.BO.SignUpBO;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
@@ -198,8 +199,9 @@ public class Login extends Base_Activity implements View.OnClickListener, View.O
                 }else {
                     String json = gson.toJson(customerVO);
                     Session.set_Data_Sharedprefence(Login.this,Session.CACHE_CUSTOMER,json);
-                    startActivity(new Intent(Login.this,Home.class));
-                    finish();
+                  /*  startActivity(new Intent(Login.this,Home.class));
+                    finish();*/
+                    startActivity();
 
                 }
             }
@@ -327,8 +329,9 @@ public class Login extends Base_Activity implements View.OnClickListener, View.O
                     String json = gson.toJson(customerVO);
                     Session.set_Data_Sharedprefence(Login.this,Session.CACHE_USER_LOGINID,userid.getText().toString());
                     Session.set_Data_Sharedprefence(Login.this,Session.CACHE_CUSTOMER,json);
-                    startActivity(new Intent(Login.this,Home.class));
-                    finish();
+                   /* startActivity(new Intent(Login.this,Home.class));
+                    finish();*/
+                    startActivity();
 
                 }
             }
@@ -461,10 +464,7 @@ public class Login extends Base_Activity implements View.OnClickListener, View.O
                       startActivity(intent);
                   }else if(Integer.parseInt(data.getStringExtra("key"))==(CustomerStatusVO.CUSTOMER_VERFIED)){
                      //Session.set_Data_Sharedprefence(Login.this,Session.CACHE_CUSTOMER,data.getStringExtra("value"));
-                     Intent intent =new Intent(Login.this, Home.class);
-                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                     startActivity(intent);
+                     startActivity();
                  }
               }
             }
@@ -495,5 +495,28 @@ public class Login extends Base_Activity implements View.OnClickListener, View.O
                 break;
         }
         return false;
+    }
+
+
+    public void startActivity(){
+        try {
+            if(getIntent().getStringExtra(ApplicationConstant.NOTIFICATION_ACTION)!=null){
+                Intent intent =new Intent(Login.this, Home.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra(ApplicationConstant.NOTIFICATION_ACTION,getIntent().getStringExtra(ApplicationConstant.NOTIFICATION_ACTION));
+                startActivity(intent);
+            }else {
+                Intent intent =new Intent(Login.this, Home.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+
+        }catch (Exception e){
+            Toast.makeText(this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+
     }
 }
