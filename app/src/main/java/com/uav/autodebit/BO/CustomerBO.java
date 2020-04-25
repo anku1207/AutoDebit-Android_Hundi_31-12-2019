@@ -58,15 +58,22 @@ public class CustomerBO implements Serializable {
     }
 
 
-
-
-
     public static ConnectionVO removeProfileImage(){
         ConnectionVO connectionVO = new ConnectionVO();
         connectionVO.setMethodName("removeProfileImage");
         connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
         return connectionVO;
     }
+
+    public static ConnectionVO getCustomerNotification(){
+        ConnectionVO connectionVO = new ConnectionVO();
+        connectionVO.setMethodName("getCustomerNotification");
+        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
+        return connectionVO;
+    }
+
+
+
 
 
 }

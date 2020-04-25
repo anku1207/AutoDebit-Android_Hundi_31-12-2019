@@ -14,6 +14,11 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.uav.autodebit.BO.CustomerBO;
+import com.uav.autodebit.BO.MetroBO;
+import com.uav.autodebit.Interface.CallBackInterface;
+import com.uav.autodebit.Interface.ServiceClick;
+import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
 import com.uav.autodebit.SQlLite.DataBaseHelper;
 import com.uav.autodebit.SQlLite.GetSqlLiteData;
@@ -21,9 +26,13 @@ import com.uav.autodebit.SQlLite.InsertDateOnSqlLite;
 import com.uav.autodebit.adpater.NotificationAdapter;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.Utility;
+import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerNotificationVO;
 import com.uav.autodebit.vo.CustomerVO;
+import com.uav.autodebit.vo.DMRC_Customer_CardVO;
 import com.uav.autodebit.vo.LocalCacheVO;
+import com.uav.autodebit.volley.VolleyResponseListener;
+import com.uav.autodebit.volley.VolleyUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,6 +40,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 public class Notifications extends Base_Activity implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
@@ -38,6 +48,7 @@ public class Notifications extends Base_Activity implements View.OnClickListener
     ImageView back_activity_button;
     SwipeRefreshLayout mSwipeRefreshLayout;
     LinearLayout no_notification;
+    List<CustomerNotificationVO> customerNotificationVOS;
 
 
     @Override
@@ -90,53 +101,100 @@ public class Notifications extends Base_Activity implements View.OnClickListener
 
     private void loadRecyclerViewData(){
         mSwipeRefreshLayout.setRefreshing(true);
-        NotificationAdapter notificationAdapter=new NotificationAdapter(Notifications.this, getdata());
-        recyclerView.setAdapter(notificationAdapter);
-        recyclerView.setLayoutAnimation(Utility.getRunLayoutAnimation(Notifications.this));
-        recyclerView.getAdapter().notifyDataSetChanged();
-        recyclerView.scheduleLayoutAnimation();
-        mSwipeRefreshLayout.setRefreshing(false);
 
+        getdata(new CallBackInterface((CallBackInterface.OnSuccess)(Success)->{
+            List<CustomerNotificationVO> customerNotificationVOS = (List<CustomerNotificationVO>) Success;
+
+            if(customerNotificationVOS.size()>0){
+                no_notification.setVisibility(View.GONE);
+            }else {
+                no_notification.setVisibility(View.VISIBLE);
+            }
+            NotificationAdapter notificationAdapter=new NotificationAdapter(Notifications.this, customerNotificationVOS);
+            recyclerView.setAdapter(notificationAdapter);
+            recyclerView.setLayoutAnimation(Utility.getRunLayoutAnimation(Notifications.this));
+            recyclerView.getAdapter().notifyDataSetChanged();
+            recyclerView.scheduleLayoutAnimation();
+            mSwipeRefreshLayout.setRefreshing(false);
+        }));
     }
 
-    private List<CustomerNotificationVO>  getdata() {
-        List<CustomerNotificationVO> customerNotificationVOS =new ArrayList<>();
+    private void  getdata(CallBackInterface  callBackInterface) {
+        customerNotificationVOS =new ArrayList<>();
         try {
 
             if(DataBaseHelper.checkDataBase() && (GetSqlLiteData.getNotification(Notifications.this)).size()>0){
                 customerNotificationVOS= GetSqlLiteData.getNotification(Notifications.this);
+                callBackInterface.onSuccess(customerNotificationVOS);
             }else {
+                getNotificationList(new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
+                    CustomerNotificationVO responseVO = (CustomerNotificationVO)success;
 
-                Gson gson =new Gson();
-                CustomerVO customerVO = gson.fromJson(Session.getSessionByKey(Notifications.this,Session.CACHE_CUSTOMER), CustomerVO.class);
-                LocalCacheVO localCacheVO = gson.fromJson(customerVO.getLocalCache(), LocalCacheVO.class);
-                customerNotificationVOS=  localCacheVO.getCustomerNotification();
+                    ArrayList<CustomerNotificationVO> datalist= (ArrayList<CustomerNotificationVO>) new Gson().fromJson(responseVO.getAnonymousString(), new TypeToken<ArrayList<CustomerNotificationVO>>() { }.getType());
+                    for(CustomerNotificationVO customerNotificationVO:datalist){
+                        customerNotificationVO.setCreatedAt(Utility.convertDate2String(new Date(Long.parseLong(customerNotificationVO.getCreatedAt())),"dd-MM-yyyy hh:mm:ss"));
+                        InsertDateOnSqlLite.insertNotification(Notifications.this,customerNotificationVO);
+                    }
+                    customerNotificationVOS= GetSqlLiteData.getNotification(Notifications.this);
+                    callBackInterface.onSuccess(customerNotificationVOS);
+                }));
 
-                for(CustomerNotificationVO customerNotificationVO:customerNotificationVOS){
-                    JSONObject jsonObject =new JSONObject();
-                    jsonObject.put("title",customerNotificationVO.getTitle());
-                    jsonObject.put("message",customerNotificationVO.getMessage());
-                    jsonObject.put("imageUrl",customerNotificationVO.getImage());
-                    jsonObject.put("timestamp",Utility.convertDate2String(new Date(Long.parseLong(customerNotificationVO.getCreatedAt())),"dd-MM-yyyy hh:mm:ss"));
-                    jsonObject.put("smallImageUrl",customerNotificationVO.getServiceIcon());
-                    jsonObject.put("activityname",customerNotificationVO.getActivityName());
-                    InsertDateOnSqlLite.insertNotification(Notifications.this,jsonObject);
-                }
-                customerNotificationVOS= GetSqlLiteData.getNotification(Notifications.this);
             }
         }catch (Exception e){
             e.printStackTrace();
             Utility.exceptionAlertDialog(Notifications.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
-
-        if(customerNotificationVOS.size()>0){
-            no_notification.setVisibility(View.GONE);
-        }else {
-            no_notification.setVisibility(View.VISIBLE);
-        }
-
-        return customerNotificationVOS;
     }
+
+
+    private void getNotificationList(VolleyResponse volleyResponse){
+
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        ConnectionVO connectionVO = CustomerBO.getCustomerNotification();
+        connectionVO.setLoaderAvoided(true);
+
+        CustomerNotificationVO customerNotificationVO =new CustomerNotificationVO();
+
+        CustomerVO customerVO =new CustomerVO();
+        customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(Notifications.this)));
+
+        customerNotificationVO.setCustomer(customerVO);
+
+        Gson gson =new Gson();
+        String json = gson.toJson(customerNotificationVO);
+        Log.w("request",json);
+        params.put("volley", json);
+        connectionVO.setParams(params);
+        VolleyUtils.makeJsonObjectRequest(this,connectionVO, new VolleyResponseListener() {
+            @Override
+            public void onError(String message) {
+            }
+            @Override
+            public void onResponse(Object resp) throws JSONException {
+                JSONObject response = (JSONObject) resp;
+                Gson gson = new Gson();
+                CustomerNotificationVO responseVO = gson.fromJson(response.toString(), CustomerNotificationVO.class);
+
+                if(responseVO.getStatusCode().equals("400")){
+                    ArrayList error = (ArrayList) responseVO.getErrorMsgs();
+                    StringBuilder sb = new StringBuilder();
+                    for(int i=0; i<error.size(); i++){
+                        sb.append(error.get(i)).append("\n");
+                    }
+                    Utility.showSingleButtonDialog(Notifications.this,"Error !",sb.toString(),true);
+                }else {
+                    //update customer cache
+                    volleyResponse.onSuccess(responseVO);
+                }
+            }
+        });
+
+
+
+
+    }
+
+
 
     @Override
     public void onClick(View view) {

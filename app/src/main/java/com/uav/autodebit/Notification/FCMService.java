@@ -20,6 +20,7 @@ import com.uav.autodebit.constant.GlobalApplication;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.CustomerNotificationVO;
+import com.uav.autodebit.vo.DMRC_Customer_CardVO;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -96,28 +97,25 @@ public class FCMService extends FirebaseMessagingService {
         Log.e(TAG, "push json: " + data.toString());
         try {
 
+
+            CustomerNotificationVO customerNotificationVO = new Gson().fromJson(data.toString(), CustomerNotificationVO.class);
+
             //save notification in Cache
-            notificationManagement(data);
+            notificationManagement(customerNotificationVO);
 
-            String title = data.getString("title");
-            String message = data.getString("message");
-            boolean isBackground = data.getBoolean("is_background");
-            String imageUrl = data.getString("imageUrl");
-            String timestamp = data.getString("timestamp");
-            String smallImageurl =data.getString("smallImageUrl");
-            String activityname =data.has("activityname")? data.getString("activityname"):"SplashScreen";
+            String title = customerNotificationVO.getTitle();
+            String message = customerNotificationVO.getMessage();
+            String imageUrl = customerNotificationVO.getBigImage();
+            String timestamp = customerNotificationVO.getCreatedAt();
+            String smallImageurl = customerNotificationVO.getServiceIcon();
+            String activityname = customerNotificationVO.getActivityName() != null ? customerNotificationVO.getActivityName() : "SplashScreen";
             //  JSONObject payload = data.getJSONObject("payload");
-
-            String moveactivityjson=data.has("moveactivity")?data.getString("moveactivity"):null;
+            String moveactivityjson = customerNotificationVO.getMoveActivity();
 
             Log.e(TAG, "title: " + title);
             Log.e(TAG, "message: " + message);
-            Log.e(TAG, "isBackground: " + isBackground);
-           // Log.e(TAG, "payload: " + payload.toString());
             Log.e(TAG, "imageUrl: " + imageUrl);
             Log.e(TAG, "timestamp: " + timestamp);
-
-
 
             //notification for background service
             /*if (!NotificationUtils.isAppIsInBackground(getApplicationContext())) {
@@ -130,40 +128,35 @@ public class FCMService extends FirebaseMessagingService {
                 NotificationUtils notificationUtils = new NotificationUtils(getApplicationContext());
                 notificationUtils.playNotificationSound();
             } else {*/
-                // app is in background, show the notification in notification tray
-                Class <?>clazz = Class.forName(getApplicationContext().getPackageName()+".Activity."+activityname);
-                Intent resultIntent = new Intent(getApplicationContext(), clazz);
-                resultIntent.putExtra("message", message);
-                if(moveactivityjson!=null){
-                    resultIntent.putExtra(ApplicationConstant.NOTIFICATION_ACTION, moveactivityjson);
-                }
+            // app is in background, show the notification in notification tray
+            Class<?> clazz = Class.forName(getApplicationContext().getPackageName() + ".Activity." + activityname);
+            Intent resultIntent = new Intent(getApplicationContext(), clazz);
+            resultIntent.putExtra("message", message);
+            if (moveactivityjson != null) {
+                resultIntent.putExtra(ApplicationConstant.NOTIFICATION_ACTION, moveactivityjson);
+            }
 
+            // check for image attachment
+            if (TextUtils.isEmpty(imageUrl)) {
+                Log.w("error", "run1" + imageUrl);
+                showNotificationMessage(getApplicationContext(), title, message, timestamp, resultIntent, smallImageurl);
+            } else {
 
-                // check for image attachment
-                if (TextUtils.isEmpty(imageUrl)) {
-
-                    Log.w("error","run1"+imageUrl
-                    );
-                    showNotificationMessage(getApplicationContext(), title, message, timestamp, resultIntent,smallImageurl);
-                } else {
-
-                    Log.w("error","run2");
-                    // image is present, show notification with image
-                    showNotificationMessageWithBigImage(getApplicationContext(), title, message, timestamp, resultIntent, imageUrl,smallImageurl);
-                }
-         /*   }*/
-        } catch (JSONException e) {
-            Log.e(TAG, "Json Exception: " + e.getMessage());
-        } catch (Exception e) {
+                Log.w("error", "run2");
+                // image is present, show notification with image
+                showNotificationMessageWithBigImage(getApplicationContext(), title, message, timestamp, resultIntent, imageUrl, smallImageurl);
+            }
+            /*   }*/
+        }catch (Exception e) {
             Log.e(TAG, "Exception: " + e.getMessage());
         }
     }
 
-    private void notificationManagement(JSONObject data) {
+    private void notificationManagement(CustomerNotificationVO customerNotificationVO) {
         try {
-            if(data.has("storeData") && data.getString("storeData").equals("1")){
+            if(customerNotificationVO.getStoreData()==1){
                 GlobalApplication.notificationCount++;
-                InsertDateOnSqlLite.insertNotification(getApplicationContext(),data);
+                InsertDateOnSqlLite.insertNotification(getApplicationContext(),customerNotificationVO);
             }
         } catch (Exception e) {
             Log.w("error",e.getMessage());

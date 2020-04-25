@@ -921,10 +921,10 @@ public class Home extends Base_Activity
         switch (view.getId()){
 
             case R.id.mainwallet:
-             /*   try {
+               /* try {
                     String uri ="https://r.uber.com/FfNRcXC111";
                     //String uri = "https://www.amazon.in/Infinity-Glide-500-Wireless-Headphones/dp/B07W5MZY9J/ref=ac_session_sims_23_3/262-5272901-5384510?_encoding=UTF8&pd_rd_i=B07W6NDVSR&pd_rd_r=5a607169-3605-4bbd-858b-3fe49d3b2d57&pd_rd_w=RloOb&pd_rd_wg=EuSlK&pf_rd_p=a6472ab3-4fb9-4298-9be8-6a9080bff261&pf_rd_r=J4EWD6QHMA9EBX8AG94R&psc=1&refRID=J4EWD6QHMA9EBX8AG94R&th=1";
-                   // String uri = "uber://?action=setPickup&pickup=my_location";
+                   //String uri = "uber://?action=setPickup&pickup=my_location";
                     Intent intent = new Intent(Intent.ACTION_VIEW);
                     intent.setData(Uri.parse(uri));
                     startActivity(intent);
@@ -934,8 +934,8 @@ public class Home extends Base_Activity
                     } catch (android.content.ActivityNotFoundException anfe) {
                         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=com.ubercab")));
                     }
-                }*/
-                break;
+                }
+               */ break;
             case R.id.profile:
                 startActivity(new Intent(this,Profile_Activity.class));
                 break;

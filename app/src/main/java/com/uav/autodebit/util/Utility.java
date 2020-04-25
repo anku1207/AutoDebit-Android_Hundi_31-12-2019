@@ -658,9 +658,13 @@ public class Utility {
     public static Integer getVersioncode(Context context){
         Integer version =null;
         try {
-            PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-            version = pInfo.versionCode;
-            Log.w("versioncode", String.valueOf(version));
+            final PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                version = (int) pInfo.getLongVersionCode(); // avoid huge version numbers and you will be ok
+            } else {
+                //noinspection deprecation
+                version = pInfo.versionCode;
+            }
         } catch (Exception e) {
             Toast.makeText(context, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
         }

@@ -30,17 +30,18 @@ public class GetSqlLiteData {
                     String time=cursor.getString(cursor.getColumnIndex("TimeStamp"));
                     String smallimage=cursor.getString(cursor.getColumnIndex("SmallImage"));
                     String activityname=cursor.getString(cursor.getColumnIndex("ActivityName"));
+                    String moveactivity=cursor.getString(cursor.getColumnIndex("MoveActivity"));
 
 
                     CustomerNotificationVO customerNotificationVO =new CustomerNotificationVO();
                     customerNotificationVO.setTitle(title);
                     customerNotificationVO.setMessage(message);
-                    customerNotificationVO.setImage(imageUrl);
+                    customerNotificationVO.setBigImage(imageUrl);
                     customerNotificationVO.setCreatedAt(time);
                     customerNotificationVO.setServiceIcon(smallimage);
                     customerNotificationVO.setActivityName(activityname);
                     customerNotificationVOS.add(customerNotificationVO);
-
+                    customerNotificationVO.setMoveActivity(moveactivity);
                     cursor.moveToNext();
                 }
             }

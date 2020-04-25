@@ -83,10 +83,34 @@
             android:paddingTop="50dp"
             android:id="@+id/main">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/dynamic_layout"
+                android:orientation="vertical"/>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardElevation="7dp"
+                android:layout_margin="10dp"
+                app:cardCornerRadius="15dp"
+                android:id="@+id/fetchbillcard"
+                android:visibility="visible"
+                >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:id="@+id/fetchbilllayout">
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
 
 
             <Button
-                android:id="@+id/fetchbill"
+                android:id="@+id/bill_pay"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

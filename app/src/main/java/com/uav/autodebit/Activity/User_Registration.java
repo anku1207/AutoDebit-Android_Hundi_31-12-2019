@@ -30,6 +30,7 @@ import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.Content_Message;
+import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.DialogInterface;
 import com.uav.autodebit.util.Utility;
@@ -232,6 +233,7 @@ public class User_Registration extends Base_Activity {
     public void verifydialog(){
 
         try{
+
             JSONArray jsonArray=new JSONArray();
             JSONObject object =new JSONObject();
             object.put("key","Name");
@@ -262,6 +264,7 @@ public class User_Registration extends Base_Activity {
 
             },User_Registration.this,jsonArray,null,"Please Confirm Detail",textviewsize);
         }catch (Exception e){
+
             Utility.exceptionAlertDialog(User_Registration.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
     }

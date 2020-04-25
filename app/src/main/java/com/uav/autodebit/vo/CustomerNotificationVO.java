@@ -2,18 +2,20 @@ package com.uav.autodebit.vo;
 
 import java.io.Serializable;
 
-public class CustomerNotificationVO   implements Serializable {
+public class CustomerNotificationVO  extends BaseVO implements Serializable {
 
     private Integer cnId;
     private CustomerVO customer;
     private String body;
     private String title;
     private String serviceIcon;
-    private String image;
+    private String bigImage;
     private String notificationType;
     private String activityName;
     private String message;
+    private String moveActivity;
     private String createdAt;
+    private int storeData;
 
 
     public CustomerNotificationVO() {
@@ -59,12 +61,12 @@ public class CustomerNotificationVO   implements Serializable {
         this.serviceIcon = serviceIcon;
     }
 
-    public String getImage() {
-        return image;
+    public String getBigImage() {
+        return bigImage;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setBigImage(String bigImage) {
+        this.bigImage = bigImage;
     }
 
     public String getNotificationType() {
@@ -97,5 +99,21 @@ public class CustomerNotificationVO   implements Serializable {
 
     public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getMoveActivity() {
+        return moveActivity;
+    }
+
+    public void setMoveActivity(String moveActivity) {
+        this.moveActivity = moveActivity;
+    }
+
+    public int getStoreData() {
+        return storeData;
+    }
+
+    public void setStoreData(int storeData) {
+        this.storeData = storeData;
     }
 }

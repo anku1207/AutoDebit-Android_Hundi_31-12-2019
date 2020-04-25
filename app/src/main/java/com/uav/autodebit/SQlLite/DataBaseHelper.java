@@ -80,7 +80,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         myDataBase = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READWRITE);
 
         //create a notification table
-        myDataBase.execSQL("create table if not exists notification (ID INTEGER PRIMARY KEY AUTOINCREMENT, Title TEXT,Message TEXT,ImageUrl TEXT,TimeStamp TEXT,SmallImage TEXT,ActivityName TEXT)");
+        myDataBase.execSQL("create table if not exists notification (ID INTEGER PRIMARY KEY AUTOINCREMENT, Title TEXT,Message TEXT,ImageUrl TEXT,TimeStamp TEXT,SmallImage TEXT,ActivityName TEXT,MoveActivity TEXT)");
         myDataBase.execSQL("create table if not exists status (StatusId INTEGER PRIMARY KEY AUTOINCREMENT, StatusName TEXT)");
         myDataBase.execSQL("create table if not exists oxigentransaction (TypeId INTEGER PRIMARY KEY AUTOINCREMENT, CustomerId INTEGER  NOT NULL,ServiceTypeId INTEGER  NOT NULL,Amount TEXT  NOT NULL , OperatorName TEXT NOT NULL)");
         myDataBase.execSQL("create table if not exists oxigenbillerfilter (TypeFilterId INTEGER PRIMARY KEY AUTOINCREMENT, FilterKey TEXT NOT NULL , FilterValue TEXT NOT NULL ,OxigenTxnId INTEGER,FOREIGN KEY (OxigenTxnId) REFERENCES oxigentransaction(TypeId))");

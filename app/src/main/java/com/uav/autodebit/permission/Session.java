@@ -117,6 +117,12 @@ public class Session {
 
     }
 
+    public static String getCustomerIdOnExceptionTime(Context context){
+        SharedPreferences sharedPreferences = context.getSharedPreferences(ApplicationConstant.SHAREDPREFENCE, Context.MODE_PRIVATE);
+        CustomerVO customerVO=gson.fromJson(sharedPreferences.getString(Session.CACHE_CUSTOMER,null),CustomerVO.class);
+        return customerVO!=null?customerVO.getCustomerId().toString():null;
+    }
+
 
 
 }

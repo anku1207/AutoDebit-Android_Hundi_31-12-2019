@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,6 +17,8 @@ import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.CustomerNotificationVO;
 import com.uav.autodebit.vo.DataAdapterVO;
 import com.uav.autodebit.vo.ServiceTypeVO;
+
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -46,20 +49,36 @@ public class NotificationAdapter  extends RecyclerView.Adapter<NotificationAdapt
         holder.notification_desc.setText(pro.getMessage());
         holder.notification_date.setText(pro.getCreatedAt());
 
-        if(pro.getImage()!=null){
-            Picasso.with(mctx).load(pro.getImage())
+        if(pro.getBigImage()!=null && !pro.getBigImage().equals("")){
+            Picasso.with(mctx).load(pro.getBigImage())
                     .into(holder.notification_image);
         }else{
             holder.notification_image.setImageDrawable(null);
         }
 
-        if(pro.getServiceIcon()!=null){
+        if(pro.getServiceIcon()!=null && !pro.getServiceIcon().equals("")){
             Picasso.with(mctx).load(pro.getServiceIcon()).fit()
                     .into(holder.notification_icon);
 
         }else {
             holder.notification_icon.setImageDrawable(null);
         }
+
+        holder.notification_mainlayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                try {
+                    if(pro.getMoveActivity()!=null){
+                        JSONObject jsonObject =new JSONObject(pro.getMoveActivity());
+                        Toast.makeText(mctx, ""+jsonObject.getBoolean("action"), Toast.LENGTH_SHORT).show();
+                    }
+                }catch (Exception e){
+
+                }
+
+            }
+        });
 
 
 

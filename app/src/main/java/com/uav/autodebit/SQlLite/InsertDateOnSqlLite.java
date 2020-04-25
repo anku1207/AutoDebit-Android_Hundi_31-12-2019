@@ -4,24 +4,26 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.widget.Toast;
 
+import com.uav.autodebit.vo.CustomerNotificationVO;
+
 import org.json.JSONObject;
 
 public class InsertDateOnSqlLite {
 
-    public static void insertNotification(Context context, JSONObject data){
+    public static void insertNotification(Context context, CustomerNotificationVO customerNotificationVO){
         try {
             DataBaseHelper dataBaseHelper =new DataBaseHelper(context);
             dataBaseHelper.createDataBase();
             dataBaseHelper.openDataBase();
 
             ContentValues contentValues = new ContentValues();
-            contentValues.put("Title",data.getString("title"));
-            contentValues.put("Message",data.getString("message"));
-            contentValues.put("ImageUrl",data.has("imageUrl")&& !data.getString("imageUrl").equals("")?data.getString("imageUrl"):null);
-            contentValues.put("TimeStamp",data.getString("timestamp"));
-            contentValues.put("SmallImage",data.has("smallImageUrl") && !data.getString("smallImageUrl").equals("")?data.getString("smallImageUrl"):null);
-            contentValues.put("ActivityName",data.has("activityname")? data.getString("activityname"):"SplashScreen");
-
+            contentValues.put("Title",customerNotificationVO.getTitle());
+            contentValues.put("Message",customerNotificationVO.getMessage());
+            contentValues.put("ImageUrl",customerNotificationVO.getBigImage());
+            contentValues.put("TimeStamp",customerNotificationVO.getCreatedAt());
+            contentValues.put("SmallImage",customerNotificationVO.getServiceIcon());
+            contentValues.put("ActivityName",customerNotificationVO.getActivityName()!=null?customerNotificationVO.getActivityName():"SplashScreen");
+            contentValues.put("MoveActivity",customerNotificationVO.getMoveActivity());
 
             DataBaseHelper.myDataBase.beginTransaction();
             DataBaseHelper.myDataBase.insert("notification", null,contentValues);
@@ -30,7 +32,7 @@ public class InsertDateOnSqlLite {
 
             dataBaseHelper.close();
             }catch (Exception e){
-            Toast.makeText(context, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
             }
     }
 
