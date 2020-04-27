@@ -1,15 +1,20 @@
 package com.uav.autodebit.exceptions;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
 
 import com.google.gson.Gson;
+import com.uav.autodebit.Activity.Home;
 import com.uav.autodebit.Activity.Notifications;
 import com.uav.autodebit.BO.CustomerBO;
 import com.uav.autodebit.BO.ExceptionsBO;
+import com.uav.autodebit.constant.Content_Message;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.AppErrorVO;
@@ -28,42 +33,42 @@ public class ExceptionsNotification {
 
 
     public static void ExceptionHandling(Context context, String e){
+
         try {
-            HashMap<String, Object> params = new HashMap<String, Object>();
-            ConnectionVO connectionVO = ExceptionsBO.sendErrorOnServer();
-
-            AppErrorVO appErrorVO =new AppErrorVO();
-            appErrorVO.setCustomerId(Session.getCustomerIdOnExceptionTime(context));
-            appErrorVO.setMobileName(Build.BRAND);
-            appErrorVO.setAppVersion(Utility.getVersioncode(context).toString());
-            appErrorVO.setErrorMessage(e);
-            appErrorVO.setMobileVersion(String.valueOf(Build.VERSION.SDK_INT));
-            appErrorVO.setDeviceInfo(Utility.getDeviceDetail().toString());
-
-            Gson gson =new Gson();
-            String json = gson.toJson(appErrorVO);
-            Log.w("request",json);
-            params.put("volley", json);
-            connectionVO.setParams(params);
-
-            VolleyUtils.makeJsonObjectRequest(context,connectionVO, new VolleyResponseListener() {
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
-                public void onError(String message) {
-                }
-                @Override
-                public void onResponse(Object resp) throws JSONException {
-                    JSONObject response = (JSONObject) resp;
+                public void run() {
+                    Toast.makeText(context, Content_Message.error_message, Toast.LENGTH_SHORT).show();
+                    HashMap<String, Object> params = new HashMap<String, Object>();
+                    ConnectionVO connectionVO = ExceptionsBO.sendErrorOnServer();
 
-                    if(response.get("status").equals("fail")){
+                    AppErrorVO appErrorVO =new AppErrorVO();
+                    appErrorVO.setCustomerId(Session.getCustomerIdOnExceptionTime(context));
+                    appErrorVO.setMobileName(Build.BRAND);
+                    appErrorVO.setAppVersion(Utility.getVersioncode(context).toString());
+                    appErrorVO.setErrorMessage(e);
+                    appErrorVO.setMobileVersion(String.valueOf(Build.VERSION.SDK_INT));
+                    appErrorVO.setDeviceInfo(Utility.getDeviceDetail().toString());
 
-                    }else {
+                    Gson gson =new Gson();
+                    String json = gson.toJson(appErrorVO);
+                    Log.w("request",json);
+                    params.put("volley", json);
+                    connectionVO.setParams(params);
 
-                    }
-
+                    VolleyUtils.makeJsonObjectRequest(context,connectionVO, new VolleyResponseListener() {
+                        @Override
+                        public void onError(String message) {
+                        }
+                        @Override
+                        public void onResponse(Object resp) throws JSONException {
+                            JSONObject response = (JSONObject) resp;
+                        }
+                    });
                 }
             });
         }catch (Exception e1){
-            Toast.makeText(context, ""+e1.getMessage(), Toast.LENGTH_SHORT).show();
+            Log.w("Error",e1.getMessage());
         }
     }
 }

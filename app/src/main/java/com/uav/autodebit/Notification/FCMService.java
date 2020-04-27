@@ -5,6 +5,7 @@ import android.content.Intent;
 
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -13,10 +14,14 @@ import com.google.firebase.messaging.RemoteMessage;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.uav.autodebit.Activity.HistorySummary;
+import com.uav.autodebit.Activity.LandlineBill;
 import com.uav.autodebit.Activity.Login;
 import com.uav.autodebit.SQlLite.InsertDateOnSqlLite;
 import com.uav.autodebit.constant.ApplicationConstant;
+import com.uav.autodebit.constant.Content_Message;
 import com.uav.autodebit.constant.GlobalApplication;
+import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.CustomerNotificationVO;
@@ -135,13 +140,11 @@ public class FCMService extends FirebaseMessagingService {
             if (moveactivityjson != null) {
                 resultIntent.putExtra(ApplicationConstant.NOTIFICATION_ACTION, moveactivityjson);
             }
-
             // check for image attachment
             if (TextUtils.isEmpty(imageUrl)) {
                 Log.w("error", "run1" + imageUrl);
                 showNotificationMessage(getApplicationContext(), title, message, timestamp, resultIntent, smallImageurl);
             } else {
-
                 Log.w("error", "run2");
                 // image is present, show notification with image
                 showNotificationMessageWithBigImage(getApplicationContext(), title, message, timestamp, resultIntent, imageUrl, smallImageurl);
@@ -149,6 +152,7 @@ public class FCMService extends FirebaseMessagingService {
             /*   }*/
         }catch (Exception e) {
             Log.e(TAG, "Exception: " + e.getMessage());
+            ExceptionsNotification.ExceptionHandling(getApplicationContext() , Utility.getStackTrace(new Exception()));
         }
     }
 
@@ -160,6 +164,7 @@ public class FCMService extends FirebaseMessagingService {
             }
         } catch (Exception e) {
             Log.w("error",e.getMessage());
+
         }
     }
     /**

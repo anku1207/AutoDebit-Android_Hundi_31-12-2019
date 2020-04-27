@@ -26,7 +26,9 @@ import com.uav.autodebit.BO.MandateBO;
 import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
+import com.uav.autodebit.constant.Content_Message;
 import com.uav.autodebit.constant.ErrorMsg;
+import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.override.DrawableClickListener;
 import com.uav.autodebit.override.UAVEditText;
 import com.uav.autodebit.permission.Session;
@@ -154,7 +156,8 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
                         JSONObject jsonObject =accountTypeJsonArray.getJSONObject(i);
                         accountTypeValue=jsonObject.getString("value");
                     }catch (Exception e){
-                        Utility.exceptionAlertDialog(Enach_Mandate.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+                        ExceptionsNotification.ExceptionHandling(Enach_Mandate.this , Utility.getStackTrace(e));
+                        //Utility.exceptionAlertDialog(Enach_Mandate.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
                     }
                 }
                 @Override
@@ -187,7 +190,8 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
 
 
                 }catch (Exception e){
-                    Utility.exceptionAlertDialog(Enach_Mandate.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+                    ExceptionsNotification.ExceptionHandling(Enach_Mandate.this , Utility.getStackTrace(e));
+                   // Utility.exceptionAlertDialog(Enach_Mandate.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
                 }
             }
         }));
@@ -279,6 +283,7 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
                 verifydialog();
             }catch (Exception e){
                 Log.w("error_enach",e.getMessage());
+                ExceptionsNotification.ExceptionHandling(Enach_Mandate.this , Utility.getStackTrace(e));
             }
 
         }
@@ -326,8 +331,8 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
 
 
         }catch (Exception e){
-            e.printStackTrace();
-            Utility.exceptionAlertDialog(Enach_Mandate.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(Enach_Mandate.this , Utility.getStackTrace(e));
+           // Utility.exceptionAlertDialog(Enach_Mandate.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
     }
 
@@ -482,8 +487,8 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
                         Log.w("mandateid",jsonArray.toString());
                         setEnachMandateId((jsonArray.getJSONObject(2)).getString("source_id"));
                     } catch (Exception e) {
-                        e.printStackTrace();
-                        Utility.exceptionAlertDialog(Enach_Mandate.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+                        ExceptionsNotification.ExceptionHandling(Enach_Mandate.this , Utility.getStackTrace(e));
+                       // Utility.exceptionAlertDialog(Enach_Mandate.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
                     }
                 }
             }else if(requestCode==ApplicationConstant.REQ_POPAPACTIVITYRESULT){

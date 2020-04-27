@@ -50,7 +50,9 @@ import com.uav.autodebit.R;
 import com.uav.autodebit.adpater.BannerAdapter;
 import com.uav.autodebit.adpater.UitilityAdapter;
 import com.uav.autodebit.constant.ApplicationConstant;
+import com.uav.autodebit.constant.Content_Message;
 import com.uav.autodebit.constant.GlobalApplication;
+import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.override.UAVProgressDialog;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.BackgroundAsyncService;
@@ -145,8 +147,8 @@ public class Home extends Base_Activity
         selectedService=null;
         level=null;
         try {
-            activityhasmap=new HashMap<>();
 
+            activityhasmap=new HashMap<>();
             activityhasmap.put("1",IRCTC.class);
             activityhasmap.put("2",Dmrc_Card_Request.class);
             activityhasmap.put("3",Hyd_Metro.class);
@@ -175,8 +177,6 @@ public class Home extends Base_Activity
             activityhasmap.put("L_4",Enach_Mandate.class);
             activityhasmap.put("L_5",Enach_Mandate.class);
             activityhasmap.put("L_6",SI_First_Data.class);
-
-
 
 
             //check notification send  activity move
@@ -208,8 +208,8 @@ public class Home extends Base_Activity
             // override local cache
             overrideLocalCache(customerVO);
         }catch (Exception e){
-            e.printStackTrace();
-            Utility.exceptionAlertDialog(Home.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+            Toast.makeText(cntxt, ""+Content_Message.error_message, Toast.LENGTH_SHORT).show();
+            //Utility.exceptionAlertDialog(Home.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
 
         mainwallet=findViewById(R.id.mainwallet);
@@ -508,7 +508,8 @@ public class Home extends Base_Activity
             });
         } catch (Exception e) {
             e.printStackTrace();
-            Utility.exceptionAlertDialog(Home.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(Home.this , Utility.getStackTrace(e));
+         //   Utility.exceptionAlertDialog(Home.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
 
         }
     }
@@ -612,8 +613,7 @@ public class Home extends Base_Activity
         }catch (Exception e){
             if(view!=null)Utility.enableDisableView(view,true);
             e.printStackTrace();
-            Log.e("error_home",e.getMessage());
-            Utility.exceptionAlertDialog(Home.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(Home.this , Utility.getStackTrace(e));
         }
    }
 
@@ -717,8 +717,8 @@ public class Home extends Base_Activity
                                         }
                                     }));
                                 }catch (Exception e){
-                                    e.printStackTrace();
-                                    Utility.exceptionAlertDialog(Home.this,"","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+                                    ExceptionsNotification.ExceptionHandling(Home.this , Utility.getStackTrace(e));
+                                  //  Utility.exceptionAlertDialog(Home.this,"","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
                                 }
                             }
                             @Override
@@ -750,8 +750,8 @@ public class Home extends Base_Activity
                                         break;
                                 }
                             }catch (Exception e){
-                                e.printStackTrace();
-                                Utility.exceptionAlertDialog(Home.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+                                ExceptionsNotification.ExceptionHandling(Home.this , Utility.getStackTrace(e));
+                               // Utility.exceptionAlertDialog(Home.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
                             }
                         }),"Alert",customerVO.getErrorMsgs().get(0));
                 } else if (customerVO.getStatusCode().equals("L_4") || customerVO.getStatusCode().equals("L_5") || customerVO.getStatusCode().equals("L_6")) {
@@ -794,8 +794,8 @@ public class Home extends Base_Activity
         }catch (Exception e){
             if(view!=null)Utility.enableDisableView(view,true);
             e.printStackTrace();
-            Log.e("error_serviceClick",e.getMessage());
-            Utility.exceptionAlertDialog(Home.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(Home.this , Utility.getStackTrace(e));
+            //Utility.exceptionAlertDialog(Home.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
 
         }
     }

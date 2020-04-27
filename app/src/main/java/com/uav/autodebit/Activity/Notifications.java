@@ -24,6 +24,8 @@ import com.uav.autodebit.SQlLite.DataBaseHelper;
 import com.uav.autodebit.SQlLite.GetSqlLiteData;
 import com.uav.autodebit.SQlLite.InsertDateOnSqlLite;
 import com.uav.autodebit.adpater.NotificationAdapter;
+import com.uav.autodebit.constant.Content_Message;
+import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.ConnectionVO;
@@ -140,8 +142,8 @@ public class Notifications extends Base_Activity implements View.OnClickListener
 
             }
         }catch (Exception e){
-            e.printStackTrace();
-            Utility.exceptionAlertDialog(Notifications.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(Notifications.this , Utility.getStackTrace(e));
+           // Utility.exceptionAlertDialog(Notifications.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
     }
 

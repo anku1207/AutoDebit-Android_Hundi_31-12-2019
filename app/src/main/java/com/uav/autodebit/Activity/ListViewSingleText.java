@@ -12,9 +12,13 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
+import com.uav.autodebit.constant.Content_Message;
+import com.uav.autodebit.exceptions.ExceptionsNotification;
+import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.ConnectionVO;
 
 
@@ -79,7 +83,7 @@ public class ListViewSingleText extends Base_Activity {
                 entityId.add(jsonObject1.get(connectionVO.getEntityIdKey()  ));
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+            ExceptionsNotification.ExceptionHandling(ListViewSingleText.this , Utility.getStackTrace(e));
         }
 
         Collections.sort(entityText);

@@ -43,6 +43,7 @@ import com.uav.autodebit.adpater.RecyclerViewAdapterMenu;
 import com.uav.autodebit.adpater.RecyclerViewProfileBankAdapterMenu;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.Content_Message;
+import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.override.CircularImageView;
 import com.uav.autodebit.override.UAVProgressDialog;
 import com.uav.autodebit.permission.PermissionHandler;
@@ -346,8 +347,8 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
             startActivityForResult(intent, REQ_IMAGE);
         }
         catch(Exception e){
-            e.printStackTrace();
-            Utility.exceptionAlertDialog(this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(Profile_Activity.this , Utility.getStackTrace(e));
+            //Utility.exceptionAlertDialog(this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
     }
     public void backbuttonfun(){
@@ -456,8 +457,8 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
 
             }
         }catch (Exception e) {
-            e.printStackTrace();
-            Utility.exceptionAlertDialog(this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(Profile_Activity.this , Utility.getStackTrace(e));
+            //Utility.exceptionAlertDialog(this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
     }
 
@@ -493,8 +494,8 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
             imageView1.setImageBitmap(bmp);
             setCustomerProfileImage();
         }catch (Exception e){
-            e.printStackTrace();
-            Utility.exceptionAlertDialog(this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(Profile_Activity.this , Utility.getStackTrace(e));
+           // Utility.exceptionAlertDialog(this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
     }
 
@@ -681,6 +682,7 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
 
                 }catch (Exception e){
                     Log.e("profile_activity",e.getMessage());
+                    e.printStackTrace();
                 }
             }
             @Override
@@ -716,7 +718,7 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
             }
 
         }catch (Exception e){
-            Log.w("error",e.getMessage());
+            ExceptionsNotification.ExceptionHandling(Profile_Activity.this , Utility.getStackTrace(e));
         }
     }
 

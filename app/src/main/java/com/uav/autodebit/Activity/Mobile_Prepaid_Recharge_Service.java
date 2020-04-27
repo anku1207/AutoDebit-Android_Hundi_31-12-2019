@@ -47,6 +47,7 @@ import com.uav.autodebit.adpater.BrowsePlanAdapter;
 import com.uav.autodebit.androidFragment.Offers_recent_Fragment;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.Content_Message;
+import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.override.DrawableClickListener;
 import com.uav.autodebit.override.UAVEditText;
 import com.uav.autodebit.permission.PermissionHandler;
@@ -216,7 +217,7 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
             }
 
         } catch (JSONException e) {
-            e.printStackTrace();
+            Utility.showToast(this,Content_Message.error_message);
         }
         return  datalist;
     }
@@ -409,8 +410,8 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                             oxiMobileRechargeValidation();
                            // proceedToRecharge();
                         }catch (Exception e){
-                            e.printStackTrace();
-                            Utility.exceptionAlertDialog(Mobile_Prepaid_Recharge_Service.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+                            ExceptionsNotification.ExceptionHandling(Mobile_Prepaid_Recharge_Service.this , Utility.getStackTrace(e));
+                            //Utility.exceptionAlertDialog(Mobile_Prepaid_Recharge_Service.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
                         }
                     }
                     @Override
@@ -420,8 +421,8 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                 },Mobile_Prepaid_Recharge_Service.this,jsonArray,null,"Confirmation",btn);
             }
         }catch (Exception e){
-            e.printStackTrace();
-            Utility.exceptionAlertDialog(Mobile_Prepaid_Recharge_Service.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(Mobile_Prepaid_Recharge_Service.this , Utility.getStackTrace(e));
+           // Utility.exceptionAlertDialog(Mobile_Prepaid_Recharge_Service.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
 
         }
 
@@ -668,8 +669,8 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                                     }
                                 }));
                             } catch (Exception e) {
-                                e.printStackTrace();
-                                Utility.exceptionAlertDialog(context, "Alert!", "Something went wrong, Please try again!", "Report", Utility.getStackTrace(e));
+                                ExceptionsNotification.ExceptionHandling(Mobile_Prepaid_Recharge_Service.this , Utility.getStackTrace(e));
+                                //Utility.exceptionAlertDialog(context, "Alert!", "Something went wrong, Please try again!", "Report", Utility.getStackTrace(e));
                             }
                         }
                         @Override

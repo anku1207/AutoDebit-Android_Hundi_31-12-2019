@@ -53,6 +53,7 @@ import com.uav.autodebit.R;
 import com.uav.autodebit.adpater.CustomPagerAdapter;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.Content_Message;
+import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.override.UAVProgressDialog;
 import com.uav.autodebit.permission.PermissionHandler;
 import com.uav.autodebit.permission.PermissionUtils;
@@ -538,8 +539,8 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                                                     }
                                                 }));
                                             } catch (Exception e) {
-                                                e.printStackTrace();
-                                                Utility.exceptionAlertDialog(Dmrc_Card_Request.this, "Alert!", "Something went wrong, Please try again!", "Report", Utility.getStackTrace(e));
+                                                ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this , Utility.getStackTrace(e));
+                                               // Utility.exceptionAlertDialog(Dmrc_Card_Request.this, "Alert!", "Something went wrong, Please try again!", "Report", Utility.getStackTrace(e));
                                             }
                                         }
                                         @Override
@@ -562,8 +563,8 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                 }
             });
         } catch (Exception e) {
-            e.printStackTrace();
-            Utility.exceptionAlertDialog(Dmrc_Card_Request.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this , Utility.getStackTrace(e));
+            //Utility.exceptionAlertDialog(Dmrc_Card_Request.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
     }
 
@@ -722,9 +723,10 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
             intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
             startActivityForResult(intent, REQ_IMAGE);
         }
-        catch(Exception e)
-        {
-            Utility.exceptionAlertDialog(Dmrc_Card_Request.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+        catch(Exception e){
+            ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this , Utility.getStackTrace(e));
+
+            //Utility.exceptionAlertDialog(Dmrc_Card_Request.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
     }
     public void setCustomerDetail(DMRC_Customer_CardVO dmrc_customer_cardVO){
@@ -813,8 +815,8 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                     }
                 }
             } catch (Exception e) {
-                e.printStackTrace();
-                Utility.exceptionAlertDialog(Dmrc_Card_Request.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+                ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this , Utility.getStackTrace(e));
+               // Utility.exceptionAlertDialog(Dmrc_Card_Request.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
             }
         }
     }

@@ -23,12 +23,15 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
+import com.uav.autodebit.constant.Content_Message;
+import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.override.UAVProgressDialog;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.BackgroundAsyncService;
@@ -151,7 +154,7 @@ public class Broadband extends Base_Activity implements View.OnClickListener {
                 datalist.add(dataAdapterVO);
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+            Utility.showToast(this,Content_Message.error_message);
         }
         return  datalist;
     }
@@ -244,8 +247,8 @@ public class Broadband extends Base_Activity implements View.OnClickListener {
                 }
             }
         }catch (Exception e){
-            e.printStackTrace();
-            Utility.exceptionAlertDialog(Broadband.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(Broadband.this , Utility.getStackTrace(e));
+           // Utility.exceptionAlertDialog(Broadband.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
     }
 
@@ -327,8 +330,8 @@ public class Broadband extends Base_Activity implements View.OnClickListener {
                            fetchbillcard.setVisibility(View.VISIBLE);
 
                        }catch (Exception e){
-                           e.printStackTrace();
-                           Utility.exceptionAlertDialog(this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+                           ExceptionsNotification.ExceptionHandling(Broadband.this , Utility.getStackTrace(e));
+                          // Utility.exceptionAlertDialog(this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
                        }
                    },(VolleyResponse.OnError)(e)->{
                        // hide amount layout layout and net amount is null set and show fetch bill button
@@ -338,8 +341,8 @@ public class Broadband extends Base_Activity implements View.OnClickListener {
                    }));
 
                }catch (Exception e){
-                   e.printStackTrace();
-                   Utility.exceptionAlertDialog(this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+                   ExceptionsNotification.ExceptionHandling(Broadband.this , Utility.getStackTrace(e));
+                  // Utility.exceptionAlertDialog(this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
                }
                 break;
         }
@@ -375,8 +378,8 @@ public class Broadband extends Base_Activity implements View.OnClickListener {
             }
 
         }catch (Exception e){
-            e.printStackTrace();
-            Utility.exceptionAlertDialog(this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(Broadband.this , Utility.getStackTrace(e));
+           // Utility.exceptionAlertDialog(this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
     }
 

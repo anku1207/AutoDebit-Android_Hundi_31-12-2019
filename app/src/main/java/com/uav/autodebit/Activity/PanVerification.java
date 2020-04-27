@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.uav.autodebit.BO.PanCardBO;
@@ -28,6 +29,7 @@ import com.uav.autodebit.BO.PinCodeBO;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.Content_Message;
+import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.override.DrawableClickListener;
 import com.uav.autodebit.override.UAVEditText;
 import com.uav.autodebit.override.UAVProgressDialog;
@@ -155,6 +157,7 @@ public class PanVerification extends Base_Activity implements  PermissionUtils.P
                     }
                 }catch (Exception e){
                     Log.w("error",e.getMessage());
+                    ExceptionsNotification.ExceptionHandling(PanVerification.this , Utility.getStackTrace(e));
                 }
             }
         });
@@ -378,7 +381,7 @@ public class PanVerification extends Base_Activity implements  PermissionUtils.P
                 }
             });
         } catch (ParseException e) {
-            e.printStackTrace();
+            ExceptionsNotification.ExceptionHandling(PanVerification.this , Utility.getStackTrace(e));
         }
 
 
@@ -411,9 +414,9 @@ public class PanVerification extends Base_Activity implements  PermissionUtils.P
             intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
             startActivityForResult(intent, REQ_IMAGE);
         }
-        catch(Exception e)
-        {
-            Utility.exceptionAlertDialog(PanVerification.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+        catch(Exception e){
+            ExceptionsNotification.ExceptionHandling(PanVerification.this , Utility.getStackTrace(e));
+            //Utility.exceptionAlertDialog(PanVerification.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
     }
 
@@ -531,7 +534,8 @@ public class PanVerification extends Base_Activity implements  PermissionUtils.P
                       addressimage.setImageBitmap(bmp);
                }
             } catch (Exception e) {
-                Utility.exceptionAlertDialog(PanVerification.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+                ExceptionsNotification.ExceptionHandling(PanVerification.this , Utility.getStackTrace(e));
+               // Utility.exceptionAlertDialog(PanVerification.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
             }
         }
     }

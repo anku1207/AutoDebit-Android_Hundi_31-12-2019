@@ -21,6 +21,8 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.uav.autodebit.BO.CustomerBO;
 import com.uav.autodebit.R;
+import com.uav.autodebit.constant.Content_Message;
+import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.ExceptionHandler;
 import com.uav.autodebit.util.Utility;
@@ -96,7 +98,8 @@ public class Confirm_Bank_Details<crateBankDetailsLayout> extends AppCompatActiv
                         try {
                             crateBankDetailsLayout(customerAuthServiceVO);
                         }catch (Exception e){
-                            Utility.exceptionAlertDialog(Confirm_Bank_Details.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+                            ExceptionsNotification.ExceptionHandling(Confirm_Bank_Details.this , Utility.getStackTrace(e));
+                            //  Utility.exceptionAlertDialog(Confirm_Bank_Details.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
                         }
                     }
                 }
@@ -197,6 +200,9 @@ public class Confirm_Bank_Details<crateBankDetailsLayout> extends AppCompatActiv
             mainlayout.addView(gridView);
             buttonLayout.setVisibility(View.VISIBLE);
         }catch (Exception e){
+            e.printStackTrace();
+            Toast.makeText(Confirm_Bank_Details.this, Content_Message.error_message, Toast.LENGTH_SHORT).show();
+            ExceptionsNotification.ExceptionHandling(Confirm_Bank_Details.this , Utility.getStackTrace(e));
 
         }
 

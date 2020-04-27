@@ -31,6 +31,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
@@ -38,6 +39,7 @@ import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.Content_Message;
+import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.override.DrawableClickListener;
 import com.uav.autodebit.override.UAVEditText;
 import com.uav.autodebit.override.UAVProgressDialog;
@@ -172,7 +174,7 @@ public class DTH_Recharge_Service extends Base_Activity implements View.OnClickL
                 datalist.add(dataAdapterVO);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Utility.showToast(this,Content_Message.error_message);
         }
         return  datalist;
     }
@@ -292,8 +294,8 @@ public class DTH_Recharge_Service extends Base_Activity implements View.OnClickL
                 }
             }
         }catch (Exception e){
-            e.printStackTrace();
-            Utility.exceptionAlertDialog(DTH_Recharge_Service.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(DTH_Recharge_Service.this , Utility.getStackTrace(e));
+           // Utility.exceptionAlertDialog(DTH_Recharge_Service.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
     }
 
@@ -332,8 +334,8 @@ public class DTH_Recharge_Service extends Base_Activity implements View.OnClickL
 
 
                 }catch (Exception e){
-                    e.printStackTrace();
-                    Utility.exceptionAlertDialog(DTH_Recharge_Service.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+                    ExceptionsNotification.ExceptionHandling(DTH_Recharge_Service.this , Utility.getStackTrace(e));
+                  //  Utility.exceptionAlertDialog(DTH_Recharge_Service.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
 
                 }
 
@@ -393,15 +395,15 @@ public class DTH_Recharge_Service extends Base_Activity implements View.OnClickL
                             fetchbillcard.setVisibility(View.VISIBLE);
 
                         }catch (Exception e){
-                            e.printStackTrace();
-                            Utility.exceptionAlertDialog(DTH_Recharge_Service.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+                            ExceptionsNotification.ExceptionHandling(DTH_Recharge_Service.this , Utility.getStackTrace(e));
+                          //  Utility.exceptionAlertDialog(DTH_Recharge_Service.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
                         }
                     },(VolleyResponse.OnError)(e)->{
                         fetchbill.setVisibility(View.VISIBLE);
                     }));
                 }catch (Exception e){
-                    e.printStackTrace();
-                    Utility.exceptionAlertDialog(DTH_Recharge_Service.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+                    ExceptionsNotification.ExceptionHandling(DTH_Recharge_Service.this , Utility.getStackTrace(e));
+                   // Utility.exceptionAlertDialog(DTH_Recharge_Service.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
                 }
                 break;
         }

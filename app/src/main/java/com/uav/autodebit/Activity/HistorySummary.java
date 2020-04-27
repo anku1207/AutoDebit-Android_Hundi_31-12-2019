@@ -14,12 +14,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 import com.uav.autodebit.BO.CustomerBO;
 import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
+import com.uav.autodebit.constant.Content_Message;
+import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.ConnectionVO;
@@ -121,8 +124,8 @@ public class HistorySummary extends Base_Activity implements View.OnClickListene
                     payment_detail_Layout.addView(et);
                 }
             }catch (Exception e){
-                e.printStackTrace();
-                Utility.exceptionAlertDialog(HistorySummary.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+                ExceptionsNotification.ExceptionHandling(HistorySummary.this , Utility.getStackTrace(e));
+                //Utility.exceptionAlertDialog(HistorySummary.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
             }
         }));
     }
@@ -164,8 +167,8 @@ public class HistorySummary extends Base_Activity implements View.OnClickListene
                 }
             });
         } catch (Exception e) {
-            e.printStackTrace();
-            Utility.exceptionAlertDialog(HistorySummary.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(HistorySummary.this , Utility.getStackTrace(e));
+            //Utility.exceptionAlertDialog(HistorySummary.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
     }
 

@@ -39,6 +39,7 @@ import com.uav.autodebit.OTP.helper.AppSignatureHelper;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.Content_Message;
+import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.override.DrawableClickListener;
 import com.uav.autodebit.override.UAVEditText;
 import com.uav.autodebit.override.UAVProgressDialog;
@@ -171,7 +172,7 @@ public class Mobile_Postpaid extends Base_Activity implements View.OnClickListen
                 datalist.add(dataAdapterVO);
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+            Utility.showToast(this,Content_Message.error_message);
         }
         return  datalist;
     }
@@ -281,8 +282,8 @@ public class Mobile_Postpaid extends Base_Activity implements View.OnClickListen
                 }
             }
         }catch (Exception e){
-            e.printStackTrace();
-            Utility.exceptionAlertDialog(Mobile_Postpaid.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(this , Utility.getStackTrace(e));
+           // Utility.exceptionAlertDialog(Mobile_Postpaid.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
     }
 
@@ -364,8 +365,8 @@ public class Mobile_Postpaid extends Base_Activity implements View.OnClickListen
                             fetchbillcard.setVisibility(View.VISIBLE);
 
                         }catch (Exception e){
-                            e.printStackTrace();
-                            Utility.exceptionAlertDialog(this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+                            ExceptionsNotification.ExceptionHandling(this , Utility.getStackTrace(e));
+                           // Utility.exceptionAlertDialog(this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
                         }
                     },(VolleyResponse.OnError)(e)->{
                         // hide amount layout layout and net amount is null set and show fetch bill button
@@ -375,8 +376,7 @@ public class Mobile_Postpaid extends Base_Activity implements View.OnClickListen
                     }));
 
                 }catch (Exception e){
-                    e.printStackTrace();
-                    Utility.exceptionAlertDialog(this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+                    ExceptionsNotification.ExceptionHandling(this , Utility.getStackTrace(e));
                 }
                 break;
         }
@@ -443,8 +443,7 @@ public class Mobile_Postpaid extends Base_Activity implements View.OnClickListen
             }
 
         }catch (Exception e){
-            e.printStackTrace();
-            Utility.exceptionAlertDialog(this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(this , Utility.getStackTrace(e));
         }
     }
 

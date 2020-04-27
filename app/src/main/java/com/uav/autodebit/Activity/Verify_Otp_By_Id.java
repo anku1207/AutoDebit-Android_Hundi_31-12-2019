@@ -27,6 +27,7 @@ import com.uav.autodebit.BO.SignUpBO;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.Content_Message;
+import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.permission.PermissionHandler;
 import com.uav.autodebit.permission.PermissionUtils;
 import com.uav.autodebit.util.Utility;
@@ -98,8 +99,8 @@ public class Verify_Otp_By_Id extends Base_Activity implements TextWatcher,View.
                 startTimer(Long.parseLong(intent.getStringExtra("time")),"emailotp");
             }
         }catch (Exception e) {
-            e.printStackTrace();
-            Utility.exceptionAlertDialog(Verify_Otp_By_Id.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(Verify_Otp_By_Id.this , Utility.getStackTrace(e));
+           // Utility.exceptionAlertDialog(Verify_Otp_By_Id.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
 
         }
 

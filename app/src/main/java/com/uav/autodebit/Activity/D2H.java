@@ -19,6 +19,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.google.gson.Gson;
 import com.uav.autodebit.BO.D2HBO;
 import com.uav.autodebit.BO.ServiceBO;
@@ -26,6 +28,8 @@ import com.uav.autodebit.Interface.AlertSelectDialogClick;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
+import com.uav.autodebit.constant.Content_Message;
+import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.DialogInterface;
 import com.uav.autodebit.util.Utility;
@@ -182,8 +186,8 @@ public class D2H extends Base_Activity implements View.OnClickListener {
                 }
             });
         } catch (Exception e) {
-            e.printStackTrace();
-            Utility.exceptionAlertDialog(context,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(D2H.this , Utility.getStackTrace(e));
+           // Utility.exceptionAlertDialog(context,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
     }
 
@@ -308,10 +312,9 @@ public class D2H extends Base_Activity implements View.OnClickListener {
                     }
                 });
             }
-
         }catch (Exception e){
-            e.printStackTrace();
-            Utility.exceptionAlertDialog(context,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(D2H.this , Utility.getStackTrace(e));
+          //  Utility.exceptionAlertDialog(context,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
     }
     private void addBank(Button button,String mandateAmt) {
@@ -399,8 +402,8 @@ public class D2H extends Base_Activity implements View.OnClickListener {
                                                     }
                                                 }));
                                             } catch (Exception e) {
-                                                e.printStackTrace();
-                                                Utility.exceptionAlertDialog(context, "Alert!", "Something went wrong, Please try again!", "Report", Utility.getStackTrace(e));
+                                                ExceptionsNotification.ExceptionHandling(D2H.this , Utility.getStackTrace(e));
+                                                //Utility.exceptionAlertDialog(context, "Alert!", "Something went wrong, Please try again!", "Report", Utility.getStackTrace(e));
                                             }
                                         }
                                         @Override
@@ -425,8 +428,8 @@ public class D2H extends Base_Activity implements View.OnClickListener {
 
             });
         } catch (Exception e) {
-            e.printStackTrace();
-            Utility.exceptionAlertDialog(context,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(D2H.this , Utility.getStackTrace(e));
+            //Utility.exceptionAlertDialog(context,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
     }
 

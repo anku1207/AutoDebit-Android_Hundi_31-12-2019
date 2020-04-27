@@ -12,12 +12,14 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.core.graphics.drawable.DrawableCompat;
 
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.Content_Message;
+import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.override.DrawableClickListener;
 import com.uav.autodebit.override.UAVEditText;
 import com.uav.autodebit.permission.PermissionHandler;
@@ -76,6 +78,7 @@ public class DynamicLayout {
                 }
             });
         }catch (Exception e){
+            ExceptionsNotification.ExceptionHandling(context , Utility.getStackTrace(e));
         }
     }
     static String addMobileNumberInEdittext(Context context ,Intent data){

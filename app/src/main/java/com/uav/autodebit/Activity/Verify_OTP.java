@@ -33,6 +33,7 @@ import com.uav.autodebit.OTP.receiver.SmsBroadcastReceiver;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.Content_Message;
+import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.permission.PermissionHandler;
 import com.uav.autodebit.permission.PermissionUtils;
 import com.uav.autodebit.permission.Session;
@@ -119,8 +120,8 @@ public class Verify_OTP extends Base_Activity implements  TextWatcher,View.OnFoc
                 startTimer(Long.parseLong(customerVO.getAnonymousString()),"emailotp");
             }
         }catch (Exception e) {
-            e.printStackTrace();
-            Utility.exceptionAlertDialog(Verify_OTP.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(Verify_OTP.this , Utility.getStackTrace(e));
+            //Utility.exceptionAlertDialog(Verify_OTP.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
 
         resendotpbtn.setOnClickListener(new View.OnClickListener() {
