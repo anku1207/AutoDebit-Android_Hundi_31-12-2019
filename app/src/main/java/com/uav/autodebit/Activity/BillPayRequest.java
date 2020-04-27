@@ -400,6 +400,7 @@ public class BillPayRequest {
 
         }else {
             Utility.showSingleButtonDialogconfirmation(context,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                ok.dismiss();
                 ((Activity)context).startActivity(new Intent(context,HistorySummary.class).putExtra("historyId",oxigenTransactionVOSuccess.getAnonymousInteger().toString()));
                 ((Activity)context).finish();
             }),"",oxigenTransactionVOSuccess.getAnonymousString());

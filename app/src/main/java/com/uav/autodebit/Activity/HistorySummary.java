@@ -1,5 +1,6 @@
 package com.uav.autodebit.Activity;
 
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import androidx.core.content.res.ResourcesCompat;
@@ -38,8 +39,6 @@ public class HistorySummary extends Base_Activity implements View.OnClickListene
     LinearLayout main,payment_detail_Layout;
     TextView service_name,number,order_id,status;
     ImageView service_Icon,back_activity_button;
-    HashMap<Integer,JSONObject> colorhash;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,38 +59,6 @@ public class HistorySummary extends Base_Activity implements View.OnClickListene
 
         String historyId=getIntent().getStringExtra("historyId");
 
-        try {
-           colorhash=new HashMap<>();
-
-            JSONObject jsonObject =new JSONObject();
-            jsonObject.put("color","#ff0000");
-            jsonObject.put("name","panding");
-            colorhash.put(StatusVO.PENDING,jsonObject);
-
-            jsonObject =new JSONObject();
-            jsonObject.put("color","#00b300");
-            jsonObject.put("name","success");
-            colorhash.put(StatusVO.SUCCESSFULL,jsonObject);
-
-            jsonObject =new JSONObject();
-            jsonObject.put("color","#00b300");
-            jsonObject.put("name","");
-            colorhash.put(0,jsonObject);
-
-            jsonObject =new JSONObject();
-            jsonObject.put("color","#ff0000");
-            jsonObject.put("name","fail");
-            colorhash.put(6,jsonObject);
-
-
-
-        }catch (Exception e){
-            e.printStackTrace();
-            Utility.exceptionAlertDialog(HistorySummary.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
-
-        }
-
-
 
         getHistorySummaryById(historyId,new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
             try {
@@ -107,9 +74,8 @@ public class HistorySummary extends Base_Activity implements View.OnClickListene
                 number.setText(respjsonObject.getJSONObject("data").getString("no"));
                 order_id.setText(respjsonObject.getJSONObject("data").getString("txnId"));
 
-                JSONObject  jsonObject1 =colorhash.get(respjsonObject.getJSONObject("data").getInt("status"));
-                status.setText(jsonObject1.getString("name"));
-                status.setTextColor(Color.parseColor(jsonObject1.getString("color")));
+                status.setText(respjsonObject.getJSONObject("data").getString("statusName"));
+                status.setTextColor(Color.parseColor(respjsonObject.getJSONObject("data").getString("statusColor")));
 
                 JSONArray jsonArray =respjsonObject.getJSONArray("chargesarray");
 

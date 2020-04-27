@@ -5,9 +5,11 @@ import android.content.Context;
 import android.database.Cursor;
 import android.widget.Toast;
 
+import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.CustomerNotificationVO;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class GetSqlLiteData {
@@ -32,12 +34,11 @@ public class GetSqlLiteData {
                     String activityname=cursor.getString(cursor.getColumnIndex("ActivityName"));
                     String moveactivity=cursor.getString(cursor.getColumnIndex("MoveActivity"));
 
-
                     CustomerNotificationVO customerNotificationVO =new CustomerNotificationVO();
                     customerNotificationVO.setTitle(title);
                     customerNotificationVO.setMessage(message);
                     customerNotificationVO.setBigImage(imageUrl);
-                    customerNotificationVO.setCreatedAt(time);
+                    customerNotificationVO.setCreatedAt(Utility.convertDate2String(new Date(Long.parseLong(time)),"dd-MM-yyyy hh:mm:ss"));
                     customerNotificationVO.setServiceIcon(smallimage);
                     customerNotificationVO.setActivityName(activityname);
                     customerNotificationVOS.add(customerNotificationVO);

@@ -132,7 +132,6 @@ public class Notifications extends Base_Activity implements View.OnClickListener
 
                     ArrayList<CustomerNotificationVO> datalist= (ArrayList<CustomerNotificationVO>) new Gson().fromJson(responseVO.getAnonymousString(), new TypeToken<ArrayList<CustomerNotificationVO>>() { }.getType());
                     for(CustomerNotificationVO customerNotificationVO:datalist){
-                        customerNotificationVO.setCreatedAt(Utility.convertDate2String(new Date(Long.parseLong(customerNotificationVO.getCreatedAt())),"dd-MM-yyyy hh:mm:ss"));
                         InsertDateOnSqlLite.insertNotification(Notifications.this,customerNotificationVO);
                     }
                     customerNotificationVOS= GetSqlLiteData.getNotification(Notifications.this);
