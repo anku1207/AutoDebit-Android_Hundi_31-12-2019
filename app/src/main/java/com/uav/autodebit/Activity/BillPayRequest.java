@@ -24,6 +24,7 @@ import com.uav.autodebit.Interface.PaymentGatewayResponse;
 import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
+import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.DialogInterface;
 import com.uav.autodebit.util.Utility;
@@ -63,9 +64,7 @@ public class BillPayRequest {
 
             HashMap<String, Object> params = new HashMap<String, Object>();
             ConnectionVO connectionVO = Electricity_BillBO.oxiFetchBill();
-
             params.put("volley",gson.toJson(oxigenTransactionVO));
-
             Log.w("proceedFetchBill",gson.toJson(oxigenTransactionVO));
             connectionVO.setParams(params);
 
@@ -102,7 +101,7 @@ public class BillPayRequest {
             });
         } catch (Exception e) {
             e.printStackTrace();
-            Utility.exceptionAlertDialog(context,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(context , Utility.getStackTrace(e));
         }
     }
 
@@ -140,7 +139,7 @@ public class BillPayRequest {
             });
         }catch (Exception e){
             e.printStackTrace();
-            Utility.exceptionAlertDialog(context,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(context , Utility.getStackTrace(e));
         }
     }
 
@@ -274,7 +273,7 @@ public class BillPayRequest {
                             confirmationDialogInterface.onOk(null);
                         }catch (Exception e){
                             e.printStackTrace();
-                            Utility.exceptionAlertDialog(context,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+                            ExceptionsNotification.ExceptionHandling(context , Utility.getStackTrace(e));
                         }
                     }
                     @Override
@@ -285,7 +284,7 @@ public class BillPayRequest {
 
         }catch (Exception e){
             e.printStackTrace();
-            Utility.exceptionAlertDialog(context,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(context , Utility.getStackTrace(e));
 
         }
     }

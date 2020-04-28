@@ -383,14 +383,7 @@ public class PanVerification extends Base_Activity implements  PermissionUtils.P
         } catch (ParseException e) {
             ExceptionsNotification.ExceptionHandling(PanVerification.this , Utility.getStackTrace(e));
         }
-
-
-
-
-
-
     }
-
 
     public void galleryimage(){
         Intent galleryIntent = new Intent(Intent.ACTION_PICK,

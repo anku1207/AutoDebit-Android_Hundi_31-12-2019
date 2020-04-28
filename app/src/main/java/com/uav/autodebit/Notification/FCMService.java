@@ -152,7 +152,7 @@ public class FCMService extends FirebaseMessagingService {
             /*   }*/
         }catch (Exception e) {
             Log.e(TAG, "Exception: " + e.getMessage());
-            ExceptionsNotification.ExceptionHandling(getApplicationContext() , Utility.getStackTrace(new Exception()));
+            ExceptionsNotification.ExceptionHandling(getApplicationContext() , Utility.getStackTrace(e));
         }
     }
 
