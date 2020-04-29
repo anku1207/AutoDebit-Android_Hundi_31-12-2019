@@ -76,7 +76,7 @@ public class ApplicationConstant {
           //  return "http://164.52.192.45";
         }else{
             return  "http://205.147.103.18" ;
-         // return "http://192.168.1.35";
+          //return "http://192.168.1.34";
         }
     }
 }

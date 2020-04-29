@@ -362,19 +362,23 @@ public class BillPayRequest {
                 }else {
                     if(oxigenValidateResponce.getTypeId()==null){
                         Utility.showSingleButtonDialog(context,"Error !","Something went wrong, Please try again!",false);
-                        return;
-                    }
+                    }else{
+                        if(oxigenValidateResponce.getPaymentDialogShowMandate()){
+                            //if due date > 2 paybill date show payment dialog select recharge mode
+                            Utility.showSelectPaymentTypeDialog(context,"Payment Type",oxigenValidateResponce.getPaymentType(),new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess)(position)->{
+                                int selectPosition=Integer.parseInt(position);
 
-                    Utility.showSelectPaymentTypeDialog(context,"Payment Type",oxigenValidateResponce.getPaymentType(),new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess)(position)->{
-                        int selectPosition=Integer.parseInt(position);
-
-                        if(selectPosition==0 ){
-                           paymentGatewayResponse.onEnach(oxigenValidateResponce);
+                                if(selectPosition==0 ){
+                                    paymentGatewayResponse.onEnach(oxigenValidateResponce);
+                                }else {
+                                    paymentGatewayResponse.onPg(oxigenValidateResponce);
+                                }
+                            }));
                         }else {
+                            //if due date <  2 paybill date not show payment dialog and move to pg automatic
                             paymentGatewayResponse.onPg(oxigenValidateResponce);
                         }
-                    }));
-
+                    }
                 }
             }
         });

@@ -19,6 +19,8 @@ public class BaseVO {
     private boolean eventIs;
     private List<String> paymentType;
     private String htmlString;
+    private Boolean paymentDialogShowMandate;
+
 
 
 
@@ -144,5 +146,13 @@ public class BaseVO {
 
     public void setHtmlString(String htmlString) {
         this.htmlString = htmlString;
+    }
+
+    public Boolean getPaymentDialogShowMandate() {
+        return paymentDialogShowMandate;
+    }
+
+    public void setPaymentDialogShowMandate(Boolean paymentDialogShowMandate) {
+        this.paymentDialogShowMandate = paymentDialogShowMandate;
     }
 }
