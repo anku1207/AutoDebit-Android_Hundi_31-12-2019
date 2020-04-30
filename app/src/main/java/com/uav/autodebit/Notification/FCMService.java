@@ -113,7 +113,7 @@ public class FCMService extends FirebaseMessagingService {
             String imageUrl = customerNotificationVO.getBigImage();
             String timestamp = customerNotificationVO.getCreatedAt();
             String smallImageurl = customerNotificationVO.getServiceIcon();
-            String activityname = customerNotificationVO.getActivityName() != null ? customerNotificationVO.getActivityName() : "SplashScreen";
+            String activityname = customerNotificationVO.getActivityName() != null ? customerNotificationVO.getActivityName() : "Splash_Screen";
             //  JSONObject payload = data.getJSONObject("payload");
             String moveactivityjson = customerNotificationVO.getMoveActivity();
 
@@ -164,6 +164,8 @@ public class FCMService extends FirebaseMessagingService {
             }
         } catch (Exception e) {
             Log.w("error",e.getMessage());
+            ExceptionsNotification.ExceptionHandling(getApplicationContext() , Utility.getStackTrace(e));
+
 
         }
     }

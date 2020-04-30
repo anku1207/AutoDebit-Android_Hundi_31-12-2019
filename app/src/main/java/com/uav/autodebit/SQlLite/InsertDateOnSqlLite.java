@@ -22,7 +22,7 @@ public class InsertDateOnSqlLite {
             contentValues.put("ImageUrl",customerNotificationVO.getBigImage());
             contentValues.put("TimeStamp",customerNotificationVO.getCreatedAt());
             contentValues.put("SmallImage",customerNotificationVO.getServiceIcon());
-            contentValues.put("ActivityName",customerNotificationVO.getActivityName()!=null?customerNotificationVO.getActivityName():"SplashScreen");
+            contentValues.put("ActivityName",customerNotificationVO.getActivityName()!=null?customerNotificationVO.getActivityName():"Splash_Screen");
             contentValues.put("MoveActivity",customerNotificationVO.getMoveActivity());
 
             DataBaseHelper.myDataBase.beginTransaction();

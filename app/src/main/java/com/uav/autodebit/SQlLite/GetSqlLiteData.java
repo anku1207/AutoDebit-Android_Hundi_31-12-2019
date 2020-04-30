@@ -38,7 +38,7 @@ public class GetSqlLiteData {
                     customerNotificationVO.setTitle(title);
                     customerNotificationVO.setMessage(message);
                     customerNotificationVO.setBigImage(imageUrl);
-                    customerNotificationVO.setCreatedAt(Utility.convertDate2String(new Date(Long.parseLong(time)),"dd-MM-yyyy hh:mm:ss"));
+                    customerNotificationVO.setCreatedAt(time!=null?Utility.convertDate2String(new Date(Long.parseLong(time)),"dd-MM-yyyy hh:mm:ss"):Utility.convertDate2String(new Date(),"dd-MM-yyyy hh:mm:ss"));
                     customerNotificationVO.setServiceIcon(smallimage);
                     customerNotificationVO.setActivityName(activityname);
                     customerNotificationVOS.add(customerNotificationVO);
