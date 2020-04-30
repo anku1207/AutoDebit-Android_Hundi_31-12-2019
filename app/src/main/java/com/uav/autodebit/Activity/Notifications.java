@@ -8,6 +8,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -24,6 +27,7 @@ import com.uav.autodebit.SQlLite.DataBaseHelper;
 import com.uav.autodebit.SQlLite.GetSqlLiteData;
 import com.uav.autodebit.SQlLite.InsertDateOnSqlLite;
 import com.uav.autodebit.adpater.NotificationAdapter;
+import com.uav.autodebit.adpater.RecyclerItemTouchHelper;
 import com.uav.autodebit.constant.Content_Message;
 import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.permission.Session;
@@ -45,7 +49,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-public class Notifications extends Base_Activity implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
+public class Notifications extends Base_Activity implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener  {
     RecyclerView recyclerView;
     ImageView back_activity_button;
     SwipeRefreshLayout mSwipeRefreshLayout;
@@ -76,6 +80,10 @@ public class Notifications extends Base_Activity implements View.OnClickListener
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
         recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+       // recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+
+
 
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary,
@@ -209,4 +217,6 @@ public class Notifications extends Base_Activity implements View.OnClickListener
         // Fetching data from server
         loadRecyclerViewData();
     }
+
+
 }
