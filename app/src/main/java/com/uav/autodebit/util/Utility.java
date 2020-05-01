@@ -473,7 +473,8 @@ public class Utility {
 
         try {
             String[] imagename=ImageName.split("\\.");
-            drawable= c.getResources().getDrawable(c.getResources().getIdentifier(imagename[0], "drawable", c.getPackageName()));
+            int id=c.getResources().getIdentifier(imagename[0],"drawable",c.getPackageName());
+            drawable= ContextCompat.getDrawable(c,id);
         }catch (Exception e){
             drawable=null;
         }
