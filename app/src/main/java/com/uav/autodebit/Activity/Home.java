@@ -45,6 +45,7 @@ import com.uav.autodebit.HtmlPage.HtmlPages;
 import com.uav.autodebit.Interface.AlertSelectDialogClick;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.Interface.ServiceClick;
+import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
 ;
 import com.uav.autodebit.adpater.BannerAdapter;
@@ -67,6 +68,7 @@ import com.uav.autodebit.vo.CustomerVO;
 import com.uav.autodebit.vo.DMRC_Customer_CardVO;
 import com.uav.autodebit.vo.LocalCacheVO;
 import com.uav.autodebit.vo.ServiceTypeVO;
+import com.uav.autodebit.vo.UberVoucherVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
 import com.uav.autodebit.volley.VolleyUtils;
 
@@ -782,9 +784,11 @@ public class Home extends Base_Activity
                     Session.set_Data_Sharedprefence(Home.this, Session.LOCAL_CACHE,customerVO.getLocalCache());
                     loadDateInRecyclerView();
 
-                    if(serviceId==2){
+                    if(serviceId==ApplicationConstant.Dmrc){
                         dmrcCardRequest();
-                    }else {
+                    }else if(serviceId==ApplicationConstant.Uber){
+                        actionUberServiceOnclick(serviceId);
+                    } else{
                         Intent intent;
                         intent =new Intent(Home.this, classname);
                         intent.putExtra("serviceid",serviceId+"");
@@ -798,6 +802,39 @@ public class Home extends Base_Activity
             //Utility.exceptionAlertDialog(Home.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
 
         }
+    }
+
+
+    public void actionUberServiceOnclick(int serviceId){
+        UberApiCall.CheckUberVaucherByCustomerId(this,new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
+            UberVoucherVO uberVoucherVO = (UberVoucherVO) success;
+            if(uberVoucherVO.isEventIs()){
+
+                UberApiCall.getUberVoucher(this,new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
+                    UberVoucherVO getUberVoucherResp = (UberVoucherVO) s;
+                    try {
+                        String uri =getUberVoucherResp.getVoucherLinke();
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse(uri));
+                        startActivity(intent);
+                    } catch (Exception e) {
+                        try {
+                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.ubercab")));
+                        } catch (android.content.ActivityNotFoundException anfe) {
+                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=com.ubercab")));
+                        }
+                    }
+                }));
+            }else {
+                Intent intent = new Intent(Home.this,Uber.class);
+                intent.putExtra("voucherList",uberVoucherVO.getAnonymousString());
+                intent.putExtra("showAddVoucherButton",uberVoucherVO.isShowAddVoucherBtn());
+                startActivity(intent);
+
+            }
+
+        }));
+
     }
 
     //bank list select bank for service
@@ -921,10 +958,10 @@ public class Home extends Base_Activity
         switch (view.getId()){
 
             case R.id.mainwallet:
-               /* try {
-                    String uri ="https://r.uber.com/FfNRcXC111";
+                try {
+                   // String uri ="https://r.uber.com/FfNRcXC111";
                     //String uri = "https://www.amazon.in/Infinity-Glide-500-Wireless-Headphones/dp/B07W5MZY9J/ref=ac_session_sims_23_3/262-5272901-5384510?_encoding=UTF8&pd_rd_i=B07W6NDVSR&pd_rd_r=5a607169-3605-4bbd-858b-3fe49d3b2d57&pd_rd_w=RloOb&pd_rd_wg=EuSlK&pf_rd_p=a6472ab3-4fb9-4298-9be8-6a9080bff261&pf_rd_r=J4EWD6QHMA9EBX8AG94R&psc=1&refRID=J4EWD6QHMA9EBX8AG94R&th=1";
-                   //String uri = "uber://?action=setPickup&pickup=my_location";
+                    String uri = "uber://?action=setPickup&pickup=my_location";
                     Intent intent = new Intent(Intent.ACTION_VIEW);
                     intent.setData(Uri.parse(uri));
                     startActivity(intent);
@@ -935,7 +972,7 @@ public class Home extends Base_Activity
                         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=com.ubercab")));
                     }
                 }
-               */ break;
+                break;
             case R.id.profile:
                 startActivity(new Intent(this,Profile_Activity.class));
                 break;

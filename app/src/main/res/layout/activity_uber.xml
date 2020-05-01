@@ -101,107 +101,20 @@
                 app:tabIndicatorHeight="0dp"
                 />
         </RelativeLayout>
-    </LinearLayout>
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fillViewport="true"
-        android:id="@+id/scrollView"
-        >
 
 
-        <LinearLayout
-            android:layout_width="match_parent"
+
+        <Button
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp">
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardElevation="7dp"
-                android:layout_margin="10dp"
-                app:cardCornerRadius="15dp"
-                >
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/ava_user"
-                    android:backgroundTint="@color/white"
-                    android:hint="First Name"
-                    android:singleLine="true"
-                    android:id="@+id/name"
-                    android:text=""
-                    style="@style/commonEdittextStyle"
-                    android:digits="@string/NameDigits"
-                    android:inputType="textCapWords"
-                    android:maxLines="1"
-                    android:maxLength="64"
-                    />
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardElevation="7dp"
-                android:layout_margin="10dp"
-                app:cardCornerRadius="15dp"
-                >
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/ava_user"
-                    android:backgroundTint="@color/white"
-                    android:hint="Last Name"
-                    android:singleLine="true"
-                    android:id="@+id/lname"
-                    style="@style/commonEdittextStyle"
-                    android:digits="@string/NameDigits"
-                    android:inputType="textCapWords"
-                    android:maxLines="1"
-                    android:maxLength="64"
-                    />
-            </androidx.cardview.widget.CardView>
-
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardElevation="7dp"
-                android:layout_margin="10dp"
-                app:cardCornerRadius="15dp"
-                >
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/email"
-                    android:backgroundTint="@color/white"
-                    android:hint="Email"
-                    android:singleLine="true"
-                    android:id="@+id/email"
-                    style="@style/commonEdittextStyle"
-                    android:maxLines="1"
-                    android:maxLength="256"
-                    />
-            </androidx.cardview.widget.CardView>
-
-            <Button
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/proceed"
-                android:text="Proceed"
-                android:layout_gravity="center"
-                android:layout_marginBottom="20dp"
-                android:layout_marginTop="30dp"
-                android:background="@drawable/cornerbutton"
-                android:textColor="@color/white"
-                />
-        </LinearLayout>
-
-    </ScrollView>
-
-
-
+            android:id="@+id/addVoucher"
+            android:text="Create New Uber Voucher"
+            android:layout_gravity="center"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/cornerbutton"
+            android:textColor="@color/white"
+            android:padding="10dp"
+            />
+    </LinearLayout>
 </LinearLayout>

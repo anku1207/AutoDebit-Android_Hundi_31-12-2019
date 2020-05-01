@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Build;
 
 import androidx.annotation.Nullable;
@@ -24,14 +25,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
 import com.uav.autodebit.BO.UberBO;
 import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
 import com.uav.autodebit.adpater.CustomPagerAdapter;
+import com.uav.autodebit.adpater.Uber_PagerAdapter;
 import com.uav.autodebit.override.UAVProgressDialog;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.BackgroundAsyncServiceGetList;
@@ -42,6 +46,7 @@ import com.uav.autodebit.vo.CustomerVO;
 import com.uav.autodebit.vo.DMRC_Customer_CardVO;
 import com.uav.autodebit.vo.DmrcCardStatusVO;
 import com.uav.autodebit.vo.UberVO;
+import com.uav.autodebit.vo.UberVoucherVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
 import com.uav.autodebit.volley.VolleyUtils;
 
@@ -53,26 +58,18 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Uber extends Base_Activity implements View.OnClickListener {
-    EditText name,lastname,email;
-    Button proceed;
+    Button addVoucher;
     ImageView back_activity_button;
 
     LinearLayout main,addcardlistlayout;
-    EditText [] edittextArray;
-    ScrollView scrollView;
     ViewPager viewPager;
     TabLayout tabLayout;
     UAVProgressDialog pd;
+    Gson gson;
 
-    UberVO uberVO;
+    boolean isAddVoucherBtn;
 
-    @TargetApi(Build.VERSION_CODES.O)
-    private void disableAutofill() {
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            getWindow().getDecorView().setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO_EXCLUDE_DESCENDANTS);
-        }
 
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,191 +77,69 @@ public class Uber extends Base_Activity implements View.OnClickListener {
         setContentView(R.layout.activity_uber);
         getSupportActionBar().hide();
 
-        //disableAutoFill
-        disableAutofill();
 
-        name=findViewById(R.id.name);
-        email=findViewById(R.id.email);
-        lastname=findViewById(R.id.lname);
-        proceed=findViewById(R.id.proceed);
+        addVoucher=findViewById(R.id.addVoucher);
         back_activity_button=findViewById(R.id.back_activity_button);
         main=findViewById(R.id.main);
         addcardlistlayout=findViewById(R.id.addcardlistlayout);
-        scrollView=findViewById(R.id.scrollView);
 
-        scrollView.setVisibility(View.GONE);
-
-        addcardlistlayout.removeAllViews();
+        gson=new Gson();
 
         pd=new UAVProgressDialog(this);
         tabLayout =findViewById(R.id.indicator);
 
-        proceed.setOnClickListener(this);
+        addVoucher.setOnClickListener(this);
         back_activity_button.setOnClickListener(this);
 
-        edittextArray= new EditText[]{name, lastname, email};
-
-        getUberDetails(new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
-            uberVO =(UberVO)s;
-            setCustomerDetail(uberVO);
-            addRequestDmrcCardBanner(uberVO);
-        }));
-    }
-
-    private void getUberDetails(VolleyResponse volleyResponse){
-        HashMap<String, Object> params = new HashMap<String, Object>();
-        ConnectionVO connectionVO = UberBO.getUberDetails();
-
-        UberVO uberVO =new UberVO();
-
-        CustomerVO  customerVO =new CustomerVO();
-        customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(Uber.this)));
-        uberVO.setCustomer(customerVO);
-
-        String json = new Gson().toJson(uberVO);
-        params.put("volley", json);
-        connectionVO.setParams(params);
-        Log.w("setBankForService",params.toString());
-        VolleyUtils.makeJsonObjectRequest(this,connectionVO , new VolleyResponseListener() {
-            @Override
-            public void onError(String message) {
-            }
-            @Override
-            public void onResponse(Object resp) throws JSONException {
-                JSONObject response = (JSONObject) resp;
-                Gson gson = new Gson();
-                UberVO uberVO = gson.fromJson(response.toString(), UberVO.class);
-
-                if(uberVO.getStatusCode().equals("400")){
-                    ArrayList error = (ArrayList) uberVO.getErrorMsgs();
-                    StringBuilder sb = new StringBuilder();
-                    for(int i=0; i<error.size(); i++){
-                        sb.append(error.get(i)).append("\n");
-                    }
-                    Utility.showSingleButtonDialog(Uber.this,"Alert",sb.toString(),false);
-                }else {
-                    volleyResponse.onSuccess(uberVO);
-
-                }
-            }
-        });
-    }
-
-
-    public void addRequestDmrcCardBanner(UberVO uberVO){
-        addcardlistlayout.removeAllViewsInLayout();
-
-        if(uberVO.getUberCustomerList()!=null && uberVO.getUberCustomerList().size()>0){
-
-            //Show Addcard btn
-            if(uberVO.getUberId()==null){
-                showAddCardBtn();
-            }
-            ArrayList<UberVO> listforcard= (ArrayList<UberVO>) uberVO.getUberCustomerList();
-            viewPager=Utility.getViewPager(Uber.this);
-            viewPager.setOverScrollMode(View.OVER_SCROLL_NEVER);
-            getdata(listforcard);
+        List<UberVoucherVO> uberVoucherVOS = (ArrayList<UberVoucherVO>) gson.fromJson(getIntent().getStringExtra("voucherList"), new TypeToken<ArrayList<UberVoucherVO>>() { }.getType());
+        isAddVoucherBtn=getIntent().getBooleanExtra("showAddVoucherButton",false);
+        if(isAddVoucherBtn){
+            addVoucher.setVisibility(View.VISIBLE);
         }else{
-
-            CardView cardView =Utility.getCardViewStyle(Uber.this);
-            ImageView imageView =Utility.getImageView(Uber.this);
-            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-
-            Picasso.with(this)
-                    .load(uberVO.getImage())
-                    .into(imageView, new com.squareup.picasso.Callback() {
-                        @Override
-                        public void onSuccess() {
-                            //do smth when picture is loaded successfully
-                        }
-                        @Override
-                        public void onError() {
-
-                        }
-                    });
-            cardView.addView(imageView);
-            addcardlistlayout.addView(cardView);
+            addVoucher.setVisibility(View.GONE);
         }
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        scrollView.fullScroll(ScrollView.FOCUS_UP);
-    }
 
+        addVoucherList(uberVoucherVOS);
 
-    @SuppressLint("ResourceType")
-    public void showAddCardBtn(){
-
-        LinearLayout linearLayout =findViewById(R.id.layoutmainBanner);
-
-
-        TextView textView = Utility.getTextView(Uber.this,"Add On");
-        textView.setPaintFlags(textView.getPaintFlags() |   Paint.UNDERLINE_TEXT_FLAG);
-        textView.setTextColor(getApplication().getResources().getColorStateList(R.drawable.text_change_color_blue));
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 17);
-        textView.setId(1);
-
-        Typeface typeface = ResourcesCompat.getFont(this, R.font.poppinssemibold);
-        textView.setTypeface(typeface ,Typeface.BOLD);
-        textView.setTag("sfdsf");
-
-        if(linearLayout.getChildCount()==1){
-            linearLayout.addView(textView);
-        }
-        scrollView.setAnimation(null);
-        scrollView.setVisibility(View.GONE);
-
-        textView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                uberVO=new UberVO();
-
-                email.setText(null);
-                name.setText(null);
-                lastname.setText(null);
-
-                scrollviewAnimationAndVisibility();
-                Utility.removeEle(textView);
-            }
-        });
-    }
-
-    private void scrollviewAnimationAndVisibility(){
-        scrollView.setVisibility(View.VISIBLE);
-        TranslateAnimation animate = new TranslateAnimation(
-                0,
-                0,
-                500,
-                0);
-        animate.setDuration(1000);
-        animate.setFillAfter(true);
-        scrollView.startAnimation(animate);
 
     }
 
 
-    public void getdata(ArrayList<UberVO> listforcard){
+
+    public void addVoucherList( List<UberVoucherVO> uberVoucherVOS ){
+        viewPager=Utility.getViewPager(Uber.this);
+        viewPager.setOverScrollMode(View.OVER_SCROLL_NEVER);
+        getdata(uberVoucherVOS);
+    }
+
+
+
+
+
+
+    public void getdata(List<UberVoucherVO> uberVoucherVOS ){
         BackgroundAsyncServiceGetList backgroundAsyncServiceGetList =new BackgroundAsyncServiceGetList(pd, false, new BackgroundAsyncServiceGetListInterface.BackgroundServiceInterface() {
             @Override
             public List doInBackGround(BackgroundAsyncServiceGetListInterface backgroundAsyncServiceGetListInterface) {
 
-                ArrayList<DMRC_Customer_CardVO> dmrc_customer_cardVOS=new ArrayList<>();
-                for(UberVO uberVO :listforcard ){
-                    DMRC_Customer_CardVO dmrc_customer_cardVO =new DMRC_Customer_CardVO();
-                    dmrc_customer_cardVO.setCustomerName(uberVO.getFirstName());
-                    dmrc_customer_cardVO.setCardNo(uberVO.getLastName());
-                    DmrcCardStatusVO dmrcCardStatusVO =new DmrcCardStatusVO();
-                    dmrcCardStatusVO.setStatusName(null);
-                    dmrc_customer_cardVO.setIssueDate(null);
-                    dmrc_customer_cardVO.setDmrccardStaus(dmrcCardStatusVO);
+                ArrayList<UberVoucherVO> uberVoucherVOArrayList=new ArrayList<>();
+                for(UberVoucherVO uberVoucherVO :uberVoucherVOS ){
+                    UberVoucherVO voucherVO =new UberVoucherVO();
 
-                    dmrc_customer_cardVOS.add(dmrc_customer_cardVO);
+                    voucherVO.setVoucherNo(uberVoucherVO.getVoucherNo());
+                    voucherVO.setIssueAt(uberVoucherVO.getIssueAt());
+                    voucherVO.setVoucherExprieDate(uberVoucherVO.getVoucherExprieDate());
+                    uberVoucherVOArrayList.add(voucherVO);
+
+
+
                 }
-                return backgroundAsyncServiceGetListInterface.doInBackGround.doInBackGround(dmrc_customer_cardVOS);
+                return backgroundAsyncServiceGetListInterface.doInBackGround.doInBackGround(uberVoucherVOArrayList);
             }
             @Override
             public void doPostExecute(List list) {
-                CustomPagerAdapter models =new CustomPagerAdapter(list,Uber.this);
-                viewPager.setAdapter(models);
+                Uber_PagerAdapter uber_pagerAdapter =new Uber_PagerAdapter(list,Uber.this);
+                viewPager.setAdapter(uber_pagerAdapter);
                 viewPager.setPadding(0,0,0,0);
                 tabLayout.setupWithViewPager(viewPager, false);
                 Utility.disable_Tab(tabLayout);
@@ -278,26 +153,27 @@ public class Uber extends Base_Activity implements View.OnClickListener {
     }
 
 
-    public void setCustomerDetail(UberVO uberVO){
-        scrollviewAnimationAndVisibility();
-        if(uberVO.getFirstName()!=null){
-            name.setText(uberVO.getFirstName());
-        }
-        if(uberVO.getLastName()!=null){
-            lastname.setText(uberVO.getLastName());
-        }
-        if(uberVO.getEmail()!=null){
-            email.setText(uberVO.getEmail());
-        }
-    }
 
 
     @Override
     public void onClick(View view) {
         switch (view.getId()){
-            case R.id.proceed:
-                if(!Utility.setErrorOnEdittext(edittextArray))return;
-                uberSaveDetail();
+            case R.id.addVoucher:
+                UberApiCall.getUberVoucher(this,new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
+                    UberVoucherVO getUberVoucherResp = (UberVoucherVO) s;
+                    try {
+                        String uri =getUberVoucherResp.getVoucherLinke();
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse(uri));
+                        startActivity(intent);
+                    } catch (Exception e) {
+                        try {
+                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.ubercab")));
+                        } catch (android.content.ActivityNotFoundException anfe) {
+                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=com.ubercab")));
+                        }
+                    }
+                }));
                 break;
             case R.id.back_activity_button :
                 finish();
@@ -305,79 +181,7 @@ public class Uber extends Base_Activity implements View.OnClickListener {
         }
     }
 
-    private void uberSaveDetail() {
-
-        HashMap<String, Object> params = new HashMap<String, Object>();
-        ConnectionVO connectionVO = UberBO.saveUberCustomerDetails();
-
-        UberVO uberVOrequest =new UberVO();
-
-        CustomerVO customerVO =new CustomerVO();
-        customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(Uber.this)));
-        uberVOrequest.setCustomer(customerVO);
-        uberVOrequest.setFirstName(name.getText().toString());
-        uberVOrequest.setLastName(lastname.getText().toString());
-        uberVOrequest.setEmail(email.getText().toString());
-        uberVOrequest.setUberId(uberVO.getUberId());
 
 
-        String json = new Gson().toJson(uberVOrequest);
-        params.put("volley", json);
-        connectionVO.setParams(params);
-        Log.w("uberSaveDetail",params.toString());
-        VolleyUtils.makeJsonObjectRequest(this,connectionVO , new VolleyResponseListener() {
-            @Override
-            public void onError(String message) {
-            }
-            @Override
-            public void onResponse(Object resp) throws JSONException {
-                JSONObject response = (JSONObject) resp;
-                Gson gson = new Gson();
-                UberVO uberVO = gson.fromJson(response.toString(), UberVO.class);
-
-                if(uberVO.getStatusCode().equals("400")){
-                    ArrayList error = (ArrayList) uberVO.getErrorMsgs();
-                    StringBuilder sb = new StringBuilder();
-                    for(int i=0; i<error.size(); i++){
-                        sb.append(error.get(i)).append("\n");
-                    }
-                    Utility.showSingleButtonDialog(Uber.this,"Alert",sb.toString(),false);
-                }else if(uberVO.getStatusCode().equals("E_1")){
-
-                    Intent intent=new Intent(Uber.this,Verify_Otp_By_Id.class);
-                    intent.putExtra("id",uberVO.getUberId().toString());
-                    intent.putExtra("type","email");
-                    intent.putExtra("action",uberVO.getActionname());
-                    intent.putExtra("time",uberVO.getAnonymousString());
-                    intent.putExtra("otp_display",uberVO.getEmail());
-                    startActivityForResult(intent,100);
-
-                } else{
-                    //set session customer or local cache
-                    addRequestDmrcCardBanner(uberVO);
-                    Utility.showSingleButtonDialog(Uber.this,"Alert",uberVO.getAnonymousString(),false);
-
-                }
-            }
-        });
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        getUberDetails(new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
-            uberVO =(UberVO)s;
-            setCustomerDetail(uberVO);
-            addRequestDmrcCardBanner(uberVO);
-        }));
-
-        if(resultCode==RESULT_OK){
-            if(requestCode==100 ){
-                Utility.showSingleButtonDialog(Uber.this,"Alert",data.getStringExtra("msg"),false);
-            }
-        }
-
-    }
 
 }

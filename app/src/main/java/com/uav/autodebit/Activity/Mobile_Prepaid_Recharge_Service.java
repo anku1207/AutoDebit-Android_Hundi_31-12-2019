@@ -327,6 +327,8 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                 Gson gson=new Gson();
                 String json = gson.toJson(oxigenPlanVO);
                 params.put("volley", json);
+
+                Log.w("getPlan",json);
                 connectionVO.setParams(params);
 
                 VolleyUtils.makeJsonObjectRequest(this, connectionVO, new VolleyResponseListener() {

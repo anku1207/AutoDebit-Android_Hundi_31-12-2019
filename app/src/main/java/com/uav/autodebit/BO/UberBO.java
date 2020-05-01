@@ -22,4 +22,19 @@ public class UberBO implements Serializable {
         return connectionVO;
     }
 
+
+    public static ConnectionVO CheckUberVaucherByCustomerId() {
+        ConnectionVO connectionVO = new ConnectionVO();
+        connectionVO.setMethodName("CheckUberVaucherByCustomerId");
+        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
+        return connectionVO;
+    }
+
+    public static ConnectionVO getUberVoucher() {
+        ConnectionVO connectionVO = new ConnectionVO();
+        connectionVO.setMethodName("getUberVoucher");
+        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
+        return connectionVO;
+    }
+
 }
