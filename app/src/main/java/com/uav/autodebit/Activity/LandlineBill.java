@@ -4,10 +4,13 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.res.ResourcesCompat;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -32,7 +35,9 @@ import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.Content_Message;
 import com.uav.autodebit.exceptions.ExceptionsNotification;
+import com.uav.autodebit.override.UAVEditText;
 import com.uav.autodebit.override.UAVProgressDialog;
+import com.uav.autodebit.permission.PermissionUtils;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.BackgroundAsyncService;
 import com.uav.autodebit.util.BackgroundServiceInterface;
@@ -48,9 +53,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-public class LandlineBill extends Base_Activity implements View.OnClickListener {
+public class LandlineBill extends Base_Activity implements View.OnClickListener, PermissionUtils.PermissionResultCallback , ActivityCompat.OnRequestPermissionsResultCallback {
     EditText operator,netAmount;
     ImageView back_activity_button;
     String operatorcode,operatorname=null;
@@ -67,6 +73,9 @@ public class LandlineBill extends Base_Activity implements View.OnClickListener 
     OxigenTransactionVO oxigenTransactionVOresp;
     Gson gson;
     int minAmt;
+
+    HashMap<String,Object> eleMap;
+    PermissionUtils permissionUtils;
 
 
 
@@ -96,6 +105,9 @@ public class LandlineBill extends Base_Activity implements View.OnClickListener 
         oxigenTransactionVOresp=new OxigenTransactionVO();
         minAmt=0;
         gson =new Gson();
+
+        eleMap=new HashMap<>();
+        permissionUtils=new PermissionUtils(this);
 
 
         back_activity_button.setOnClickListener(this);
@@ -172,6 +184,11 @@ public class LandlineBill extends Base_Activity implements View.OnClickListener 
             if(resultCode==RESULT_OK){
 
                 if(requestCode==100){
+
+                    //clear element maplist
+                    eleMap.clear();
+
+
                     operatorname =data.getStringExtra("operatorname");
                     operatorcode=data.getStringExtra("operator");
 
@@ -223,11 +240,18 @@ public class LandlineBill extends Base_Activity implements View.OnClickListener 
 
                             CardView cardView = Utility.getCardViewStyle(this);
 
-                            EditText et = Utility.getEditText(this);
+                            UAVEditText et = Utility.getUavEditText(this);
                             et.setId(View.generateViewId());
                             et.setHint(oxigenQuestionsVO.getQuestionLabel());
 
                             changeEdittextValue(et);
+
+                            // Add mobileicon on Edittext for mobile
+                            if(Utility.containsIgnoreCase(oxigenQuestionsVO.getQuestionLabel(),"std") || Utility.containsIgnoreCase(oxigenQuestionsVO.getQuestionLabel(),"telephone")){
+                                eleMap.put("mobile",et);
+                                DynamicLayout.addContectIconEdittext(this,permissionUtils,et);
+                            }
+
 
                             cardView.addView(et);
                             dynamicCardViewContainer.addView(cardView);
@@ -241,7 +265,11 @@ public class LandlineBill extends Base_Activity implements View.OnClickListener 
                         EditText editText =(EditText) findViewById(questionsVOS.get(0).getElementId());
                         editText.requestFocus();
                     }
-                 }else if(requestCode==200 || requestCode== ApplicationConstant.REQ_ENACH_MANDATE || requestCode==ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE){
+                 }else if(requestCode==101){
+                    ((EditText)eleMap.get("mobile")).setText(DynamicLayout.addMobileNumberInEdittext(this,data));
+                    ((EditText)eleMap.get("mobile")).setSelection( ((EditText)eleMap.get("mobile")).getText().toString().length());
+                    netAmount.setText("");
+                }else if(requestCode==200 || requestCode== ApplicationConstant.REQ_ENACH_MANDATE || requestCode==ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE){
                     if(data !=null){
                         BillPayRequest.onActivityResult(this,data,requestCode);
                     }else {
@@ -417,5 +445,30 @@ public class LandlineBill extends Base_Activity implements View.OnClickListener 
         });
 
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        permissionUtils.onRequestPermissionsResult(requestCode,permissions,grantResults);
+    }
+
+    @Override
+    public void PermissionGranted(int request_code) {
+        if(request_code==ApplicationConstant.REQ_READ_CONTACT_PERMISSION){
+            Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+            startActivityForResult(intent, 101);
+        }
+    }
+    @Override
+    public void PartialPermissionGranted(int request_code, ArrayList<String> granted_permissions) {
+    }
+    @Override
+    public void PermissionDenied(int request_code) {
+    }
+    @Override
+    public void NeverAskAgain(int request_code) {
+    }
+
+
 
 }
