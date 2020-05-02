@@ -141,7 +141,7 @@
                    android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/ifsc"
                    android:backgroundTint="@color/white"
-                   android:hint="IFSC Code"
+                   android:hint="Bank"
                     android:singleLine="true"
                    android:maxLength="20"
                    android:inputType="number"

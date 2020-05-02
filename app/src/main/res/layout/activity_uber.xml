@@ -80,7 +80,7 @@
         android:layout_marginRight="10dp">
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="220dp"
+            android:layout_height="170dp"
             android:orientation="vertical"
             >
             <LinearLayout
@@ -95,13 +95,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:layout_centerInParent="true"
                 app:tabBackground="@drawable/banner_indicator_selector"
                 app:tabGravity="center"
                 app:tabIndicatorHeight="0dp"
                 />
         </RelativeLayout>
-
 
 
         <Button

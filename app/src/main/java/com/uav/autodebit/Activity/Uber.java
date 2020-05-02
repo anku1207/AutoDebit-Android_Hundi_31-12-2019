@@ -98,17 +98,12 @@ public class Uber extends Base_Activity implements View.OnClickListener {
         }else{
             addVoucher.setVisibility(View.GONE);
         }
-
         addVoucherList(uberVoucherVOS);
-
-
     }
-
-
 
     public void addVoucherList( List<UberVoucherVO> uberVoucherVOS ){
         viewPager=Utility.getViewPager(Uber.this);
-        viewPager.setOverScrollMode(View.OVER_SCROLL_NEVER);
+        //viewPager.setOverScrollMode(View.OVER_SCROLL_NEVER);
         getdata(uberVoucherVOS);
     }
 
@@ -152,9 +147,6 @@ public class Uber extends Base_Activity implements View.OnClickListener {
         backgroundAsyncServiceGetList.execute();
     }
 
-
-
-
     @Override
     public void onClick(View view) {
         switch (view.getId()){
@@ -166,11 +158,14 @@ public class Uber extends Base_Activity implements View.OnClickListener {
                         Intent intent = new Intent(Intent.ACTION_VIEW);
                         intent.setData(Uri.parse(uri));
                         startActivity(intent);
-                    } catch (Exception e) {
+                        getCard();
+                     } catch (Exception e) {
                         try {
                             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.ubercab")));
                         } catch (android.content.ActivityNotFoundException anfe) {
                             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=com.ubercab")));
+                        }finally {
+                            getCard();
                         }
                     }
                 }));
@@ -179,6 +174,18 @@ public class Uber extends Base_Activity implements View.OnClickListener {
                 finish();
                 break;
         }
+    }
+
+
+    public void getCard(){
+        UberApiCall.CheckUberVaucherByCustomerId(this,new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
+            UberVoucherVO uberVoucherVO = (UberVoucherVO) success;
+            if(!uberVoucherVO.isEventIs()){
+                addcardlistlayout.removeAllViews();
+                List<UberVoucherVO> uberVoucherVOS = (ArrayList<UberVoucherVO>) gson.fromJson(uberVoucherVO.getAnonymousString(), new TypeToken<ArrayList<UberVoucherVO>>() { }.getType());
+                addVoucherList(uberVoucherVOS);
+            }
+        }));
     }
 
 

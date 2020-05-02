@@ -53,16 +53,13 @@ public class Uber_PagerAdapter extends PagerAdapter {
         ImageView imageview;
 
         mainlayout=itemView.findViewById(R.id.mainlayout);
-        name=itemView.findViewById(R.id.name);
-        status=itemView.findViewById(R.id.status);
         imageview=itemView.findViewById(R.id.imageview);
         summary=itemView.findViewById(R.id.summary);
 
         UberVoucherVO pro=models.get(position);
-        name.setText("Voucher No.  "+pro.getVoucherNo());
         if( pro.getVoucherExprieDate()!=null && pro.getIssueAt()!=null){
 
-            summary.setText("Issue Date : "+new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date(pro.getIssueAt())) +"  VoucherExprieDate : "+ new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date(pro.getVoucherExprieDate())));
+            summary.setText("Voucher No.  "+pro.getVoucherNo() +"\n"+"Issue Date : "+new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date(pro.getIssueAt())) +"\n"+"VoucherExprieDate : "+ new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date(pro.getVoucherExprieDate())));
         }else {
             summary.setText("");
         }

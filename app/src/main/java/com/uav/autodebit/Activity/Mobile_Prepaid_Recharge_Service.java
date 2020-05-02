@@ -557,6 +557,7 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                         if(oxigenTransactionVOresp.isEventIs()){
                             Utility.showWebviewAlertDialog(Mobile_Prepaid_Recharge_Service.this,oxigenTransactionVOresp.getAnonymousString(),false,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
                                //startActivityForResult(new Intent(Mobile_Prepaid_Recharge_Service.this,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(oxigenTransactionVOresp.getServiceId()))), ApplicationConstant.REQ_ENACH_MANDATE);
+                                ok.dismiss();
                                 oxiPripaidServiceMandateCheck(Mobile_Prepaid_Recharge_Service.this,oxigenTransactionVOresp.getServiceId(),false,oxigenValidateResponce);
 
                             },(ConfirmationDialogInterface.OnCancel)(cancel)->{
