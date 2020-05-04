@@ -20,6 +20,8 @@ public class BaseVO {
     private List<String> paymentType;
     private String htmlString;
     private Boolean paymentDialogShowMandate;
+    private String customerDetails;
+
 
 
 
@@ -154,5 +156,13 @@ public class BaseVO {
 
     public void setPaymentDialogShowMandate(Boolean paymentDialogShowMandate) {
         this.paymentDialogShowMandate = paymentDialogShowMandate;
+    }
+
+    public String getCustomerDetails() {
+        return customerDetails;
+    }
+
+    public void setCustomerDetails(String customerDetails) {
+        this.customerDetails = customerDetails;
     }
 }

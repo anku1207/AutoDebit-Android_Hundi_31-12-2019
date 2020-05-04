@@ -12,6 +12,7 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ExpandableListView;
@@ -25,6 +26,7 @@ import androidx.annotation.Nullable;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.uav.autodebit.BO.BannerBO;
 import com.uav.autodebit.BO.CustomerBO;
 import com.uav.autodebit.BO.MandateBO;
@@ -32,10 +34,12 @@ import com.uav.autodebit.BO.MetroBO;
 import com.uav.autodebit.BO.ServiceBO;
 import com.uav.autodebit.Interface.AlertSelectDialogClick;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
+import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
 import com.uav.autodebit.adpater.ListViewItemCheckboxBaseAdapter;
 import com.uav.autodebit.androidFragment.Profile;
 import com.uav.autodebit.constant.ApplicationConstant;
+import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.override.ExpandableHeightListView;
 import com.uav.autodebit.override.UAVProgressDialog;
 import com.uav.autodebit.permission.Session;
@@ -47,6 +51,7 @@ import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerAuthServiceVO;
 import com.uav.autodebit.vo.CustomerVO;
 import com.uav.autodebit.vo.DMRC_Customer_CardVO;
+import com.uav.autodebit.vo.DataAdapterVO;
 import com.uav.autodebit.vo.LocalCacheVO;
 import com.uav.autodebit.vo.ServiceTypeVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
@@ -75,8 +80,8 @@ public class AdditionalService extends Base_Activity implements View.OnClickList
     ImageView back_activity_button ;
     BottomNavigationView navigation;
 
-    UAVProgressDialog pd;
     List<ServiceTypeVO> serviceTypeVOS;
+    LinearLayout buttonLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,45 +89,15 @@ public class AdditionalService extends Base_Activity implements View.OnClickList
         setContentView(R.layout.activity_additional_service);
         getSupportActionBar().hide();
 
-        pd=new UAVProgressDialog(this);
 
         listview=findViewById(R.id.listview);
         btnadd=findViewById(R.id.btnadd);
         btnskip=findViewById(R.id.btnskip);
         back_activity_button=findViewById(R.id.back_activity_button);
+        buttonLayout=findViewById(R.id.buttonLayout);
 
 
 
-
-        BackgroundAsyncService backgroundAsyncService = new BackgroundAsyncService(pd,false, new BackgroundServiceInterface() {
-            @Override
-            public void doInBackGround() {
-
-                Gson  gson =new Gson();
-
-                LocalCacheVO localCacheVO = gson.fromJson( Session.getSessionByKey(AdditionalService.this, Session.LOCAL_CACHE), LocalCacheVO.class);
-                utilityServices = localCacheVO.getUtilityBills();
-                servicelist=localCacheVO.getSerives();
-
-                serviceTypeVOS =new ArrayList<>();
-                serviceTypeVOS.addAll(utilityServices);
-                serviceTypeVOS.addAll(servicelist);
-                for(ServiceTypeVO serviceTypeVO :serviceTypeVOS){
-                   if(serviceTypeVO.getAdopted()==1 && serviceTypeVO.getServiceAdopteBMA()!=null){
-                       serviceTypeVO.setAdopted(1);
-                   }else {
-                       serviceTypeVO.setAdopted(0);
-                   }
-                }
-            }
-            @Override
-            public void doPostExecute() {
-                myAdapter=new ListViewItemCheckboxBaseAdapter(AdditionalService.this, serviceTypeVOS, R.layout.checkbox_with_text);
-                listview.setAdapter(myAdapter);
-                listview.setExpanded(true);
-            }
-        });
-        backgroundAsyncService.execute();
 
 
         navigation = findViewById(R.id.navigation);
@@ -133,7 +108,55 @@ public class AdditionalService extends Base_Activity implements View.OnClickList
         btnskip.setOnClickListener(this);
         btnadd.setOnClickListener(this);
         back_activity_button.setOnClickListener(this);
+
+        getServiceList(new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
+            buttonLayout.setVisibility(View.VISIBLE);
+        }));
    }
+
+
+
+    private void getServiceList(VolleyResponse volleyResponse){
+
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        ConnectionVO connectionVO = MandateBO.getBankListAndAccountType();
+        CustomerVO customerVO=new CustomerVO();
+        customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(this)));
+        Gson gson =new Gson();
+        String json = gson.toJson(customerVO);
+        params.put("volley", json);
+        connectionVO.setParams(params);
+        Log.w("banklist",params.toString());
+        VolleyUtils.makeJsonObjectRequest(this,connectionVO, new VolleyResponseListener() {
+            @Override
+            public void onError(String message) {
+            }
+            @Override
+            public void onResponse(Object resp) throws JSONException {
+                JSONObject response = (JSONObject) resp;
+                Gson gson=new Gson();
+                CustomerVO customerVO = gson.fromJson(response.toString(), CustomerVO.class);
+                if(customerVO.getStatusCode().equals("400")){
+                    ArrayList error = (ArrayList) customerVO.getErrorMsgs();
+                    StringBuilder sb = new StringBuilder();
+                    for(int i=0; i<error.size(); i++){
+                        sb.append(error.get(i)).append("\n");
+                    }
+                    Utility.showSingleButtonDialog(AdditionalService.this,"Alert",sb.toString(),true);
+                }else {
+
+                    JSONObject jsonObject =new JSONObject(customerVO.getAnonymousString());
+
+                    ArrayList<ServiceTypeVO> serviceTypeVOS= (ArrayList<ServiceTypeVO>) new Gson().fromJson(jsonObject.getString("services"), new TypeToken<ArrayList<ServiceTypeVO>>() { }.getType());
+                    myAdapter=new ListViewItemCheckboxBaseAdapter(AdditionalService.this, serviceTypeVOS, R.layout.checkbox_with_text);
+                    listview.setAdapter(myAdapter);
+                    listview.setExpanded(true);
+
+                    volleyResponse.onSuccess(customerVO);
+                }
+            }
+        });
+    }
 
     BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener =new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
@@ -258,8 +281,7 @@ public class AdditionalService extends Base_Activity implements View.OnClickList
                                             }
                                         }));
                                     } catch (Exception e) {
-                                        e.printStackTrace();
-                                        Utility.exceptionAlertDialog(AdditionalService.this, "Alert!", "Something went wrong, Please try again!", "Report", Utility.getStackTrace(e));
+                                        ExceptionsNotification.ExceptionHandling(AdditionalService.this , Utility.getStackTrace(e));
                                     }
                                 }
                                 @Override
@@ -275,7 +297,8 @@ public class AdditionalService extends Base_Activity implements View.OnClickList
                 }
             });
         } catch (Exception e) {
-            e.printStackTrace();
+            ExceptionsNotification.ExceptionHandling(AdditionalService.this , Utility.getStackTrace(e));
+
         }
     }
 
@@ -360,7 +383,11 @@ public class AdditionalService extends Base_Activity implements View.OnClickList
                         addservice.add(myAdapter.mCheckStates.keyAt(i));
                     }
                 }
-                saveServiceAdd(addservice);
+                if(addservice.size()==0){
+                    Toast.makeText(this, " no any new  service selected ", Toast.LENGTH_LONG).show();
+                }else {
+                    saveServiceAdd(addservice);
+                }
                 break;
             case R.id.back_activity_button :
                 backbuttonfun();

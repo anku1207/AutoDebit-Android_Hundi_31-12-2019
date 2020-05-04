@@ -59,7 +59,7 @@ public class Uber_PagerAdapter extends PagerAdapter {
         UberVoucherVO pro=models.get(position);
         if( pro.getVoucherExprieDate()!=null && pro.getIssueAt()!=null){
 
-            summary.setText("Voucher No.  "+pro.getVoucherNo() +"\n"+"Issue Date : "+new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date(pro.getIssueAt())) +"\n"+"VoucherExprieDate : "+ new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date(pro.getVoucherExprieDate())));
+            summary.setText("Voucher No.  "+pro.getVoucherNo() +"\n"+"Issue Date : "+new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date(pro.getIssueAt())) +"\n"+"ExprieDate : "+ new SimpleDateFormat("dd-MM-yyyy HH:mm").format(new Date(pro.getVoucherExprieDate())));
         }else {
             summary.setText("");
         }

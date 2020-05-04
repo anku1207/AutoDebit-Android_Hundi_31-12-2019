@@ -1,5 +1,6 @@
 package com.uav.autodebit.Activity;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,6 +29,7 @@ import com.uav.autodebit.SQlLite.GetSqlLiteData;
 import com.uav.autodebit.SQlLite.InsertDateOnSqlLite;
 import com.uav.autodebit.adpater.NotificationAdapter;
 import com.uav.autodebit.adpater.RecyclerItemTouchHelper;
+import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.Content_Message;
 import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.permission.Session;
@@ -217,6 +219,13 @@ public class Notifications extends Base_Activity implements View.OnClickListener
         // Fetching data from server
         loadRecyclerViewData();
     }
-
-
+    public void setActionOnNotificationClick(String data)throws Exception{
+        JSONObject jsonObject =new JSONObject(data);
+        Class <?>clazz = Class.forName(getApplicationContext().getPackageName()+".Activity."+jsonObject.getString("key"));
+        Intent intent =new Intent(this, clazz);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(ApplicationConstant.NOTIFICATION_ACTION,jsonObject.toString());
+        startActivity(intent);
+    }
 }

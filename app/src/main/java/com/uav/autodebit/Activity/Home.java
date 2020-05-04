@@ -191,7 +191,6 @@ public class Home extends Base_Activity
                 intent.putExtra(ApplicationConstant.NOTIFICATION_ACTION,jsonObject.toString());
                 startActivity(intent);
             }
-
             //check customer level and start activity
             Gson gson =new Gson();
             CustomerVO customerVO = gson.fromJson(Session.getSessionByKey(Home.this,Session.CACHE_CUSTOMER), CustomerVO.class);
@@ -210,7 +209,7 @@ public class Home extends Base_Activity
             // override local cache
             overrideLocalCache(customerVO);
         }catch (Exception e){
-            Toast.makeText(cntxt, ""+Content_Message.error_message, Toast.LENGTH_SHORT).show();
+            ExceptionsNotification.ExceptionHandling(Home.this , Utility.getStackTrace(e));
             //Utility.exceptionAlertDialog(Home.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
 
@@ -805,11 +804,10 @@ public class Home extends Base_Activity
     }
 
 
-    public void actionUberServiceOnclick(int serviceId){
+    public void actionUberServiceOnclick(int serviceId) throws Exception{
         UberApiCall.CheckUberVaucherByCustomerId(this,new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
             UberVoucherVO uberVoucherVO = (UberVoucherVO) success;
             if(uberVoucherVO.isEventIs()){
-
                 UberApiCall.getUberVoucher(this,new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
                     UberVoucherVO getUberVoucherResp = (UberVoucherVO) s;
                     try {
@@ -828,6 +826,7 @@ public class Home extends Base_Activity
             }else {
                 Intent intent = new Intent(Home.this,Uber.class);
                 intent.putExtra("voucherList",uberVoucherVO.getAnonymousString());
+                intent.putExtra("customerDetails",uberVoucherVO.getCustomerDetails());
                 intent.putExtra("showAddVoucherButton",uberVoucherVO.isShowAddVoucherBtn());
                 startActivity(intent);
 

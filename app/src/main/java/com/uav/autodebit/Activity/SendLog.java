@@ -48,7 +48,7 @@ public class SendLog extends AppCompatActivity implements View.OnClickListener{
 
         alertDialog = new AlertDialog.Builder(SendLog.this).create();
         alertDialog.setTitle("Report Error!");
-        alertDialog.setMessage(logs); //"Ah, shoot. Seems like MyAPP faced an unhandled error.Would you like to report it to the developer team?"
+        alertDialog.setMessage("Ah, shoot. Seems like MyAPP faced an unhandled error.Would you like to report it to the developer team?");
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Report", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 sendLogFile();

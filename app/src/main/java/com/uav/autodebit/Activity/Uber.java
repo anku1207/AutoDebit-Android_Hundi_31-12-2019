@@ -14,9 +14,12 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.ContextThemeWrapper;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
@@ -36,6 +39,7 @@ import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
 import com.uav.autodebit.adpater.CustomPagerAdapter;
 import com.uav.autodebit.adpater.Uber_PagerAdapter;
+import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.override.UAVProgressDialog;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.BackgroundAsyncServiceGetList;
@@ -45,11 +49,13 @@ import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerVO;
 import com.uav.autodebit.vo.DMRC_Customer_CardVO;
 import com.uav.autodebit.vo.DmrcCardStatusVO;
+import com.uav.autodebit.vo.TransientCustomerVO;
 import com.uav.autodebit.vo.UberVO;
 import com.uav.autodebit.vo.UberVoucherVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
 import com.uav.autodebit.volley.VolleyUtils;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -58,7 +64,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Uber extends Base_Activity implements View.OnClickListener {
-    Button addVoucher;
+    TextView addVoucher;
     ImageView back_activity_button;
 
     LinearLayout main,addcardlistlayout;
@@ -66,6 +72,8 @@ public class Uber extends Base_Activity implements View.OnClickListener {
     TabLayout tabLayout;
     UAVProgressDialog pd;
     Gson gson;
+
+    LinearLayout customerDetailLayout;
 
     boolean isAddVoucherBtn;
 
@@ -82,6 +90,7 @@ public class Uber extends Base_Activity implements View.OnClickListener {
         back_activity_button=findViewById(R.id.back_activity_button);
         main=findViewById(R.id.main);
         addcardlistlayout=findViewById(R.id.addcardlistlayout);
+        customerDetailLayout=findViewById(R.id.customerDetailLayout);
 
         gson=new Gson();
 
@@ -91,20 +100,63 @@ public class Uber extends Base_Activity implements View.OnClickListener {
         addVoucher.setOnClickListener(this);
         back_activity_button.setOnClickListener(this);
 
+        String customerDetails  = getIntent().getStringExtra("customerDetails");
+
         List<UberVoucherVO> uberVoucherVOS = (ArrayList<UberVoucherVO>) gson.fromJson(getIntent().getStringExtra("voucherList"), new TypeToken<ArrayList<UberVoucherVO>>() { }.getType());
         isAddVoucherBtn=getIntent().getBooleanExtra("showAddVoucherButton",false);
         if(isAddVoucherBtn){
             addVoucher.setVisibility(View.VISIBLE);
+            addVoucher.setPaintFlags(addVoucher.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         }else{
             addVoucher.setVisibility(View.GONE);
         }
         addVoucherList(uberVoucherVOS);
+        ShowCustomerDetail(customerDetails);
+
     }
 
     public void addVoucherList( List<UberVoucherVO> uberVoucherVOS ){
         viewPager=Utility.getViewPager(Uber.this);
         //viewPager.setOverScrollMode(View.OVER_SCROLL_NEVER);
         getdata(uberVoucherVOS);
+    }
+
+    public void ShowCustomerDetail(String customerDetails){
+        try {
+
+            JSONArray jsonArray = new JSONArray(customerDetails);
+
+            Typeface typeface = ResourcesCompat.getFont(this, R.font.poppinssemibold);
+            for(int i=0 ;i<jsonArray.length();i++){
+                JSONObject jsonObject =jsonArray.getJSONObject(i);
+
+                LinearLayout et = new LinearLayout(new ContextThemeWrapper(this,R.style.confirmation_dialog_layout));
+
+                et.setPadding(Utility.getPixelsFromDPs(this,10),Utility.getPixelsFromDPs(this,10),Utility.getPixelsFromDPs(this,10),Utility.getPixelsFromDPs(this,10));
+
+                TextView text = new TextView(new ContextThemeWrapper(this, R.style.confirmation_dialog_filed));
+                text.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float) 1));
+                text.setText(jsonObject.getString("key"));
+                text.setMaxLines(1);
+                text.setEllipsize(TextUtils.TruncateAt.END);
+                text.setTypeface(typeface);
+                text.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+
+                TextView value = new TextView(new ContextThemeWrapper(this, R.style.confirmation_dialog_value));
+                value.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,1));
+                value.setText(jsonObject.getString("value"));
+                value.setTypeface(typeface);
+                value.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+                et.addView(text);
+                et.addView(value);
+                customerDetailLayout.addView(et);
+            }
+
+        }catch (Exception e){
+            ExceptionsNotification.ExceptionHandling(this , Utility.getStackTrace(e));
+        }
     }
 
 
@@ -125,8 +177,6 @@ public class Uber extends Base_Activity implements View.OnClickListener {
                     voucherVO.setIssueAt(uberVoucherVO.getIssueAt());
                     voucherVO.setVoucherExprieDate(uberVoucherVO.getVoucherExprieDate());
                     uberVoucherVOArrayList.add(voucherVO);
-
-
 
                 }
                 return backgroundAsyncServiceGetListInterface.doInBackGround.doInBackGround(uberVoucherVOArrayList);

@@ -65,5 +65,15 @@ public class OxigenPlanBO implements Serializable {
         return connectionVO;
     }
 
+    public static ConnectionVO notificationBillDetailsByOxigenBillAutoPaymentId() {
+        ConnectionVO connectionVO = new ConnectionVO();
+        connectionVO.setMethodName("notificationBillDetailsByOxigenBillAutoPaymentId");
+        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
+        return connectionVO;
+    }
+
+
+
+
 
 }

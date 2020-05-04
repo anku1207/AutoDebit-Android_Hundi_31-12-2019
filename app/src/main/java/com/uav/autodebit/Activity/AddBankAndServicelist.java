@@ -189,7 +189,7 @@ public class AddBankAndServicelist extends AppCompatActivity implements View.OnC
                     for(int i=0; i<error.size(); i++){
                         sb.append(error.get(i)).append("\n");
                     }
-                    Utility.showSingleButtonDialog(AddBankAndServicelist.this,"Alert",sb.toString(),false);
+                    Utility.showSingleButtonDialog(AddBankAndServicelist.this,"Alert",sb.toString(),true);
                 }else {
 
                     JSONObject jsonObject =new JSONObject(customerVO.getAnonymousString());
@@ -302,7 +302,7 @@ public class AddBankAndServicelist extends AppCompatActivity implements View.OnC
         }
         if(validation){
             if(arrayList.size()==0){
-                Toast.makeText(this, "There is no service select", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "no any new  service selected ", Toast.LENGTH_LONG).show();
                 validation=false;
             }
         }

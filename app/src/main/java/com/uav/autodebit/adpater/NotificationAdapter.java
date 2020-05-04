@@ -1,5 +1,6 @@
 package com.uav.autodebit.adpater;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +13,10 @@ import android.widget.Toast;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
+import com.uav.autodebit.Activity.Home;
+import com.uav.autodebit.Activity.Notifications;
 import com.uav.autodebit.R;
+import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.CustomerNotificationVO;
 import com.uav.autodebit.vo.DataAdapterVO;
@@ -70,11 +74,10 @@ public class NotificationAdapter  extends RecyclerView.Adapter<NotificationAdapt
 
                 try {
                     if(pro.getMoveActivity()!=null){
-                        JSONObject jsonObject =new JSONObject(pro.getMoveActivity());
-                        Toast.makeText(mctx, ""+jsonObject.getBoolean("action"), Toast.LENGTH_SHORT).show();
+                        ((Notifications)mctx).setActionOnNotificationClick(pro.getMoveActivity());
                     }
                 }catch (Exception e){
-
+                    ExceptionsNotification.ExceptionHandling(mctx , Utility.getStackTrace(e));
                 }
 
             }
