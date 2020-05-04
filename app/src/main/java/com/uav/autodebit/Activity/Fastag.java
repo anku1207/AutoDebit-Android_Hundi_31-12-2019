@@ -16,6 +16,7 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -238,6 +239,11 @@ public class Fastag extends Base_Activity implements View.OnClickListener , Perm
 
                             CardView cardView = Utility.getCardViewStyle(this);
                             UAVEditText et = Utility.getUavEditText(Fastag.this);
+                            //only fastag type
+                            if(Utility.containsIgnoreCase(oxigenQuestionsVO.getQuestionLabel(),"vehicle")){
+                                et.setInputType(InputType.TYPE_CLASS_TEXT);
+                            }
+
                             et.setId(View.generateViewId());
                             et.setHint(oxigenQuestionsVO.getQuestionLabel());
 

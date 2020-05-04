@@ -38,6 +38,7 @@ import com.uav.autodebit.vo.ServiceTypeVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
 import com.uav.autodebit.volley.VolleyUtils;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -66,7 +67,71 @@ public class PayBillByNotification extends AppCompatActivity implements View.OnC
                 Utility.showSingleButtonDialog(this,"Error !",Content_Message.error_message,true);
             }else{
                 getAutoBillFetch(jsonObject.getInt("value") ,new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
-                    OxigenTransactionVO oxigenTransactionVOresp = (OxigenTransactionVO) success;
+
+                    try {
+                        OxigenTransactionVO oxigenTransactionVOresp = (OxigenTransactionVO) success;
+                        JSONObject billDetailsJson=new JSONObject(oxigenTransactionVOresp.getAnonymousString());
+
+
+                        JSONArray fetchBillDetails=billDetailsJson.getJSONArray("billFetchDetails");
+                        for(int i=0;i<fetchBillDetails.length();i++){
+                            JSONObject billJson=fetchBillDetails.getJSONObject(i);
+                            LinearLayout et1 = new LinearLayout(new ContextThemeWrapper(this,R.style.confirmation_dialog_layout));
+
+                            et1.setPadding(Utility.getPixelsFromDPs(this,10),Utility.getPixelsFromDPs(this,10),Utility.getPixelsFromDPs(this,10),Utility.getPixelsFromDPs(this,10));
+
+                            TextView text = new TextView(new ContextThemeWrapper(this, R.style.confirmation_dialog_filed));
+                            text.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float) 1));
+                            text.setText("key" +1);
+                            text.setMaxLines(1);
+                            text.setEllipsize(TextUtils.TruncateAt.END);
+                            text.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+
+                            TextView value = new TextView(new ContextThemeWrapper(this, R.style.confirmation_dialog_value));
+                            value.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,1));
+                            value.setText("value"+1);
+                            value.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+                            et1.addView(text);
+                            et1.addView(value);
+                            fetchbilllayout.addView(et1);
+                        }
+
+
+                        //add billFetchFileds
+
+                        CardView cardView = Utility.getCardViewStyle(this);
+                        UAVEditText et = Utility.getUavEditText(this);
+                        et.setId(View.generateViewId());
+                        et.setText(oxigenTransactionVOresp.getOperateName());
+                        cardView.addView(et);
+                        dynamic_layout.addView(cardView);
+
+                        JSONArray billFiled=billDetailsJson.getJSONArray("billNoData");
+                        for(int i=0 ; i<billFiled.length() ; i++){
+                            String value=billFiled.getString(i);
+
+                            cardView = Utility.getCardViewStyle(this);
+                            et = Utility.getUavEditText(this);
+                            et.setId(View.generateViewId());
+                            et.setText(value+"");
+                            cardView.addView(et);
+                            dynamic_layout.addView(cardView);
+                        }
+
+                        cardView = Utility.getCardViewStyle(this);
+                        et = Utility.getUavEditText(this);
+                        et.setId(View.generateViewId());
+                        et.setText(oxigenTransactionVOresp.getNetAmount()+"");
+                        cardView.addView(et);
+                        dynamic_layout.addView(cardView);
+
+
+                    }catch (Exception e){
+                        ExceptionsNotification.ExceptionHandling(PayBillByNotification.this , Utility.getStackTrace(e));
+                    }
+
 
 
                 }));
