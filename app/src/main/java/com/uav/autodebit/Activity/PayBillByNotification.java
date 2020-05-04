@@ -1,17 +1,22 @@
 package com.uav.autodebit.Activity;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,6 +35,7 @@ import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerVO;
+import com.uav.autodebit.vo.DataAdapterVO;
 import com.uav.autodebit.vo.OxigenBillerAutoPaymentVO;
 import com.uav.autodebit.vo.OxigenPlanVO;
 import com.uav.autodebit.vo.OxigenQuestionsVO;
@@ -48,6 +54,7 @@ import java.util.HashMap;
 public class PayBillByNotification extends AppCompatActivity implements View.OnClickListener {
     LinearLayout dynamic_layout,fetchbilllayout;
     Button bill_pay;
+    OxigenTransactionVO oxigenTransactionVOresp;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,7 +76,7 @@ public class PayBillByNotification extends AppCompatActivity implements View.OnC
                 getAutoBillFetch(jsonObject.getInt("value") ,new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
 
                     try {
-                        OxigenTransactionVO oxigenTransactionVOresp = (OxigenTransactionVO) success;
+                        oxigenTransactionVOresp = (OxigenTransactionVO) success;
                         JSONObject billDetailsJson=new JSONObject(oxigenTransactionVOresp.getAnonymousString());
 
 
@@ -82,7 +89,7 @@ public class PayBillByNotification extends AppCompatActivity implements View.OnC
 
                             TextView text = new TextView(new ContextThemeWrapper(this, R.style.confirmation_dialog_filed));
                             text.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float) 1));
-                            text.setText("key" +1);
+                            text.setText(billJson.getString("key"));
                             text.setMaxLines(1);
                             text.setEllipsize(TextUtils.TruncateAt.END);
                             text.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
@@ -90,7 +97,7 @@ public class PayBillByNotification extends AppCompatActivity implements View.OnC
 
                             TextView value = new TextView(new ContextThemeWrapper(this, R.style.confirmation_dialog_value));
                             value.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,1));
-                            value.setText("value"+1);
+                            value.setText(billJson.getString("value"));
                             value.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
                             et1.addView(text);
@@ -127,13 +134,11 @@ public class PayBillByNotification extends AppCompatActivity implements View.OnC
                         cardView.addView(et);
                         dynamic_layout.addView(cardView);
 
-
+                        bill_pay.setVisibility(View.VISIBLE);
+                        Utility.disable_AllEditTest(dynamic_layout);
                     }catch (Exception e){
                         ExceptionsNotification.ExceptionHandling(PayBillByNotification.this , Utility.getStackTrace(e));
                     }
-
-
-
                 }));
             }
        }catch (Exception e){
@@ -174,6 +179,7 @@ public class PayBillByNotification extends AppCompatActivity implements View.OnC
                         sb.append(error.get(i)).append("\n");
                     }
                     Utility.showSingleButtonDialog(PayBillByNotification.this,"Error !",sb.toString(),true);
+                    bill_pay.setVisibility(View.GONE);
                 }else {
                     volleyResponse.onSuccess(oxigenTransactionVOresp);
                 }
@@ -185,43 +191,34 @@ public class PayBillByNotification extends AppCompatActivity implements View.OnC
 
     @Override
     public void onClick(View view) {
-        if(view.getId()==R.id.bill_pay){
-            HashMap<String, Object> params = new HashMap<String, Object>();
-            ConnectionVO connectionVO = OxigenPlanBO.getPlan();
-
-            OxigenPlanVO oxigenPlanVO =new OxigenPlanVO();
-            ServiceTypeVO serviceTypeVO =new ServiceTypeVO();
-
-            Gson gson=new Gson();
-            String json = gson.toJson(oxigenPlanVO);
-            params.put("volley", json);
-            connectionVO.setParams(params);
-
-            VolleyUtils.makeJsonObjectRequest(this, connectionVO, new VolleyResponseListener() {
-                @Override
-                public void onError(String message) {
-                }
-                @Override
-                public void onResponse(Object resp) throws JSONException {
-                    JSONObject response = (JSONObject) resp;
-                    Gson gson = new Gson();
-                    OxigenPlanVO oxigenPlanVO = gson.fromJson(response.toString(), OxigenPlanVO.class);
-
-
-                    if(oxigenPlanVO.getStatusCode().equals("400")){
-
-                        StringBuffer stringBuffer= new StringBuffer();
-
-                        for(int i=0;i<oxigenPlanVO.getErrorMsgs().size();i++){
-                            stringBuffer.append(oxigenPlanVO.getErrorMsgs().get(i));
-                        }
-                        Utility.showSingleButtonDialog(PayBillByNotification.this,"Error !",stringBuffer.toString(),false);
-                    }else {
-
-                    }
-                }
-            });
+        if(view.getId()==R.id.bill_pay) {
+            try {
+                BillPayRequest.proceedRecharge(this, true, oxigenTransactionVOresp);
+            } catch (Exception e) {
+                ExceptionsNotification.ExceptionHandling(this, Utility.getStackTrace(e));
+            }
         }
 
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        try{
+            if(resultCode==RESULT_OK){
+               if(requestCode==200 || requestCode== ApplicationConstant.REQ_ENACH_MANDATE || requestCode==ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE){
+                    if(data !=null){
+                        BillPayRequest.onActivityResult(this,data,requestCode);
+                    }else {
+                        Utility.showSingleButtonDialog(this,"Error !","Something went wrong, Please try again!",false);
+                    }
+                }
+            }
+        }catch (Exception e){
+            ExceptionsNotification.ExceptionHandling(this , Utility.getStackTrace(e));
+            // Utility.exceptionAlertDialog(Electricity_Bill.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+        }
     }
 }

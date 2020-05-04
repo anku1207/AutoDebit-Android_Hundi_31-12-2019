@@ -77,7 +77,7 @@ public class NotificationUtils {
         }
 
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        final PendingIntent resultPendingIntent =PendingIntent.getActivity(mContext,0,intent,PendingIntent.FLAG_CANCEL_CURRENT
+        final PendingIntent resultPendingIntent =PendingIntent.getActivity(mContext,0,intent,PendingIntent.FLAG_UPDATE_CURRENT
                 );
         final NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext,CHANNEL_ID);
 
@@ -103,8 +103,8 @@ public class NotificationUtils {
          NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             Notification notification = mBuilder
-                   /* .setStyle(new NotificationCompat.BigTextStyle()
-                            .bigText(message))*/
+                    .setStyle(new NotificationCompat.BigTextStyle()
+                            .bigText(message))
                     .setSmallIcon(icon).setTicker(title).setWhen(0)
                     .setAutoCancel(true)
                     .setContentTitle(title)
@@ -112,7 +112,7 @@ public class NotificationUtils {
                     .setWhen(Long.parseLong(timeStamp))
                     .setSmallIcon(icon)
                     .setLargeIcon(smallicon)
-                    .setContentText(message)
+                    //.setContentText(message)
                     .build();
             getNotificationChannel(alarmSound,notificationManager);
             notificationManager.notify(count_notification, notification);
@@ -122,6 +122,8 @@ public class NotificationUtils {
             inboxStyle.addLine(message);
 
             Notification notification = mBuilder.setSmallIcon(icon).setTicker(title).setWhen(0)
+                    .setStyle(new NotificationCompat.BigTextStyle()
+                            .bigText(message))
                     .setAutoCancel(true)
                     .setContentTitle(title)
                     .setContentIntent(resultPendingIntent)
@@ -154,6 +156,7 @@ public class NotificationUtils {
             NotificationCompat.BigPictureStyle bigPictureStyle = new NotificationCompat.BigPictureStyle();
             bigPictureStyle.setBigContentTitle(title);
             bigPictureStyle.bigPicture(bitmap);
+            bigPictureStyle.setSummaryText(message);
 
             Notification notification = mBuilder
                     .setStyle(bigPictureStyle)
@@ -164,7 +167,8 @@ public class NotificationUtils {
                     .setWhen(Long.parseLong(timeStamp))
                     .setSmallIcon(icon)
                     .setLargeIcon(smallicon)
-                    .setContentText(message).build();
+                    .setContentText(message)
+                    .build();
             getNotificationChannel(alarmSound,notificationManager);
             notificationManager.notify(count_notification, notification);
         }else {
