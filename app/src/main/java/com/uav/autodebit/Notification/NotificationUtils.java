@@ -112,15 +112,11 @@ public class NotificationUtils {
                     .setWhen(Long.parseLong(timeStamp))
                     .setSmallIcon(icon)
                     .setLargeIcon(smallicon)
-                    //.setContentText(message)
+                    .setContentText(message)
                     .build();
             getNotificationChannel(alarmSound,notificationManager);
             notificationManager.notify(count_notification, notification);
         }else {
-            NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
-
-            inboxStyle.addLine(message);
-
             Notification notification = mBuilder.setSmallIcon(icon).setTicker(title).setWhen(0)
                     .setStyle(new NotificationCompat.BigTextStyle()
                             .bigText(message))
@@ -128,7 +124,6 @@ public class NotificationUtils {
                     .setContentTitle(title)
                     .setContentIntent(resultPendingIntent)
                     .setSound(alarmSound)
-                    .setStyle(inboxStyle)
                     .setWhen(Long.parseLong(timeStamp))
                     .setSmallIcon(icon)
                     .setLargeIcon(smallicon)
@@ -138,12 +133,8 @@ public class NotificationUtils {
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                     .setLights(Color.RED, 3000, 3000)
                     .build();
-
-
             notificationManager.notify(count_notification, notification);
        }
-
-
     }
 
 
@@ -177,7 +168,8 @@ public class NotificationUtils {
             bigPictureStyle.setSummaryText(Html.fromHtml(message).toString());
             bigPictureStyle.bigPicture(bitmap);
             Notification notification;
-            notification = mBuilder.setSmallIcon(icon).setTicker(title).setWhen(0)
+            notification = mBuilder.
+                    setSmallIcon(icon).setTicker(title).setWhen(0)
                     .setAutoCancel(true)
                     .setContentTitle(title)
                     .setContentIntent(resultPendingIntent)
@@ -185,7 +177,7 @@ public class NotificationUtils {
                     .setStyle(bigPictureStyle)
                     .setWhen(Long.parseLong(timeStamp))
                     .setSmallIcon(icon)
-                    /* .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), icon))*/
+                    //.setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), icon))
                     .setLargeIcon(smallicon)
                     .setContentText(message)
                     .setVibrate(new long[]{0, 500, 1000})

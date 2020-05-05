@@ -2,7 +2,7 @@
 <meta name='viewport' content='width=device-width, initial-scale=1.0'>
 
 
-<html style='height: 100%;overflow: hidden'>
+<html style='height: 100%'>
 <body style='margin: 0 5% 0 5%;padding-top: 10%;padding-bottom: 10%'>
 
 <div>
@@ -25,24 +25,23 @@
         <span style='width: 100%;text-align: center'><STRONG style='font-size: 20px'>Do you want to give a bank mandate?</STRONG></span><br>
         <span style='color: red;display: inline-block;padding-top: 3%'>Please click on ‘Yes’ to proceed.</span>
     </div>
-
-
-
-    <div style='display: flex;justify-content: space-around;width: 20rem'>
-  	<button style='padding: 10px;border-radius: 10px;width: 70px;outline: none' type= 'button'  id= 'btnOK' onclick= 'ok.performClick(+"ok"+)' class='btn' > Yes </button>
-    <button style='padding: 10px;border-radius: 10px;width: 70px;outline: none' type= 'button'  id= 'cancel' onclick= 'ok.performClick(+"cancal"+)' class='btn' > No </button>
-  </div>
-
-    
+    <div style='display: flex;justify-content: space-around;text-align: center;align-items: center;width: 100%;overflow: hidden;'>
+        <button style='padding: 10px;border-radius: 10px;width: 70px;outline: none' type= 'button'  id= 'btnOK' onclick= 'ok.performClick("ok")' class='btn' > Yes </button>
+        <button style='padding: 10px;border-radius: 10px;width: 70px;outline: none' type= 'button'  id= 'cancel' onclick= 'ok.performClick("cancel")' class='btn' > No </button>
+    </div>
 </div>
-
 <style type="text/css">
 	 	.btn{
-		    background: #40A7E8;
+		    display: inline-block;
+            background: #437ee8;
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 25px;
+            border-radius: 5px;
 		} .btn:focus{
-		    background: red;
+		    outline: none;
+            background: #2d4da7;
 		}
-
 </style>
 </body>
 </html>
