@@ -33,7 +33,6 @@ public class Landline_Operator_List extends Base_Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_landline__operator__list);
-        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
         setContentView(R.layout.activity_listview_with_image);
         getSupportActionBar().hide();
 

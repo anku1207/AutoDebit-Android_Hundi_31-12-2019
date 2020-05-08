@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
 
+import com.uav.autodebit.exceptions.ExceptionsNotification;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 

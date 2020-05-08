@@ -32,6 +32,7 @@ import com.uav.autodebit.BO.CustomerBO;
 import com.uav.autodebit.BO.MandateBO;
 import com.uav.autodebit.BO.MetroBO;
 import com.uav.autodebit.BO.ServiceBO;
+import com.uav.autodebit.CustomDialog.MyDialog;
 import com.uav.autodebit.Interface.AlertSelectDialogClick;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.Interface.VolleyResponse;
@@ -233,7 +234,7 @@ public class AdditionalService extends Base_Activity implements View.OnClickList
                         Utility.showSingleButtonDialog(AdditionalService.this, "Error !", sb.toString(), false);
                     } else if (customerVO1.getStatusCode().equals("ap102")) {
                         // 12/04/2020
-                        Utility.showWebviewAlertDialog(AdditionalService.this, customerVO1.getHtmlString(),false,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(dialog)->{
+                        MyDialog.showWebviewAlertDialog(AdditionalService.this, customerVO1.getHtmlString(),false,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(dialog)->{
                             dialog.dismiss();
                             startActivityForResult(new Intent(AdditionalService.this, Enach_Mandate.class).putExtra("forresutl", true).putExtra("selectservice",arrayList), ApplicationConstant.REQ_ENACH_MANDATE);
                         },(ConfirmationDialogInterface.OnCancel)(cancel)->{
@@ -244,7 +245,7 @@ public class AdditionalService extends Base_Activity implements View.OnClickList
 
                     } else if (customerVO1.getStatusCode().equals("ap103")) {
 
-                        Utility.showWebviewAlertDialog(AdditionalService.this, customerVO1.getHtmlString(),false,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(dialog)->{
+                        MyDialog.showWebviewAlertDialog(AdditionalService.this, customerVO1.getHtmlString(),false,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(dialog)->{
                             dialog.dismiss();
 
                             String[] buttons = {"New Bank","Existing Bank"};

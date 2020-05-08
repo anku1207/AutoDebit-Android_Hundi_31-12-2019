@@ -39,7 +39,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Confirm_Bank_Details<crateBankDetailsLayout> extends AppCompatActivity implements View.OnClickListener {
+public class Confirm_Bank_Details extends Base_Activity implements View.OnClickListener {
     LinearLayout mainlayout,buttonLayout;
     ImageView back_activity_button;
 
@@ -47,7 +47,6 @@ public class Confirm_Bank_Details<crateBankDetailsLayout> extends AppCompatActiv
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm__bank__details);
-        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
         getSupportActionBar().hide();
 
         back_activity_button=findViewById(R.id.back_activity_button);

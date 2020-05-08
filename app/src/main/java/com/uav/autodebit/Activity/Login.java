@@ -22,6 +22,7 @@ import androidx.annotation.Nullable;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.uav.autodebit.BO.SignUpBO;
+import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.Content_Message;
@@ -64,7 +65,6 @@ public class Login extends Base_Activity implements View.OnClickListener, View.O
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
 
         setContentView(R.layout.activity_login);
         getSupportActionBar().hide();
@@ -86,8 +86,6 @@ public class Login extends Base_Activity implements View.OnClickListener, View.O
         params.width = 550;
         params.y = 550;
         this.getWindow().setAttributes(params);*/
-
-
 
         password=findViewById(R.id.password);
         forgorpassword=findViewById(R.id.forgorpassword);

@@ -11,6 +11,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.uav.autodebit.R;
+import com.uav.autodebit.exceptions.ExceptionsNotification;
+import com.uav.autodebit.util.Utility;
 
 
 public class SendLog extends AppCompatActivity implements View.OnClickListener{
@@ -45,6 +47,7 @@ public class SendLog extends AppCompatActivity implements View.OnClickListener{
     }
     private void showConfirmation() {
         // method as shown above
+        ExceptionsNotification.ExceptionHandling(this ,logs);
 
         alertDialog = new AlertDialog.Builder(SendLog.this).create();
         alertDialog.setTitle("Report Error!");
@@ -53,7 +56,6 @@ public class SendLog extends AppCompatActivity implements View.OnClickListener{
             public void onClick(DialogInterface dialog, int id) {
                 sendLogFile();
                 // finish();
-
             }
         });
         alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {

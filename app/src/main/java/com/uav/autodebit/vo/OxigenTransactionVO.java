@@ -18,6 +18,10 @@ public class OxigenTransactionVO extends BaseVO  implements Serializable {
     private Integer providerAuthKeyId;
     private Double netAmount;
 
+    private String successBankApporve;
+    private String clinkingOnBankMandate;
+
+
 
     public OxigenTransactionVO() {
     }
@@ -111,5 +115,21 @@ public class OxigenTransactionVO extends BaseVO  implements Serializable {
 
     public void setNetAmount(Double netAmount) {
         this.netAmount = netAmount;
+    }
+
+    public String getSuccessBankApporve() {
+        return successBankApporve;
+    }
+
+    public void setSuccessBankApporve(String successBankApporve) {
+        this.successBankApporve = successBankApporve;
+    }
+
+    public String getClinkingOnBankMandate() {
+        return clinkingOnBankMandate;
+    }
+
+    public void setClinkingOnBankMandate(String clinkingOnBankMandate) {
+        this.clinkingOnBankMandate = clinkingOnBankMandate;
     }
 }

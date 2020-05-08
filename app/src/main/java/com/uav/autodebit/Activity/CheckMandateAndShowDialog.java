@@ -79,7 +79,6 @@ public class CheckMandateAndShowDialog {
                     }else{
                         ((Activity)context).startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(serivceId))), ApplicationConstant.REQ_ENACH_MANDATE);
                     }
-
                 }else if(checkMandateResponse.getStatusCode().equals("ap103")) {
                     // 12/04/2020
                     String[] buttons = {"New Bank", "Existing Bank"};
@@ -109,7 +108,6 @@ public class CheckMandateAndShowDialog {
                                 Utility.alertselectdialog(context, "Choose from existing Bank", customerAuthServiceArry, new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess) (bankId) -> {
                                     if (!bankId.equals("0")) {
                                         CheckMandateAndShowDialog.allotBnakForService(context,serivceId,Integer.parseInt(bankId),new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
-
                                             if(isRecharge){
                                                 AuthServiceProviderVO authServiceProviderVO =new AuthServiceProviderVO();
                                                 authServiceProviderVO.setProviderId(AuthServiceProviderVO.ENACHIDFC);
@@ -155,6 +153,52 @@ public class CheckMandateAndShowDialog {
             }
         });
     }
+
+
+
+    public static void setManuallyServiceSchedule(Context context ,OxigenTransactionVO oxigenTransactionVO,JSONObject alertDialogDate, VolleyResponse volleyResponse) throws Exception {
+
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        ConnectionVO connectionVO = ServiceBO.setBankForServiceManuallyService();
+        CustomerVO customerVO=new CustomerVO();
+        customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(context)));
+        customerVO.setServiceId(oxigenTransactionVO.getServiceId());
+        customerVO.setAnonymounsDay(Integer.parseInt(alertDialogDate.getString("day")));
+        customerVO.setAnonymousAmount(Double.parseDouble(alertDialogDate.getString("amount")));
+        customerVO.setCustoemrHistoryId(oxigenTransactionVO.getAnonymousInteger());
+
+        Gson gson =new Gson();
+        String json = gson.toJson(customerVO);
+        params.put("volley", json);
+        connectionVO.setParams(params);
+        Log.w("request",params.toString());
+        VolleyUtils.makeJsonObjectRequest(context,connectionVO , new VolleyResponseListener() {
+            @Override
+            public void onError(String message) {
+            }
+            @Override
+            public void onResponse(Object resp) throws JSONException {
+                JSONObject response = (JSONObject) resp;
+                Gson gson = new Gson();
+                CustomerVO customerVO = gson.fromJson(response.toString(), CustomerVO.class);
+
+                if(customerVO.getStatusCode().equals("400")){
+                    ArrayList error = (ArrayList) customerVO.getErrorMsgs();
+                    StringBuilder sb = new StringBuilder();
+                    for(int i=0; i<error.size(); i++){
+                        sb.append(error.get(i)).append("\n");
+                    }
+                    Utility.showSingleButtonDialog(context,"Alert",sb.toString(),false);
+                }else {
+                    volleyResponse.onSuccess(customerVO);
+                }
+            }
+        });
+
+    }
+
+
+
 
     public static void allotBnakForService(Context context, Integer serviceId, Integer bankId , VolleyResponse volleyResponse){
         HashMap<String, Object> params = new HashMap<String, Object>();

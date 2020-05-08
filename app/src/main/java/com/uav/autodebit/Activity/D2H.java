@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.uav.autodebit.BO.D2HBO;
 import com.uav.autodebit.BO.ServiceBO;
+import com.uav.autodebit.CustomDialog.MyDialog;
 import com.uav.autodebit.Interface.AlertSelectDialogClick;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.R;
@@ -110,6 +111,8 @@ public class D2H extends Base_Activity implements View.OnClickListener {
             d2HVO.setCustomer(customerVO);
             params.put("volley",gson.toJson(d2HVO));
             connectionVO.setParams(params);
+
+            Log.w("getPlanDetail",gson.toJson(d2HVO));
 
             VolleyUtils.makeJsonObjectRequest(context,connectionVO, new VolleyResponseListener() {
                 @Override
@@ -357,7 +360,7 @@ public class D2H extends Base_Activity implements View.OnClickListener {
                         if(!d2HVO.getStatusCode().equals("200") && !d2HVO.getStatusCode().equals("ap104")){
                             if(d2HVO.getStatusCode().equals("ap105") || d2HVO.getStatusCode().equals("ap107") ||d2HVO.getStatusCode().equals("ap102")){
                                 // 12/04/2020
-                                Utility.showWebviewAlertDialog(D2H.this, d2HVO.getHtmlString(),false,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(dialog)->{
+                                MyDialog.showWebviewAlertDialog(D2H.this, d2HVO.getHtmlString(),false,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(dialog)->{
                                     dialog.dismiss();
                                     startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(ApplicationConstant.d2h))).putExtra("disAmountEdittext",true),ApplicationConstant.REQ_ENACH_MANDATE);
                                 },(ConfirmationDialogInterface.OnCancel)(cancel)->{
@@ -367,7 +370,7 @@ public class D2H extends Base_Activity implements View.OnClickListener {
                             }else if(d2HVO.getStatusCode().equals("ap106") || d2HVO.getStatusCode().equals("ap103") || d2HVO.getStatusCode().equals("ap108")) {
 
                                 // 12/04/2020
-                                Utility.showWebviewAlertDialog(D2H.this, d2HVO.getHtmlString(),false,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(dialog)->{
+                                MyDialog.showWebviewAlertDialog(D2H.this, d2HVO.getHtmlString(),false,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(dialog)->{
                                     dialog.dismiss();
 
                                     String[] buttons = {"New Bank","Existing Bank"};
@@ -486,6 +489,8 @@ public class D2H extends Base_Activity implements View.OnClickListener {
         Gson gson =new Gson();
         String json = gson.toJson(d2HVO);
         params.put("volley", json);
+        Log.w("getD2HTvPostMandate",json);
+
         connectionVO.setParams(params);
         VolleyUtils.makeJsonObjectRequest(this,connectionVO , new VolleyResponseListener() {
             @Override

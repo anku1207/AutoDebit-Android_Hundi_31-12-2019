@@ -53,7 +53,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class AddBankAndServicelist extends AppCompatActivity implements View.OnClickListener {
+public class AddBankAndServicelist extends Base_Activity implements View.OnClickListener {
     LinearLayout mainlayout;
 
     EditText acno,acholdername;
@@ -75,7 +75,6 @@ public class AddBankAndServicelist extends AppCompatActivity implements View.OnC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_bank_and_servicelist);
-        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
         getSupportActionBar().hide();
 
         setElementId();

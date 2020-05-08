@@ -1,8 +1,10 @@
 package com.uav.autodebit.Activity;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.app.Dialog;
 import android.content.Intent;
-
 import android.os.Bundle;
 import android.text.Layout;
 import android.util.Log;
@@ -18,24 +20,16 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
-
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.uav.autodebit.BO.MandateBO;
 import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
-import com.uav.autodebit.constant.Content_Message;
-import com.uav.autodebit.constant.ErrorMsg;
 import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.override.DrawableClickListener;
 import com.uav.autodebit.override.UAVEditText;
 import com.uav.autodebit.permission.Session;
-import com.uav.autodebit.util.BackgroundAsyncService;
-import com.uav.autodebit.util.BackgroundServiceInterface;
 import com.uav.autodebit.util.DialogInterface;
-import com.uav.autodebit.util.ExceptionHandler;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerAuthServiceVO;
@@ -52,9 +46,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
-public class Enach_Mandate extends Base_Activity implements View.OnClickListener {
+public class ManualEnachMandate extends Base_Activity implements View.OnClickListener  {
 
     EditText acholdername,acno;
     Button mandatebtn;
@@ -69,12 +62,6 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
 
     Integer customerAuthId;
 
-    boolean foractivity=false,disAmountEdittext=false;
-
-
-
-    //HashMap<String,String> selectbank=new HashMap<>();
-
     ArrayList<Integer> selectServiceIds=new ArrayList<>();
 
 
@@ -86,18 +73,16 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
     ArrayList<DataAdapterVO> datalist;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_enach__mandate);
+        setContentView(R.layout.activity_manual_enach_mandate);
+
         getSupportActionBar().hide();
 
-
         setElementId();
-        foractivity=getIntent().getBooleanExtra("forresutl",true);//success finish activity
         selectServiceIds=getIntent().getIntegerArrayListExtra("selectservice"); // get select service list for get mandate amount and set bank id again serviceid
-        disAmountEdittext=getIntent().getBooleanExtra("disAmountEdittext",false); //disable mandate amount edittext filed
-        if(disAmountEdittext)maxamount.setEnabled(false);
 
 
 
@@ -123,7 +108,6 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
             }
         });
 
-
         banklist(new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
 
             bankname.setOnTouchListener(new View.OnTouchListener() {
@@ -135,7 +119,7 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
                         int  x = (int) motionEvent.getX();
                         int  y = (int) motionEvent.getY();
 
-                        Intent intent =new Intent(Enach_Mandate.this, PopapSimpleList.class);
+                        Intent intent =new Intent(ManualEnachMandate.this, PopapSimpleList.class);
                         intent.putExtra("datalist", new Gson().toJson( datalist));
                         intent.putExtra("title","Operator");
                         intent.putExtra("x",x);
@@ -155,7 +139,7 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
                         JSONObject jsonObject =accountTypeJsonArray.getJSONObject(i);
                         accountTypeValue=jsonObject.getString("value");
                     }catch (Exception e){
-                        ExceptionsNotification.ExceptionHandling(Enach_Mandate.this , Utility.getStackTrace(e));
+                        ExceptionsNotification.ExceptionHandling(ManualEnachMandate.this , Utility.getStackTrace(e));
                         //Utility.exceptionAlertDialog(Enach_Mandate.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
                     }
                 }
@@ -164,56 +148,8 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
 
                 }
             });
-
-            //add autofill Enach bank details
-            if(getIntent().getBooleanExtra("addMoreServiceMandate",false)){
-                try {
-                    acholdername.setText(getIntent().getStringExtra("accountHolderName"));
-                    acno.setText(getIntent().getStringExtra("accountNumber"));
-                    JSONObject selectBankJson =new JSONObject(getIntent().getStringExtra("bankJson"));
-
-                    // set bank list value by text
-                    bankname.setText(selectBankJson.getString("name"));
-                    bankshortname = selectBankJson.getString("id");
-
-
-                    JSONObject accountTypeJson =new JSONObject(getIntent().getStringExtra("accountType"));
-                    ArrayAdapter myAdap = (ArrayAdapter) account_type.getAdapter(); //cast to an ArrayAdapter
-                    int spinnerPosition = myAdap.getPosition(accountTypeJson.getString("key"));
-                    account_type.setSelection(spinnerPosition);
-
-                    acholdername.setEnabled(false);
-                    acno.setEnabled(false);
-                    account_type.setEnabled(false);
-                    bankname.setEnabled(false);
-
-
-                }catch (Exception e){
-                    ExceptionsNotification.ExceptionHandling(Enach_Mandate.this , Utility.getStackTrace(e));
-                   // Utility.exceptionAlertDialog(Enach_Mandate.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
-                }
-            }
-        }));
-        //show edittable icon on right side
-        /*maxamount.setCompoundDrawablesWithIntrinsicBounds(R.drawable.bankicon, 0, R.drawable.edit, 0);
-        maxamount.setEnabled(false);*/
-
-      //  ifsc = findViewById(R.id.ifsc);
-
-        if(acholdername.getText().toString().equals("")) acholdername.setText(Session.getCustomerName(Enach_Mandate.this));
-      /*  ArrayAdapter<String> adapter = new ArrayAdapter<String>
-                (this,android.R.layout.select_dialog_item,paths);*/
-      /*  ifsc.setThreshold(1);//will start working from first character
-        ifsc.setAdapter(adapter);//setting the adapter data into the AutoCompleteTextView
-        ifsc.setTextColor(Color.BLACK);
-        ifsc.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long rowId) {
-                String selection = (String) parent.getItemAtPosition(position);
-                bankshortname=selectbank.get(selection);
-            }
-        });
-*/
+       }));
+        if(acholdername.getText().toString().equals("")) acholdername.setText(Session.getCustomerName(this));
     }
 
     private  void setElementId(){
@@ -226,7 +162,6 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
         back_activity_button1=findViewById(R.id.back_activity_button1);
         bankname=findViewById(R.id.bankname);
         bankname.setClickable(false);
-
 
         datalist = new ArrayList<>();
 
@@ -260,15 +195,15 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
             }
 
             if( bankshortname==null && !bankname.getText().toString().equals("")){
-                Utility.alertDialog(Enach_Mandate.this,"Alert","Bank is not selected","Ok");
+                Utility.alertDialog(ManualEnachMandate.this,"Alert","Bank is not selected","Ok");
                 validation=false;
             }
             if( accountTypeValue==null){
-                Utility.alertDialog(Enach_Mandate.this,"Alert","Account Type is not selected","Ok");
+                Utility.alertDialog(ManualEnachMandate.this,"Alert","Account Type is not selected","Ok");
                 validation=false;
             }
             if(!maxamount.getText().toString().trim().equals("")  && Integer.parseInt(maxamount.getText().toString().trim())< minamt){
-                Utility.showSingleButtonDialog(Enach_Mandate.this,"Alert",errormsz,false);
+                Utility.showSingleButtonDialog(ManualEnachMandate.this,"Alert",errormsz,false);
                 validation=false;
             }
 
@@ -282,7 +217,7 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
                 verifydialog();
             }catch (Exception e){
                 Log.w("error_enach",e.getMessage());
-                ExceptionsNotification.ExceptionHandling(Enach_Mandate.this , Utility.getStackTrace(e));
+                ExceptionsNotification.ExceptionHandling(ManualEnachMandate.this , Utility.getStackTrace(e));
             }
 
         }
@@ -325,13 +260,13 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
                 public void modify(Dialog dialog) {
                     dialog.dismiss();
                 }
-            },Enach_Mandate.this,jsonArray,null,"Please Confirm Detail");
+            },ManualEnachMandate.this,jsonArray,null,"Please Confirm Detail");
 
 
 
         }catch (Exception e){
-            ExceptionsNotification.ExceptionHandling(Enach_Mandate.this , Utility.getStackTrace(e));
-           // Utility.exceptionAlertDialog(Enach_Mandate.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(ManualEnachMandate.this , Utility.getStackTrace(e));
+            // Utility.exceptionAlertDialog(Enach_Mandate.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
     }
 
@@ -339,9 +274,9 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
 
 
         Gson gson=new Gson();
-        LocalCacheVO localCacheVO = gson.fromJson( Session.getSessionByKey(Enach_Mandate.this, Session.LOCAL_CACHE), LocalCacheVO.class);
+        LocalCacheVO localCacheVO = gson.fromJson( Session.getSessionByKey(ManualEnachMandate.this, Session.LOCAL_CACHE), LocalCacheVO.class);
 
-        String customerId=Session.getCustomerId(Enach_Mandate.this);
+        String customerId=Session.getCustomerId(ManualEnachMandate.this);
 
         HashMap<String, Object> params = new HashMap<String, Object>();
         ConnectionVO connectionVO = MandateBO.enachMandate();
@@ -372,9 +307,9 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
 
 
                 if((response.has("status") && response.get("status").equals("fail")) || (response.has("statusCode") && response.get("statusCode").equals("400"))){
-                   // Utility.alertDialog(Enach_Mandate.this,"Alert",response.getString("errorMsg"),"Ok");
+                    // Utility.alertDialog(Enach_Mandate.this,"Alert",response.getString("errorMsg"),"Ok");
                     JSONArray error =response.has("errorMsg")?new JSONArray().put(response.getString("errorMsg")):response.getJSONArray("errorMsgs");
-                    Utility.showSingleButtonDialog(Enach_Mandate.this,"Error !",error.get(0).toString(),false);
+                    Utility.showSingleButtonDialog(ManualEnachMandate.this,"Error !",error.get(0).toString(),false);
                 }else {
 
                     JSONObject object = new JSONObject(response.getString("result"));
@@ -386,7 +321,7 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
                     Log.w("urlcreate",url);
 
 
-                    Intent intent = new Intent(Enach_Mandate.this, Webview.class);
+                    Intent intent = new Intent(ManualEnachMandate.this, Webview.class);
                     intent.putExtra("url", url);
                     startActivityForResult(intent,100);
 
@@ -426,21 +361,15 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
 
                 Log.w("responsesignup",response.toString());
                 if( (response.has("status") && response.get("status").equals("fail")) || (response.has("statusCode") && response.get("statusCode").equals("400"))){
-                    Utility.showSingleButtonDialog(Enach_Mandate.this,"Error !",response.has("errorMsg") ?response.getString("errorMsg"):response.getJSONArray("errorMsgs").get(0).toString(),true);
+                    Utility.showSingleButtonDialog(ManualEnachMandate.this,"Error !",response.has("errorMsg") ?response.getString("errorMsg"):response.getJSONArray("errorMsgs").get(0).toString(),true);
 
                 }else {
-
-                    if(response.has("customerJson")){
-                        CustomerVO customerVO = gson.fromJson(response.getString("customerJson"), CustomerVO.class);
-                        String json = gson.toJson(customerVO);
-                        Session.set_Data_Sharedprefence(Enach_Mandate.this,Session.CACHE_CUSTOMER,json);
-                    }
 
                     JSONObject object = new JSONObject(response.getString("result"));
                     JSONArray jsonArray=object.getJSONArray("data");
 
                     for(int i=0;i<jsonArray.length();i++){
-                       JSONObject bankjson=(jsonArray.getJSONObject(i));
+                        JSONObject bankjson=(jsonArray.getJSONObject(i));
                         DataAdapterVO dataAdapterVO = new DataAdapterVO();
                         dataAdapterVO.setText(bankjson.getString("name"));
                         dataAdapterVO.setAssociatedValue(bankjson.getString("id"));
@@ -456,7 +385,7 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
                         accountList.add(object1.getString("key"));
                     }
 
-                    ArrayAdapter adapter = new ArrayAdapter<String>(Enach_Mandate.this,
+                    ArrayAdapter adapter = new ArrayAdapter<String>(ManualEnachMandate.this,
                             R.layout.spinner_item,accountList);
                     adapter.setDropDownViewResource(R.layout.spinner_item);
                     account_type.setAdapter(adapter);
@@ -486,8 +415,8 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
                         Log.w("mandateid",jsonArray.toString());
                         setEnachMandateId((jsonArray.getJSONObject(2)).getString("source_id"));
                     } catch (Exception e) {
-                        ExceptionsNotification.ExceptionHandling(Enach_Mandate.this , Utility.getStackTrace(e));
-                       // Utility.exceptionAlertDialog(Enach_Mandate.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+                        ExceptionsNotification.ExceptionHandling(ManualEnachMandate.this , Utility.getStackTrace(e));
+                        // Utility.exceptionAlertDialog(Enach_Mandate.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
                     }
                 }
             }else if(requestCode==ApplicationConstant.REQ_POPAPACTIVITYRESULT){
@@ -504,14 +433,14 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
 
     private void setEnachMandateId(String id){
 
-        String customerId=Session.getCustomerId(Enach_Mandate.this);
+        String customerId=Session.getCustomerId(ManualEnachMandate.this);
         HashMap<String, Object> params = new HashMap<String, Object>();
         ConnectionVO connectionVO = MandateBO.setEnachMandateId();
 
         CustomerVO customerVO =new CustomerVO();
         customerVO.setCustomerId(Integer.parseInt(customerId));
 
-        CustomerAuthServiceVO  customerAuthServiceVO=new CustomerAuthServiceVO();
+        CustomerAuthServiceVO customerAuthServiceVO=new CustomerAuthServiceVO();
         customerAuthServiceVO.setProviderTokenId(id);
         customerAuthServiceVO.setCustomer(customerVO);
         customerAuthServiceVO.setCustomerAuthId(customerAuthId);
@@ -546,28 +475,25 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
                         sb.append(error.get(i)).append("\n");
                     }
                     //Utility.alertDialog(Enach_Mandate.this,"Alert",sb.toString(),"Ok");
-                    Utility.showSingleButtonDialog(Enach_Mandate.this,"Error !",sb.toString(),false);
+                    Utility.showSingleButtonDialog(ManualEnachMandate.this,"Error !",sb.toString(),false);
                 }else {
                     String json = gson.toJson(customerVO);
-                    Session.set_Data_Sharedprefence(Enach_Mandate.this,Session.CACHE_CUSTOMER,json);
-                    Session.set_Data_Sharedprefence(Enach_Mandate.this, Session.LOCAL_CACHE,customerVO.getLocalCache());
+                    Session.set_Data_Sharedprefence(ManualEnachMandate.this,Session.CACHE_CUSTOMER,json);
+                    Session.set_Data_Sharedprefence(ManualEnachMandate.this, Session.LOCAL_CACHE,customerVO.getLocalCache());
 
-                    // startActivity(new Intent(Enach_Mandate.this,Paynimo_HDFC.class));
-                    if (!foractivity) {
-                        startActivity(new Intent(Enach_Mandate.this,SI_First_Data.class));
-                    }else {
-                        Intent intent =new Intent();
-                        intent.putExtra("selectservice",selectServiceIds);
-                        intent.putExtra("msg",customerVO.getAnonymousString());
-                        intent.putExtra("mandate_status",customerVO.isEventIs());
-                        if(customerVO.isEventIs()){
-                            intent.putExtra("bankMandateId",customerVO.getAnonymousInteger().toString());
-                        }
 
-                        setResult(RESULT_OK,intent);
-                        finish();
+                    Intent intent =new Intent();
+                    intent.putExtra("selectservice",selectServiceIds);
+                    intent.putExtra("msg",customerVO.getAnonymousString());
+                    intent.putExtra("mandate_status",customerVO.isEventIs());
+                    if(customerVO.isEventIs()){
+                        intent.putExtra("bankMandateId",customerVO.getAnonymousInteger().toString());
                     }
+
+                    setResult(RESULT_OK,intent);
                     finish();
+
+
                 }
             }
         });

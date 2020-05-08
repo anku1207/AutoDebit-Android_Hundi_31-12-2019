@@ -18,8 +18,10 @@ import androidx.core.text.HtmlCompat;
 import com.google.gson.Gson;
 import com.uav.autodebit.BO.Electricity_BillBO;
 import com.uav.autodebit.BO.OxigenPlanBO;
+import com.uav.autodebit.CustomDialog.MyDialog;
 import com.uav.autodebit.Interface.AlertSelectDialogClick;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
+import com.uav.autodebit.Interface.ConfirmationGetObjet;
 import com.uav.autodebit.Interface.PaymentGatewayResponse;
 import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
@@ -49,6 +51,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 import static com.uav.autodebit.util.Utility.showDoubleButtonDialogConfirmation;
 
@@ -121,7 +124,6 @@ public class BillPayRequest {
                 @Override
                 public void onResponse(Object resp) {
                     JSONObject response = (JSONObject) resp;
-
                     OxigenTransactionVO oxigenTransactionVOresp = gson.fromJson(response.toString(), OxigenTransactionVO.class);
 
                     if(oxigenTransactionVOresp.getStatusCode().equals("400")){
@@ -363,13 +365,28 @@ public class BillPayRequest {
                     if(oxigenValidateResponce.getTypeId()==null){
                         Utility.showSingleButtonDialog(context,"Error !","Something went wrong, Please try again!",false);
                     }else{
+                        //if due date > 2 paybill date show payment dialog select recharge mode
                         if(oxigenValidateResponce.getPaymentDialogShowMandate()){
-                            //if due date > 2 paybill date show payment dialog select recharge mode
                             Utility.showSelectPaymentTypeDialog(context,"Payment Type",oxigenValidateResponce.getPaymentType(),new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess)(position)->{
                                 int selectPosition=Integer.parseInt(position);
 
                                 if(selectPosition==0 ){
-                                    paymentGatewayResponse.onEnach(oxigenValidateResponce);
+                                    // if service id is dish show mandate dialog
+                                  if(oxigenValidateResponce.getShowDialog()){
+                                      // 07/05/2020
+                                      MyDialog.showWebviewConditionalAlertDialog(context,oxigenValidateResponce.getHtmlString(),true,new ConfirmationGetObjet((ConfirmationGetObjet.OnOk)(ok)->{
+                                          HashMap<String,Object> objectHashMap = (HashMap<String, Object>) ok;
+                                          ((Dialog) Objects.requireNonNull(objectHashMap.get("dialog"))).dismiss();
+                                          if(String.valueOf(objectHashMap.get("data")).equalsIgnoreCase("ok")){
+                                              paymentGatewayResponse.onPg(oxigenValidateResponce);
+                                          }
+                                      },(ConfirmationGetObjet.OnCancel)(cancel)->{
+                                          ((Dialog)cancel).dismiss();
+                                          paymentGatewayResponse.onEnach(oxigenValidateResponce);
+                                      }));
+                                  }else {
+                                      paymentGatewayResponse.onEnach(oxigenValidateResponce);
+                                  }
                                 }else {
                                     paymentGatewayResponse.onPg(oxigenValidateResponce);
                                 }
@@ -391,12 +408,32 @@ public class BillPayRequest {
         oxigenValidateResponce=oxigenTransactionVOSuccess;
         if(oxigenTransactionVOSuccess.isEventIs()){
 
-         Utility.showWebviewAlertDialog(context,oxigenTransactionVOSuccess.getAnonymousString(),false,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+            MyDialog.showWebviewConditionalAlertDialog(context,oxigenTransactionVOSuccess.getAnonymousString(),false,new ConfirmationGetObjet((ConfirmationGetObjet.OnOk)(ok)->{
               //((Activity)context).startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(oxigenTransactionVOresp.getServiceId()))), ApplicationConstant.REQ_ENACH_MANDATE);
-             ok.dismiss();
-             CheckMandateAndShowDialog.oxiServiceMandateCheck(context,oxigenTransactionVOSuccess.getServiceId(),false,oxigenValidateResponce);
-         },(ConfirmationDialogInterface.OnCancel)(cancel)->{
-             cancel.dismiss();
+             HashMap<String,Object> objectHashMap = (HashMap<String, Object>) ok;
+             ((Dialog) Objects.requireNonNull(objectHashMap.get("dialog"))).dismiss();
+
+             if(String.valueOf(objectHashMap.get("data")).equalsIgnoreCase("ok")){
+                 CheckMandateAndShowDialog.oxiServiceMandateCheck(context,oxigenTransactionVOSuccess.getServiceId(),false,oxigenValidateResponce);
+             }else{
+                 try {
+                     JSONObject alertDialogDate =new JSONObject((String) objectHashMap.get("data"));
+                     CheckMandateAndShowDialog.setManuallyServiceSchedule(context,oxigenTransactionVOSuccess,alertDialogDate,new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
+                         CustomerVO customerVO = (CustomerVO) success;
+                         if(customerVO.isEventIs()){
+                             CheckMandateAndShowDialog.oxiServiceMandateCheck(context,oxigenTransactionVOSuccess.getServiceId(),false,oxigenValidateResponce);
+                         }else {
+                             ((Activity)context).startActivity(new Intent(context,HistorySummary.class).putExtra("historyId",oxigenTransactionVOSuccess.getAnonymousInteger().toString()));
+                             ((Activity)context).finish();
+                         }
+
+                     }));
+                 }catch (Exception e){
+                     ExceptionsNotification.ExceptionHandling(context , Utility.getStackTrace(e));
+                 }
+             }
+         },(ConfirmationGetObjet.OnCancel)(cancel)->{
+             ((Dialog)cancel).dismiss();
              ((Activity)context).startActivity(new Intent(context,HistorySummary.class).putExtra("historyId",oxigenTransactionVOSuccess.getAnonymousInteger().toString()));
              ((Activity)context).finish();
          }));
@@ -408,11 +445,7 @@ public class BillPayRequest {
                 ((Activity)context).finish();
             }),"",oxigenTransactionVOSuccess.getAnonymousString());
         }
-
     }
-
-
-
 
     public static void onActivityResult(Context context,Intent data,int requestCode){
         if(requestCode==200){
@@ -440,7 +473,6 @@ public class BillPayRequest {
                 Utility.showSingleButtonDialog(context,"Alert",data.getStringExtra("msg"),false);
             }
         }else if(requestCode==ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE){
-
             boolean enachMandateStatus=data.getBooleanExtra("mandate_status",false);
             if(enachMandateStatus){
                 AuthServiceProviderVO authServiceProviderVO =new AuthServiceProviderVO();

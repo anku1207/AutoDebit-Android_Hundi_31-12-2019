@@ -41,6 +41,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 import com.uav.autodebit.BO.MetroBO;
 import com.uav.autodebit.BO.ServiceBO;
+import com.uav.autodebit.CustomDialog.MyDialog;
 import com.uav.autodebit.HtmlPage.HtmlPages;
 import com.uav.autodebit.Interface.AlertSelectDialogClick;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
@@ -137,11 +138,10 @@ public class Home extends Base_Activity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
         setContentView(R.layout.activity_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         String customername=Session.getCustomerName(Home.this);
-        toolbar.setTitle(Utility.capitalize(customername));
+        toolbar.setTitle(customername!=null?Utility.capitalize(customername):"");
         setSupportActionBar(toolbar);
 
         pd = new UAVProgressDialog(this);
@@ -149,7 +149,6 @@ public class Home extends Base_Activity
         selectedService=null;
         level=null;
         try {
-
             activityhasmap=new HashMap<>();
             activityhasmap.put("1",IRCTC.class);
             activityhasmap.put("2",Dmrc_Card_Request.class);
@@ -179,7 +178,6 @@ public class Home extends Base_Activity
             activityhasmap.put("L_4",Enach_Mandate.class);
             activityhasmap.put("L_5",Enach_Mandate.class);
             activityhasmap.put("L_6",SI_First_Data.class);
-
 
             //check notification send  activity move
             if(getIntent().getStringExtra(ApplicationConstant.NOTIFICATION_ACTION)!=null){
@@ -433,7 +431,7 @@ public class Home extends Base_Activity
                         startUserClickService(activitylayout.getTag().toString(),view);
                     }else{
                         // 12/04/2020
-                        Utility.showWebviewAlertDialog(Home.this, serviceTypeVO.getMessage(),true,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(d)->{
+                        MyDialog.showWebviewAlertDialog(Home.this, serviceTypeVO.getMessage(),true,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(d)->{
                             d.dismiss();
                             Utility.enableDisableView(view,false);
                             startUserClickService(activitylayout.getTag().toString(),view);
@@ -670,7 +668,7 @@ public class Home extends Base_Activity
                 if(customerVO.getStatusCode().equals("ap105") || customerVO.getStatusCode().equals("ap107") ||customerVO.getStatusCode().equals("ap102")){
 
                     // 12/04/2020
-                    Utility.showWebviewAlertDialog(Home.this, customerVO.getHtmlString(),true,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(d)->{
+                    MyDialog.showWebviewAlertDialog(Home.this, customerVO.getHtmlString(),true,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(d)->{
                         d.dismiss();
                         startActivityForResult(new Intent(Home.this,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(serviceId))),ApplicationConstant.REQ_ENACH_MANDATE);
                     },(ConfirmationDialogInterface.OnCancel)(cancel)->{
@@ -680,7 +678,7 @@ public class Home extends Base_Activity
                 }else if(customerVO.getStatusCode().equals("ap106") || customerVO.getStatusCode().equals("ap103") || customerVO.getStatusCode().equals("ap108")){
 
                     // 12/04/2020
-                    Utility.showWebviewAlertDialog(Home.this, customerVO.getHtmlString(),true,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(d)->{
+                    MyDialog.showWebviewAlertDialog(Home.this, customerVO.getHtmlString(),true,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(d)->{
                         d.dismiss();
 
                         String[] buttons = {"New Bank","Existing Bank"};
@@ -758,7 +756,7 @@ public class Home extends Base_Activity
                 } else if (customerVO.getStatusCode().equals("L_4") || customerVO.getStatusCode().equals("L_5") || customerVO.getStatusCode().equals("L_6")) {
 
                     // 12/04/2020
-                    Utility.showWebviewAlertDialog(Home.this, customerVO.getHtmlString(),true,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(d)->{
+                    MyDialog.showWebviewAlertDialog(Home.this, customerVO.getHtmlString(),true,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(d)->{
                         d.dismiss();
                         switch (customerVO.getStatusCode()) {
                             case "L_4":

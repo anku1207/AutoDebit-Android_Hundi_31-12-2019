@@ -22,4 +22,14 @@ public class ServiceBO implements Serializable {
     }
 
 
+    public static ConnectionVO setBankForServiceManuallyService() {
+        ConnectionVO connectionVO = new ConnectionVO();
+        connectionVO.setMethodName("setManuallyServiceSchedule");
+        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
+        return connectionVO;
+    }
+
+
+
+
 }

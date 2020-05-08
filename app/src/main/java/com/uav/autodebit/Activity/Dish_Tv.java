@@ -24,6 +24,7 @@ import com.google.gson.Gson;
 import com.uav.autodebit.BO.D2HBO;
 import com.uav.autodebit.BO.DishTVBO;
 import com.uav.autodebit.BO.ServiceBO;
+import com.uav.autodebit.CustomDialog.MyDialog;
 import com.uav.autodebit.Interface.AlertSelectDialogClick;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.R;
@@ -354,7 +355,7 @@ public class Dish_Tv  extends Base_Activity implements View.OnClickListener  {
                         if(!dishTvVO.getStatusCode().equals("200") && !dishTvVO.getStatusCode().equals("ap104")){
                             if(dishTvVO.getStatusCode().equals("ap105") || dishTvVO.getStatusCode().equals("ap107") ||dishTvVO.getStatusCode().equals("ap102")){
                                 // 12/04/2020
-                                Utility.showWebviewAlertDialog(Dish_Tv.this, dishTvVO.getHtmlString(),false,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(dialog)->{
+                                MyDialog.showWebviewAlertDialog(Dish_Tv.this, dishTvVO.getHtmlString(),false,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(dialog)->{
                                     dialog.dismiss();
                                     startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(ApplicationConstant.DISHTV))).putExtra("disAmountEdittext",true),ApplicationConstant.REQ_ENACH_MANDATE);
                                 },(ConfirmationDialogInterface.OnCancel)(cancel)->{
@@ -363,7 +364,7 @@ public class Dish_Tv  extends Base_Activity implements View.OnClickListener  {
                             }else if(dishTvVO.getStatusCode().equals("ap106") || dishTvVO.getStatusCode().equals("ap103") || dishTvVO.getStatusCode().equals("ap108")) {
 
                                 // 12/04/2020
-                                Utility.showWebviewAlertDialog(Dish_Tv.this, dishTvVO.getHtmlString(),false,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(dialog)->{
+                                MyDialog.showWebviewAlertDialog(Dish_Tv.this, dishTvVO.getHtmlString(),false,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(dialog)->{
                                     dialog.dismiss();
                                     String[] buttons = {"New Bank","Existing Bank"};
                                     Utility.showDoubleButtonDialogConfirmation(new com.uav.autodebit.util.DialogInterface() {

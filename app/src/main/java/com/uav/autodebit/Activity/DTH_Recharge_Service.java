@@ -89,7 +89,6 @@ public class DTH_Recharge_Service extends Base_Activity implements View.OnClickL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
         setContentView(R.layout.activity_dth__recharge__service);
         getSupportActionBar().hide();
 

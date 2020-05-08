@@ -22,6 +22,15 @@ public class BaseVO {
     private Boolean paymentDialogShowMandate;
     private String customerDetails;
 
+    private Double anonymousAmount;
+    private Integer anonymounsDay;
+    private Long  anonymousDate;
+    private Integer custoemrHistoryId;
+
+    private String bankName;
+    private String bankAccountNo;
+    private Boolean showDialog;
+
 
 
 
@@ -164,5 +173,62 @@ public class BaseVO {
 
     public void setCustomerDetails(String customerDetails) {
         this.customerDetails = customerDetails;
+    }
+
+
+    public Double getAnonymousAmount() {
+        return anonymousAmount;
+    }
+
+    public void setAnonymousAmount(Double anonymousAmount) {
+        this.anonymousAmount = anonymousAmount;
+    }
+
+    public Integer getAnonymounsDay() {
+        return anonymounsDay;
+    }
+
+    public void setAnonymounsDay(Integer anonymounsDay) {
+        this.anonymounsDay = anonymounsDay;
+    }
+
+    public Long getAnonymousDate() {
+        return anonymousDate;
+    }
+
+    public void setAnonymousDate(Long anonymousDate) {
+        this.anonymousDate = anonymousDate;
+    }
+
+    public Integer getCustoemrHistoryId() {
+        return custoemrHistoryId;
+    }
+
+    public void setCustoemrHistoryId(Integer custoemrHistoryId) {
+        this.custoemrHistoryId = custoemrHistoryId;
+    }
+
+    public String getBankName() {
+        return bankName;
+    }
+
+    public void setBankName(String bankName) {
+        this.bankName = bankName;
+    }
+
+    public String getBankAccountNo() {
+        return bankAccountNo;
+    }
+
+    public void setBankAccountNo(String bankAccountNo) {
+        this.bankAccountNo = bankAccountNo;
+    }
+
+    public Boolean getShowDialog() {
+        return showDialog;
+    }
+
+    public void setShowDialog(Boolean showDialog) {
+        this.showDialog = showDialog;
     }
 }

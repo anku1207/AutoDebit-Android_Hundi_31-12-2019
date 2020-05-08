@@ -33,7 +33,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PopapSimpleList extends AppCompatActivity {
+public class PopapSimpleList extends Base_Activity {
 
 
     ExpandableHeightListView listView;
@@ -48,7 +48,6 @@ public class PopapSimpleList extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
         setContentView(R.layout.activity_popap_simple_list);
 
         getSupportActionBar().hide();

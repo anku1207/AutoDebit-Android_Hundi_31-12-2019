@@ -52,7 +52,6 @@ public class Listview_With_Image extends Base_Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
         setContentView(R.layout.activity_listview_with_image);
         getSupportActionBar().hide();
 

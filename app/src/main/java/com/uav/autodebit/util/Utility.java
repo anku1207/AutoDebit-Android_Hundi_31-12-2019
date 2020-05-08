@@ -1,11 +1,13 @@
 package com.uav.autodebit.util;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -46,9 +48,11 @@ import androidx.viewpager.widget.ViewPager;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
+import android.text.Editable;
 import android.text.InputType;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.text.format.Formatter;
 import android.text.method.DigitsKeyListener;
 import android.text.style.BackgroundColorSpan;
@@ -68,9 +72,16 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.view.inputmethod.InputMethodManager;
+import android.webkit.ConsoleMessage;
 import android.webkit.JavascriptInterface;
+import android.webkit.JsResult;
+import android.webkit.WebChromeClient;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -90,14 +101,23 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
 
+import com.uav.autodebit.Activity.Listview_With_Image;
 import com.uav.autodebit.Activity.Login;
+import com.uav.autodebit.Activity.Mobile_Prepaid_Recharge_Service;
+import com.uav.autodebit.Activity.PanVerification;
 import com.uav.autodebit.Activity.Splash_Screen;
+import com.uav.autodebit.Activity.Webview;
 import com.uav.autodebit.Interface.AlertSelectDialogClick;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
+import com.uav.autodebit.Interface.ConfirmationGetObjet;
+import com.uav.autodebit.Interface.DateInterface;
+import com.uav.autodebit.Interface.ServiceClick;
 import com.uav.autodebit.Notification.NotificationUtils;
 import com.uav.autodebit.R;
 import com.uav.autodebit.adpater.ListViewAlertSelectListBaseAdapter;
 import com.uav.autodebit.constant.ApplicationConstant;
+import com.uav.autodebit.constant.ErrorMsg;
+import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.override.ExpandableHeightListView;
 import com.uav.autodebit.override.UAVEditText;
 import com.uav.autodebit.vo.CustomerAuthServiceVO;
@@ -131,10 +151,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -1107,6 +1129,32 @@ public class Utility {
     }
 
 
+    public static DatePickerDialog DatePickerReturnDate(Context context, Calendar cal , DateInterface dateInterface){
+        int mYear, mMonth, mDay;
+        mYear = cal.get(Calendar.YEAR);
+        mMonth = cal.get(Calendar.MONTH);
+        mDay = cal.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(context,
+                new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year,
+                                          int monthOfYear, int dayOfMonth) {
+                        DecimalFormat df = new DecimalFormat("00");
+                        int m=monthOfYear+1;
+                        String month = df.format(m);
+                        String day=df.format(dayOfMonth);
+
+
+                        dateInterface.onSuccess(day + "/" + month + "/" +year);
+                    }
+                }, mYear, mMonth, mDay);
+        return datePickerDialog;
+    }
+
+
+
+
 
     public static Bitmap getCircularBitmapWithWhiteBorder(Bitmap bitmap,
                                                           int borderWidth) {
@@ -1517,59 +1565,49 @@ public class Utility {
     }
 
 
-    public static void showWebviewAlertDialog(Context context ,String html,boolean backBtnCloseDialog, ConfirmationDialogInterface confirmationDialogInterface){
-
-        final Dialog cusdialog = new Dialog(context);
-        cusdialog.requestWindowFeature(1);
-        Objects.requireNonNull(cusdialog.getWindow()).setBackgroundDrawable(new ColorDrawable(0));
-        cusdialog.setContentView(R.layout.webview_alert_dialog);
-        cusdialog.setCanceledOnTouchOutside(false);
-        cusdialog.setCancelable(backBtnCloseDialog);
-        cusdialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
-
-        WebView webview = cusdialog.findViewById(R.id.webview);
-        webview.getSettings().setJavaScriptEnabled( true ) ;
-
-        WebSettings ws = webview.getSettings() ;
-        ws.setJavaScriptEnabled( true ) ;
 
 
-        webview.setVerticalScrollBarEnabled(false);
-        webview.setHorizontalScrollBarEnabled(false);
-        webview.getSettings().setBuiltInZoomControls(false);
-
-        webview.getSettings().setLoadsImagesAutomatically(true);
-        webview.getSettings().setDomStorageEnabled(true);
-        webview.setInitialScale(1);
-        webview.getSettings().setUseWideViewPort(true);
-
-
-
-        webview.loadData(html, "text/html; charset=utf-8", "UTF-8");
-        webview.addJavascriptInterface( new Object() {
-            @JavascriptInterface // For API 17+
-            public void performClick (String message) {
-                ((Activity)context).runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if(message.equalsIgnoreCase("ok")){
-                            confirmationDialogInterface.onOk(cusdialog);
-                        }else if(message.equalsIgnoreCase("cancel")){
-                            confirmationDialogInterface.onCancel(cusdialog);
-                        }
-                    }
-                });
-            }
-        } , "ok" ) ;
-
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        lp.copyFrom(cusdialog.getWindow().getAttributes());
-        lp.width = (WindowManager.LayoutParams.MATCH_PARENT);
-        lp.height = (WindowManager.LayoutParams.WRAP_CONTENT);
-
-        if(!cusdialog.isShowing())cusdialog.show();
-        cusdialog.getWindow().setAttributes(lp);
+    public static Date removeTime(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        return cal.getTime();
     }
+
+
+    public static  int getTwoDatedeff(Date today, Date otherDate){
+        try {
+            long diff = otherDate.getTime() - today.getTime();
+            return (int) TimeUnit.DAYS.convert(diff,TimeUnit.MILLISECONDS);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public static Date addDayInSelectDate(Date selectDate, int day){
+        Calendar calToDate = Calendar.getInstance();
+        calToDate.setTime(selectDate);
+        calToDate.add(Calendar.DATE, day);
+        Date date = calToDate.getTime();
+        return date;
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 
     public static int getActionBarHeight(Context context) {
         final TypedArray ta = context.getTheme().obtainStyledAttributes(
