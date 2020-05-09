@@ -443,7 +443,7 @@ public class BillPayRequest {
                 ok.dismiss();
                 ((Activity)context).startActivity(new Intent(context,HistorySummary.class).putExtra("historyId",oxigenTransactionVOSuccess.getAnonymousInteger().toString()));
                 ((Activity)context).finish();
-            }),"",oxigenTransactionVOSuccess.getAnonymousString());
+            }),oxigenValidateResponce.getDialogTitle(),oxigenTransactionVOSuccess.getAnonymousString());
         }
     }
 

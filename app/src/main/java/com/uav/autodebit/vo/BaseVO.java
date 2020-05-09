@@ -27,9 +27,10 @@ public class BaseVO {
     private Long  anonymousDate;
     private Integer custoemrHistoryId;
 
-    private String bankName;
-    private String bankAccountNo;
+    private String customerBankName;
+    private String customerBankAccountNo;
     private Boolean showDialog;
+    private String dialogTitle;
 
 
 
@@ -208,20 +209,20 @@ public class BaseVO {
         this.custoemrHistoryId = custoemrHistoryId;
     }
 
-    public String getBankName() {
-        return bankName;
+    public String getCustomerBankName() {
+        return customerBankName;
     }
 
-    public void setBankName(String bankName) {
-        this.bankName = bankName;
+    public void setCustomerBankName(String customerBankName) {
+        this.customerBankName = customerBankName;
     }
 
-    public String getBankAccountNo() {
-        return bankAccountNo;
+    public String getCustomerBankAccountNo() {
+        return customerBankAccountNo;
     }
 
-    public void setBankAccountNo(String bankAccountNo) {
-        this.bankAccountNo = bankAccountNo;
+    public void setCustomerBankAccountNo(String customerBankAccountNo) {
+        this.customerBankAccountNo = customerBankAccountNo;
     }
 
     public Boolean getShowDialog() {
@@ -230,5 +231,13 @@ public class BaseVO {
 
     public void setShowDialog(Boolean showDialog) {
         this.showDialog = showDialog;
+    }
+
+    public String getDialogTitle() {
+        return dialogTitle;
+    }
+
+    public void setDialogTitle(String dialogTitle) {
+        this.dialogTitle = dialogTitle;
     }
 }

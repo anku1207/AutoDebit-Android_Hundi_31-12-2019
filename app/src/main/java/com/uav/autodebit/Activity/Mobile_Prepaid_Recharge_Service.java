@@ -599,7 +599,7 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                             ok.dismiss();
                             startActivity(new Intent(Mobile_Prepaid_Recharge_Service.this,HistorySummary.class).putExtra("historyId",oxigenTransactionVOresp.getAnonymousInteger().toString()));
                             finish();
-                        }),"",oxigenValidateResponce.getAnonymousString());
+                        }),oxigenValidateResponce.getDialogTitle(),oxigenValidateResponce.getAnonymousString());
                     }
                 }
             }
