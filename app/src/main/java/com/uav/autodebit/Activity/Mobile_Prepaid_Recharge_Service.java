@@ -41,6 +41,7 @@ import com.google.gson.Gson;
 import com.uav.autodebit.BO.OxigenPlanBO;
 import com.uav.autodebit.CustomDialog.MyDialog;
 import com.uav.autodebit.Interface.AlertSelectDialogClick;
+import com.uav.autodebit.Interface.CallBackInterface;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.Interface.ConfirmationGetObjet;
 import com.uav.autodebit.Interface.VolleyResponse;
@@ -49,6 +50,7 @@ import com.uav.autodebit.adpater.BrowsePlanAdapter;
 import com.uav.autodebit.androidFragment.Offers_recent_Fragment;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.Content_Message;
+import com.uav.autodebit.constant.GlobalApplication;
 import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.override.DrawableClickListener;
 import com.uav.autodebit.override.UAVEditText;
@@ -92,23 +94,12 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
     PermissionUtils permissionUtils ;
     static  OxigenTransactionVO oxigenValidateResponce;
 
-
-    @TargetApi(Build.VERSION_CODES.O)
-    private void disableAutofill() {
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            getWindow().getDecorView().setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO_EXCLUDE_DESCENDANTS);
-        }
-
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
         setContentView(R.layout.activity_mobile__prepaid__recharge__service);
 
-        //disable auto fill
-        disableAutofill();
 
         mobilenumber=findViewById(R.id.mobilenumber);
         operator=findViewById(R.id.operator);
@@ -428,9 +419,7 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
         }catch (Exception e){
             ExceptionsNotification.ExceptionHandling(Mobile_Prepaid_Recharge_Service.this , Utility.getStackTrace(e));
             // Utility.exceptionAlertDialog(Mobile_Prepaid_Recharge_Service.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
-
         }
-
     }
 
     private void oxiMobileRechargeValidation() {
@@ -495,12 +484,15 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                                 }
                             },(ConfirmationGetObjet.OnCancel)(cancel)->{
                                 ((Dialog)cancel).dismiss();
+                                //if mandate is exist proceed bill  direct
                                 if (oxigenValidateResponce.isEventIs()) {
                                     // recharge on bank mandate
                                     proceedToRecharge(oxigenValidateResponce.getTypeId().toString(), oxigenValidateResponce.getAnonymousInteger().toString(), AuthServiceProviderVO.ENACHIDFC);
                                 } else {
+                                    //if mandate is not exist check bank bank mandate
                                     // check mandate and adopt bank for service
-                                    oxiPripaidServiceMandateCheck(Mobile_Prepaid_Recharge_Service.this,oxigenValidateResponce.getServiceId(),true,oxigenValidateResponce);
+                                    //oxiPripaidServiceMandateCheck(Mobile_Prepaid_Recharge_Service.this,oxigenValidateResponce.getServiceId(),true,oxigenValidateResponce);
+                                    showMandateSchedulerBeforeRecharge(Mobile_Prepaid_Recharge_Service.this,oxigenValidateResponce.getHtmlString(),oxigenValidateResponce,true);
                                 }
                             }));
 
@@ -514,6 +506,119 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
             }
         });
     }
+
+
+
+    public void showMandateSchedulerBeforeRecharge(Context context ,String htmlUrl ,OxigenTransactionVO oxigenTransactionVOresp ,boolean isRecharge ){
+        // ask to customer bank mandate after recharge
+        MyDialog.showWebviewConditionalAlertDialog(context,htmlUrl,false,new ConfirmationGetObjet((ConfirmationGetObjet.OnOk)(ok)->{
+            //((Activity)context).startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(oxigenTransactionVOresp.getServiceId()))), ApplicationConstant.REQ_ENACH_MANDATE);
+            HashMap<String,Object> objectHashMap = (HashMap<String, Object>) ok;
+            //add Dialog object in list
+            GlobalApplication.dialog_List.add(((Dialog) Objects.requireNonNull(objectHashMap.get("dialog"))));
+            //((Dialog) Objects.requireNonNull(objectHashMap.get("dialog"))).dismiss();
+            try {
+                JSONObject alertDialogDate =new JSONObject((String) objectHashMap.get("data"));
+                CheckMandateAndShowDialog.beforeRechargeMandateSchedule(context,oxigenTransactionVOresp,alertDialogDate,new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
+                    CustomerVO cusVO = (CustomerVO) success;
+                    if(cusVO.isEventIs()){
+                        proceedToRecharge(oxigenTransactionVOresp.getTypeId().toString(), oxigenTransactionVOresp.getAnonymousInteger().toString(), AuthServiceProviderVO.ENACHIDFC);
+                    }else{
+                        beforeRechargeAddMandate(context,oxigenTransactionVOresp);
+                    }
+                }));
+            }catch (Exception e){
+                ExceptionsNotification.ExceptionHandling(context , Utility.getStackTrace(e));
+            }
+        },(ConfirmationGetObjet.OnCancel)(cancel)->{
+            ((Dialog)cancel).dismiss();
+            CheckMandateAndShowDialog.checkMandateforService(this,oxigenTransactionVOresp,new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
+               CustomerVO customerVO = (CustomerVO) success;
+                //if mandate is exist proceed bill  direct
+                if (customerVO.isEventIs()) {
+                    // recharge on bank mandate
+                    proceedToRecharge(oxigenTransactionVOresp.getTypeId().toString(), oxigenTransactionVOresp.getAnonymousInteger().toString(), AuthServiceProviderVO.ENACHIDFC);
+                } else {
+                    //if mandate is not exist check bank bank mandate
+                    // check mandate and adopt bank for service
+                    beforeRechargeAddMandate(context,oxigenTransactionVOresp);
+                }
+            }));
+        }));
+    }
+
+
+    public void beforeRechargeAddMandate(Context context , OxigenTransactionVO oxigenTransactionVOresp){
+        oxiPripaidServiceMandateCheck(context,oxigenTransactionVOresp.getServiceId(),oxigenTransactionVOresp,new VolleyResponse((VolleyResponse.OnSuccess)(mandatecheckresp)->{
+            OxigenTransactionVO oxigenTransactionVO = (OxigenTransactionVO) mandatecheckresp;
+            if(oxigenTransactionVO!=null){
+                if(oxigenTransactionVO.getStatusCode().equals("ap102")) {
+                    ((Activity) context).startActivityForResult(new Intent(context, Enach_Mandate.class).putExtra("forresutl", true).putExtra("selectservice", new ArrayList<Integer>(Arrays.asList(oxigenTransactionVOresp.getServiceId()))), ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE);
+                }else if(oxigenTransactionVO.getStatusCode().equals("ap103")){
+                    String[] buttons = {"New Bank", "Existing Bank"};
+                    Utility.showDoubleButtonDialogConfirmation(new DialogInterface() {
+                        @Override
+                        public void confirm(Dialog dialog) {
+                            dialog.dismiss();
+                            createBankListInDialog(context,oxigenTransactionVOresp.getServiceId(),oxigenTransactionVO,new CallBackInterface((CallBackInterface.OnSuccess)(onclick)->{
+                                String bankId = (String) onclick;
+                                if(!bankId.equals("0")){
+                                    proceedToRecharge(oxigenValidateResponce.getTypeId().toString(), bankId, AuthServiceProviderVO.ENACHIDFC);
+                                }else {
+                                    ((Activity) context).startActivityForResult(new Intent(context, Enach_Mandate.class).putExtra("forresutl", true).putExtra("selectservice", new ArrayList<Integer>(Arrays.asList(oxigenTransactionVOresp.getServiceId()))), ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE);
+                                }
+                            }));
+                        }
+                        @Override
+                        public void modify(Dialog dialog) {
+                            dialog.dismiss();
+                            ((Activity) context).startActivityForResult(new Intent(context, Enach_Mandate.class).putExtra("forresutl", true).putExtra("selectservice", new ArrayList<Integer>(Arrays.asList(oxigenTransactionVOresp.getServiceId()))), ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE);
+                        }
+                    }, context, oxigenTransactionVO.getErrorMsgs().get(0), "", buttons);
+                }
+            }
+        }));
+    }
+
+
+    public void createBankListInDialog(Context context, Integer serivceId, OxigenTransactionVO checkMandateResponse , CallBackInterface callBackInterface){
+        try {
+            JSONArray arryjson = new JSONArray(checkMandateResponse.getAnonymousString());
+            ArrayList<CustomerAuthServiceVO> customerAuthServiceArry = new ArrayList<>();
+            for (int i = 0; i < arryjson.length(); i++) {
+                JSONObject jsonObject = arryjson.getJSONObject(i);
+                CustomerAuthServiceVO customerAuthServiceVO = new CustomerAuthServiceVO();
+                customerAuthServiceVO.setBankName(jsonObject.getString("bankName"));
+                customerAuthServiceVO.setProviderTokenId(jsonObject.getString("mandateId"));
+                customerAuthServiceVO.setCustomerAuthId(jsonObject.getInt("id"));
+                customerAuthServiceVO.setAnonymousString(jsonObject.getString("status"));
+                customerAuthServiceArry.add(customerAuthServiceVO);
+            }
+            CustomerAuthServiceVO customerAuthServiceVO = new CustomerAuthServiceVO();
+            customerAuthServiceVO.setBankName(null);
+            customerAuthServiceVO.setProviderTokenId("Add New Mandate");
+            customerAuthServiceVO.setCustomerAuthId(0);
+            customerAuthServiceVO.setAnonymousString(null);
+            customerAuthServiceArry.add(customerAuthServiceVO);
+
+            Utility.alertselectdialog(context, "Choose from existing Bank", customerAuthServiceArry, new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess) (bankId) -> {
+                if (!bankId.equals("0")) {
+                    CheckMandateAndShowDialog.allotBnakForService(context,serivceId,Integer.parseInt(bankId),new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
+                        callBackInterface.onSuccess(bankId);
+                    }));
+                } else {
+                    callBackInterface.onSuccess("0");
+                }
+            }));
+        } catch (Exception e) {
+            ExceptionsNotification.ExceptionHandling(Mobile_Prepaid_Recharge_Service.this , Utility.getStackTrace(e));
+            //Utility.exceptionAlertDialog(context, "Alert!", "Something went wrong, Please try again!", "Report", Utility.getStackTrace(e));
+      }
+    }
+
+
+
+
 
     public void proceedToRecharge(String oxigenTypeId,String typeRechargeId,int providerId) {
         HashMap<String, Object> params = new HashMap<String, Object>();
@@ -563,50 +668,103 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                 }else {
                     // replace oxigenValidateResponce object on success on recharge
                     oxigenValidateResponce=oxigenTransactionVOresp;
+                    // remove all dialog
+                    dismissDialog();
+
+                   //if mandate is not exits
                     if(oxigenValidateResponce.isEventIs()) {
-                        // ask to customer bank mandate after recharge
-                        MyDialog.showWebviewConditionalAlertDialog(Mobile_Prepaid_Recharge_Service.this,oxigenTransactionVOresp.getAnonymousString(),false,new ConfirmationGetObjet((ConfirmationGetObjet.OnOk)(ok)->{
-                            //((Activity)context).startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(oxigenTransactionVOresp.getServiceId()))), ApplicationConstant.REQ_ENACH_MANDATE);
-                            HashMap<String,Object> objectHashMap = (HashMap<String, Object>) ok;
-                            ((Dialog) Objects.requireNonNull(objectHashMap.get("dialog"))).dismiss();
-
-                            if(String.valueOf(objectHashMap.get("data")).equalsIgnoreCase("ok")){
-                                oxiPripaidServiceMandateCheck(Mobile_Prepaid_Recharge_Service.this,oxigenTransactionVOresp.getServiceId(),false,oxigenValidateResponce);
-                            }else{
-                                try {
-                                    JSONObject alertDialogDate =new JSONObject((String) objectHashMap.get("data"));
-                                    CheckMandateAndShowDialog.setManuallyServiceSchedule(Mobile_Prepaid_Recharge_Service.this,oxigenValidateResponce,alertDialogDate,new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
-
-                                        CustomerVO cusVO = (CustomerVO) success;
-                                        if(cusVO.isEventIs()){
-                                            oxiPripaidServiceMandateCheck(Mobile_Prepaid_Recharge_Service.this,oxigenTransactionVOresp.getServiceId(),false,oxigenValidateResponce);
-                                        }else{
-                                            startActivity(new Intent(Mobile_Prepaid_Recharge_Service.this,HistorySummary.class).putExtra("historyId",oxigenTransactionVOresp.getAnonymousInteger().toString()));
-                                            finish();
-                                        }
-                                    }));
-                                }catch (Exception e){
-                                    ExceptionsNotification.ExceptionHandling(Mobile_Prepaid_Recharge_Service.this , Utility.getStackTrace(e));
-                                }
-                            }
-                        },(ConfirmationGetObjet.OnCancel)(cancel)->{
-                            ((Dialog)cancel).dismiss();
-                            startActivity(new Intent(Mobile_Prepaid_Recharge_Service.this,HistorySummary.class).putExtra("historyId",oxigenTransactionVOresp.getAnonymousInteger().toString()));
-                            finish();
-                        }));
-                    }else {
                         Utility.showSingleButtonDialogconfirmation(Mobile_Prepaid_Recharge_Service.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
                             ok.dismiss();
                             startActivity(new Intent(Mobile_Prepaid_Recharge_Service.this,HistorySummary.class).putExtra("historyId",oxigenTransactionVOresp.getAnonymousInteger().toString()));
                             finish();
                         }),oxigenValidateResponce.getDialogTitle(),oxigenValidateResponce.getAnonymousString());
+                    }else {
+                        showMandateSchedulerAfterRecharge(Mobile_Prepaid_Recharge_Service.this,oxigenTransactionVOresp.getAnonymousString(),oxigenValidateResponce,false);
                     }
                 }
             }
         });
     }
 
-    public void oxiPripaidServiceMandateCheck(Context context, Integer serivceId, boolean isRecharge, OxigenTransactionVO oxigenValidateResponce) {
+    public void showMandateSchedulerAfterRecharge(Context context ,String htmlUrl ,OxigenTransactionVO oxigenTransactionVOresp ,boolean isRecharge ){
+        // ask to customer bank mandate after recharge
+        MyDialog.showWebviewConditionalAlertDialog(context,htmlUrl,false,new ConfirmationGetObjet((ConfirmationGetObjet.OnOk)(ok)->{
+            //((Activity)context).startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(oxigenTransactionVOresp.getServiceId()))), ApplicationConstant.REQ_ENACH_MANDATE);
+            HashMap<String,Object> objectHashMap = (HashMap<String, Object>) ok;
+            //add Dialog object in list
+            GlobalApplication.dialog_List.add(((Dialog) Objects.requireNonNull(objectHashMap.get("dialog"))));
+            //((Dialog) Objects.requireNonNull(objectHashMap.get("dialog"))).dismiss();
+            try {
+                JSONObject alertDialogDate =new JSONObject((String) objectHashMap.get("data"));
+                CheckMandateAndShowDialog.setManuallyServiceSchedule(context,oxigenValidateResponce,alertDialogDate,new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
+                    CustomerVO cusVO = (CustomerVO) success;
+                    if(cusVO.isEventIs()){
+                        startActivity(new Intent(context,HistorySummary.class).putExtra("historyId",oxigenTransactionVOresp.getAnonymousInteger().toString()));
+                        finish();
+                    }else{
+                        afterRechargeAddMandate(context,oxigenTransactionVOresp);
+                    }
+                }));
+            }catch (Exception e){
+                ExceptionsNotification.ExceptionHandling(context , Utility.getStackTrace(e));
+            }
+        },(ConfirmationGetObjet.OnCancel)(cancel)->{
+            ((Dialog)cancel).dismiss();
+            startActivity(new Intent(context,HistorySummary.class).putExtra("historyId",oxigenTransactionVOresp.getAnonymousInteger().toString()));
+            finish();
+        }));
+    }
+
+
+    public void afterRechargeAddMandate(Context context , OxigenTransactionVO oxigenTransactionVOresp){
+        oxiPripaidServiceMandateCheck(context,oxigenTransactionVOresp.getServiceId(),oxigenTransactionVOresp,new VolleyResponse((VolleyResponse.OnSuccess)(mandatecheckresp)->{
+            OxigenTransactionVO oxigenTransactionVO = (OxigenTransactionVO) mandatecheckresp;
+            if(oxigenTransactionVO!=null){
+                if(oxigenTransactionVO.getStatusCode().equals("ap102")) {
+                    ((Activity)context).startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(oxigenTransactionVOresp.getServiceId()))), ApplicationConstant.REQ_ENACH_MANDATE);
+                }else if(oxigenTransactionVO.getStatusCode().equals("ap103")){
+                    String[] buttons = {"New Bank", "Existing Bank"};
+                    Utility.showDoubleButtonDialogConfirmation(new DialogInterface() {
+                        @Override
+                        public void confirm(Dialog dialog) {
+                            dialog.dismiss();
+                            createBankListInDialog(context,oxigenTransactionVOresp.getServiceId(),oxigenTransactionVO,new CallBackInterface((CallBackInterface.OnSuccess)(onclick)->{
+                                String bankId = (String) onclick;
+                                if(!bankId.equals("0")){
+                                    startActivity(new Intent(Mobile_Prepaid_Recharge_Service.this,HistorySummary.class).putExtra("historyId",oxigenTransactionVOresp.getAnonymousInteger().toString()));
+                                    finish();
+                                }else {
+                                    ((Activity)context).startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(oxigenTransactionVOresp.getServiceId()))), ApplicationConstant.REQ_ENACH_MANDATE);
+                                }
+                            }));
+                        }
+                        @Override
+                        public void modify(Dialog dialog) {
+                            dialog.dismiss();
+                            ((Activity)context).startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(oxigenTransactionVOresp.getServiceId()))), ApplicationConstant.REQ_ENACH_MANDATE);
+                        }
+                    }, context, oxigenTransactionVO.getErrorMsgs().get(0), "", buttons);
+                }
+            }
+        }));
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        dismissDialog();
+    }
+
+    public void dismissDialog(){
+        if(GlobalApplication.dialog_List.size()>0){
+            for (Dialog dialog : GlobalApplication.dialog_List){
+                dialog.dismiss();
+            }
+        }
+    }
+
+    public void oxiPripaidServiceMandateCheck(Context context, Integer serivceId,  OxigenTransactionVO oxigenValidateResponce,VolleyResponse volleyResponse) {
         // isrecharge is true is before recharge  and fleas alter recharge
         HashMap<String, Object> params = new HashMap<String, Object>();
         ConnectionVO connectionVO = OxigenPlanBO.oxiServiceMandateCheck();
@@ -642,75 +800,9 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                         stringBuffer.append(checkMandateResponse.getErrorMsgs().get(i));
                     }
                     Utility.showSingleButtonDialog(context, "Error !", stringBuffer.toString(), false);
-                } else if(checkMandateResponse.getStatusCode().equals("ap102")){
+                } else {
                     // 12/04/2020
-                    if(isRecharge){
-                        ((Activity)context).startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(serivceId))), ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE);
-                    }else{
-                        ((Activity)context).startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(serivceId))), ApplicationConstant.REQ_ENACH_MANDATE);
-                    }
-
-                }else if(checkMandateResponse.getStatusCode().equals("ap103")) {
-                    // 12/04/2020
-                    String[] buttons = {"New Bank", "Existing Bank"};
-                    Utility.showDoubleButtonDialogConfirmation(new com.uav.autodebit.util.DialogInterface() {
-                        @Override
-                        public void confirm(Dialog dialog) {
-                            dialog.dismiss();
-                            try {
-                                JSONArray arryjson = new JSONArray(checkMandateResponse.getAnonymousString());
-                                ArrayList<CustomerAuthServiceVO> customerAuthServiceArry = new ArrayList<>();
-                                for (int i = 0; i < arryjson.length(); i++) {
-                                    JSONObject jsonObject = arryjson.getJSONObject(i);
-                                    CustomerAuthServiceVO customerAuthServiceVO = new CustomerAuthServiceVO();
-                                    customerAuthServiceVO.setBankName(jsonObject.getString("bankName"));
-                                    customerAuthServiceVO.setProviderTokenId(jsonObject.getString("mandateId"));
-                                    customerAuthServiceVO.setCustomerAuthId(jsonObject.getInt("id"));
-                                    customerAuthServiceVO.setAnonymousString(jsonObject.getString("status"));
-                                    customerAuthServiceArry.add(customerAuthServiceVO);
-                                }
-                                CustomerAuthServiceVO customerAuthServiceVO = new CustomerAuthServiceVO();
-                                customerAuthServiceVO.setBankName(null);
-                                customerAuthServiceVO.setProviderTokenId("Add New Mandate");
-                                customerAuthServiceVO.setCustomerAuthId(0);
-                                customerAuthServiceVO.setAnonymousString(null);
-                                customerAuthServiceArry.add(customerAuthServiceVO);
-
-                                Utility.alertselectdialog(context, "Choose from existing Bank", customerAuthServiceArry, new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess) (bankId) -> {
-                                    if (!bankId.equals("0")) {
-                                        CheckMandateAndShowDialog.allotBnakForService(context,serivceId,Integer.parseInt(bankId),new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
-                                            if(isRecharge){
-                                                //recharge for after enach mandate
-                                                proceedToRecharge(oxigenValidateResponce.getTypeId().toString(), bankId, AuthServiceProviderVO.ENACHIDFC);
-                                            }else {
-                                                // move to history activity
-                                                startActivity(new Intent(Mobile_Prepaid_Recharge_Service.this,HistorySummary.class).putExtra("historyId",oxigenValidateResponce.getAnonymousInteger().toString()));
-                                                finish();
-                                            }
-                                        }));
-                                    } else {
-                                        if(isRecharge){
-                                            ((Activity)context).startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(serivceId))), ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE);
-                                        }else {
-                                            ((Activity)context).startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(serivceId))), ApplicationConstant.REQ_ENACH_MANDATE);
-                                        }
-                                    }
-                                }));
-                            } catch (Exception e) {
-                                ExceptionsNotification.ExceptionHandling(Mobile_Prepaid_Recharge_Service.this , Utility.getStackTrace(e));
-                                //Utility.exceptionAlertDialog(context, "Alert!", "Something went wrong, Please try again!", "Report", Utility.getStackTrace(e));
-                            }
-                        }
-                        @Override
-                        public void modify(Dialog dialog) {
-                            dialog.dismiss();
-                            if(isRecharge){
-                                ((Activity)context).startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(serivceId))), ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE);
-                            }else {
-                                ((Activity)context).startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(serivceId))), ApplicationConstant.REQ_ENACH_MANDATE);
-                            }
-                        }
-                    }, context, checkMandateResponse.getErrorMsgs().get(0), "", buttons);
+                    volleyResponse.onSuccess(checkMandateResponse);
                 }
             }
         });

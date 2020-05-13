@@ -30,6 +30,26 @@ public class ServiceBO implements Serializable {
     }
 
 
+    public static ConnectionVO beforeRechargeMandateSchedule() {
+        ConnectionVO connectionVO = new ConnectionVO();
+        connectionVO.setMethodName("beforeRechargeMandateSchedule");
+        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
+        return connectionVO;
+    }
+
+
+    public static ConnectionVO checkMandateforService() {
+        ConnectionVO connectionVO = new ConnectionVO();
+        connectionVO.setMethodName("checkMandateforService");
+        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
+        return connectionVO;
+    }
+
+
+
+
+
+
 
 
 }

@@ -122,7 +122,6 @@ public class MyDialog {
 
         String[] value_split = value.split("\\|");
         WebView webview = cusdialog.findViewById(R.id.webview);
-        LinearLayout rel_contain =cusdialog.findViewById(R.id.rel_contain);
         LinearLayout addview = cusdialog.findViewById(R.id.addview);
 
         if(value_split.length>1){
@@ -146,7 +145,6 @@ public class MyDialog {
                 return true;
             }
         });
-
 
 
         webview.setVerticalScrollBarEnabled(false);
@@ -207,7 +205,6 @@ public class MyDialog {
             }
             @TargetApi(android.os.Build.VERSION_CODES.M)
             public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
-
             }
         });
     }

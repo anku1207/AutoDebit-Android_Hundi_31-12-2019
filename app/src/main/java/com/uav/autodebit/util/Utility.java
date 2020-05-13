@@ -1222,13 +1222,8 @@ public class Utility {
          title_text.setText(title);
          ListView listView = (ListView) var3.findViewById(R.id.listview);
 
-
-
          ListViewAlertSelectListBaseAdapter myAdapter=new ListViewAlertSelectListBaseAdapter(context, dataArray, R.layout.design_list_text_with_card);
-
-
         listView.setAdapter(myAdapter);
-
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {

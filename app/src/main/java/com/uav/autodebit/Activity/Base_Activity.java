@@ -1,6 +1,7 @@
 package com.uav.autodebit.Activity;
 
 import android.annotation.TargetApi;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,8 +13,10 @@ import android.view.WindowManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.uav.autodebit.constant.GlobalApplication;
 import com.uav.autodebit.util.ExceptionHandler;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Base_Activity extends AppCompatActivity {
@@ -22,6 +25,7 @@ public class Base_Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
+     //   GlobalApplication.dialog_List =  new ArrayList<>();
 
         Log.w("onCreate","onCreate");
         disableAutofill();
