@@ -776,10 +776,10 @@ public class Home extends Base_Activity
 
             }else {
                     //set session customer or local cache
-                    String json = new Gson().toJson(customerVO);
+                   /* String json = new Gson().toJson(customerVO);
                     Session.set_Data_Sharedprefence(Home.this,Session.CACHE_CUSTOMER,json);
                     Session.set_Data_Sharedprefence(Home.this, Session.LOCAL_CACHE,customerVO.getLocalCache());
-                    loadDateInRecyclerView();
+                    loadDateInRecyclerView();*/
 
                     if(serviceId==ApplicationConstant.Dmrc){
                         dmrcCardRequest();
