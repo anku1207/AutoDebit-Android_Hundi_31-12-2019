@@ -1069,7 +1069,16 @@ public class Utility {
                 confirmationDialogInterface.onOk(var3);
             }
         });
-        if(!var3.isShowing())var3.show();
+
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(var3.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+
+        if(!var3.isShowing())  var3.show();
+        var3.getWindow().setAttributes(lp);
+
+
     }
 
 

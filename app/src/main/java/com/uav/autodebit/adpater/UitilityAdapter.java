@@ -73,98 +73,10 @@ public class UitilityAdapter extends RecyclerView.Adapter<UitilityAdapter.Prodec
             public void onClick(View v) {
                 level=null;
                 Utility.enableDisableView(v,false);
-                BackgroundAsyncService backgroundAsyncService = new BackgroundAsyncService(pd,true, new BackgroundServiceInterface() {
-                    @Override
-                    public void doInBackGround() {
-                         level= Session.getCustomerLevel(mctx);
-                    }
-                    @Override
-                    public void doPostExecute() {
-                                Intent intent;
-                               /* switch (pro.getServiceTypeId()){
-                                    case 5 :*/
-
-                                        ((Home)mctx).startUserClickService(pro.getServiceTypeId().toString(),v);
-
-                                       /* ((Home)mctx).serviceClick(pro.getServiceTypeId(),new ServiceClick((ServiceClick.OnSuccess)(s)->{
-                                            CustomerVO customerVO =(CustomerVO) s;
-                                            ((Home)mctx).startActivityServiceClick(5,Mobile_Prepaid_Recharge_Service.class,s,pro.getMandateAmount());
-                                        },(ServiceClick.OnError)(e)->{
-
-                                        }));*/
-                                  /*      break;
-                                    case 13 :
-                                        ((Home)mctx).serviceClick(pro.getServiceTypeId(),new ServiceClick((ServiceClick.OnSuccess)(s)->{
-                                            ((Home)mctx).startActivityServiceClick(13,DTH_Recharge_Service.class,s,pro.getMandateAmount());
-                                        },(ServiceClick.OnError)(e)->{
-
-                                        }));
-                                        break;
-                                    case 7 :
-                                        ((Home)mctx).serviceClick(pro.getServiceTypeId(),new ServiceClick((ServiceClick.OnSuccess)(s)->{
-                                            ((Home)mctx).startActivityServiceClick(7,LandlineBill.class,s,pro.getMandateAmount());
-                                        },(ServiceClick.OnError)(e)->{
-
-                                        }));
-                                        break;
-                                    case 8 :
-                                        ((Home)mctx).serviceClick(pro.getServiceTypeId(),new ServiceClick((ServiceClick.OnSuccess)(s)->{
-                                            ((Home)mctx).startActivityServiceClick(8,Broadband.class,s,pro.getMandateAmount());
-                                        },(ServiceClick.OnError)(e)->{
-
-                                        }));
-
-                                        break;
-                                    case 14 :
-                                        ((Home)mctx).serviceClick(pro.getServiceTypeId(),new ServiceClick((ServiceClick.OnSuccess)(s)->{
-                                            ((Home)mctx).startActivityServiceClick(14,Mobile_Postpaid.class,s,pro.getMandateAmount());
-                                        },(ServiceClick.OnError)(e)->{
-
-                                        }));
-
-                                        break;
-                                    case 12 :
-                                        ((Home)mctx).serviceClick(pro.getServiceTypeId(),new ServiceClick((ServiceClick.OnSuccess)(s)->{
-                                            ((Home)mctx).startActivityServiceClick(12,Water.class,s,pro.getMandateAmount());
-                                        },(ServiceClick.OnError)(e)->{
-
-                                        }));
-
-                                        break;
-                                    case 11 :
-                                        ((Home)mctx).serviceClick(pro.getServiceTypeId(),new ServiceClick((ServiceClick.OnSuccess)(s)->{
-                                            ((Home)mctx).startActivityServiceClick(11,Gas_Bill.class,s,pro.getMandateAmount());
-                                        },(ServiceClick.OnError)(e)->{
-
-                                        }));
-                                        break;
-                                    case 10:
-                                        ((Home)mctx).serviceClick(pro.getServiceTypeId(),new ServiceClick((ServiceClick.OnSuccess)(s)->{
-                                            ((Home)mctx).startActivityServiceClick(10,Electricity_Bill.class,s,pro.getMandateAmount());
-                                        },(ServiceClick.OnError)(e)->{
-
-                                        }));
-                                        break;
-                                    case 15:
-                                        intent =new Intent(mctx, All_Service.class);
-                                        intent.putExtra("serviceid",pro.getServiceTypeId().toString());
-                                        mctx.startActivity(intent);
-                                        break;
-                                    default:
-                                        pd.dismiss();
-                                }*/
-                    }
-                });
-                backgroundAsyncService.execute();
-
+                ((Home)mctx).startUserClickService(pro.getServiceTypeId().toString(),v);
             }
         });
     }
-
-
-
-
-
 
     @Override
     public int getItemCount() {

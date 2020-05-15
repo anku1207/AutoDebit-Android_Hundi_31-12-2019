@@ -356,4 +356,50 @@ public class MyDialog {
         }
     }
 
+
+
+    public static void showSingleButtonBigContentDialog(Context context, ConfirmationDialogInterface confirmationDialogInterface, String title, String msg , String... buttons){
+
+        String leftButton= (buttons.length==0 ?"OK":buttons[0]);//(leftButton ==null?"Modify": leftButton);
+        final Dialog var3 = new Dialog(context);
+
+
+        var3.requestWindowFeature(1);
+        var3.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        var3.setContentView(R.layout.singlebutton_bigcontent_dialog);
+        var3.setCanceledOnTouchOutside(false);
+        //   var3.setCancelable(false);
+
+        var3.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+
+        TextView title_text = (TextView)var3.findViewById(R.id.title);
+
+        if(title==null || title.equals("")){
+            title_text.setVisibility(View.GONE);
+        }else {
+            title_text.setText(title);
+            title_text.setVisibility(View.VISIBLE);
+         }
+        TextView msg_text = (TextView)var3.findViewById(R.id.message);
+        msg_text.setText(msg);
+        Button button = (Button)var3.findViewById(R.id.btn);
+        button.setText(leftButton);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View var) {
+                confirmationDialogInterface.onOk(var3);
+            }
+        });
+
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(var3.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+
+        if(!var3.isShowing())  var3.show();
+        var3.getWindow().setAttributes(lp);
+
+
+    }
+
+
 }

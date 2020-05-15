@@ -618,6 +618,8 @@ public class Home extends Base_Activity
 
     // add bank for service
     public  void serviceClick(int serviceId , ServiceClick serviceClick,View view){
+        if(view!=null)Utility.enableDisableView(view,false);
+
         HashMap<String, Object> params = new HashMap<String, Object>();
         ConnectionVO connectionVO = ServiceBO.addBankForService();
 

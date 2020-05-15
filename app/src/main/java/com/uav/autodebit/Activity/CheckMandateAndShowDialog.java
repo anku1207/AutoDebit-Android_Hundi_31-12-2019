@@ -271,4 +271,42 @@ public class CheckMandateAndShowDialog {
 
         }));
     }
-   }
+
+
+
+
+    public static void afterRechargeGetRechargeDetails(Context context  ,Integer historyId,VolleyResponse volleyResponse ){
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        ConnectionVO connectionVO = ServiceBO.afterRechargeGetRechargeDetails();
+        CustomerVO customerVO=new CustomerVO();
+        customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(context)));
+        customerVO.setCustoemrHistoryId(historyId);
+       Gson gson =new Gson();
+        String json = gson.toJson(customerVO);
+        params.put("volley", json);
+        connectionVO.setParams(params);
+        Log.w("After Recharge",params.toString());
+        VolleyUtils.makeJsonObjectRequest(context,connectionVO , new VolleyResponseListener() {
+            @Override
+            public void onError(String message) {
+            }
+            @Override
+            public void onResponse(Object resp) throws JSONException {
+                JSONObject response = (JSONObject) resp;
+                Gson gson = new Gson();
+                CustomerVO customerVO = gson.fromJson(response.toString(), CustomerVO.class);
+
+                if(customerVO.getStatusCode().equals("400")){
+                    ArrayList error = (ArrayList) customerVO.getErrorMsgs();
+                    StringBuilder sb = new StringBuilder();
+                    for(int i=0; i<error.size(); i++){
+                        sb.append(error.get(i)).append("\n");
+                    }
+                    Utility.showSingleButtonDialog(context,"Alert",sb.toString(),false);
+                }else {
+                    volleyResponse.onSuccess(customerVO);
+                }
+            }
+        });
+    }
+}

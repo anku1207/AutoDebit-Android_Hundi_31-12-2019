@@ -45,6 +45,15 @@ public class ServiceBO implements Serializable {
         return connectionVO;
     }
 
+    public static ConnectionVO afterRechargeGetRechargeDetails() {
+        ConnectionVO connectionVO = new ConnectionVO();
+        connectionVO.setMethodName("afterRechargeGetRechargeDetails");
+        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
+        return connectionVO;
+    }
+
+
+
 
 
 
