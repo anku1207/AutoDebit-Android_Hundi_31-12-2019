@@ -96,7 +96,6 @@ public class BillPayRequest {
                     }else if(oxigenTransactionVOresp.getStatusCode().equals("01")){
                         Utility.showSingleButtonDialogconfirmation(context,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
                             ok.dismiss();
-                            ((Activity)context).finish();
                         }),"Alert",oxigenTransactionVOresp.getAnonymousString());
                         volleyResponse.onError(null);
                     }else {

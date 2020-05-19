@@ -105,7 +105,7 @@ public class Home extends Base_Activity
 
     ImageView  allutilityservice,notificationicon;
 
-    Context cntxt;
+
     UAVProgressDialog pd ;
     ServiceTypeVO selectedService ;
 
@@ -314,7 +314,6 @@ public class Home extends Base_Activity
 
 
     public void loadDateInRecyclerView(){
-
 
         //19-10-2018
         Gson gson = new Gson();

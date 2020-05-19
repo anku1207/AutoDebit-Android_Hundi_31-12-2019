@@ -27,6 +27,7 @@ import com.uav.autodebit.BO.ServiceBO;
 import com.uav.autodebit.CustomDialog.MyDialog;
 import com.uav.autodebit.Interface.AlertSelectDialogClick;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
+import com.uav.autodebit.MessageFormater.CustomMessageFormat;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.Content_Message;
@@ -87,6 +88,11 @@ public class D2H extends Base_Activity implements View.OnClickListener {
         switch (view.getId()){
             case R.id.proceed:
                 Utility.hideKeyboard(D2H.this);
+
+                if(accountnumber.getText().toString().equals("")){
+                    accountnumber.setError(Content_Message.user_Registration_Filed_Required);
+                    return;
+                }
                 getPlanDetail();
 
 

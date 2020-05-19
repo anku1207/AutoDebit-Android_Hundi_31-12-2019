@@ -31,8 +31,8 @@ public class ApplicationConstant {
 
     public final static  String SI_SERVICE="avenue";
 
-    private final static String URL_ADDRESS = getServerAddress();
-    private final static String HTTPURL = URL_ADDRESS +":8080/hundi/rest/stateless/";
+    //private final static String URL_ADDRESS = getServerAddress();
+    private final static String HTTPURL = getServerAddress();
 
 
     public  static final int SOCKET_TIMEOUT_MILLISEC = 60000;
@@ -73,11 +73,11 @@ public class ApplicationConstant {
 
     private static String getServerAddress(){
         if(IS_PRODUCTION_ENVIRONMENT){
-           return "http://autope.in";
+           return "http://app.autope.in/hundi/rest/stateless/";
           //  return "http://164.52.192.45";
         }else{
-            //return  "http://205.147.103.18" ;
-          return "http://192.168.1.36";
+            return  "http://205.147.103.18:8080/hundi/rest/stateless/" ;
+            //return "http://192.168.1.33";
         }
     }
 }

@@ -1602,17 +1602,6 @@ public class Utility {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
     public static int getActionBarHeight(Context context) {
         final TypedArray ta = context.getTheme().obtainStyledAttributes(
                 new int[] {android.R.attr.actionBarSize});

@@ -29,6 +29,7 @@ import com.uav.autodebit.Interface.AlertSelectDialogClick;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
+import com.uav.autodebit.constant.Content_Message;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.DialogInterface;
 import com.uav.autodebit.util.Utility;
@@ -86,6 +87,11 @@ public class Dish_Tv  extends Base_Activity implements View.OnClickListener  {
 
         }else if(view.getId()==R.id.proceed){
             Utility.hideKeyboard(this);
+
+            if(accountnumber.getText().toString().equals("")){
+                accountnumber.setError(Content_Message.user_Registration_Filed_Required);
+                return;
+            }
             getPlanDetail();
         }
     }
