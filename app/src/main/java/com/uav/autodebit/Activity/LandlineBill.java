@@ -266,7 +266,7 @@ public class LandlineBill extends Base_Activity implements View.OnClickListener,
                         editText.requestFocus();
                     }
                  }else if(requestCode==101){
-                    ((EditText)eleMap.get("mobile")).setText(DynamicLayout.addNumberInEdittext(this,data));
+                    ((EditText)eleMap.get("mobile")).setText(DynamicLayout.addMobileNumberInEdittext(this,data));
                     ((EditText)eleMap.get("mobile")).setSelection( ((EditText)eleMap.get("mobile")).getText().toString().length());
                     netAmount.setText("");
                 }else if(requestCode==200 || requestCode== ApplicationConstant.REQ_ENACH_MANDATE || requestCode==ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE){
