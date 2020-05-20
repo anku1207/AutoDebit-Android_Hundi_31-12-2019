@@ -101,4 +101,23 @@ public class DynamicLayout {
         return num;
 
     }
+
+
+    static String addNumberInEdittext(Context context ,Intent data){
+        String num = "";
+        Uri contactData = data.getData();
+        Cursor c = context.getContentResolver().query(contactData, null, null, null, null);
+        if (c.moveToFirst()) {
+            String contactId = c.getString(c.getColumnIndex(ContactsContract.Contacts._ID));
+            String hasNumber = c.getString(c.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
+            if (Integer.valueOf(hasNumber) == 1) {
+                Cursor numbers = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + contactId, null, null);
+                while (numbers.moveToNext()) {
+                    num = numbers.getString(numbers.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)).replaceAll("\\s+","");
+                }
+            }
+        }
+        return num;
+
+    }
 }

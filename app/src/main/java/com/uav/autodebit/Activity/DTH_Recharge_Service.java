@@ -280,7 +280,7 @@ public class DTH_Recharge_Service extends Base_Activity implements View.OnClickL
 
                 }else if(requestCode==101){
 
-                    ((EditText)eleMap.get("mobile")).setText(DynamicLayout.addMobileNumberInEdittext(DTH_Recharge_Service.this,data));
+                    ((EditText)eleMap.get("mobile")).setText(DynamicLayout.addNumberInEdittext(DTH_Recharge_Service.this,data));
                     ((EditText)eleMap.get("mobile")).setSelection( ((EditText)eleMap.get("mobile")).getText().toString().length());
                     amount.setText("");
 
