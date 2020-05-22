@@ -192,7 +192,7 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
 
                         redirectUrl = respjson.getString("redirectUrl");
                         cancelUrl = respjson.getString("cancelUrl");
-                        String url = respjson.getString("url") + "&customerId=" + Session.getCustomerId(SI_First_Data.this);
+                        String url = respjson.getString("url") + "&customerId=" + Session.getCustomerId(SI_First_Data.this) + "&entityTypeId=2";
                         openWebView(url);
                     }
 
@@ -396,9 +396,7 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
                     webview.setVisibility(View.GONE);
                 }
             }
-
-
-            progressBar.show();
+            if(!progressBar.isShowing())  progressBar.show();
 
         }
 

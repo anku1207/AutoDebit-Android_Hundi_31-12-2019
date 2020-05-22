@@ -96,7 +96,7 @@
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/pencil"
                     android:backgroundTint="@color/white"
-                    android:hint="Account Number / Mobile Number"
+                    android:hint="Subscriber Id"
                     android:singleLine="true"
                     android:id="@+id/accountnumber"
                     android:inputType="number"

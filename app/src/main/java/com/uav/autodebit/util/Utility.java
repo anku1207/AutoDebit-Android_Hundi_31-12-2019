@@ -440,7 +440,8 @@ public class Utility {
 
             }
         });
-        alertDialog.show();
+        if(!alertDialog.isShowing())  alertDialog.show();
+
 
     }
 
@@ -461,7 +462,8 @@ public class Utility {
 
             }
         });
-        alertDialog.show();
+        if(!alertDialog.isShowing())  alertDialog.show();
+
 
     }
     private static void sendLogFile(Context context ,String error) {
@@ -487,7 +489,8 @@ public class Utility {
                 context.startActivities(new Intent[]{intent});
             }
         });
-        alertDialog.show();
+        if(!alertDialog.isShowing())  alertDialog.show();
+
 
     }
     public static Drawable GetImage(Context c, String ImageName) {
@@ -561,7 +564,8 @@ public class Utility {
                 if(activityfinish) activity.finish();
             }
         });
-        var3.show();
+        if(!var3.isShowing())  var3.show();
+
     }
 
     public static Date convertString2Date(String dtValue, String format){
@@ -949,7 +953,7 @@ public class Utility {
                 }
             });
 
-          if(!var3.isShowing())  var3.show();
+             if(!var3.isShowing())  var3.show();
             var3.getWindow().setAttributes(lp);
 
         }catch (Exception e){
@@ -1247,7 +1251,8 @@ public class Utility {
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
 
-        var3.show();
+        if(!var3.isShowing())  var3.show();
+
         var3.getWindow().setAttributes(lp);
     }
 
@@ -1564,7 +1569,8 @@ public class Utility {
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
 
-        dialog.show();
+        if(!dialog.isShowing())  dialog.show();
+
         dialog.getWindow().setAttributes(lp);
     }
 
