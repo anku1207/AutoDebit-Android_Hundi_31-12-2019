@@ -116,7 +116,7 @@ public class Splash_Screen extends Base_Activity implements BitmapInterface {
     private  void startNextActivity(){
 
         Log.e("isuse",Session.getSessionByKey_BoolenValue(Splash_Screen.this,Session.CACHE_IS_NEW_USER).toString());
-        if(!Session.getSessionByKey_BoolenValue(Splash_Screen.this,Session.CACHE_IS_NEW_USER)){
+        if(Session.getSessionByKey_BoolenValue(Splash_Screen.this,Session.CACHE_IS_NEW_USER)){
             if(!Session.check_Exists_key(Splash_Screen.this,Session.CACHE_CUSTOMER) ){
 
                 Intent intent = new Intent(this, Login.class);

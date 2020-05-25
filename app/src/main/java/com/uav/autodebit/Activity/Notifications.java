@@ -142,7 +142,7 @@ public class Notifications extends Base_Activity implements View.OnClickListener
     private void  getdata(CallBackInterface  callBackInterface) {
         customerNotificationVOS =new ArrayList<>();
         try {
-            if(DataBaseHelper.checkDataBase() && ((GetSqlLiteData.getNotification(Notifications.this)).size()>0 || !Session.getSessionByKey_BoolenValue(Notifications.this,Session.CACHE_IS_CLEAR_NOTIFICATION))){
+            if(DataBaseHelper.checkDataBase() && ((GetSqlLiteData.getNotification(Notifications.this)).size()>0 || Session.getSessionByKey_BoolenValue(Notifications.this,Session.CACHE_IS_CLEAR_NOTIFICATION))){
                 customerNotificationVOS= GetSqlLiteData.getNotification(Notifications.this);
                 callBackInterface.onSuccess(customerNotificationVOS);
             }else {

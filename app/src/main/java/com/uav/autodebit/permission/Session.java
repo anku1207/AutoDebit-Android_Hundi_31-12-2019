@@ -114,7 +114,7 @@ public class Session {
 
     public static Boolean getSessionByKey_BoolenValue(Context context,String cacheKey){
         SharedPreferences sharedPreferences = context.getSharedPreferences(ApplicationConstant.SHAREDPREFENCE, Context.MODE_PRIVATE);
-        boolean resp=sharedPreferences.getBoolean(cacheKey,true);
+        boolean resp=sharedPreferences.getBoolean(cacheKey,false);
         return resp;
 
     }

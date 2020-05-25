@@ -107,7 +107,7 @@ public class GetSqlLiteData {
             //String sql= "delete  from  'notification' ";
             //DataBaseHelper.myDataBase.execSQL(sql);
             DataBaseHelper.myDataBase.delete(tableName, null,null);
-            Session.set_Data_Sharedprefence_BoolenvValue(context,Session.CACHE_IS_CLEAR_NOTIFICATION,false);
+            Session.set_Data_Sharedprefence_BoolenvValue(context,Session.CACHE_IS_CLEAR_NOTIFICATION,true);
             dataBaseHelper.close();
         }catch (Exception e){
             Toast.makeText(context, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
