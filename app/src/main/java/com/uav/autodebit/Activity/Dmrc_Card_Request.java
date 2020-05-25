@@ -156,7 +156,10 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
         setCustomerDetail(dmrc_customer_cardVO);
 
         back_activity_button1.setOnClickListener(this);
-        attachaddress.setOnClickListener(this);
+
+
+        //25-05-2020
+       //attachaddress.setOnClickListener(this);
         changeaddress.setOnClickListener(this);
         verify.setOnClickListener(this);
 

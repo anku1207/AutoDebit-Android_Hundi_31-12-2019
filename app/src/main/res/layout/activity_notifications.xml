@@ -39,13 +39,14 @@
 
 
             <ImageView
-
-                android:layout_width="25dp"
-                android:layout_height="25dp"
+                android:id="@+id/clear_notification"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:gravity="center"
+                android:src="@drawable/clear_all"
                 android:textStyle="bold"
-                android:id="@+id/profileedit"
-                android:tint="@color/white"/>
+                android:tint="@color/white"
+                android:visibility="gone"/>
 
         </LinearLayout>
         <TextView
@@ -61,6 +62,7 @@
             android:id="@+id/title"
             android:textColor="@color/white"
             android:fontFamily="@font/poppinslight"
+
 
             />
     </androidx.appcompat.widget.Toolbar>

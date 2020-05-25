@@ -1,5 +1,6 @@
 package com.uav.autodebit.Activity;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.gson.Gson;
@@ -33,6 +35,7 @@ import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.Content_Message;
 import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.permission.Session;
+import com.uav.autodebit.util.DialogInterface;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerNotificationVO;
@@ -53,10 +56,11 @@ import java.util.List;
 
 public class Notifications extends Base_Activity implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener  {
     RecyclerView recyclerView;
-    ImageView back_activity_button;
+    ImageView back_activity_button,clear_notification;
     SwipeRefreshLayout mSwipeRefreshLayout;
     LinearLayout no_notification;
     List<CustomerNotificationVO> customerNotificationVOS;
+    NotificationAdapter notificationAdapter;
 
 
     @Override
@@ -67,10 +71,14 @@ public class Notifications extends Base_Activity implements View.OnClickListener
         back_activity_button=findViewById(R.id.back_activity_button);
         recyclerView=findViewById(R.id.recyclerView);
         no_notification=findViewById(R.id.no_notification);
+        clear_notification=findViewById(R.id.clear_notification);
+
+
         // SwipeRefreshLayout
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
 
         back_activity_button.setOnClickListener(this);
+        clear_notification.setOnClickListener(this);
 
         recyclerView.setNestedScrollingEnabled(true);
         recyclerView.setHasFixedSize(true);
@@ -118,11 +126,11 @@ public class Notifications extends Base_Activity implements View.OnClickListener
             List<CustomerNotificationVO> customerNotificationVOS = (List<CustomerNotificationVO>) Success;
 
             if(customerNotificationVOS.size()>0){
-                no_notification.setVisibility(View.GONE);
+                notificationIsExist(true);
             }else {
-                no_notification.setVisibility(View.VISIBLE);
+                notificationIsExist(false);
             }
-            NotificationAdapter notificationAdapter=new NotificationAdapter(Notifications.this, customerNotificationVOS);
+            notificationAdapter=new NotificationAdapter(Notifications.this, customerNotificationVOS);
             recyclerView.setAdapter(notificationAdapter);
             recyclerView.setLayoutAnimation(Utility.getRunLayoutAnimation(Notifications.this));
             recyclerView.getAdapter().notifyDataSetChanged();
@@ -134,8 +142,7 @@ public class Notifications extends Base_Activity implements View.OnClickListener
     private void  getdata(CallBackInterface  callBackInterface) {
         customerNotificationVOS =new ArrayList<>();
         try {
-
-            if(DataBaseHelper.checkDataBase() && (GetSqlLiteData.getNotification(Notifications.this)).size()>0){
+            if(DataBaseHelper.checkDataBase() && ((GetSqlLiteData.getNotification(Notifications.this)).size()>0 || !Session.getSessionByKey_BoolenValue(Notifications.this,Session.CACHE_IS_CLEAR_NOTIFICATION))){
                 customerNotificationVOS= GetSqlLiteData.getNotification(Notifications.this);
                 callBackInterface.onSuccess(customerNotificationVOS);
             }else {
@@ -199,19 +206,42 @@ public class Notifications extends Base_Activity implements View.OnClickListener
                 }
             }
         });
-
-
-
-
     }
-
 
 
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.back_activity_button) {
             finish();
+        }else if(view.getId() == R.id.clear_notification){
+            String [] btn={"No","Yes"};
+            Utility.showDoubleButtonDialogConfirmation(new DialogInterface() {
+                @Override
+                public void confirm(Dialog dialog) {
+                    notificationIsExist(false);
+                    dialog.dismiss();
+                    customerNotificationVOS.clear(); // clear list
+                    recyclerView.getAdapter().notifyDataSetChanged();  // let your adapter know about the changes and reload view
+                    GetSqlLiteData.deleteNotificationData(Notifications.this,"notification");
+                }
+                @Override
+                public void modify(Dialog dialog) {
+                    dialog.dismiss();
+                }
+            }, Notifications.this,"Do you want to remove all Notification ?" ,null,btn);
         }
+    }
+
+    public void notificationIsExist(boolean isNotificationExist){
+
+        if(!isNotificationExist){
+            clear_notification.setVisibility(View.GONE);
+            no_notification.setVisibility(View.VISIBLE);
+        }else {
+            clear_notification.setVisibility(View.VISIBLE);
+            no_notification.setVisibility(View.GONE);
+        }
+
     }
 
     @Override

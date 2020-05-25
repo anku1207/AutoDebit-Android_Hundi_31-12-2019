@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.widget.Toast;
 
+import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.CustomerNotificationVO;
 
@@ -77,9 +78,6 @@ public class GetSqlLiteData {
                     double amount=cursor.getDouble(cursor.getColumnIndex("Amount"));
                     String operator=cursor.getString(cursor.getColumnIndex("ServiceTypeId"));
 
-
-
-
                     stringBuilder.append(id + " ");
                     stringBuilder.append(cid + " ");
                     stringBuilder.append(sid + " ");
@@ -87,9 +85,6 @@ public class GetSqlLiteData {
                     stringBuilder.append(operator + " ");
 
                     stringBuilder.append(cursor.getInt(cursor.getColumnIndex("tm")) +"table 2" + "\n");
-
-
-
 
                     cursor.moveToNext();
                 }
@@ -100,6 +95,26 @@ public class GetSqlLiteData {
         }
         return stringBuilder.toString();
     }
+
+
+
+    public  static  void deleteNotificationData(Context context , String tableName){
+        List<CustomerNotificationVO> customerNotificationVOS= new ArrayList<>();
+        try {
+            DataBaseHelper dataBaseHelper =new DataBaseHelper(context);
+            dataBaseHelper.createDataBase();
+            dataBaseHelper.openDataBase();
+            //String sql= "delete  from  'notification' ";
+            //DataBaseHelper.myDataBase.execSQL(sql);
+            DataBaseHelper.myDataBase.delete(tableName, null,null);
+            Session.set_Data_Sharedprefence_BoolenvValue(context,Session.CACHE_IS_CLEAR_NOTIFICATION,false);
+            dataBaseHelper.close();
+        }catch (Exception e){
+            Toast.makeText(context, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
 
 
 }

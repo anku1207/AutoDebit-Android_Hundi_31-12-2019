@@ -304,7 +304,7 @@
                     android:id="@+id/changeaddress"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Change Delivery Charge"
+                    android:text="Change Delivery Address"
                     android:layout_marginLeft="2dp"
                     android:fontFamily="@font/poppinsmedium"
                     android:textSize="10dp"

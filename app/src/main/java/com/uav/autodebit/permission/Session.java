@@ -44,6 +44,8 @@ public class Session {
     public final static String CACHE_TOKENID = "TOKENID";
     public final static String CACHE_NOTIFICATION = "NOTIFICATION";
 
+    public final static String CACHE_IS_CLEAR_NOTIFICATION = "CLEAR_NOTIFICATION";
+
     public final static String CACHE_ASK_PERMISSION = "ASKPERMISSION";
 
 
