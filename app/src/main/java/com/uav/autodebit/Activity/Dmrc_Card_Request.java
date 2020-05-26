@@ -1,7 +1,6 @@
 package com.uav.autodebit.Activity;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -25,11 +24,11 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.Html;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.TranslateAnimation;
@@ -47,7 +46,6 @@ import com.squareup.picasso.Picasso;
 import com.uav.autodebit.BO.MetroBO;
 import com.uav.autodebit.BO.PinCodeBO;
 import com.uav.autodebit.CustomDialog.MyDialog;
-import com.uav.autodebit.HtmlPage.HtmlPages;
 import com.uav.autodebit.Interface.AlertSelectDialogClick;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.R;
@@ -213,8 +211,8 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
             getdata(listforcard);*/
 
             ArrayList<DMRC_Customer_CardVO> listforcard= (ArrayList<DMRC_Customer_CardVO>) dmrc_customer_cardVO.getDmrcCustomerList();
-            viewPager=Utility.getViewPager(Dmrc_Card_Request.this);
-            viewPager.setOverScrollMode(View.OVER_SCROLL_NEVER);
+           /* viewPager=Utility.getViewPager(Dmrc_Card_Request.this);
+            viewPager.setOverScrollMode(View.OVER_SCROLL_NEVER);*/
             getdata(listforcard);
         }else{
             CardView cardView =Utility.getCardViewStyle(Dmrc_Card_Request.this);
@@ -262,9 +260,13 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
               /*  DMRC_List_Adpater dmrc_list_adpater=new DMRC_List_Adpater(Dmrc_Card_Request.this,list ,R.layout.design_dmrc_card_list);
                 recyclerView.setAdapter(dmrc_list_adpater);
                 addcardlistlayout.addView(recyclerView);
+
 */
 
                 CustomPagerAdapter models =new CustomPagerAdapter(list,Dmrc_Card_Request.this);
+
+                viewPager=Utility.getViewPager(Dmrc_Card_Request.this);
+                viewPager.setOverScrollMode(View.OVER_SCROLL_NEVER);
                 viewPager.setAdapter(models);
                 viewPager.setPadding(0,0,0,0);
                 tabLayout.setupWithViewPager(viewPager, false);

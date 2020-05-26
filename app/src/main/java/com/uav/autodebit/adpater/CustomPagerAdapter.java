@@ -1,5 +1,7 @@
 package com.uav.autodebit.adpater;
 
+import android.animation.AnimatorInflater;
+import android.animation.AnimatorSet;
 import android.content.Context;
 
 import android.view.LayoutInflater;
@@ -8,17 +10,20 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
 
 import com.squareup.picasso.Picasso;
+import com.uav.autodebit.Activity.Dmrc_Card_Request;
 import com.uav.autodebit.R;
 import com.uav.autodebit.vo.DMRC_Customer_CardVO;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 public class CustomPagerAdapter extends PagerAdapter {
@@ -28,9 +33,18 @@ public class CustomPagerAdapter extends PagerAdapter {
   private Context context;
 
 
+    private AnimatorSet mSetRightOut;
+    private AnimatorSet mSetLeftIn;
+    private View mCardFrontLayout;
+    private View mCardBackLayout;
+
+    private HashMap<Integer , Boolean> clickViewpager = new HashMap<Integer, Boolean>();
+
+
     public CustomPagerAdapter(List<DMRC_Customer_CardVO> models, Context context) {
         this.models = models;
         this.context = context;
+
     }
 
     @Override
@@ -64,7 +78,7 @@ public class CustomPagerAdapter extends PagerAdapter {
         DMRC_Customer_CardVO pro=models.get(position);
         name.setText("  "+pro.getCustomerName());
         status.setText("  "+pro.getDmrccardStaus().getStatusName());
-        cardnumber.setText("Card No. \n"+pro.getCardNo());
+        cardnumber.setText(""+pro.getCardNo());
 
         if(pro.getIssueDate()!=null){
             Date date =new Date(pro.getIssueDate());
@@ -83,6 +97,32 @@ public class CustomPagerAdapter extends PagerAdapter {
             imageview.setImageURI(null);
         }
         container.addView(itemView);
+
+        clickViewpager.put(position,false);
+
+
+        mainlayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                findViews(itemView);
+                loadAnimations();
+                changeCameraDistance();
+                if ((clickViewpager.containsKey(position)) && (!clickViewpager.get(position))) {
+                    mSetRightOut.setTarget(itemView.findViewById(R.id.card_front));
+                    mSetLeftIn.setTarget(itemView.findViewById(R.id.card_back));
+                    mSetRightOut.start();
+                    mSetLeftIn.start();
+                    clickViewpager.put(position,true);
+                 } else {
+                    mSetRightOut.setTarget(itemView.findViewById(R.id.card_back));
+                    mSetLeftIn.setTarget(itemView.findViewById(R.id.card_front));
+                    mSetRightOut.start();
+                    mSetLeftIn.start();
+                    clickViewpager.put(position,false);
+                }
+            }
+        });
+
         return itemView;
     }
 
@@ -90,4 +130,24 @@ public class CustomPagerAdapter extends PagerAdapter {
     public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
        container.removeView((View)object);
     }
+
+
+    private void findViews(View v) {
+        mCardBackLayout = v.findViewById(R.id.card_back);
+        mCardFrontLayout = v.findViewById(R.id.card_front);
+    }
+
+
+    private void changeCameraDistance() {
+        int distance = 8000;
+        float scale = context.getResources().getDisplayMetrics().density * distance;
+        mCardFrontLayout.setCameraDistance(scale);
+        mCardBackLayout.setCameraDistance(scale);
+    }
+
+    private void loadAnimations() {
+        mSetRightOut = (AnimatorSet) AnimatorInflater.loadAnimator(context, R.animator.out_animation);
+        mSetLeftIn = (AnimatorSet) AnimatorInflater.loadAnimator(context, R.animator.in_animation);
+    }
+
 }
