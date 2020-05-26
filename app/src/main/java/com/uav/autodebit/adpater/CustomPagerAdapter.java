@@ -19,6 +19,7 @@ import androidx.viewpager.widget.PagerAdapter;
 import com.squareup.picasso.Picasso;
 import com.uav.autodebit.Activity.Dmrc_Card_Request;
 import com.uav.autodebit.R;
+import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.DMRC_Customer_CardVO;
 
 import java.text.SimpleDateFormat;
@@ -96,14 +97,11 @@ public class CustomPagerAdapter extends PagerAdapter {
         }else {
             imageview.setImageURI(null);
         }
-        container.addView(itemView);
-
         clickViewpager.put(position,false);
-
-
         mainlayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Utility.enableDisableView(view,false);
                 findViews(itemView);
                 loadAnimations();
                 changeCameraDistance();
@@ -120,9 +118,16 @@ public class CustomPagerAdapter extends PagerAdapter {
                     mSetLeftIn.start();
                     clickViewpager.put(position,false);
                 }
+                view.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Utility.enableDisableView(view,true);
+                    }
+                }, 3000);
             }
         });
 
+        container.addView(itemView);
         return itemView;
     }
 
@@ -137,17 +142,14 @@ public class CustomPagerAdapter extends PagerAdapter {
         mCardFrontLayout = v.findViewById(R.id.card_front);
     }
 
-
     private void changeCameraDistance() {
         int distance = 8000;
         float scale = context.getResources().getDisplayMetrics().density * distance;
         mCardFrontLayout.setCameraDistance(scale);
         mCardBackLayout.setCameraDistance(scale);
     }
-
     private void loadAnimations() {
         mSetRightOut = (AnimatorSet) AnimatorInflater.loadAnimator(context, R.animator.out_animation);
         mSetLeftIn = (AnimatorSet) AnimatorInflater.loadAnimator(context, R.animator.in_animation);
     }
-
 }
