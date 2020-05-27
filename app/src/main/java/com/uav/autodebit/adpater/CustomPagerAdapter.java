@@ -123,7 +123,7 @@ public class CustomPagerAdapter extends PagerAdapter {
                     public void run() {
                         Utility.enableDisableView(view,true);
                     }
-                }, 3000);
+                }, 2000);
             }
         });
 
