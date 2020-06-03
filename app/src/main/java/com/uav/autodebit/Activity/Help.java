@@ -6,14 +6,31 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.uav.autodebit.BO.ContactUsBO;
+import com.uav.autodebit.CustomDialog.MyDialog;
+import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.R;
+import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.ExceptionHandler;
+import com.uav.autodebit.util.Utility;
+import com.uav.autodebit.vo.ConnectionVO;
+import com.uav.autodebit.vo.CustomerVO;
+import com.uav.autodebit.volley.VolleyResponseListener;
+import com.uav.autodebit.volley.VolleyUtils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Help extends Base_Activity implements View.OnClickListener {
 
-    TextView emailid,mobileno,timing;
-    ImageView back_activity_button;
+    TextView timing;
+    ImageView back_activity_button,email,contact_request;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,11 +39,12 @@ public class Help extends Base_Activity implements View.OnClickListener {
 
         getSupportActionBar().hide();
 
-        mobileno=findViewById(R.id.mobileno);
-        emailid=findViewById(R.id.emailid);
+        contact_request=findViewById(R.id.contact_request);
+        email=findViewById(R.id.email);
         timing=findViewById(R.id.timing);
         back_activity_button = findViewById(R.id.back_activity_button);
         back_activity_button.setOnClickListener(this);
+        contact_request.setOnClickListener(this);
     }
 
 
@@ -43,7 +61,6 @@ public class Help extends Base_Activity implements View.OnClickListener {
             backbuttonfun();
             return true;
         }
-
         return super.onKeyDown(keyCode, event);
     }
 
@@ -53,6 +70,47 @@ public class Help extends Base_Activity implements View.OnClickListener {
             case R.id.back_activity_button:
                 backbuttonfun();
                 break;
+            case R.id.contact_request:
+                sendUserDetail();
+                break;
+
         }
+    }
+
+    private void sendUserDetail() {
+
+        ConnectionVO connectionVO = ContactUsBO.saveContactRequest();
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        CustomerVO customerVO=new CustomerVO();
+        customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(this)));
+
+        Gson gson = new Gson();
+        String json = gson.toJson(customerVO);
+        params.put("volley", json);
+        connectionVO.setParams(params);
+
+        VolleyUtils.makeJsonObjectRequest(this, connectionVO, new VolleyResponseListener() {
+            @Override
+            public void onError(String message) {
+            }
+            @Override
+            public void onResponse(Object resp) throws JSONException {
+
+                JSONObject response = (JSONObject) resp;
+                Gson gson=new Gson();
+                CustomerVO customerVO = gson.fromJson(response.toString(), CustomerVO.class);
+                if(customerVO.getStatusCode().equals("400")){
+                    ArrayList error = (ArrayList) customerVO.getErrorMsgs();
+                    StringBuilder sb = new StringBuilder();
+                    for(int i=0; i<error.size(); i++){
+                        sb.append(error.get(i)).append("\n");
+                    }
+                    Utility.alertDialog(Help.this,"Alert",sb.toString(),"Ok");
+                }else {
+                   Utility.showSingleButtonDialog(Help.this,customerVO.getDialogTitle(),customerVO.getAnonymousString(),false);
+                }
+            }
+        });
+
     }
 }

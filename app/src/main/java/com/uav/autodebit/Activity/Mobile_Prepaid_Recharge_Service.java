@@ -497,9 +497,9 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
 
                         } else {
                             // recharge on pg
-                            //startActivityForResult(new Intent(Mobile_Prepaid_Recharge_Service.this, PaymentGateWay.class).putExtra("oxigenTypeId", oxigenValidateResponce.getTypeId().toString()), 200);
+                            startActivityForResult(new Intent(Mobile_Prepaid_Recharge_Service.this, PaymentGateWay.class).putExtra("oxigenTypeId", oxigenValidateResponce.getTypeId().toString()), 200);
 
-                            proceedToRecharge(oxigenValidateResponce.getTypeId().toString(),"AUTOPETXNID60", AuthServiceProviderVO.PAYU);
+                           // proceedToRecharge(oxigenValidateResponce.getTypeId().toString(),"AUTOPETXNID60", AuthServiceProviderVO.PAYU);
                         }
                     }));
 

@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/AutoDebit-Android.iml" filepath="$PROJECT_DIR$/AutoDebit-Android.iml" group="AutoDebit-Android" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="AutoDebit-Android/app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/AutoDebit-Android.iml" filepath="$PROJECT_DIR$/.idea/AutoDebit-Android.iml" group="AutoDebit-Android" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/app.iml" group="AutoDebit-Android/app" />
     </modules>
   </component>
 </project>
