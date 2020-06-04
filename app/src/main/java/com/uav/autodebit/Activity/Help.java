@@ -105,7 +105,7 @@ public class Help extends Base_Activity implements View.OnClickListener {
                     for(int i=0; i<error.size(); i++){
                         sb.append(error.get(i)).append("\n");
                     }
-                    Utility.alertDialog(Help.this,"Alert",sb.toString(),"Ok");
+                    Utility.showSingleButtonDialog(Help.this,"Alert",sb.toString(),false);
                 }else {
                    Utility.showSingleButtonDialog(Help.this,customerVO.getDialogTitle(),customerVO.getAnonymousString(),false);
                 }
