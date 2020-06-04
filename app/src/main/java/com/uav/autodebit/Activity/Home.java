@@ -103,7 +103,7 @@ public class Home extends Base_Activity
     List<BannerVO> banners;
     Integer level=null;
 
-    ImageView  allutilityservice,notificationicon;
+    ImageView  allutilityservice,notificationicon,faq_icon;
 
 
     UAVProgressDialog pd ;
@@ -117,6 +117,7 @@ public class Home extends Base_Activity
 
     Map<String,Class> activityhasmap;
     RelativeLayout notification_layout;
+    LinearLayout faq_layout;
 
     @Override
     protected void onRestart() {
@@ -235,8 +236,10 @@ public class Home extends Base_Activity
         setting=findViewById(R.id.setting);
         closemenuactivity=findViewById(R.id.closemenuactivity);
         notificationicon=findViewById(R.id.notificationicon);
+        faq_icon=findViewById(R.id.faq_icon);
         active_notification_icon=findViewById(R.id.active_notification_icon);
         notification_layout=findViewById(R.id.notification_layout);
+        faq_layout = findViewById(R.id.faq_layout);
 
         mainwallet.setOnClickListener(this);
         profile.setOnClickListener(this);
@@ -251,6 +254,7 @@ public class Home extends Base_Activity
         setting.setOnClickListener(this);
         closemenuactivity.setOnClickListener(this);
         notification_layout.setOnClickListener(this);
+        faq_layout.setOnClickListener(this);
 
         //
         notificationicon.setAnimation(Utility.getOnShakeAnimation(Home.this));
@@ -998,6 +1002,9 @@ public class Home extends Base_Activity
             case R.id.notification_layout:
                 GlobalApplication.notificationCount=0;
                 startActivity(new Intent(Home.this,Notifications.class));
+                break;
+            case R.id.faq_layout:
+                startActivity(new Intent(Home.this,Faq_WebView.class));
                 break;
         }
         drawer.closeDrawer(GravityCompat.START);

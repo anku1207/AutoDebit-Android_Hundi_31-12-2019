@@ -42,7 +42,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Activity.ManualEnachMandate"></activity>
+        <activity android:name=".Activity.Faq_WebView"></activity>
+        <activity android:name=".Activity.ManualEnachMandate" />
         <activity
             android:name=".Activity.PayBillByNotification"
             android:screenOrientation="portrait"
@@ -53,7 +54,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.pop"
             android:windowSoftInputMode="stateHidden"
-            tools:ignore="LockedOrientationActivity"></activity>
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".Activity.Dish_Tv"
             android:screenOrientation="portrait"

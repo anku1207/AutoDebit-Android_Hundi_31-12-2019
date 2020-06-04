@@ -28,7 +28,6 @@
             android:textStyle="bold"
             android:tint="@color/white"
             />
-
         <LinearLayout
             android:layout_width="30dp"
             android:layout_height="wrap_content"
@@ -36,14 +35,12 @@
             android:background="@color/appbar"
             android:orientation="vertical"
             android:padding="@dimen/pin_content_layout_padding">
-
             <ImageView
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginTop="15dp"
                 android:paddingBottom="0dp"
                 android:tint="@color/white" />
-
         </LinearLayout>
 
         <TextView
@@ -54,21 +51,17 @@
             android:layout_gravity="center"
             android:fontFamily="@font/poppinsbold"
             android:gravity="center"
-            android:text="Add Bank Account"
+            android:text="FAQ"
             android:textAlignment="center"
             android:textColor="@color/white"
             android:textSize="20dp"
             android:textStyle="bold"
-
             />
     </androidx.appcompat.widget.Toolbar>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-
-
         <WebView
             android:id="@+id/webView"
             android:layout_width="match_parent"
