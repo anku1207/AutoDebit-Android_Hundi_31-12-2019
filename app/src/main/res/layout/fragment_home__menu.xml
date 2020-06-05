@@ -55,6 +55,7 @@
                     android:padding="3dp"
                     android:lineSpacingExtra="2dp"
                     android:layout_marginLeft="5dp"
+                    android:visibility="gone"
                     />
                 <com.google.android.material.tabs.TabLayout
                     android:id="@+id/indicator"

@@ -2,8 +2,10 @@ package com.uav.autodebit.adpater;
 
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorSet;
+import android.app.Activity;
 import android.content.Context;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +20,7 @@ import androidx.viewpager.widget.PagerAdapter;
 
 import com.squareup.picasso.Picasso;
 import com.uav.autodebit.Activity.Dmrc_Card_Request;
+import com.uav.autodebit.Activity.Track_Dmrc_Card;
 import com.uav.autodebit.R;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.DMRC_Customer_CardVO;
@@ -65,7 +68,7 @@ public class CustomPagerAdapter extends PagerAdapter {
                 .inflate(R.layout.design_dmrc_card_list, container, false);
 
         LinearLayout mainlayout;
-        TextView name,cardnumber,status,issuedate;
+        TextView name,cardnumber,status,issuedate,fcardstatus,track;
         ImageView imageview;
 
         mainlayout=itemView.findViewById(R.id.mainlayout);
@@ -76,9 +79,12 @@ public class CustomPagerAdapter extends PagerAdapter {
         issuedate=itemView.findViewById(R.id.issuedate);
         imageview=itemView.findViewById(R.id.imageview);
 
+        fcardstatus=itemView.findViewById(R.id.fcardstatus);
+        track=itemView.findViewById(R.id.track);
+
         DMRC_Customer_CardVO pro=models.get(position);
         name.setText("  "+pro.getCustomerName());
-        status.setText("  "+pro.getDmrccardStaus().getStatusName());
+        fcardstatus.setText("Status : "+pro.getDmrccardStaus().getStatusName());
         cardnumber.setText(""+pro.getCardNo());
 
         if(pro.getIssueDate()!=null){
@@ -98,6 +104,19 @@ public class CustomPagerAdapter extends PagerAdapter {
             imageview.setImageURI(null);
         }
         clickViewpager.put(position,false);
+
+        if(pro.getDmrccardStaus().getStatusId()==4){
+            track.setVisibility(View.GONE);
+        }
+
+        track.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((Activity)context).startActivity(new Intent(context, Track_Dmrc_Card.class));
+            }
+        });
+
+
         mainlayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

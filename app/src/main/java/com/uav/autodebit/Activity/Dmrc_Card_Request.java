@@ -248,6 +248,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                     dmrc_customer_cardVO.setCardNo(dmrc_customer_cardVOS1.getCardNo());
                     DmrcCardStatusVO dmrcCardStatusVO =new DmrcCardStatusVO();
                     dmrcCardStatusVO.setStatusName(dmrc_customer_cardVOS1.getDmrccardStaus().getStatusName());
+                    dmrcCardStatusVO.setStatusId(dmrc_customer_cardVOS1.getDmrccardStaus().getStatusId());
                     dmrc_customer_cardVO.setIssueDate(dmrc_customer_cardVOS1.getIssueDate());
                     dmrc_customer_cardVO.setDmrccardStaus(dmrcCardStatusVO);
                     dmrc_customer_cardVO.setImage(dmrc_customer_cardVOS1.getImage());

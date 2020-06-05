@@ -42,7 +42,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Activity.Faq_WebView"></activity>
+        <activity android:name=".Activity.Track_Dmrc_Card"></activity>
+        <activity android:name=".Activity.Faq_WebView" />
         <activity android:name=".Activity.ManualEnachMandate" />
         <activity
             android:name=".Activity.PayBillByNotification"

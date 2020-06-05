@@ -341,13 +341,12 @@ public class PanVerification extends Base_Activity implements  PermissionUtils.P
             if(bmp!=null){
                 customerVO.setImage(stringimg);
             }
-
-
             String json = gson.toJson(customerVO);
-
             params.put("volley", json);
-
             connectionVO.setParams(params);
+
+
+
 
             VolleyUtils.makeJsonObjectRequest(this,connectionVO, new VolleyResponseListener() {
                 @Override

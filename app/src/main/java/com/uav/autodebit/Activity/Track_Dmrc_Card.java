@@ -25,13 +25,14 @@ import android.widget.ImageView;
 import com.uav.autodebit.R;
 import com.uav.autodebit.util.Utility;
 
-public class Faq_WebView extends Base_Activity implements View.OnClickListener {
+public class Track_Dmrc_Card extends AppCompatActivity implements View.OnClickListener {
     ImageView back_activity_button;
     WebView webView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_faq__web_view);
+        setContentView(R.layout.activity_track__dmrc__card);
         getSupportActionBar().hide();
 
         back_activity_button=findViewById(R.id.back_activity_button);
@@ -78,9 +79,7 @@ public class Faq_WebView extends Base_Activity implements View.OnClickListener {
             }
         });
         webView.setWebViewClient(new MyBrowser());
-
         webView.loadUrl(receiptUrl); //receiptUrl
-
     }
 
     @Override
@@ -95,21 +94,17 @@ public class Faq_WebView extends Base_Activity implements View.OnClickListener {
                     }
                     return true;
             }
-
         }
         return super.onKeyDown(keyCode, event);
     }
-
 
     private void showError(String description) {
         Log.w("webviewerror",description);
     }
 
 
-
     private class MyBrowser extends WebViewClient {
-        final ProgressDialog progressBar = ProgressDialog.show(Faq_WebView.this, null, " Please wait...", false, false);
-
+        final ProgressDialog progressBar = ProgressDialog.show(Track_Dmrc_Card.this, null, " Please wait...", false, false);
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             Log.w("URL",url);
