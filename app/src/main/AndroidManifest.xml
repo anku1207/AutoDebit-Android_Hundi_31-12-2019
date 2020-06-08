@@ -42,7 +42,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Activity.Track_Dmrc_Card"></activity>
+        <activity
+            android:name=".Activity.Mandate_Revoke_Dialog"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.pop"
+            android:windowSoftInputMode="stateHidden"
+            tools:ignore="LockedOrientationActivity"
+            >
+        </activity>
+        <activity android:name=".Activity.Track_Dmrc_Card" />
         <activity android:name=".Activity.Faq_WebView" />
         <activity android:name=".Activity.ManualEnachMandate" />
         <activity

@@ -36,7 +36,7 @@ public class Faq_WebView extends Base_Activity implements View.OnClickListener {
 
         back_activity_button=findViewById(R.id.back_activity_button);
         back_activity_button.setOnClickListener(this);
-        openWebView("https://icons8.com/icons/set/faq");
+        openWebView("http://autope.in/appHtml/faq.html");
     }
 
     @SuppressLint("SetJavaScriptEnabled")

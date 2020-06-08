@@ -16,7 +16,7 @@ public class ApplicationConstant {
 
     public final static String AUTHKEY= "G4s4cCMx2aM7lky1";
 
-    public final static  boolean IS_PRODUCTION_ENVIRONMENT= true;
+    public final static  boolean IS_PRODUCTION_ENVIRONMENT= false;
 
     public static int MobilePostpaid=14,d2h=17,Dmrc=2,Electricity=10,Landline=7,Water=12,Broadband=8,PNG=6,Gas=11,DTH=13,DISHTV=18,INSURANCE_RENEWAL=19,LOAN_REPAYMENT=20,FASTAG=21,CABLE_TV=22 ,Uber=16 ;
 
@@ -74,8 +74,8 @@ public class ApplicationConstant {
            return "http://app.autope.in/hundi/rest/stateless/";
           //  return "http://164.52.192.45";
         }else{
-            //return  "http://205.147.103.18:8080/hundi/rest/stateless/" ;
-             return  "http://192.168.1.53:8080/hundi/rest/stateless/" ;
+           // return  "http://205.147.103.18:8080/hundi/rest/stateless/" ;
+             return  "http://192.168.1.103:8080/hundi/rest/stateless/" ;
         }
     }
 

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/paynimo_view_rounded_corner"
+    android:gravity="center"
+    android:layout_gravity="center"
+    >
+    <TextView
+        android:id="@+id/textview"
+        style="@style/TextViewPaynimo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:gravity="center"
+        android:text=""
+        android:textSize="15dp"
+        android:minHeight="200dp"
+        android:textAlignment="center"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/yesbtn"
+        android:text="verify"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/cornerbutton"
+        android:textColor="@color/white"
+        android:layout_margin="10dp"
+        android:visibility="gone"
+        />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/nobtn"
+        android:text="verify"
+        android:layout_marginBottom="30dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/cornerbutton"
+        android:textColor="@color/white"
+        android:layout_margin="10dp"
+        android:visibility="gone"
+        />
+</LinearLayout>

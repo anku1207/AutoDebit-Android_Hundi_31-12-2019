@@ -54,6 +54,20 @@ public class MandateBO implements Serializable {
         return connectionVO;
     }
 
+    public static ConnectionVO getMandateRevokeDetail(){
+        ConnectionVO connectionVO = new ConnectionVO();
+        connectionVO.setMethodName("getMandateRevokeDetail");
+        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
+        return connectionVO;
+    }
+
+    public static ConnectionVO revokeMandate(){
+        ConnectionVO connectionVO = new ConnectionVO();
+        connectionVO.setMethodName("revokeMandate");
+        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
+        return connectionVO;
+    }
+
 
 
 }
