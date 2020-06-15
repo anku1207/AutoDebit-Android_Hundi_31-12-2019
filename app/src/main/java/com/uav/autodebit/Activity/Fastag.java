@@ -39,6 +39,7 @@ import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.Content_Message;
+import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.override.DrawableClickListener;
 import com.uav.autodebit.override.UAVEditText;
 import com.uav.autodebit.override.UAVProgressDialog;
@@ -270,8 +271,7 @@ public class Fastag extends Base_Activity implements View.OnClickListener , Perm
                 }
             }
         }catch (Exception e){
-            e.printStackTrace();
-            Utility.exceptionAlertDialog(Fastag.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(this , Utility.getStackTrace(e));
         }
     }
 
@@ -310,8 +310,7 @@ public class Fastag extends Base_Activity implements View.OnClickListener , Perm
                         }));
                     }
                 }catch (Exception e){
-                    e.printStackTrace();
-                    Utility.exceptionAlertDialog(Fastag.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+                    ExceptionsNotification.ExceptionHandling(this , Utility.getStackTrace(e));
                 }
                 break;
             case R.id.fetchbill:
@@ -371,15 +370,13 @@ public class Fastag extends Base_Activity implements View.OnClickListener , Perm
                             fetchbillcard.setVisibility(View.VISIBLE);
 
                         }catch (Exception e){
-                            e.printStackTrace();
-                            Utility.exceptionAlertDialog(Fastag.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+                            ExceptionsNotification.ExceptionHandling(this , Utility.getStackTrace(e));
                         }
                     },(VolleyResponse.OnError)(e)->{
                         fetchbill.setVisibility(View.VISIBLE);
                     }));
                 }catch (Exception e){
-                    e.printStackTrace();
-                    Utility.exceptionAlertDialog(Fastag.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+                    ExceptionsNotification.ExceptionHandling(this , Utility.getStackTrace(e));
                 }
                 break;
         }

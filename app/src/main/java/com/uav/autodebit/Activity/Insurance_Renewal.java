@@ -38,6 +38,7 @@ import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.Content_Message;
+import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.override.DrawableClickListener;
 import com.uav.autodebit.override.UAVEditText;
 import com.uav.autodebit.override.UAVProgressDialog;
@@ -251,8 +252,7 @@ public class Insurance_Renewal extends Base_Activity implements View.OnClickList
 
             }
         }catch (Exception e){
-            e.printStackTrace();
-            Utility.exceptionAlertDialog(Insurance_Renewal.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(this , Utility.getStackTrace(e));
         }
     }
 
@@ -335,8 +335,7 @@ public class Insurance_Renewal extends Base_Activity implements View.OnClickList
                             fetchbillcard.setVisibility(View.VISIBLE);
 
                         }catch (Exception e){
-                            e.printStackTrace();
-                            Utility.exceptionAlertDialog(this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+                            ExceptionsNotification.ExceptionHandling(this , Utility.getStackTrace(e));
                         }
                     },(VolleyResponse.OnError)(e)->{
                         // hide amount layout layout and net amount is null set and show fetch bill button
@@ -345,8 +344,7 @@ public class Insurance_Renewal extends Base_Activity implements View.OnClickList
                         netAmount.setText(null);
                     }));
                 }catch (Exception e){
-                    e.printStackTrace();
-                    Utility.exceptionAlertDialog(this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+                    ExceptionsNotification.ExceptionHandling(this , Utility.getStackTrace(e));
                 }
                 break;
         }
@@ -382,8 +380,7 @@ public class Insurance_Renewal extends Base_Activity implements View.OnClickList
             }
 
         }catch (Exception e){
-            e.printStackTrace();
-            Utility.exceptionAlertDialog(this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(this , Utility.getStackTrace(e));
         }
     }
 

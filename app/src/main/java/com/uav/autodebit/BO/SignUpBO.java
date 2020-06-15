@@ -46,7 +46,7 @@ public class SignUpBO implements Serializable {
         return connectionVO;
     }
 
-    public static ConnectionVO loginViaPassword(String loginid,String pass,String Type,String tokenId) {
+    public static ConnectionVO loginViaPassword(String loginid,String pass,String Type,String tokenId,String hashValue) {
         HashMap<String, Object> params = new HashMap<String, Object>();
 
         CustomerVO customerVO=new CustomerVO();
@@ -56,6 +56,7 @@ public class SignUpBO implements Serializable {
             customerVO.setEmailId(loginid);
         }
 
+        customerVO.setAppHash(hashValue);
         customerVO.setTokenId(tokenId);
         customerVO.setPassword(pass);
         Gson gson = new Gson();

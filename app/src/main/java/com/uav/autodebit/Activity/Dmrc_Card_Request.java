@@ -45,8 +45,10 @@ import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 import com.uav.autodebit.BO.MetroBO;
 import com.uav.autodebit.BO.PinCodeBO;
+import com.uav.autodebit.BO.SiBO;
 import com.uav.autodebit.CustomDialog.MyDialog;
 import com.uav.autodebit.Interface.AlertSelectDialogClick;
+import com.uav.autodebit.Interface.BigContentDialogIntetface;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.R;
 import com.uav.autodebit.adpater.CustomPagerAdapter;
@@ -540,7 +542,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                                                 Utility.alertselectdialog(Dmrc_Card_Request.this, "Choose from existing Bank", customerAuthServiceArry, new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess) (s) -> {
                                                     if (!s.equals("0")) {
                                                         Log.w("Home_value", s);
-                                                        allotDmrcCard(Integer.parseInt(s));
+                                                        sIMandateDmrc(Integer.parseInt(s));
                                                     } else {
                                                         startActivityForResult(new Intent(Dmrc_Card_Request.this, Enach_Mandate.class).putExtra("forresutl", true).putExtra("selectservice", new ArrayList<Integer>(Arrays.asList(serviceId))), ApplicationConstant.REQ_ENACH_MANDATE);
                                                     }
@@ -564,7 +566,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
 
                             }
                         }else {
-                            allotDmrcCard(null);
+                            sIMandateDmrc(null);
                         }
                     }
                 }
@@ -575,15 +577,87 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
         }
     }
 
-    public void allotDmrcCard(Integer bankId){
+
+
+
+    public void sIMandateDmrc(Integer bankId){
         HashMap<String, Object> params = new HashMap<String, Object>();
-        ConnectionVO connectionVO = MetroBO.allotDmrcCard();
+        ConnectionVO connectionVO = SiBO.sIMandateDmrc();
         DMRC_Customer_CardVO request_dmrc_customer_cardVO=new DMRC_Customer_CardVO();
         CustomerVO customerVO=new CustomerVO();
         customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(Dmrc_Card_Request.this)));
         request_dmrc_customer_cardVO.setCustomer(customerVO);
         request_dmrc_customer_cardVO.setDmrcid(dmrc_customer_cardVO.getDmrcid());
         request_dmrc_customer_cardVO.setAnonymousInteger(bankId);
+
+        Gson gson =new Gson();
+        String json = gson.toJson(request_dmrc_customer_cardVO);
+        Log.w("request",json);
+        params.put("volley", json);
+        connectionVO.setParams(params);
+        VolleyUtils.makeJsonObjectRequest(Dmrc_Card_Request.this,connectionVO, new VolleyResponseListener() {
+            @Override
+            public void onError(String message) {
+            }
+            @Override
+            public void onResponse(Object resp) throws JSONException {
+
+                try {
+
+                    JSONObject response = (JSONObject) resp;
+                    Gson gson = new Gson();
+                    DMRC_Customer_CardVO dmrc_customer_SI_cardVO = gson.fromJson(response.toString(), DMRC_Customer_CardVO.class);
+
+                    if(dmrc_customer_SI_cardVO.getStatusCode().equals("400")){
+                        ArrayList error = (ArrayList) dmrc_customer_SI_cardVO.getErrorMsgs();
+                        StringBuilder sb = new StringBuilder();
+                        for(int i=0; i<error.size(); i++){
+                            sb.append(error.get(i)).append("\n");
+                        }
+                        Utility.showSingleButtonDialog(Dmrc_Card_Request.this,"Error !",sb.toString(),false);
+                    }else {
+                        if(dmrc_customer_SI_cardVO.getCustomer()!=null){
+                            String json = new Gson().toJson(dmrc_customer_SI_cardVO.getCustomer());
+                            Session.set_Data_Sharedprefence(Dmrc_Card_Request.this,Session.CACHE_CUSTOMER,json);
+                            Session.set_Data_Sharedprefence(Dmrc_Card_Request.this, Session.LOCAL_CACHE,dmrc_customer_SI_cardVO.getCustomer().getLocalCache());
+                        }
+
+                        if(dmrc_customer_SI_cardVO.getShowDialog()){
+                            JSONObject object = new JSONObject(dmrc_customer_SI_cardVO.getAnonymousString());
+                            String [] btnText= {object.getString("Button1"),object.getString("Button2")};
+
+                            MyDialog.showDoubleButtonBigContentDialog(Dmrc_Card_Request.this,new BigContentDialogIntetface((BigContentDialogIntetface.Button1)(button1)->{
+                                button1.dismiss();
+                            },(BigContentDialogIntetface.Button2)(button2)->{
+                                button2.dismiss();
+
+                            }),null,dmrc_customer_SI_cardVO.getAnonymousString(),btnText);
+
+                        }else{
+                            allotDmrcCard(dmrc_customer_SI_cardVO.getDmrcid());
+                        }
+
+                    }
+
+                }catch (Exception e){
+                    ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this , Utility.getStackTrace(e));
+                }
+
+            }
+        });
+    }
+
+
+
+    public void allotDmrcCard(Integer cardId){
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        ConnectionVO connectionVO = MetroBO.allotDmrcCard();
+        DMRC_Customer_CardVO request_dmrc_customer_cardVO=new DMRC_Customer_CardVO();
+        CustomerVO customerVO=new CustomerVO();
+        customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(Dmrc_Card_Request.this)));
+        request_dmrc_customer_cardVO.setCustomer(customerVO);
+        request_dmrc_customer_cardVO.setDmrcid(cardId);
+
 
         Gson gson =new Gson();
         String json = gson.toJson(request_dmrc_customer_cardVO);
@@ -816,7 +890,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                 }else if(requestCode==ApplicationConstant.REQ_ENACH_MANDATE){
                     boolean enachMandateStatus=data.getBooleanExtra("mandate_status",false);
                     if(enachMandateStatus){
-                        allotDmrcCard(null);
+                        sIMandateDmrc(null);
                     }else{
                         Utility.showSingleButtonDialog(Dmrc_Card_Request.this,"Alert",data.getStringExtra("msg"),false);
                     }

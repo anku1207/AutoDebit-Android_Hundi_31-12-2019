@@ -25,21 +25,20 @@ import android.widget.ImageView;
 import com.uav.autodebit.R;
 import com.uav.autodebit.util.Utility;
 
-public class Track_Dmrc_Card extends AppCompatActivity implements View.OnClickListener {
+public class TermAndCondition_Webview extends Base_Activity implements View.OnClickListener {
     ImageView back_activity_button;
     WebView webView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_track__dmrc__card);
+        setContentView(R.layout.activity_term_and_condition__webview);
         getSupportActionBar().hide();
 
         back_activity_button=findViewById(R.id.back_activity_button);
         back_activity_button.setOnClickListener(this);
-        openWebView("http://autope.in/theme/eco/desktop/html/track.html");
+        openWebView("http://autope.in/theme/eco/desktop/html/terms-and-conditions.html");
     }
-
     @SuppressLint("SetJavaScriptEnabled")
     void openWebView(final String receiptUrl) {
         webView = findViewById(R.id.webView);
@@ -79,7 +78,9 @@ public class Track_Dmrc_Card extends AppCompatActivity implements View.OnClickLi
             }
         });
         webView.setWebViewClient(new MyBrowser());
+
         webView.loadUrl(receiptUrl); //receiptUrl
+
     }
 
     @Override
@@ -94,17 +95,21 @@ public class Track_Dmrc_Card extends AppCompatActivity implements View.OnClickLi
                     }
                     return true;
             }
+
         }
         return super.onKeyDown(keyCode, event);
     }
+
 
     private void showError(String description) {
         Log.w("webviewerror",description);
     }
 
 
+
     private class MyBrowser extends WebViewClient {
-        final ProgressDialog progressBar = ProgressDialog.show(Track_Dmrc_Card.this, null, " Please wait...", false, false);
+        final ProgressDialog progressBar = ProgressDialog.show(TermAndCondition_Webview.this, null, " Please wait...", false, false);
+
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             Log.w("URL",url);
@@ -117,6 +122,7 @@ public class Track_Dmrc_Card extends AppCompatActivity implements View.OnClickLi
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
             if(progressBar!=null && !progressBar.isShowing())  progressBar.show();
+
         }
 
         @Override
@@ -137,7 +143,7 @@ public class Track_Dmrc_Card extends AppCompatActivity implements View.OnClickLi
         }
         @TargetApi(android.os.Build.VERSION_CODES.M)
         public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-            if (progressBar!=null && progressBar.isShowing()) {
+            if (progressBar.isShowing()) {
                 progressBar.dismiss();
             }
             showError((String) error.getDescription());
@@ -151,8 +157,6 @@ public class Track_Dmrc_Card extends AppCompatActivity implements View.OnClickLi
             showError(errorResponse.getReasonPhrase().toString());
         }
     }
-
-
     @Override
     public void onClick(View view) {
         switch (view.getId()){
@@ -165,8 +169,4 @@ public class Track_Dmrc_Card extends AppCompatActivity implements View.OnClickLi
                 break;
         }
     }
-
-
-
-
 }

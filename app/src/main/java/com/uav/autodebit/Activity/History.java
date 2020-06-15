@@ -16,6 +16,7 @@ import com.uav.autodebit.Interface.ServiceClick;
 import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
 import com.uav.autodebit.adpater.History_List_Adapter;
+import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.ConnectionVO;
@@ -124,8 +125,7 @@ public class History extends Base_Activity implements View.OnClickListener {
                 }
             });
         } catch (Exception e) {
-            e.printStackTrace();
-            Utility.exceptionAlertDialog(History.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(this , Utility.getStackTrace(e));
         }
     }
 
@@ -193,7 +193,7 @@ public class History extends Base_Activity implements View.OnClickListener {
                 }
             });
         } catch (Exception e) {
-            Utility.exceptionAlertDialog(History.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(this , Utility.getStackTrace(e));
         }
     }
 

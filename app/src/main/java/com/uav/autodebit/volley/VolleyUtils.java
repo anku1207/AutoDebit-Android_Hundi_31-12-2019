@@ -2,18 +2,23 @@ package com.uav.autodebit.volley;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -35,6 +40,8 @@ import com.uav.autodebit.Activity.Mobile_Prepaid_Recharge_Service;
 import com.uav.autodebit.Activity.PaymentGateWay;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
+import com.uav.autodebit.constant.GlobalApplication;
+import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.permission.PermissionHandler;
 import com.uav.autodebit.permission.PermissionUtils;
 import com.uav.autodebit.util.Utility;
@@ -88,17 +95,22 @@ public class VolleyUtils {
                         listener.onResponse(response);
 
                     } catch (Exception e) {
-                        e.printStackTrace();
-                        Utility.exceptionAlertDialog(context,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+                        ExceptionsNotification.ExceptionHandling(mctx , Utility.getStackTrace(e));
                     }
                 }, volleyError -> {
                    // Toast.makeText(context, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
                     pDialog.dismiss();
+                    boolean showerror=true;
 
                     if (volleyError instanceof NetworkError) {
                         errorMessage = "Cannot connect to Internet...Please check your connection!";
                     } else if (volleyError instanceof ServerError) {
-                        errorMessage = "The server could not be found. Please try again after some time!!";
+                        if(volleyError.networkResponse.statusCode==503){
+                            showerror=false;
+                            showForceUpdateDialog();
+                        }else {
+                            errorMessage = "The server could not be found. Please try again after some time!!";
+                        }
                     } else if (volleyError instanceof AuthFailureError) {
                         errorMessage = "Cannot connect to Internet...Please check your connection!";
                     } else if (volleyError instanceof ParseError) {
@@ -110,8 +122,8 @@ public class VolleyUtils {
                     }else {
                         errorMessage= volleyError.toString();
                     }
-                    showError("Connection Error", errorMessage, context );
-                //    listener.onError(error.toString());
+                    if(showerror) showError("Connection Error", errorMessage, context );
+                    //listener.onError(volleyError.toString());
                 }) {
 
 
@@ -173,7 +185,33 @@ public class VolleyUtils {
             //show dialog
             alert.show();
         }
-
     }
+
+
+    public static void showForceUpdateDialog(){
+        final Dialog var3 = new Dialog(mctx);
+        var3.requestWindowFeature(1);
+        var3.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        var3.setContentView(R.layout.singlebuttondialog);
+        var3.setCanceledOnTouchOutside(false);
+        var3.setCancelable(false);
+        var3.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        TextView title = (TextView)var3.findViewById(R.id.dialog_one_tv_title);
+        title.setText("");
+        TextView msg = (TextView)var3.findViewById(R.id.dialog_one_tv_text);
+        msg.setText(GlobalApplication.updateMsg);
+        Button update = (Button)var3.findViewById(R.id.dialog_one_btn);
+        update.setText("Update");
+        update.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View var) {
+                ((Activity)mctx).startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse
+                        ("market://details?id="+ mctx.getPackageName() )));
+                ((Activity) mctx).finish();
+                var3.dismiss();
+            }
+        });
+        var3.show();
+    }
+
 }
 

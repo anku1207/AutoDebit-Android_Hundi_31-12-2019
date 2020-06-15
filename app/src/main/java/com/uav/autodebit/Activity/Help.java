@@ -29,7 +29,6 @@ import java.util.HashMap;
 
 public class Help extends Base_Activity implements View.OnClickListener {
 
-    TextView timing;
     ImageView back_activity_button,email,contact_request;
 
     @Override
@@ -41,7 +40,6 @@ public class Help extends Base_Activity implements View.OnClickListener {
 
         contact_request=findViewById(R.id.contact_request);
         email=findViewById(R.id.email);
-        timing=findViewById(R.id.timing);
         back_activity_button = findViewById(R.id.back_activity_button);
         back_activity_button.setOnClickListener(this);
         contact_request.setOnClickListener(this);

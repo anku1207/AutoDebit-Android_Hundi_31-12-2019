@@ -34,6 +34,7 @@ import com.uav.autodebit.BO.PanCardBO;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.Content_Message;
+import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.permission.PermissionHandler;
 import com.uav.autodebit.permission.PermissionUtils;
 import com.uav.autodebit.permission.Session;
@@ -243,13 +244,10 @@ public class Credit_Score_Report extends Base_Activity implements FileDownloadIn
                 try {
                     setCustomerBucket();
                 }catch (Exception e){
-                    Utility.exceptionAlertDialog(Credit_Score_Report.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
-
+                    ExceptionsNotification.ExceptionHandling(Credit_Score_Report.this , Utility.getStackTrace(e));
                 }
-
             }
         });
-
 
         creditreportbtn.setOnClickListener(new View.OnClickListener() {
             @Override

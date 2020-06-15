@@ -195,9 +195,11 @@ public class Webview extends Base_Activity {
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
-
+            if(progressBar!=null && !progressBar.isShowing())  progressBar.show();
             if(url.contains("enachResponse")) {
-                progressBar.dismiss();
+                if (progressBar!=null && progressBar.isShowing()) {
+                    progressBar.dismiss();
+                }
 
                 Log.w("responseUrl",Utility.getQueryarray(url).toString());
                 Intent intent12 = new Intent();
@@ -209,21 +211,23 @@ public class Webview extends Base_Activity {
 
         @Override
         public void onPageFinished(WebView view, String url) {
-                 progressBar.dismiss();
+            if (progressBar!=null && progressBar.isShowing()) {
+                progressBar.dismiss();
+            }
 
         }
 
         @SuppressWarnings("deprecation")
         public void onReceivedError(WebView view, int errorCode,
                                     String description, String failingUrl) {
-            if (progressBar.isShowing()) {
+            if (progressBar!=null && progressBar.isShowing()) {
                 progressBar.dismiss();
             }
             showError(description);
         }
         @TargetApi(android.os.Build.VERSION_CODES.M)
         public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-            if (progressBar.isShowing()) {
+            if (progressBar!=null && progressBar.isShowing()) {
                 progressBar.dismiss();
             }
             showError((String) error.getDescription());
@@ -231,7 +235,7 @@ public class Webview extends Base_Activity {
 
         @TargetApi(android.os.Build.VERSION_CODES.M)
         public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
-            if (progressBar.isShowing()) {
+            if (progressBar!=null && progressBar.isShowing()) {
                 progressBar.dismiss();
             }
             showError(errorResponse.getReasonPhrase().toString());

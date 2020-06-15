@@ -27,7 +27,7 @@ public class ApplicationConstant {
     public static String NOTIFICATION_ACTION="notification_act";
 
 
-    public final static  String SI_SERVICE="avenue";
+    public final static  String SI_SERVICE="autopepg";
 
     //private final static String URL_ADDRESS = getServerAddress();
     private final static String HTTPURL = getServerAddress();
@@ -74,8 +74,8 @@ public class ApplicationConstant {
            return "http://app.autope.in/hundi/rest/stateless/";
           //  return "http://164.52.192.45";
         }else{
-           // return  "http://205.147.103.18:8080/hundi/rest/stateless/" ;
-             return  "http://192.168.1.103:8080/hundi/rest/stateless/" ;
+          //  return  "http://205.147.103.18:8080/hundi/rest/stateless/" ;
+             return  "http://192.168.1.33:8080/hundi/rest/stateless/" ;
         }
     }
 

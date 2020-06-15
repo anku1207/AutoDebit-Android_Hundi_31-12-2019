@@ -23,6 +23,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.uav.autodebit.BO.SignUpBO;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
+import com.uav.autodebit.OTP.helper.AppSignatureHelper;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.Content_Message;
@@ -306,7 +307,11 @@ public class Login extends Base_Activity implements View.OnClickListener, View.O
     }
 
     public void loginviapassword(String loginid,String pass,String Type){
-        VolleyUtils.makeJsonObjectRequest(this,SignUpBO.loginViaPassword(loginid,pass,Type,Session.getSessionByKey(this,Session.CACHE_TOKENID)), new VolleyResponseListener() {
+
+        AppSignatureHelper appSignatureHelper =new AppSignatureHelper(this);
+        Log.w("AppSignatureHelper",appSignatureHelper.getAppSignatures().get(0));
+
+        VolleyUtils.makeJsonObjectRequest(this,SignUpBO.loginViaPassword(loginid,pass,Type,Session.getSessionByKey(this,Session.CACHE_TOKENID),appSignatureHelper.getAppSignatures().get(0)), new VolleyResponseListener() {
             @Override
             public void onError(String message) {
             }

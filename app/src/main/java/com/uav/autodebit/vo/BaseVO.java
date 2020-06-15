@@ -31,6 +31,8 @@ public class BaseVO {
     private String customerBankAccountNo;
     private Boolean showDialog;
     private String dialogTitle;
+    private Integer notificationId;
+    private String appHash;
 
 
 
@@ -239,5 +241,21 @@ public class BaseVO {
 
     public void setDialogTitle(String dialogTitle) {
         this.dialogTitle = dialogTitle;
+    }
+
+    public Integer getNotificationId() {
+        return notificationId;
+    }
+
+    public void setNotificationId(Integer notificationId) {
+        this.notificationId = notificationId;
+    }
+
+    public String getAppHash() {
+        return appHash;
+    }
+
+    public void setAppHash(String appHash) {
+        this.appHash = appHash;
     }
 }

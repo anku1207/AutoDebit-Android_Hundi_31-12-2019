@@ -25,6 +25,7 @@ import androidx.viewpager.widget.ViewPager;
 import android.view.MenuItem;
 import android.view.WindowManager;
 import android.view.animation.TranslateAnimation;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -55,6 +56,7 @@ import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.Content_Message;
 import com.uav.autodebit.constant.GlobalApplication;
 import com.uav.autodebit.exceptions.ExceptionsNotification;
+import com.uav.autodebit.override.ClickableViewPager;
 import com.uav.autodebit.override.UAVProgressDialog;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.BackgroundAsyncService;
@@ -91,13 +93,15 @@ public class Home extends Base_Activity
         implements View.OnClickListener {
 
     SharedPreferences sharedPreferences;
-    TextView mainwallet,profile,linked,all,wallet,regular,
-            delinkservice,faqs,reportbug,condition,setting,logoutbtn;
+    TextView profile,faqs,contact,condition,logoutbtn;
     ImageView closemenuactivity,active_notification_icon;
     DrawerLayout drawer;
     BottomNavigationView navigation;
     /////19-10-2019
-    ViewPager viewPager;
+    //ViewPager viewPager;
+
+    ClickableViewPager viewPager;
+
     TabLayout bannerIndicator;
 
     List<BannerVO> banners;
@@ -212,10 +216,7 @@ public class Home extends Base_Activity
             //Utility.exceptionAlertDialog(Home.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
 
-        mainwallet=findViewById(R.id.mainwallet);
         profile=findViewById(R.id.profile);
-        linked=findViewById(R.id.linked);
-        all=findViewById(R.id.all);
         scrollView=findViewById(R.id.scrollView);
 
         //19-10-2019
@@ -226,35 +227,24 @@ public class Home extends Base_Activity
         logoutbtn=findViewById(R.id.logoutbtn);
 
 
-        wallet=findViewById(R.id.wallet);
-        regular=findViewById(R.id.regular);
-        delinkservice=findViewById(R.id.delinkservice);
         faqs=findViewById(R.id.faqs);
 
-        reportbug=findViewById(R.id.reportbug);
         condition=findViewById(R.id.condition);
-        setting=findViewById(R.id.setting);
         closemenuactivity=findViewById(R.id.closemenuactivity);
         notificationicon=findViewById(R.id.notificationicon);
         faq_icon=findViewById(R.id.faq_icon);
         active_notification_icon=findViewById(R.id.active_notification_icon);
         notification_layout=findViewById(R.id.notification_layout);
         faq_layout = findViewById(R.id.faq_layout);
+        contact=findViewById(R.id.contact);
 
-        mainwallet.setOnClickListener(this);
         profile.setOnClickListener(this);
-        linked.setOnClickListener(this);
-        all.setOnClickListener(this);
-        wallet.setOnClickListener(this);
-        regular.setOnClickListener(this);
-        delinkservice.setOnClickListener(this);
         faqs.setOnClickListener(this);
-        reportbug.setOnClickListener(this);
         condition.setOnClickListener(this);
-        setting.setOnClickListener(this);
         closemenuactivity.setOnClickListener(this);
         notification_layout.setOnClickListener(this);
         faq_layout.setOnClickListener(this);
+        contact.setOnClickListener(this);
 
         //
         notificationicon.setAnimation(Utility.getOnShakeAnimation(Home.this));
@@ -301,7 +291,6 @@ public class Home extends Base_Activity
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new SliderTimer(), 4000, 6000);
 
-
         //show active notification indicator
         showNotificationIndicator();
 
@@ -324,7 +313,7 @@ public class Home extends Base_Activity
         LocalCacheVO  localCacheVO = gson.fromJson( Session.getSessionByKey(this, Session.LOCAL_CACHE), LocalCacheVO.class);
 
         /* Banner code started here*/
-        viewPager=(ViewPager) findViewById(R.id.viewPager);
+        viewPager= findViewById(R.id.viewPager);
         bannerIndicator=(TabLayout) findViewById(R.id.indicator);
 
         banners = localCacheVO.getBanners();
@@ -353,6 +342,36 @@ public class Home extends Base_Activity
             public void onPageScrollStateChanged(int state) {
             }
         });
+        viewPager.setOnViewPagerClickListener(new ClickableViewPager.OnClickListener() {
+            @Override
+            public void onViewPagerClick(ViewPager pager) {
+
+                try {
+                    if(banners.get(pager.getCurrentItem()).getServiceType()!=null && banners.get(pager.getCurrentItem()).getServiceType().getServiceTypeId()!=null){
+
+
+                        if(banners.get(pager.getCurrentItem()).getServiceType().getServiceTypeId()==ApplicationConstant.Dmrc){
+                            dmrcCardRequest();
+                        }else if(banners.get(pager.getCurrentItem()).getServiceType().getServiceTypeId()==ApplicationConstant.Uber){
+                            actionUberServiceOnclick(banners.get(pager.getCurrentItem()).getServiceType().getServiceTypeId());
+                        } else{
+                            Intent intent;
+                            intent =new Intent(Home.this, activityhasmap.get(banners.get(pager.getCurrentItem()).getServiceType().getServiceTypeId()));
+                            intent.putExtra("serviceid",banners.get(pager.getCurrentItem()).getServiceType().getServiceTypeId()+"");
+                            startActivity(intent);
+                        }
+                    }
+                }catch (Exception e){
+                    ExceptionsNotification.ExceptionHandling(Home.this , Utility.getStackTrace(e));
+                }
+
+            }
+        });
+
+       // viewPager.onclic
+
+
+
 
         List<ServiceTypeVO> utilityServices = localCacheVO.getUtilityBills();
         List<ServiceTypeVO> addservice =new ArrayList<>();
@@ -958,9 +977,7 @@ public class Home extends Base_Activity
     public void onClick(View view) {
 
         switch (view.getId()){
-
-            case R.id.mainwallet:
-                /*try {
+               /*try {
                    // String uri ="https://r.uber.com/FfNRcXC111";
                     //String uri = "https://www.amazon.in/Infinity-Glide-500-Wireless-Headphones/dp/B07W5MZY9J/ref=ac_session_sims_23_3/262-5272901-5384510?_encoding=UTF8&pd_rd_i=B07W6NDVSR&pd_rd_r=5a607169-3605-4bbd-858b-3fe49d3b2d57&pd_rd_w=RloOb&pd_rd_wg=EuSlK&pf_rd_p=a6472ab3-4fb9-4298-9be8-6a9080bff261&pf_rd_r=J4EWD6QHMA9EBX8AG94R&psc=1&refRID=J4EWD6QHMA9EBX8AG94R&th=1";
                     String uri = "uber://?action=setPickup&pickup=my_location";
@@ -974,28 +991,17 @@ public class Home extends Base_Activity
                         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=com.ubercab")));
                     }
                 }*/
-                break;
             case R.id.profile:
                 startActivity(new Intent(this,Profile_Activity.class));
                 break;
-
-            case R.id.linked  :
-                break;
-            case R.id.regular  :
-                break;
-            case R.id.all  :
-                break;
-            case R.id.wallet  :
-                break;
-            case R.id.delinkservice  :
-                break;
-            case R.id.faqs  :
-                break;
-            case R.id.reportbug  :
+            case R.id.faqs :
+                startActivity(new Intent(this,Faq_WebView.class));
                 break;
             case R.id.condition  :
+                startActivity(new Intent(this,TermAndCondition_Webview.class));
                 break;
-            case R.id.setting  :
+            case R.id.contact  :
+                startActivity(new Intent(this,Help.class));
                 break;
             case R.id.closemenuactivity:
                 break;

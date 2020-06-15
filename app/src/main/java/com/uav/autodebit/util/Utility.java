@@ -469,7 +469,7 @@ public class Utility {
     private static void sendLogFile(Context context ,String error) {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("plain/text");
-        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"manojshakya1207@gmail.com"});
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"support@anduriltechnologies.com"});
         intent.putExtra(Intent.EXTRA_SUBJECT, "Error reported from MyAPP");
         intent.putExtra(Intent.EXTRA_TEXT, "Log file attached."+error); // do this so some email clients don't complain about empty body.
         context.startActivity(intent);

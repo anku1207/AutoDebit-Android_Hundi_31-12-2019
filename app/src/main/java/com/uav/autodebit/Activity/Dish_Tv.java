@@ -30,6 +30,7 @@ import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.Content_Message;
+import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.DialogInterface;
 import com.uav.autodebit.util.Utility;
@@ -187,8 +188,7 @@ public class Dish_Tv  extends Base_Activity implements View.OnClickListener  {
                 }
             });
         } catch (Exception e) {
-            e.printStackTrace();
-            Utility.exceptionAlertDialog(context,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(this , Utility.getStackTrace(e));
         }
     }
 
@@ -315,8 +315,7 @@ public class Dish_Tv  extends Base_Activity implements View.OnClickListener  {
             }
 
         }catch (Exception e){
-            e.printStackTrace();
-            Utility.exceptionAlertDialog(context,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(this , Utility.getStackTrace(e));
         }
     }
 
@@ -404,8 +403,7 @@ public class Dish_Tv  extends Base_Activity implements View.OnClickListener  {
                                                     }
                                                 }));
                                             } catch (Exception e) {
-                                                e.printStackTrace();
-                                                Utility.exceptionAlertDialog(context, "Alert!", "Something went wrong, Please try again!", "Report", Utility.getStackTrace(e));
+                                                ExceptionsNotification.ExceptionHandling(Dish_Tv.this , Utility.getStackTrace(e));
                                             }
                                         }
                                         @Override
@@ -429,8 +427,7 @@ public class Dish_Tv  extends Base_Activity implements View.OnClickListener  {
 
             });
         } catch (Exception e) {
-            e.printStackTrace();
-            Utility.exceptionAlertDialog(context,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(this , Utility.getStackTrace(e));
         }
     }
 

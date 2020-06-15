@@ -36,7 +36,7 @@ public class Faq_WebView extends Base_Activity implements View.OnClickListener {
 
         back_activity_button=findViewById(R.id.back_activity_button);
         back_activity_button.setOnClickListener(this);
-        openWebView("http://autope.in/appHtml/faq.html");
+        openWebView("http://autope.in/theme/eco/desktop/html/faq.html");
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -95,7 +95,6 @@ public class Faq_WebView extends Base_Activity implements View.OnClickListener {
                     }
                     return true;
             }
-
         }
         return super.onKeyDown(keyCode, event);
     }
@@ -122,20 +121,12 @@ public class Faq_WebView extends Base_Activity implements View.OnClickListener {
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
 
-            if(url.contains("enachResponse")) {
-                progressBar.dismiss();
-
-                Log.w("responseUrl", Utility.getQueryarray(url).toString());
-                Intent intent12 = new Intent();
-                intent12.putExtra("url",Utility.getQueryarray(url).toString());
-                setResult(RESULT_OK,intent12);
-                finish() ;
-            }
+            if(progressBar!=null && !progressBar.isShowing())  progressBar.show();
         }
 
         @Override
         public void onPageFinished(WebView view, String url) {
-            if (progressBar.isShowing()) {
+            if (progressBar!=null && progressBar.isShowing()) {
                 progressBar.dismiss();
             }
 
@@ -144,14 +135,14 @@ public class Faq_WebView extends Base_Activity implements View.OnClickListener {
         @SuppressWarnings("deprecation")
         public void onReceivedError(WebView view, int errorCode,
                                     String description, String failingUrl) {
-            if (progressBar.isShowing()) {
+            if (progressBar!=null && progressBar.isShowing()) {
                 progressBar.dismiss();
             }
             showError(description);
         }
         @TargetApi(android.os.Build.VERSION_CODES.M)
         public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-            if (progressBar.isShowing()) {
+            if (progressBar!=null && progressBar.isShowing()) {
                 progressBar.dismiss();
             }
             showError((String) error.getDescription());
@@ -159,7 +150,7 @@ public class Faq_WebView extends Base_Activity implements View.OnClickListener {
 
         @TargetApi(android.os.Build.VERSION_CODES.M)
         public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
-            if (progressBar.isShowing()) {
+            if (progressBar!=null && progressBar.isShowing()) {
                 progressBar.dismiss();
             }
             showError(errorResponse.getReasonPhrase().toString());

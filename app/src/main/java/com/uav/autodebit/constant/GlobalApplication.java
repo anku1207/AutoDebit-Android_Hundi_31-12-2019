@@ -11,5 +11,6 @@ public class GlobalApplication extends Application {
 
     public static int notificationCount=0;
     public static List<Dialog> dialog_List =  new ArrayList<>();
+    public static String updateMsg ="New update available! Would you like to update the app now?";
 
 }

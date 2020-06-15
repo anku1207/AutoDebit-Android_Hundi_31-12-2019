@@ -11,11 +11,13 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.uav.autodebit.BO.MandateBO;
 import com.uav.autodebit.BO.OxigenPlanBO;
+import com.uav.autodebit.CustomDialog.MyDialog;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
@@ -41,6 +43,8 @@ public class Mandate_Revoke_Dialog extends AppCompatActivity implements View.OnC
     Button yesbtn,nobtn;
     TextView textview;
     CustomerVO customerVOresp;
+    LinearLayout main_layout;
+    JSONObject intentJsonObject;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +55,7 @@ public class Mandate_Revoke_Dialog extends AppCompatActivity implements View.OnC
         yesbtn=findViewById(R.id.yesbtn);
         nobtn=findViewById(R.id.nobtn);
         textview=findViewById(R.id.textview);
+        main_layout=findViewById(R.id.main_layout);
 
         yesbtn.setOnClickListener(this);
         nobtn.setOnClickListener(this);
@@ -69,20 +74,26 @@ public class Mandate_Revoke_Dialog extends AppCompatActivity implements View.OnC
         getWindow().setAttributes(params);
 
         try {
-            JSONObject jsonObject = new JSONObject(getIntent().getStringExtra(ApplicationConstant.NOTIFICATION_ACTION));
-            if (jsonObject.has("value") && jsonObject.isNull("value")) {
+            intentJsonObject = new JSONObject(getIntent().getStringExtra(ApplicationConstant.NOTIFICATION_ACTION));
+            if (!intentJsonObject.has("value") || intentJsonObject.isNull("value") || !intentJsonObject.has("notificationId") || intentJsonObject.isNull("notificationId")) {
                 Utility.showSingleButtonDialog(this, "Error !", Content_Message.error_message, true);
             } else {
-                getMandateRevokeDetails(jsonObject.getInt("value"),new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
-                    yesbtn.setVisibility(View.VISIBLE);
-                    nobtn.setVisibility(View.VISIBLE);
+                getMandateRevokeDetails(intentJsonObject.getInt("value"),intentJsonObject.getInt("notificationId"),new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
 
-                    customerVOresp = (CustomerVO) success;
                     try {
-                        JSONObject object = new JSONObject(customerVOresp.getAnonymousString());
-                        yesbtn.setText(object.getString("button1"));
-                        nobtn.setText(object.getString("button2"));
-                        textview.setText(customerVOresp.getDialogTitle());
+                        customerVOresp = (CustomerVO) success;
+                        if(customerVOresp.isEventIs()){
+                            main_layout.setVisibility(View.VISIBLE);
+                            JSONObject object = new JSONObject(customerVOresp.getAnonymousString());
+                            yesbtn.setText(object.getString("Button1"));
+                            nobtn.setText(object.getString("Button2"));
+                            textview.setText(customerVOresp.getHtmlString());
+                        }else {
+                            MyDialog.showSingleButtonBigContentDialog(Mandate_Revoke_Dialog.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                                ok.dismiss();
+                                finish();
+                            }),customerVOresp.getDialogTitle(),customerVOresp.getAnonymousString());
+                        }
                     } catch (JSONException e) {
                         ExceptionsNotification.ExceptionHandling(this , Utility.getStackTrace(e));
                     }
@@ -91,16 +102,16 @@ public class Mandate_Revoke_Dialog extends AppCompatActivity implements View.OnC
         }catch (Exception e){
             ExceptionsNotification.ExceptionHandling(this , Utility.getStackTrace(e));
         }
-
     }
 
-    private void getMandateRevokeDetails(int id,VolleyResponse volleyResponse)throws Exception{
+    private void getMandateRevokeDetails(int id,int notificationId,VolleyResponse volleyResponse)throws Exception{
         HashMap<String, Object> params = new HashMap<String, Object>();
         ConnectionVO connectionVO = MandateBO.getMandateRevokeDetail();
 
         CustomerVO customerVO =new CustomerVO();
         customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(this)));
         customerVO.setAnonymousInteger(id);
+        customerVO.setNotificationId(notificationId);
 
         Gson gson=new Gson();
         String json = gson.toJson(customerVO);
@@ -124,8 +135,7 @@ public class Mandate_Revoke_Dialog extends AppCompatActivity implements View.OnC
                         sb.append(error.get(i)).append("\n");
                     }
                     Utility.showSingleButtonDialog(Mandate_Revoke_Dialog.this,"Error !",sb.toString(),true);
-                    yesbtn.setVisibility(View.GONE);
-                    nobtn.setVisibility(View.GONE);
+                    main_layout.setVisibility(View.GONE);
                 }else {
                     volleyResponse.onSuccess(customerResp);
                 }
@@ -137,7 +147,11 @@ public class Mandate_Revoke_Dialog extends AppCompatActivity implements View.OnC
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.yesbtn:
-                skipMandate();
+                try {
+                    skipMandate();
+                }catch (Exception e){
+                    ExceptionsNotification.ExceptionHandling(this , Utility.getStackTrace(e));
+                }
                 break;
             case R.id.nobtn:
                 finish();
@@ -146,13 +160,14 @@ public class Mandate_Revoke_Dialog extends AppCompatActivity implements View.OnC
 
     }
 
-    private void skipMandate() {
+    private void skipMandate() throws JSONException {
         HashMap<String, Object> params = new HashMap<String, Object>();
         ConnectionVO connectionVO = MandateBO.revokeMandate();
 
         CustomerVO customerVO =new CustomerVO();
         customerVO.setCustomerId(customerVOresp.getCustomerId());
         customerVO.setAnonymousInteger(customerVOresp.getAnonymousInteger());
+        customerVO.setNotificationId(intentJsonObject.getInt("notificationId"));
 
         Gson gson=new Gson();
         String json = gson.toJson(customerVO);
@@ -177,10 +192,10 @@ public class Mandate_Revoke_Dialog extends AppCompatActivity implements View.OnC
                     }
                     Utility.showSingleButtonDialog(Mandate_Revoke_Dialog.this,"Error !",sb.toString(),true);
                 }else {
-                    Utility.showSingleButtonDialogconfirmation(Mandate_Revoke_Dialog.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                    MyDialog.showSingleButtonBigContentDialog(Mandate_Revoke_Dialog.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
                         ok.dismiss();
                         finish();
-                    }),customerVO.getDialogTitle(),customerVO.getAnonymousString());
+                    }),customerResp.getDialogTitle(),customerResp.getAnonymousString());
                 }
             }
         });

@@ -28,4 +28,23 @@ public class SiBO implements Serializable {
         return connectionVO;
     }
 
+    public static ConnectionVO proceedAutoPePgResponse() {
+        ConnectionVO connectionVO = new ConnectionVO();
+        connectionVO.setMethodName("proceedAutoPePgResponse");
+        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
+        return connectionVO;
+    }
+
+
+    public static ConnectionVO sIMandateDmrc() {
+        ConnectionVO connectionVO = new ConnectionVO();
+        connectionVO.setMethodName("sIMandateDmrc");
+        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
+        return connectionVO;
+    }
+
+
+
+
+
 }

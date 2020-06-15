@@ -58,10 +58,6 @@ public class Splash_Screen extends Base_Activity implements BitmapInterface {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash__screen);
 
-
-        AppSignatureHelper appSignatureHelper =new AppSignatureHelper(this);
-        Log.w("AppSignatureHelper",appSignatureHelper.getAppSignatures().get(0));
-
         ImageView imageView = (ImageView) findViewById( R.id.appstarticon);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
@@ -156,11 +152,6 @@ public class Splash_Screen extends Base_Activity implements BitmapInterface {
             Toast.makeText(this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
 
         }
-
-
-
-
-
     }
 
 
@@ -225,7 +216,7 @@ public class Splash_Screen extends Base_Activity implements BitmapInterface {
                 }
             });
         } catch (Exception e) {
-            Utility.exceptionAlertDialog(Splash_Screen.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(this , Utility.getStackTrace(e));
         }
     }
 

@@ -13,11 +13,14 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
 
 import android.view.View;
 import android.webkit.ConsoleMessage;
+import android.webkit.JavascriptInterface;
+import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -42,6 +45,7 @@ import com.uav.autodebit.BO.SignUpBO;
 import com.uav.autodebit.R;
 
 import com.uav.autodebit.constant.ApplicationConstant;
+import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.Utility;
 
@@ -81,7 +85,7 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
         rof_backbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
+                    finish();
             }
         });
 
@@ -110,20 +114,6 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
 
     public void sifirstdata() {
 
-      /*  String customerId= Session.getCustomerId(SI_First_Data.this);
-
-        HashMap<String, Object> params = new HashMap<String, Object>();
-        ConnectionVO connectionVO = SiBO.getSIMandateProperties();
-
-        CustomerVO customerVO=new CustomerVO();
-        customerVO.setCustomerId(Integer.parseInt(customerId));
-
-        Gson gson = new Gson();
-        String json = gson.toJson(customerVO);
-
-        params.put("volley", json);
-
-        connectionVO.setParams(params);*/
 
 
         VolleyUtils.makeJsonObjectRequest(this, SiBO.getSIMandateProperties(), new VolleyResponseListener() {
@@ -186,13 +176,13 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
                         respjson = response;
                         Log.w("resp", respjson.toString());
                         openWebView("file:///android_asset/sifirst.html");
-                    } else if (ApplicationConstant.SI_SERVICE.equals("avenue")) {
+                    } else if (ApplicationConstant.SI_SERVICE.equals("avenue")   || ApplicationConstant.SI_SERVICE.equals("autopepg")) {
                         respjson = response;
                         Log.w("resp", respjson.toString());
 
                         redirectUrl = respjson.getString("redirectUrl");
                         cancelUrl = respjson.getString("cancelUrl");
-                        String url = respjson.getString("url") + "&customerId=" + Session.getCustomerId(SI_First_Data.this) + "&entityTypeId=2";
+                        String url = respjson.getString("url") + "?customerId=" + Session.getCustomerId(SI_First_Data.this) + "&entityTypeId=2" + "&versioncode="+ Utility.getVersioncode(SI_First_Data.this);
                         openWebView(url);
                     }
 
@@ -205,84 +195,100 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
     @SuppressLint({"SetJavaScriptEnabled", "JavascriptInterface"})
     void openWebView(final String receiptUrl) {
 
+        Toast.makeText(this, ""+receiptUrl, Toast.LENGTH_SHORT).show();
 
-        //webView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
+
         webview.setVerticalScrollBarEnabled(false);
         webview.setHorizontalScrollBarEnabled(false);
 
-
         webview.setWebViewClient(new MyBrowser());
-        //webSettings.setDomStorageEnabled(true);
 
-        //wv.getSettings().setLoadsImagesAutomatically(true);
-        webview.getSettings().setLoadsImagesAutomatically(true);
-        webview.getSettings().setDomStorageEnabled(true);
+       // webview.getSettings().setLoadsImagesAutomatically(true);
 
         webview.getSettings().setBuiltInZoomControls(true);
-        //webview.setInitialScale(1);
+        webview.setInitialScale(1);
         webview.getSettings().setUseWideViewPort(true);
+        webview.getSettings().setSupportMultipleWindows(true);
         webview.getSettings().setLoadWithOverviewMode(true);
-
 
         WebSettings settings = webview.getSettings();
         settings.setJavaScriptEnabled(true);
         settings.setMinimumFontSize(16);
-        webview.setDrawingCacheEnabled(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             WebView.enableSlowWholeDocumentDraw();
         }
-
-       /* if (Build.VERSION.SDK_INT >= 19) {
-            webview.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-        }*/
-
-        webview.getSettings().setAppCacheEnabled(false);
-        webview.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
-
+        settings.setDomStorageEnabled(true);
 
         webview.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
+                return super.onJsAlert(view, url, message, result);
+            }
             @Override
             public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
                 android.util.Log.d("WebView", consoleMessage.message());
                 return true;
             }
 
+            @Override
+            public boolean onCreateWindow(WebView view, boolean isDialog, boolean isUserGesture, Message resultMsg) {
 
+                WebView newWebView = new WebView(SI_First_Data.this);
+                newWebView.getSettings().setJavaScriptEnabled(true);
+                newWebView.getSettings().setSupportZoom(true);
+                newWebView.getSettings().setBuiltInZoomControls(true);
+                newWebView.getSettings().setPluginState(WebSettings.PluginState.ON);
+              //  newWebView.getSettings().setSupportMultipleWindows(true);
+                view.addView(newWebView);
+                WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;
+                transport.setWebView(newWebView);
+                resultMsg.sendToTarget();
+
+                newWebView.setWebViewClient(new WebViewClient() {
+                    @Override
+                    public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                        view.loadUrl(url);
+                        return true;
+                    }
+                    @Override
+                    public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                        super.onPageStarted(view, url, favicon);
+                        Log.w("pagestart", url);
+
+                    }
+
+                    @Override
+                    public void onPageFinished(WebView view, String url) {
+                        Log.w("loadurlresp", url);
+
+                    }
+
+                    @SuppressWarnings("deprecation")
+                    public void onReceivedError(WebView view, int errorCode,
+                                                String description, String failingUrl) {
+                        showError(description);
+                    }
+
+                    @TargetApi(android.os.Build.VERSION_CODES.M)
+                    public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+                        showError((String) error.getDescription());
+                    }
+
+                    @TargetApi(android.os.Build.VERSION_CODES.M)
+                    public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
+                        showError(errorResponse.getReasonPhrase().toString());
+                    }
+
+                });
+
+                return true;
+            }
         });
-
         webview.addJavascriptInterface(new MyJavaScriptInterface(this), "HTMLOUT");
-        //webview.setWebViewClient(new MyBrowser() );
         webview.loadUrl(receiptUrl); //receiptUrl
     }
 
-
-
-   /* @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if ((keyCode == KeyEvent.KEYCODE_BACK) && this.webview.canGoBack()) {
-            this.webview.goBack();
-            return true;
-        }
-
-        return super.onKeyDown(keyCode, event);
-    }*/
-
-
     private void showError(String description) {
-
-       /* new AlertDialog.Builder(SI_First_Data.this)
-                .setTitle("Error")
-                .setMessage(description)
-
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        // Continue with delete operation
-                    }
-                })
-
-                .setNegativeButton(android.R.string.no, null)
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .show();*/
         Log.e("weverrir", description);
     }
 
@@ -290,25 +296,45 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
     public void htmlresult(String result) {
         Log.w("htmlresp", result);
 
-
         try {
             JSONObject object = new JSONObject(result);
-            CustomerVO customerVO = new CustomerVO();
-            String anonymousString = object.getString("anonymousString");
-            String anonymousInteger = object.getString("anonymousInteger");
-
             HashMap<String, Object> params = new HashMap<String, Object>();
-            ConnectionVO connectionVO = SiBO.proceedCCAvenueResponse();
-            customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(SI_First_Data.this)));
-            customerVO.setAnonymousString(anonymousString);
-            customerVO.setAnonymousInteger(Integer.parseInt(anonymousInteger));
+            ConnectionVO connectionVO = SiBO.proceedAutoPePgResponse();
 
-            Gson gson = new Gson();
-            String json = gson.toJson(customerVO);
-            params.put("volley", json);
+            if(ApplicationConstant.SI_SERVICE.equals("autopepg")){
 
-            Log.w("request", json);
-            connectionVO.setParams(params);
+                CustomerVO customerVO = new CustomerVO();
+                String anonymousString = object.getString("anonymousString");
+                String anonymousInteger = object.getString("anonymousInteger");
+
+                customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(SI_First_Data.this)));
+                customerVO.setAnonymousString(anonymousString);
+                customerVO.setAnonymousInteger(Integer.parseInt(anonymousInteger));
+
+                Gson gson = new Gson();
+                String json = gson.toJson(customerVO);
+                params.put("volley", json);
+
+                connectionVO.setParams(params);
+
+            }else if(ApplicationConstant.SI_SERVICE.equals("avenue")){
+                CustomerVO customerVO = new CustomerVO();
+                String anonymousString = object.getString("anonymousString");
+                String anonymousInteger = object.getString("anonymousInteger");
+
+                customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(SI_First_Data.this)));
+                customerVO.setAnonymousString(anonymousString);
+                customerVO.setAnonymousInteger(Integer.parseInt(anonymousInteger));
+
+                Gson gson = new Gson();
+                String json = gson.toJson(customerVO);
+                params.put("volley", json);
+
+                connectionVO.setParams(params);
+            }
+
+            Log.w("htmlresultRequest",connectionVO.getParams().toString());
+
 
 
             VolleyUtils.makeJsonObjectRequest(this, connectionVO, new VolleyResponseListener() {
@@ -325,7 +351,7 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
 
 
                     if (!customerVO.getStatusCode().equals("200")) {
-                        showSingleButtonDialog(SI_First_Data.this, "Alert", response.getString("errorMsg"));
+                        showSingleButtonDialog(SI_First_Data.this, "Alert", customerVO.getErrorMsgs().get(0));
                     } else {
                         DecimalFormat df = new DecimalFormat();
                         df.setMinimumFractionDigits(2);
@@ -342,8 +368,8 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
             });
 
 
-        } catch (JSONException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            ExceptionsNotification.ExceptionHandling(SI_First_Data.this , Utility.getStackTrace(e));
         }
     }
 
@@ -379,8 +405,6 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             Log.w("URL", url);
-
-
             view.loadUrl(url);
             return true;
         }
@@ -395,14 +419,20 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
                 if (url.equals(redirectUrl + "app") || url.equals(cancelUrl + "app")) {
                     webview.setVisibility(View.GONE);
                 }
+            }else if(ApplicationConstant.SI_SERVICE.equals("autopepg")){
+                if (url.equals(redirectUrl + "app") || url.equals(cancelUrl + "app")) {
+                    webview.setVisibility(View.GONE);
+                }
             }
-            if(!progressBar.isShowing())  progressBar.show();
+            if(progressBar!=null && !progressBar.isShowing())  progressBar.show();
 
         }
 
         @Override
         public void onPageFinished(WebView view, String url) {
-            progressBar.dismiss();
+            if (progressBar!=null && progressBar.isShowing()) {
+                progressBar.dismiss();
+            }
             Log.w("loadurlresp", url);
             if (ApplicationConstant.SI_SERVICE.equals("icici")) {
                 if (url.equals("file:///android_asset/sifirst.html")) {
@@ -417,13 +447,18 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
                     webview.loadUrl("javascript:HTMLOUT.showHTML(document.getElementById('siresp').innerHTML);");
                     webview.loadUrl("javascript:console.log('MAGIC'+document.getElementById('siresp').innerHTML);");
                 }
+            }else if(ApplicationConstant.SI_SERVICE.equals("autopepg")){
+                if (url.equals(redirectUrl + "app") || url.equals(cancelUrl + "app")) {
+                    webview.loadUrl("javascript:HTMLOUT.showHTML(document.getElementById('siresp').innerHTML);");
+                    webview.loadUrl("javascript:console.log('MAGIC'+document.getElementById('siresp').innerHTML);");
+                }
             }
         }
 
         @SuppressWarnings("deprecation")
         public void onReceivedError(WebView view, int errorCode,
                                     String description, String failingUrl) {
-            if (progressBar.isShowing()) {
+            if (progressBar!=null && progressBar.isShowing()) {
                 progressBar.dismiss();
             }
             showError(description);
@@ -431,7 +466,7 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
 
         @TargetApi(android.os.Build.VERSION_CODES.M)
         public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-            if (progressBar.isShowing()) {
+            if (progressBar!=null && progressBar.isShowing()) {
                 progressBar.dismiss();
             }
             showError((String) error.getDescription());
@@ -439,11 +474,25 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
 
         @TargetApi(android.os.Build.VERSION_CODES.M)
         public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
-            if (progressBar.isShowing()) {
+            if (progressBar!=null && progressBar.isShowing()) {
                 progressBar.dismiss();
             }
             showError(errorResponse.getReasonPhrase().toString());
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            switch (keyCode) {
+                case KeyEvent.KEYCODE_BACK:
+
+                        finish();
+                    return true;
+            }
+
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
 }

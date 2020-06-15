@@ -7,6 +7,8 @@
     android:background="@drawable/paynimo_view_rounded_corner"
     android:gravity="center"
     android:layout_gravity="center"
+    android:visibility="gone"
+    android:id="@+id/main_layout"
     >
     <TextView
         android:id="@+id/textview"
@@ -17,7 +19,7 @@
         android:gravity="center"
         android:text=""
         android:textSize="15dp"
-        android:minHeight="200dp"
+        android:minHeight="150dp"
         android:textAlignment="center"/>
 
     <Button
@@ -29,8 +31,7 @@
         android:background="@drawable/cornerbutton"
         android:textColor="@color/white"
         android:layout_margin="10dp"
-        android:visibility="gone"
-        />
+       />
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -41,6 +42,5 @@
         android:background="@drawable/cornerbutton"
         android:textColor="@color/white"
         android:layout_margin="10dp"
-        android:visibility="gone"
         />
 </LinearLayout>

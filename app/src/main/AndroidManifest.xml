@@ -42,14 +42,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".Activity.TermAndCondition_Webview"></activity>
         <activity
             android:name=".Activity.Mandate_Revoke_Dialog"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.pop"
             android:windowSoftInputMode="stateHidden"
-            tools:ignore="LockedOrientationActivity"
-            >
-        </activity>
+            tools:ignore="LockedOrientationActivity"></activity>
         <activity android:name=".Activity.Track_Dmrc_Card" />
         <activity android:name=".Activity.Faq_WebView" />
         <activity android:name=".Activity.ManualEnachMandate" />
@@ -409,7 +408,8 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-        </activity> <!-- Firebase Notifications -->
+        </activity>
+        <!-- Firebase Notifications -->
         <service android:name=".Notification.FCMService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

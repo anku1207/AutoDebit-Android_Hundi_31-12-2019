@@ -27,7 +27,6 @@ android {
             jcenter()
             flatDir {
                 dirs 'libs'
-
             }
         }
     }

@@ -40,7 +40,7 @@ public class SendLog extends AppCompatActivity implements View.OnClickListener{
 
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("plain/text");
-        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"care@uavtechnologies.in"});
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"support@anduriltechnologies.com"});
         intent.putExtra(Intent.EXTRA_SUBJECT, "Error reported from MyAPP");
         intent.putExtra(Intent.EXTRA_TEXT, "Log file attached."+logs); // do this so some email clients don't complain about empty body.
         startActivity(intent);

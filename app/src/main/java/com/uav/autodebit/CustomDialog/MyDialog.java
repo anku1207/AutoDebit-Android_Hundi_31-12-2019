@@ -29,6 +29,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.uav.autodebit.Interface.BigContentDialogIntetface;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.Interface.ConfirmationGetObjet;
 import com.uav.autodebit.Interface.DateInterface;
@@ -387,6 +388,60 @@ public class MyDialog {
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View var) {
                 confirmationDialogInterface.onOk(var3);
+            }
+        });
+
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(var3.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+
+        if(!var3.isShowing())  var3.show();
+        var3.getWindow().setAttributes(lp);
+    }
+
+
+
+
+    public static void showDoubleButtonBigContentDialog(Context context, BigContentDialogIntetface bigContentDialogIntetface, String title, String msg , String... buttons){
+
+        String leftButton= (buttons.length==0 ?"Modify":buttons[0]);//(leftButton ==null?"Modify": leftButton);
+        String rightButton=(buttons.length<=1 ?"Next":buttons[1]);//(rightButton==null?"Next":rightButton);
+        final Dialog var3 = new Dialog(context);
+
+
+        var3.requestWindowFeature(1);
+        var3.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        var3.setContentView(R.layout.singlebutton_bigcontent_dialog);
+        var3.setCanceledOnTouchOutside(false);
+        //   var3.setCancelable(false);
+
+        var3.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+
+        TextView title_text = (TextView)var3.findViewById(R.id.title);
+
+        if(title==null || title.equals("")){
+            title_text.setVisibility(View.GONE);
+        }else {
+            title_text.setText(title);
+            title_text.setVisibility(View.VISIBLE);
+        }
+        TextView msg_text = (TextView)var3.findViewById(R.id.message);
+        msg_text.setText(msg);
+        Button button1 = (Button)var3.findViewById(R.id.button1);
+        button1.setText(leftButton);
+        button1.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View var) {
+                bigContentDialogIntetface.button1(var3);
+            }
+        });
+
+
+        Button button2 = (Button)var3.findViewById(R.id.button2);
+        button2.setText(rightButton);
+        button2.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View var) {
+                bigContentDialogIntetface.button2(var3);
             }
         });
 
