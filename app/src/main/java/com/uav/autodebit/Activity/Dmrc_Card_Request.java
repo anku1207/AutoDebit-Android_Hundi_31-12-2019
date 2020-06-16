@@ -54,6 +54,7 @@ import com.uav.autodebit.R;
 import com.uav.autodebit.adpater.CustomPagerAdapter;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.Content_Message;
+import com.uav.autodebit.constant.ErrorMsg;
 import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.override.UAVProgressDialog;
 import com.uav.autodebit.permission.PermissionHandler;
@@ -562,8 +563,6 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                                   }, (ConfirmationDialogInterface.OnCancel) (cancel) -> {
                                     cancel.dismiss();
                                 }));
-
-
                             }
                         }else {
                             sIMandateDmrc(null);
@@ -628,26 +627,23 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
 
                             MyDialog.showDoubleButtonBigContentDialog(Dmrc_Card_Request.this,new BigContentDialogIntetface((BigContentDialogIntetface.Button1)(button1)->{
                                 button1.dismiss();
+                                startActivityForResult(new Intent(Dmrc_Card_Request.this,SI_First_Data.class).putExtra("id",dmrc_customer_SI_cardVO.getDmrcid()),ApplicationConstant.REQ_SI_MANDATE);
                             },(BigContentDialogIntetface.Button2)(button2)->{
                                 button2.dismiss();
 
-                            }),null,dmrc_customer_SI_cardVO.getAnonymousString(),btnText);
+                            }),dmrc_customer_SI_cardVO.getDialogTitle(),dmrc_customer_SI_cardVO.getHtmlString(),btnText);
 
                         }else{
                             allotDmrcCard(dmrc_customer_SI_cardVO.getDmrcid());
                         }
-
                     }
-
                 }catch (Exception e){
+                    e.printStackTrace();
                     ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this , Utility.getStackTrace(e));
                 }
-
             }
         });
     }
-
-
 
     public void allotDmrcCard(Integer cardId){
         HashMap<String, Object> params = new HashMap<String, Object>();
@@ -862,12 +858,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
 
             try {
                 if (requestCode == REQ_IMAGE) {
-/*
-                    String image_path=CommonUtils.compressImage(mImageUri.getPath());
-                    Log.w("image_path",image_path);
-                    File file =new File(image_path);
-                    Log.w("file_length",file.length()/1024+"");
-*/
+
                     bmp=Utility.decodeImageFromFiles(mImageUri.getPath(),150,150);
                     int imagesizeinbyte=Utility.byteSizeOf(bmp);
                     Log.w("image",imagesizeinbyte +"  ====   "+(imagesizeinbyte/1024) +"");
@@ -894,11 +885,18 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                     }else{
                         Utility.showSingleButtonDialog(Dmrc_Card_Request.this,"Alert",data.getStringExtra("msg"),false);
                     }
+                }else if(requestCode==ApplicationConstant.REQ_SI_MANDATE){
+                    int actionId=data.getIntExtra("actionId",0);
+                    Toast.makeText(this, ""+actionId, Toast.LENGTH_SHORT).show();
+                    if(actionId!=0){
+                        allotDmrcCard(actionId);
+                    }else {
+                        Utility.showSingleButtonDialog(Dmrc_Card_Request.this,"Error !", "Something went wrong",false);
+                    }
                 }
             } catch (Exception e) {
                 ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this , Utility.getStackTrace(e));
-               // Utility.exceptionAlertDialog(Dmrc_Card_Request.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
-            }
+           }
         }
     }
 

@@ -412,7 +412,7 @@ public class MyDialog {
 
         var3.requestWindowFeature(1);
         var3.getWindow().setBackgroundDrawable(new ColorDrawable(0));
-        var3.setContentView(R.layout.singlebutton_bigcontent_dialog);
+        var3.setContentView(R.layout.doublebutton_bigcontent_dialog);
         var3.setCanceledOnTouchOutside(false);
         //   var3.setCancelable(false);
 

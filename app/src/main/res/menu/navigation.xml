@@ -8,7 +8,7 @@
 
     <item
         android:id="@+id/bottom_profile"
-        android:icon="@drawable/ava_user"
+        android:icon="@drawable/profile"
         android:title="@string/bottom_menu_profile"
         />
 

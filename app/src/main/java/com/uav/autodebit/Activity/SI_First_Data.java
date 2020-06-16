@@ -71,6 +71,8 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
     TextView text1, text2, text3;
     Button continuebtn;
     LinearLayout orderlayout;
+    boolean foractivity;
+    int actionId;
 
     @SuppressLint("WrongViewCast")
     @Override
@@ -89,6 +91,8 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
             }
         });
 
+        foractivity=getIntent().getBooleanExtra("forresutl",true);//success finish activity
+        actionId=getIntent().getIntExtra("id",0);
 
         text1 = findViewById(R.id.text1);
         text2 = findViewById(R.id.text2);
@@ -102,10 +106,18 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
         continuebtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent newIntent = new Intent(SI_First_Data.this, Home.class);
-                newIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                newIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(newIntent);
+                if(!foractivity){
+                    Intent newIntent = new Intent(SI_First_Data.this, Home.class);
+                    newIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    newIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(newIntent);
+                }else{
+                    Intent intent =new Intent();
+                    setResult(RESULT_OK,intent);
+                    intent.putExtra("actionId",actionId);
+                    finish();
+                }
+
             }
         });
 
@@ -113,9 +125,6 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
     }
 
     public void sifirstdata() {
-
-
-
         VolleyUtils.makeJsonObjectRequest(this, SiBO.getSIMandateProperties(), new VolleyResponseListener() {
             @Override
             public void onError(String message) {
@@ -194,8 +203,6 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
 
     @SuppressLint({"SetJavaScriptEnabled", "JavascriptInterface"})
     void openWebView(final String receiptUrl) {
-
-        Toast.makeText(this, ""+receiptUrl, Toast.LENGTH_SHORT).show();
 
 
         webview.setVerticalScrollBarEnabled(false);
@@ -349,7 +356,6 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
                     Gson gson = new Gson();
                     CustomerVO customerVO = gson.fromJson(response.toString(), CustomerVO.class);
 
-
                     if (!customerVO.getStatusCode().equals("200")) {
                         showSingleButtonDialog(SI_First_Data.this, "Alert", customerVO.getErrorMsgs().get(0));
                     } else {
@@ -366,8 +372,6 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
                     }
                 }
             });
-
-
         } catch (Exception e) {
             ExceptionsNotification.ExceptionHandling(SI_First_Data.this , Utility.getStackTrace(e));
         }
@@ -389,10 +393,14 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
         var5.setOnClickListener(new View.OnClickListener() {
             public void onClick(View var) {
                 var3.dismiss();
-                Intent newIntent = new Intent(SI_First_Data.this, Home.class);
-                newIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                newIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(newIntent);
+                if(!foractivity){
+                    Intent newIntent = new Intent(SI_First_Data.this, Home.class);
+                    newIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    newIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(newIntent);
+                }else{
+                    finish();
+                }
             }
         });
         var3.show();
