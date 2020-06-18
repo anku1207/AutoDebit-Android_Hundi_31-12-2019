@@ -138,6 +138,7 @@
                     android:id="@+id/utilityservice"
                     android:text="Pay your Utility Bills Seamlessly!"
                     android:gravity="center_vertical"
+                    android:textColor="@color/defaultTextColor"
                     />
 
 

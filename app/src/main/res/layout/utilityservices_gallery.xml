@@ -24,6 +24,8 @@
         android:layout_below="@id/id_index_gallery_item_image"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
-        android:textSize="10dp" />
+        android:textSize="10dp"
+        android:textColor="@color/defaultTextColor"
+        />
 
 </RelativeLayout>

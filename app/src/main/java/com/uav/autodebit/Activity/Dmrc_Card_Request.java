@@ -3,6 +3,7 @@ package com.uav.autodebit.Activity;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -91,7 +92,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
     TextView attachaddress,changeaddress,cardcharges;
     Button verify;
     Uri mImageUri;
-    int  REQ_IMAGE=1001,REQ_GALLERY=1002;
+    int  REQ_IMAGE=1001,REQ_GALLERY=1002,PIC_CROP=1004;
     Bitmap bmp;
     ImageView addressimage,back_activity_button1 ;
     boolean permissionstate=true;
@@ -112,6 +113,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
     int serviceId=ApplicationConstant.Dmrc;
     TabLayout tabLayout;
     PermissionUtils permissionUtils;
+    File photofileurl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -160,7 +162,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
 
 
         //25-05-2020
-       //attachaddress.setOnClickListener(this);
+        attachaddress.setOnClickListener(this);
         changeaddress.setOnClickListener(this);
         verify.setOnClickListener(this);
 
@@ -476,6 +478,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
             Gson gson =new Gson();
             String json = gson.toJson(request_dmrc_customer_cardVO);
             params.put("volley", json);
+            Log.w("saveDmrcCardInServer",json);
             connectionVO.setParams(params);
             VolleyUtils.makeJsonObjectRequest(Dmrc_Card_Request.this,connectionVO, new VolleyResponseListener() {
                 @Override
@@ -591,7 +594,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
 
         Gson gson =new Gson();
         String json = gson.toJson(request_dmrc_customer_cardVO);
-        Log.w("request",json);
+        Log.w("sIMandateDmrc",json);
         params.put("volley", json);
         connectionVO.setParams(params);
         VolleyUtils.makeJsonObjectRequest(Dmrc_Card_Request.this,connectionVO, new VolleyResponseListener() {
@@ -630,6 +633,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                                 startActivityForResult(new Intent(Dmrc_Card_Request.this,SI_First_Data.class).putExtra("id",dmrc_customer_SI_cardVO.getDmrcid()),ApplicationConstant.REQ_SI_MANDATE);
                             },(BigContentDialogIntetface.Button2)(button2)->{
                                 button2.dismiss();
+                                dmrcCustomerCardSecurityDeposti(dmrc_customer_SI_cardVO.getDmrcid());
 
                             }),dmrc_customer_SI_cardVO.getDialogTitle(),dmrc_customer_SI_cardVO.getHtmlString(),btnText);
 
@@ -640,6 +644,46 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                 }catch (Exception e){
                     e.printStackTrace();
                     ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this , Utility.getStackTrace(e));
+                }
+            }
+        });
+    }
+
+
+    private void dmrcCustomerCardSecurityDeposti(Integer dmrcid) {
+
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        ConnectionVO connectionVO = MetroBO.dmrcCustomerCardSecurityDeposti();
+        DMRC_Customer_CardVO request_dmrc_customer_cardVO=new DMRC_Customer_CardVO();
+        CustomerVO customerVO=new CustomerVO();
+        customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(Dmrc_Card_Request.this)));
+        request_dmrc_customer_cardVO.setCustomer(customerVO);
+        request_dmrc_customer_cardVO.setDmrcid(dmrcid);
+
+        Gson gson =new Gson();
+        String json = gson.toJson(request_dmrc_customer_cardVO);
+        Log.w("CardSecurityDeposti",json);
+        params.put("volley", json);
+        connectionVO.setParams(params);
+        VolleyUtils.makeJsonObjectRequest(Dmrc_Card_Request.this,connectionVO, new VolleyResponseListener() {
+            @Override
+            public void onError(String message) {
+            }
+            @Override
+            public void onResponse(Object resp) throws JSONException {
+                JSONObject response = (JSONObject) resp;
+                Gson gson = new Gson();
+                DMRC_Customer_CardVO dmrc_customer_cardVO = gson.fromJson(response.toString(), DMRC_Customer_CardVO.class);
+
+                if(dmrc_customer_cardVO.getStatusCode().equals("400")){
+                    ArrayList error = (ArrayList) dmrc_customer_cardVO.getErrorMsgs();
+                    StringBuilder sb = new StringBuilder();
+                    for(int i=0; i<error.size(); i++){
+                        sb.append(error.get(i)).append("\n");
+                    }
+                    Utility.showSingleButtonDialog(Dmrc_Card_Request.this,"Error !",sb.toString(),false);
+                }else {
+                    allotDmrcCard(dmrcid);
                 }
             }
         });
@@ -786,24 +830,20 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
 
     public void cameraimage(){
         Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-        File photo;
+        photofileurl=null;
         try
         {
             // place where to store camera taken picture
-            photo = Utility.createTemporaryFile("picture", ".jpg");
-            photo.delete();
-            mImageUri = Uri.fromFile(photo);
-            /*Uri mImageUri = CustomProvider.getPhotoUri(photo);
-             */
-            Uri mImageUri = FileProvider.getUriForFile(getApplicationContext(),getApplicationContext().getPackageName()
-                    + ".provider", photo);
+            photofileurl = Utility.createTemporaryFile("picture", ".jpg");
+            photofileurl.delete();
+            Uri mImageUri = FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", photofileurl);
+
             intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
             startActivityForResult(intent, REQ_IMAGE);
         }
         catch(Exception e){
-            ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this , Utility.getStackTrace(e));
-
-            //Utility.exceptionAlertDialog(Dmrc_Card_Request.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(this , Utility.getStackTrace(e));
+            //Utility.exceptionAlertDialog(this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
     }
     public void setCustomerDetail(DMRC_Customer_CardVO dmrc_customer_cardVO){
@@ -858,25 +898,32 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
 
             try {
                 if (requestCode == REQ_IMAGE) {
-
-                    bmp=Utility.decodeImageFromFiles(mImageUri.getPath(),150,150);
-                    int imagesizeinbyte=Utility.byteSizeOf(bmp);
-                    Log.w("image",imagesizeinbyte +"  ====   "+(imagesizeinbyte/1024) +"");
+                    bmp =Utility.decodeImageFromFiles(Uri.fromFile(photofileurl).getPath(),150,150);
                     if(bmp.getWidth()>bmp.getHeight()){
                         Matrix matrix =new Matrix();
                         matrix.postRotate(90);
                         bmp= Bitmap.createBitmap(bmp,0,0,bmp.getWidth(),bmp.getHeight(),matrix,true);
                     }
+                    int imagesizeinbyte=Utility.byteSizeOf(bmp);
+                    Log.w("image",imagesizeinbyte +"  ====   "+(imagesizeinbyte/1024) +"");
                     imagesizeinbyte=Utility.byteSizeOf(bmp);
                     Log.w("image",imagesizeinbyte +"  ====   "+(imagesizeinbyte/1024) +"");
 
                     addressimage.setImageBitmap(bmp);
-
+                    performCrop(Utility.getVersionWiseUri(this,photofileurl));
                     View current = getCurrentFocus();
                     if (current != null) current.clearFocus();
                 }else  if(requestCode==REQ_GALLERY){
                     Uri contentURI = data.getData();
                     bmp =Utility.grabImage(contentURI,Dmrc_Card_Request.this);
+                    addressimage.setImageBitmap(bmp);
+                    performCrop(contentURI);
+                }else  if(requestCode==PIC_CROP){
+                    //get the returned data
+                    Bundle extras = data.getExtras();
+                    //get the cropped bitmap
+                    bmp = (Bitmap) extras.get("data");
+                    //display the returned cropped image
                     addressimage.setImageBitmap(bmp);
                 }else if(requestCode==ApplicationConstant.REQ_ENACH_MANDATE){
                     boolean enachMandateStatus=data.getBooleanExtra("mandate_status",false);
@@ -887,7 +934,6 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                     }
                 }else if(requestCode==ApplicationConstant.REQ_SI_MANDATE){
                     int actionId=data.getIntExtra("actionId",0);
-                    Toast.makeText(this, ""+actionId, Toast.LENGTH_SHORT).show();
                     if(actionId!=0){
                         allotDmrcCard(actionId);
                     }else {
@@ -899,6 +945,41 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
            }
         }
     }
+
+
+    private void performCrop(Uri picUri){
+        try {
+            //call the standard crop action intent (the user device may not support it)
+            Intent cropIntent = new Intent( "com.android.camera.action.CROP");
+            //indicate image type and Uri
+            cropIntent.setDataAndType(picUri, "image/*");
+            //set crop properties
+            cropIntent.putExtra("crop", "true");
+            //indicate aspect of desired crop
+            cropIntent.putExtra("aspectX", 1);
+            cropIntent.putExtra("aspectY", 1);
+            //indicate output X and Y
+            cropIntent.putExtra("outputX", 256);
+            cropIntent.putExtra("outputY", 256);
+            //retrieve data on return
+            cropIntent.putExtra("return-data", true);
+            cropIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            //start the activity - we handle returning in onActivityResult
+            startActivityForResult(cropIntent, PIC_CROP);
+        }
+        catch(ActivityNotFoundException anfe){
+            //display an error message
+            String errorMessage = "Whoops - your device doesn't support the crop action!";
+            Toast toast = Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT);
+            toast.show();
+        }catch (Exception e){
+            ExceptionsNotification.ExceptionHandling(this , Utility.getStackTrace(e));
+            // Utility.exceptionAlertDialog(this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+        }
+    }
+
+
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

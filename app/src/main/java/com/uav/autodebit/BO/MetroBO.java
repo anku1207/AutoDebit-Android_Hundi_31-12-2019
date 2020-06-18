@@ -25,4 +25,11 @@ public class MetroBO implements Serializable {
         connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
         return connectionVO;
     }
+
+    public static ConnectionVO dmrcCustomerCardSecurityDeposti(){
+        ConnectionVO connectionVO = new ConnectionVO();
+        connectionVO.setMethodName("dmrcCustomerCardSecurityDeposti");
+        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
+        return connectionVO;
+    }
 }
