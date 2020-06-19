@@ -3,8 +3,13 @@ package com.uav.autodebit.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.Html;
 import android.text.Layout;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -12,6 +17,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -84,6 +91,8 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
     EditText bankname;
 
     ArrayList<DataAdapterVO> datalist;
+    CheckBox condition_checkbox;
+    TextView condition_text;
 
 
     @Override
@@ -99,7 +108,7 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
         disAmountEdittext=getIntent().getBooleanExtra("disAmountEdittext",false); //disable mandate amount edittext filed
         if(disAmountEdittext)maxamount.setEnabled(false);
 
-
+        condition_text.setPaintFlags(condition_text.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
         accountTypeJsonArray=new JSONArray();
         customerAuthId=null;
@@ -108,6 +117,23 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
 
         back_activity_button1.setOnClickListener(this);
         mandatebtn.setOnClickListener(this);
+        condition_text.setOnClickListener(this);
+
+
+
+        condition_checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+               @Override
+               public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
+                   if (isChecked){
+                       condition_text.setTextColor(Utility.getColorWrapper(Enach_Mandate.this,R.color.defaultTextColor));
+                   }else{
+                       condition_text.setTextColor(Color.RED);
+                   }
+               }
+        });
+
+
+
 
 
         maxamount.setDrawableClickListener(new DrawableClickListener() {
@@ -225,9 +251,12 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
         account_type=findViewById(R.id.account_type);
         back_activity_button1=findViewById(R.id.back_activity_button1);
         bankname=findViewById(R.id.bankname);
+        condition_checkbox=findViewById(R.id.condition_checkbox);
+        condition_text=findViewById(R.id.condition_text);
+
+
+
         bankname.setClickable(false);
-
-
         datalist = new ArrayList<>();
 
     }
@@ -276,6 +305,15 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
                 acno.setError("Minimum length is 5");
                 validation=false;
             }
+
+
+            if(validation){
+                if(!condition_checkbox.isChecked()){
+                    condition_text.setTextColor(Color.RED);
+                    validation=false;
+                }
+            }
+
             if(!validation) return;
 
             try {
@@ -285,6 +323,8 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
                 ExceptionsNotification.ExceptionHandling(Enach_Mandate.this , Utility.getStackTrace(e));
             }
 
+        }else if(view.getId()==R.id.condition_text){
+            startActivity(new Intent(Enach_Mandate.this,TermAndCondition_Webview.class));
         }
 
     }

@@ -100,11 +100,35 @@
             style="@style/AutodebitTextHintAppearanceWhitecol"
             />
 
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+            <CheckBox
+                android:id="@+id/condition_checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/user_registration_condition_msg"
+                android:padding="5dp"
+                android:textColor="@color/white"
+                android:id="@+id/condition_text">
+            </TextView>
+
+        </LinearLayout>
+
+
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/otpgeneratebtn"
-            android:text="Generate OTP"
+            android:text="@string/agreeAndContinue"
             android:layout_marginBottom="30dp"
             android:layout_marginTop="30dp"
             android:background="@drawable/cornerbutton"

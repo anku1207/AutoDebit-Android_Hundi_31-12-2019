@@ -19,6 +19,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -51,6 +53,8 @@ public class User_Registration extends Base_Activity {
     Button otpgeneratebtn;
     EditText username,userphone,useremail;
     Intent intent=null;
+    CheckBox condition_checkbox;
+    TextView condition_text;
 
 
     @TargetApi(Build.VERSION_CODES.O)
@@ -72,6 +76,20 @@ public class User_Registration extends Base_Activity {
         userphone=findViewById(R.id.userphone);
         useremail=findViewById(R.id.useremail);
         otpgeneratebtn=findViewById(R.id.otpgeneratebtn);
+        condition_checkbox=findViewById(R.id.condition_checkbox);
+        condition_text=findViewById(R.id.condition_text);
+
+
+        condition_checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
+                if (isChecked){
+                    condition_text.setTextColor(Utility.getColorWrapper(User_Registration.this,R.color.white));
+                }else{
+                    condition_text.setTextColor(Color.RED);
+                }
+            }
+        });
 
         otpgeneratebtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,6 +117,13 @@ public class User_Registration extends Base_Activity {
                 if (!userphone.getText().toString().trim().equals("") &&  Utility.validatePattern(userphone.getText().toString().trim(),ApplicationConstant.MOBILENO_VALIDATION)!=null){
                     userphone.setError(Utility.validatePattern(userphone.getText().toString().trim(),ApplicationConstant.MOBILENO_VALIDATION));
                     inputvalid=false;
+                }
+
+                if(inputvalid){
+                    if(!condition_checkbox.isChecked()){
+                        condition_text.setTextColor(Color.RED);
+                        inputvalid=false;
+                    }
                 }
 
                 if(!inputvalid) return;

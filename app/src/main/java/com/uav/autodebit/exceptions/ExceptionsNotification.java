@@ -35,9 +35,6 @@ public class ExceptionsNotification {
     public static void ExceptionHandling(Context context, String e){
 
         try {
-
-
-
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {

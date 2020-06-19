@@ -193,19 +193,20 @@ public class MyDialog {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
-                if (!progressBar.isShowing()) {
-                    progressBar.show();
-                }
+                if(progressBar!=null && !progressBar.isShowing())  progressBar.show();
             }
             @Override
             public void onPageFinished(WebView view, String url) {
-                if (progressBar.isShowing()) {
+                if (progressBar!=null && progressBar.isShowing()) {
                     progressBar.dismiss();
                 }
                 if(!cusdialog.isShowing())cusdialog.show();
             }
             @TargetApi(android.os.Build.VERSION_CODES.M)
             public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
+                if (progressBar!=null && progressBar.isShowing()) {
+                    progressBar.dismiss();
+                }
             }
         });
     }

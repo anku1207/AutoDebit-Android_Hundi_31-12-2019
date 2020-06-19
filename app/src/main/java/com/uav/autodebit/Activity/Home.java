@@ -93,7 +93,7 @@ public class Home extends Base_Activity
         implements View.OnClickListener {
 
     SharedPreferences sharedPreferences;
-    TextView profile,faqs,contact,condition,logoutbtn;
+    TextView profile,faqs,contact,condition,logoutbtn,revoke;
     ImageView closemenuactivity,active_notification_icon;
     DrawerLayout drawer;
     BottomNavigationView navigation;
@@ -237,6 +237,7 @@ public class Home extends Base_Activity
         notification_layout=findViewById(R.id.notification_layout);
         faq_layout = findViewById(R.id.faq_layout);
         contact=findViewById(R.id.contact);
+        revoke=findViewById(R.id.revoke);
 
         profile.setOnClickListener(this);
         faqs.setOnClickListener(this);
@@ -245,7 +246,7 @@ public class Home extends Base_Activity
         notification_layout.setOnClickListener(this);
         faq_layout.setOnClickListener(this);
         contact.setOnClickListener(this);
-
+        revoke.setOnClickListener(this);
         //
         notificationicon.setAnimation(Utility.getOnShakeAnimation(Home.this));
 
@@ -1011,6 +1012,9 @@ public class Home extends Base_Activity
                 break;
             case R.id.faq_layout:
                 startActivity(new Intent(Home.this,Faq_WebView.class));
+                break;
+            case R.id.revoke:
+                startActivity(new Intent(Home.this,MandateRevoke.class));
                 break;
         }
         drawer.closeDrawer(GravityCompat.START);
