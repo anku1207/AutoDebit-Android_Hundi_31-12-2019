@@ -267,12 +267,17 @@
                     android:layout_height="wrap_content"
                     />
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/defaultTextColor"
+                    android:text="I agree to the "
+                    />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/appbar"
                     android:id="@+id/condition_text"
                     android:text="@string/terms_condition_msg"
-
                     >
                 </TextView>
             </LinearLayout>

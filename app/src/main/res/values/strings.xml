@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Autope</string>
+    <string name="app_name">AutoPe</string>
     <string name="tram_and_condition"><![CDATA[T & C]]></string>
 
     <string name="pin_content_desc">PIN input field</string>
@@ -43,7 +43,7 @@
 
     <string name="instructions">Place your fingertip on the Home button to verify your identity</string>
 
-    <string name="terms_condition_msg"><![CDATA[Terms & Condition]]></string>
+    <string name="terms_condition_msg"><![CDATA[Terms & Conditions ]]></string>
 
     <string name="user_registration_condition_msg">I agree to allow AutoPe to check my credit information with RBI approved credit bureaus.\nAutoPe needs to check if you are a credit card holder and are above our accepted credit score threshold.\nThis will not impact your credit score. </string>
     <string name="agreeAndContinue"><![CDATA[Agree & Continue]]></string>

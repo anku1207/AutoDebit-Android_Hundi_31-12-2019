@@ -134,7 +134,8 @@
                     android:background="@drawable/cornerbutton"
                     android:textColor="@color/white"
                     android:fontFamily="@font/poppinsregular"
-                    android:text="add"
+                    android:text="Add"
+                    android:textAllCaps="false"
                  />
 
                 <Button
@@ -147,6 +148,7 @@
                     android:textColor="@color/white"
                     android:fontFamily="@font/poppinsregular"
                     android:text="Skip"
+                    android:textAllCaps="false"
                     android:layout_marginBottom="10dp"/>
 
                 </LinearLayout>

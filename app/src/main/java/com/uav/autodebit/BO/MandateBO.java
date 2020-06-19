@@ -68,6 +68,15 @@ public class MandateBO implements Serializable {
         return connectionVO;
     }
 
+    public static ConnectionVO getServiceMandateList(){
+        ConnectionVO connectionVO = new ConnectionVO();
+        connectionVO.setMethodName("getServiceMandateList");
+        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
+        return connectionVO;
+    }
+
+
+
 
 
 }

@@ -18,6 +18,7 @@ import com.uav.autodebit.BO.MandateBO;
 import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
 import com.uav.autodebit.adpater.ListViewItemCheckboxBaseAdapter;
+import com.uav.autodebit.adpater.Revoke_ListViewItemCheckbox;
 import com.uav.autodebit.override.ExpandableHeightListView;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.Utility;
@@ -38,7 +39,7 @@ public class MandateRevoke extends Base_Activity implements View.OnClickListener
 
     ExpandableHeightListView listview;
     Button btnadd;
-    ListViewItemCheckboxBaseAdapter myAdapter;
+    Revoke_ListViewItemCheckbox myAdapter;
     List<ServiceTypeVO> utilityServices;
     List<ServiceTypeVO> servicelist;
 
@@ -74,7 +75,7 @@ public class MandateRevoke extends Base_Activity implements View.OnClickListener
     private void getMandateRevokeList(VolleyResponse volleyResponse){
 
         HashMap<String, Object> params = new HashMap<String, Object>();
-        ConnectionVO connectionVO = MandateBO.getBankListAndAccountType();
+        ConnectionVO connectionVO = MandateBO.getServiceMandateList();
         CustomerVO customerVO=new CustomerVO();
         customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(this)));
         Gson gson =new Gson();
@@ -99,11 +100,8 @@ public class MandateRevoke extends Base_Activity implements View.OnClickListener
                     }
                     Utility.showSingleButtonDialog(MandateRevoke.this,"Alert",sb.toString(),true);
                 }else {
-
-                    JSONObject jsonObject =new JSONObject(customerVO.getAnonymousString());
-
-                    ArrayList<ServiceTypeVO> serviceTypeVOS= (ArrayList<ServiceTypeVO>) new Gson().fromJson(jsonObject.getString("services"), new TypeToken<ArrayList<ServiceTypeVO>>() { }.getType());
-                    myAdapter=new ListViewItemCheckboxBaseAdapter(MandateRevoke.this, serviceTypeVOS, R.layout.checkbox_with_text);
+                    ArrayList<ServiceTypeVO> serviceTypeVOS= (ArrayList<ServiceTypeVO>) new Gson().fromJson(customerVO.getAnonymousString(), new TypeToken<ArrayList<ServiceTypeVO>>() { }.getType());
+                    myAdapter=new Revoke_ListViewItemCheckbox(MandateRevoke.this, serviceTypeVOS, R.layout.checkbox_with_text);
                     listview.setAdapter(myAdapter);
                     listview.setExpanded(true);
 

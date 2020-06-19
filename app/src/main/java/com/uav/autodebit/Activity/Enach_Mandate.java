@@ -120,22 +120,6 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
         condition_text.setOnClickListener(this);
 
 
-
-        condition_checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-               @Override
-               public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
-                   if (isChecked){
-                       condition_text.setTextColor(Utility.getColorWrapper(Enach_Mandate.this,R.color.defaultTextColor));
-                   }else{
-                       condition_text.setTextColor(Color.RED);
-                   }
-               }
-        });
-
-
-
-
-
         maxamount.setDrawableClickListener(new DrawableClickListener() {
             @Override
             public void onClick(DrawablePosition target) {
@@ -309,7 +293,6 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
 
             if(validation){
                 if(!condition_checkbox.isChecked()){
-                    condition_text.setTextColor(Color.RED);
                     validation=false;
                 }
             }
