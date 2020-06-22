@@ -27,6 +27,7 @@ import com.uav.autodebit.Interface.PaymentGatewayResponse;
 import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
+import com.uav.autodebit.constant.Content_Message;
 import com.uav.autodebit.constant.GlobalApplication;
 import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.permission.Session;
@@ -369,6 +370,10 @@ public class BillPayRequest {
 
                }
 
+           },(PaymentGatewayResponse.OnSiMandate)(siClickResp)->{
+               OxigenTransactionVO oxigenPlanresp=(OxigenTransactionVO) siClickResp;
+               ((Activity) context).startActivityForResult(new Intent(context,SI_First_Data.class).putExtra("id",oxigenPlanresp.getTypeId()).putExtra("amount",oxigenPlanresp.getNetAmount()),ApplicationConstant.REQ_SI_MANDATE);
+
            }));
         }
     }
@@ -509,6 +514,8 @@ public class BillPayRequest {
                                   }else {
                                       paymentGatewayResponse.onEnach(oxigenValidateResponce);
                                   }
+                                }else if(selectPosition==1){
+                                    paymentGatewayResponse.onSiMandate(oxigenValidateResponce);
                                 }else {
                                     paymentGatewayResponse.onPg(oxigenValidateResponce);
                                 }
@@ -670,6 +677,24 @@ public class BillPayRequest {
                 }));
             }else{
                 Utility.showSingleButtonDialog(context,"Alert",data.getStringExtra("msg"),false);
+            }
+        }else if(requestCode==ApplicationConstant.REQ_SI_MANDATE){
+            int SIMandateStatus=data.getIntExtra("mandateId",0);
+            if(SIMandateStatus!=0){
+                AuthServiceProviderVO authServiceProviderVO =new AuthServiceProviderVO();
+                authServiceProviderVO.setProviderId(AuthServiceProviderVO.AUTOPE_PG);
+                OxigenTransactionVO responseOxigenTransactionVO =new OxigenTransactionVO();
+                responseOxigenTransactionVO.setTypeId(oxigenValidateResponce.getTypeId());
+                responseOxigenTransactionVO.setAnonymousString(String.valueOf(SIMandateStatus));
+                responseOxigenTransactionVO.setProvider(authServiceProviderVO);
+
+                //recharge for after enach mandate
+                BillPayRequest.proceedBillPayment(responseOxigenTransactionVO,context,new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
+                    handelRechargeSuccess(context,(OxigenTransactionVO)s);
+                },(VolleyResponse.OnError)(e)->{
+                }));
+            }else{
+                Utility.showSingleButtonDialog(context,"Alert", Content_Message.error_message,false);
             }
         }
     }

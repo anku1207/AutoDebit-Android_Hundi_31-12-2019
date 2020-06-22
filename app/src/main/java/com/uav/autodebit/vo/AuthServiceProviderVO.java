@@ -10,6 +10,7 @@ public class AuthServiceProviderVO extends BannerVO  implements Serializable {
     public static int ENACHIDFC=3;
     public static int CCAVENUE=4;
     public static int PAYU=5;
+    public static int AUTOPE_PG=6;
 
 
     private Integer providerId;

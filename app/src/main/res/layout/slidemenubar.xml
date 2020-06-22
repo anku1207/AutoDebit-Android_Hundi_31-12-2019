@@ -108,7 +108,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Revoke Utility Service"
+            android:text="Revoke Utility Services"
             android:padding="10dp"
             android:id="@+id/revoke"
             android:background="@drawable/edittext_bottom_line"

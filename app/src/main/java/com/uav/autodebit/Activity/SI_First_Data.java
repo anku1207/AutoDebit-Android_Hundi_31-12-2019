@@ -45,6 +45,8 @@ import com.uav.autodebit.BO.SignUpBO;
 import com.uav.autodebit.R;
 
 import com.uav.autodebit.constant.ApplicationConstant;
+import com.uav.autodebit.constant.Content_Message;
+import com.uav.autodebit.constant.ErrorMsg;
 import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.Utility;
@@ -73,6 +75,8 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
     LinearLayout orderlayout;
     boolean foractivity;
     int actionId;
+    double amount;
+    CustomerVO htmlRequestResp;
 
     @SuppressLint("WrongViewCast")
     @Override
@@ -81,6 +85,8 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
         setContentView(R.layout.activity_si__first__data);
         getSupportActionBar().hide();
         webview = findViewById(R.id.webview);
+
+        htmlRequestResp=new CustomerVO();
 
         ImageView rof_backbutton = findViewById(R.id.back_activity_button);
 
@@ -93,6 +99,9 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
 
         foractivity=getIntent().getBooleanExtra("forresutl",true);//success finish activity
         actionId=getIntent().getIntExtra("id",0);
+        amount=getIntent().getDoubleExtra("amount",1.00);
+
+
 
         text1 = findViewById(R.id.text1);
         text2 = findViewById(R.id.text2);
@@ -112,9 +121,14 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
                     newIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(newIntent);
                 }else{
+
+
+                    Log.w("resp_customer",new Gson().toJson(htmlRequestResp));
+                    Toast.makeText(SI_First_Data.this, ""+htmlRequestResp.getAnonymousInteger(), Toast.LENGTH_SHORT).show();
                     Intent intent =new Intent();
                     setResult(RESULT_OK,intent);
                     intent.putExtra("actionId",actionId);
+                    intent.putExtra("mandateId",htmlRequestResp.getAnonymousInteger());
                     finish();
                 }
 
@@ -191,7 +205,7 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
 
                         redirectUrl = respjson.getString("redirectUrl");
                         cancelUrl = respjson.getString("cancelUrl");
-                        String url = respjson.getString("url") + "?customerId=" + Session.getCustomerId(SI_First_Data.this) + "&entityTypeId=2" + "&versioncode="+ Utility.getVersioncode(SI_First_Data.this);
+                        String url = respjson.getString("url") + "?customerId=" + Session.getCustomerId(SI_First_Data.this) + "&entityTypeId=2" + "&versioncode="+ Utility.getVersioncode(SI_First_Data.this)+ "&Amount="+amount;
                         openWebView(url);
                     }
 
@@ -203,7 +217,7 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
 
     @SuppressLint({"SetJavaScriptEnabled", "JavascriptInterface"})
     void openWebView(final String receiptUrl) {
-
+        Log.w("CallUrl", receiptUrl);
 
         webview.setVerticalScrollBarEnabled(false);
         webview.setHorizontalScrollBarEnabled(false);
@@ -352,23 +366,27 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
                 @Override
                 public void onResponse(Object resp) throws JSONException {
                     JSONObject response = (JSONObject) resp;
-
+                    Log.w("htmlresult_resp",response.toString());
                     Gson gson = new Gson();
-                    CustomerVO customerVO = gson.fromJson(response.toString(), CustomerVO.class);
+                    htmlRequestResp = gson.fromJson(response.toString(), CustomerVO.class);
 
-                    if (!customerVO.getStatusCode().equals("200")) {
-                        showSingleButtonDialog(SI_First_Data.this, "Alert", customerVO.getErrorMsgs().get(0));
+                    if (!htmlRequestResp.getStatusCode().equals("200")) {
+                        showSingleButtonDialog(SI_First_Data.this, "Alert", htmlRequestResp.getErrorMsgs().get(0));
                     } else {
-                        DecimalFormat df = new DecimalFormat();
-                        df.setMinimumFractionDigits(2);
-                        JSONObject orderreap = new JSONObject(customerVO.getAnonymousString());
-                        webview.setVisibility(View.GONE);
-                        orderlayout.setVisibility(View.VISIBLE);
-                        text2.setText(orderreap.getString("txnId"));
-                        text3.setText(df.format(Double.parseDouble(orderreap.getString("orderAmount"))));
-                        continuebtn.setVisibility(View.VISIBLE);
-                        String json = gson.toJson(customerVO);
-                        Session.set_Data_Sharedprefence(SI_First_Data.this, Session.CACHE_CUSTOMER, json);
+                        if(htmlRequestResp.getAnonymousInteger()==null){
+                            showSingleButtonDialog(SI_First_Data.this, "Alert", Content_Message.error_message);
+                        }else{
+                            DecimalFormat df = new DecimalFormat();
+                            df.setMinimumFractionDigits(2);
+                            JSONObject orderreap = new JSONObject(htmlRequestResp.getAnonymousString());
+                            webview.setVisibility(View.GONE);
+                            orderlayout.setVisibility(View.VISIBLE);
+                            text2.setText(orderreap.getString("txnId"));
+                            text3.setText(df.format(Double.parseDouble(orderreap.getString("orderAmount"))));
+                            continuebtn.setVisibility(View.VISIBLE);
+                        }
+
+
                     }
                 }
             });
@@ -428,7 +446,7 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
                     webview.setVisibility(View.GONE);
                 }
             }else if(ApplicationConstant.SI_SERVICE.equals("autopepg")){
-                if (url.equals(redirectUrl + "app") || url.equals(cancelUrl + "app")) {
+                if (url.equals(redirectUrl + "app/") || url.equals(cancelUrl + "app/")) {
                     webview.setVisibility(View.GONE);
                 }
             }
@@ -456,7 +474,7 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
                     webview.loadUrl("javascript:console.log('MAGIC'+document.getElementById('siresp').innerHTML);");
                 }
             }else if(ApplicationConstant.SI_SERVICE.equals("autopepg")){
-                if (url.equals(redirectUrl + "app") || url.equals(cancelUrl + "app")) {
+                if (url.equals(redirectUrl + "app/") || url.equals(cancelUrl + "app/")) {
                     webview.loadUrl("javascript:HTMLOUT.showHTML(document.getElementById('siresp').innerHTML);");
                     webview.loadUrl("javascript:console.log('MAGIC'+document.getElementById('siresp').innerHTML);");
                 }

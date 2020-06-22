@@ -45,7 +45,7 @@
 
     <string name="terms_condition_msg"><![CDATA[Terms & Conditions ]]></string>
 
-    <string name="user_registration_condition_msg">I agree to allow AutoPe to check my credit information with RBI approved credit bureaus.\nAutoPe needs to check if you are a credit card holder and are above our accepted credit score threshold.\nThis will not impact your credit score. </string>
+    <string name="user_registration_condition_msg">I agree to allow AutoPe to check my credit information with RBI approved credit bureaus.</string>
     <string name="agreeAndContinue"><![CDATA[Agree & Continue]]></string>
 
 </resources>

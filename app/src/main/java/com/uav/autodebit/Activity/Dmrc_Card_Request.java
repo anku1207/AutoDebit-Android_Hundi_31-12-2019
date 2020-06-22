@@ -630,7 +630,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
 
                             MyDialog.showDoubleButtonBigContentDialog(Dmrc_Card_Request.this,new BigContentDialogIntetface((BigContentDialogIntetface.Button1)(button1)->{
                                 button1.dismiss();
-                                startActivityForResult(new Intent(Dmrc_Card_Request.this,SI_First_Data.class).putExtra("id",dmrc_customer_SI_cardVO.getDmrcid()),ApplicationConstant.REQ_SI_MANDATE);
+                                startActivityForResult(new Intent(Dmrc_Card_Request.this,SI_First_Data.class).putExtra("id",dmrc_customer_SI_cardVO.getDmrcid()).putExtra("amount",1.00),ApplicationConstant.REQ_SI_MANDATE);
                             },(BigContentDialogIntetface.Button2)(button2)->{
                                 button2.dismiss();
                                 dmrcCustomerCardSecurityDeposti(dmrc_customer_SI_cardVO.getDmrcid());
