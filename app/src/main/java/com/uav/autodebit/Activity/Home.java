@@ -1,5 +1,6 @@
 package com.uav.autodebit.Activity;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -791,7 +792,13 @@ public class Home extends Base_Activity
                                 startActivityForResult(new Intent(Home.this, activityhasmap.get("L_5")).putExtra("forresutl", true).putExtra("selectservice", new ArrayList<Integer>(Arrays.asList(serviceId))), ApplicationConstant.REQ_ENACH_MANDATE);
                                 break;
                             case "L_6":
-                                startActivityForResult(new Intent(Home.this, activityhasmap.get("L_6")).putExtra("forresutl", true), ApplicationConstant.REQ_SI_MANDATE);
+                                Intent intent = new Intent(Home.this,SI_First_Data.class);
+                                intent.putExtra("id",serviceId);
+                                intent.putExtra("amount",1.00);
+                                intent.putExtra("serviceId",serviceId+"");
+                                intent.putExtra("paymentType",ApplicationConstant.PG_MANDATE);
+                                intent.putExtra("forresutl", true);
+                                startActivityForResult(intent,ApplicationConstant.REQ_SI_MANDATE);
                                 break;
                         }
                     },(ConfirmationDialogInterface.OnCancel)(cancel)->{

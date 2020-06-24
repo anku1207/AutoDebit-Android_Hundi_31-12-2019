@@ -1,9 +1,11 @@
 package com.uav.autodebit.Activity;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -72,6 +74,7 @@ import com.uav.autodebit.vo.CustomerAuthServiceVO;
 import com.uav.autodebit.vo.CustomerVO;
 import com.uav.autodebit.vo.DMRC_Customer_CardVO;
 import com.uav.autodebit.vo.DmrcCardStatusVO;
+import com.uav.autodebit.vo.OxigenTransactionVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
 import com.uav.autodebit.volley.VolleyUtils;
 
@@ -630,8 +633,9 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
 
                             MyDialog.showDoubleButtonBigContentDialog(Dmrc_Card_Request.this,new BigContentDialogIntetface((BigContentDialogIntetface.Button1)(button1)->{
                                 button1.dismiss();
-                                startActivityForResult(new Intent(Dmrc_Card_Request.this,SI_First_Data.class).putExtra("id",dmrc_customer_SI_cardVO.getDmrcid()).putExtra("amount",1.00),ApplicationConstant.REQ_SI_MANDATE);
-                            },(BigContentDialogIntetface.Button2)(button2)->{
+                                startSIActivity(Dmrc_Card_Request.this,dmrc_customer_SI_cardVO.getDmrcid(),1.00,ApplicationConstant.Dmrc,ApplicationConstant.PG_MANDATE);
+
+                                },(BigContentDialogIntetface.Button2)(button2)->{
                                 button2.dismiss();
                                 dmrcCustomerCardSecurityDeposti(dmrc_customer_SI_cardVO.getDmrcid());
 
@@ -647,6 +651,15 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                 }
             }
         });
+    }
+
+    public static void startSIActivity(Context context , int id,double amount,int serviceId, String paymentType){
+        Intent intent = new Intent(context,SI_First_Data.class);
+        intent.putExtra("id",id);
+        intent.putExtra("amount",amount);
+        intent.putExtra("serviceId",serviceId+"");
+        intent.putExtra("paymentType",paymentType);
+        ((Activity) context).startActivityForResult(intent,ApplicationConstant.REQ_SI_MANDATE);
     }
 
 

@@ -273,7 +273,7 @@ public class Mobile_Postpaid extends Base_Activity implements View.OnClickListen
                     ((EditText)eleMap.get("mobile")).setText(DynamicLayout.addMobileNumberInEdittext(Mobile_Postpaid.this,data));
                     ((EditText)eleMap.get("mobile")).setSelection( ((EditText)eleMap.get("mobile")).getText().toString().length());
                     netAmount.setText("");
-                }else if(requestCode==200 || requestCode== ApplicationConstant.REQ_ENACH_MANDATE || requestCode==ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE || requestCode== ApplicationConstant.REQ_SI_MANDATE ){
+                }else if(requestCode==200 || requestCode== ApplicationConstant.REQ_ENACH_MANDATE || requestCode==ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE || requestCode== ApplicationConstant.REQ_SI_MANDATE || requestCode== ApplicationConstant.REQ_MANDATE_FOR_BILL_FETCH_ERROR || requestCode== ApplicationConstant.REQ_SI_FOR_BILL_FETCH_ERROR){
                     if(data !=null){
                         BillPayRequest.onActivityResult(Mobile_Postpaid.this,data,requestCode);
                     }else {

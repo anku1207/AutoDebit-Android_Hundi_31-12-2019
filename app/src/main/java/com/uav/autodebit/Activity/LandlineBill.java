@@ -269,7 +269,7 @@ public class LandlineBill extends Base_Activity implements View.OnClickListener,
                     ((EditText)eleMap.get("mobile")).setText(DynamicLayout.addMobileNumberInEdittext(this,data));
                     ((EditText)eleMap.get("mobile")).setSelection( ((EditText)eleMap.get("mobile")).getText().toString().length());
                     netAmount.setText("");
-                }else if(requestCode==200 || requestCode== ApplicationConstant.REQ_ENACH_MANDATE || requestCode==ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE){
+                }else if(requestCode==200 || requestCode== ApplicationConstant.REQ_ENACH_MANDATE || requestCode==ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE || requestCode== ApplicationConstant.REQ_SI_MANDATE || requestCode== ApplicationConstant.REQ_MANDATE_FOR_BILL_FETCH_ERROR || requestCode== ApplicationConstant.REQ_SI_FOR_BILL_FETCH_ERROR){
                     if(data !=null){
                         BillPayRequest.onActivityResult(this,data,requestCode);
                     }else {

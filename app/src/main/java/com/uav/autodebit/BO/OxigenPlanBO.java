@@ -73,6 +73,14 @@ public class OxigenPlanBO implements Serializable {
     }
 
 
+    public static ConnectionVO updateMandateAgainstOpeator() {
+        ConnectionVO connectionVO = new ConnectionVO();
+        connectionVO.setMethodName("updateMandateAgainstOpeator");
+        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
+        return connectionVO;
+    }
+
+
 
 
 

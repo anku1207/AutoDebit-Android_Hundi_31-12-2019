@@ -2,7 +2,7 @@ package com.uav.autodebit.vo;
 
 import java.io.Serializable;
 
-public class OxigenBillerAutoPaymentVO extends BannerVO  implements Serializable {
+public class OxigenBillerAutoPaymentVO extends BaseVO  implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

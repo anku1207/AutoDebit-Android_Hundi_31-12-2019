@@ -68,7 +68,7 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
     WebView webview;
     JSONObject respjson;
 
-    String redirectUrl, cancelUrl;
+    String redirectUrl, cancelUrl,paymentType,serviceId;
 
     TextView text1, text2, text3;
     Button continuebtn;
@@ -100,7 +100,10 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
         foractivity=getIntent().getBooleanExtra("forresutl",true);//success finish activity
         actionId=getIntent().getIntExtra("id",0);
         amount=getIntent().getDoubleExtra("amount",1.00);
+        serviceId=getIntent().getStringExtra("serviceId");
+        paymentType=getIntent().getStringExtra("paymentType");
 
+        Log.w("getIntentResult",foractivity+"="+actionId+"="+amount+"="+serviceId+"="+paymentType);
 
 
         text1 = findViewById(R.id.text1);
@@ -122,12 +125,10 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
                     startActivity(newIntent);
                 }else{
 
-
-                    Log.w("resp_customer",new Gson().toJson(htmlRequestResp));
-                    Toast.makeText(SI_First_Data.this, ""+htmlRequestResp.getAnonymousInteger(), Toast.LENGTH_SHORT).show();
                     Intent intent =new Intent();
                     setResult(RESULT_OK,intent);
                     intent.putExtra("actionId",actionId);
+                    //server response get customer auth service id
                     intent.putExtra("mandateId",htmlRequestResp.getAnonymousInteger());
                     finish();
                 }
@@ -205,7 +206,7 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
 
                         redirectUrl = respjson.getString("redirectUrl");
                         cancelUrl = respjson.getString("cancelUrl");
-                        String url = respjson.getString("url") + "?customerId=" + Session.getCustomerId(SI_First_Data.this) + "&entityTypeId=2" + "&versioncode="+ Utility.getVersioncode(SI_First_Data.this)+ "&Amount="+amount;
+                        String url = respjson.getString("url") + "?customerId=" + Session.getCustomerId(SI_First_Data.this) + "&entityTypeId=2" + "&versioncode="+ Utility.getVersioncode(SI_First_Data.this)+ "&Amount="+amount + "&serviceId="+serviceId + "&paymentType="+paymentType;
                         openWebView(url);
                     }
 
@@ -376,14 +377,25 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
                         if(htmlRequestResp.getAnonymousInteger()==null){
                             showSingleButtonDialog(SI_First_Data.this, "Alert", Content_Message.error_message);
                         }else{
-                            DecimalFormat df = new DecimalFormat();
-                            df.setMinimumFractionDigits(2);
-                            JSONObject orderreap = new JSONObject(htmlRequestResp.getAnonymousString());
-                            webview.setVisibility(View.GONE);
-                            orderlayout.setVisibility(View.VISIBLE);
-                            text2.setText(orderreap.getString("txnId"));
-                            text3.setText(df.format(Double.parseDouble(orderreap.getString("orderAmount"))));
-                            continuebtn.setVisibility(View.VISIBLE);
+
+                            if(htmlRequestResp.getTokenId().equalsIgnoreCase(ApplicationConstant.PG_MANDATE)){
+                                DecimalFormat df = new DecimalFormat();
+                                df.setMinimumFractionDigits(2);
+                                JSONObject orderreap = new JSONObject(htmlRequestResp.getAnonymousString());
+                                webview.setVisibility(View.GONE);
+                                orderlayout.setVisibility(View.VISIBLE);
+                                text2.setText(orderreap.getString("txnId"));
+                                text3.setText(df.format(Double.parseDouble(orderreap.getString("orderAmount"))));
+                                continuebtn.setVisibility(View.VISIBLE);
+                            }else if(htmlRequestResp.getTokenId().equalsIgnoreCase(ApplicationConstant.PG_PAYMENT)){
+                                Intent intent =new Intent();
+                                setResult(RESULT_OK,intent);
+                                intent.putExtra("actionId",actionId);
+                                //server response get customer auth service id
+                                intent.putExtra("mandateId",htmlRequestResp.getAnonymousInteger());
+                                finish();
+                            }
+
                         }
 
 

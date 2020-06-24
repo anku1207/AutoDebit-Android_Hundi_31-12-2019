@@ -72,7 +72,7 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
     String errormsz;
 
     ImageView back_activity_button1;
-    int minamt=0;
+    int minamt=0,actionId;
 
     Integer customerAuthId;
 
@@ -106,6 +106,11 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
         foractivity=getIntent().getBooleanExtra("forresutl",true);//success finish activity
         selectServiceIds=getIntent().getIntegerArrayListExtra("selectservice"); // get select service list for get mandate amount and set bank id again serviceid
         disAmountEdittext=getIntent().getBooleanExtra("disAmountEdittext",false); //disable mandate amount edittext filed
+        actionId=getIntent().getIntExtra("id",0);
+
+
+        Log.w("getIntentResult",foractivity+"="+actionId+"="+selectServiceIds+"="+disAmountEdittext);
+
         if(disAmountEdittext)maxamount.setEnabled(false);
 
         condition_text.setPaintFlags(condition_text.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
@@ -577,12 +582,14 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
 
                     // startActivity(new Intent(Enach_Mandate.this,Paynimo_HDFC.class));
                     if (!foractivity) {
+
                         startActivity(new Intent(Enach_Mandate.this,SI_First_Data.class));
                     }else {
                         Intent intent =new Intent();
                         intent.putExtra("selectservice",selectServiceIds);
                         intent.putExtra("msg",customerVO.getAnonymousString());
                         intent.putExtra("mandate_status",customerVO.isEventIs());
+                        intent.putExtra("actionId",actionId);
                         if(customerVO.isEventIs()){
                             intent.putExtra("bankMandateId",customerVO.getAnonymousInteger().toString());
                         }
