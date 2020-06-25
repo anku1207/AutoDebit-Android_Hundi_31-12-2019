@@ -152,8 +152,6 @@ public class IRCTC extends Base_Activity {
                     proceed.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            Toast.makeText(IRCTC.this, ""+radiogroup.getCheckedRadioButtonId(), Toast.LENGTH_SHORT).show();
-
                             switch (radiogroup.getCheckedRadioButtonId()){
                                 case 1:
                                     BankMandate(IRCTC.this,ApplicationConstant.IRCTC);
@@ -258,7 +256,6 @@ public class IRCTC extends Base_Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         try{
             if(resultCode==RESULT_OK){
                  if(requestCode== ApplicationConstant.REQ_SI_MANDATE){
@@ -284,9 +281,7 @@ public class IRCTC extends Base_Activity {
 
 
     private void getPaymentOpationForService(Context context, VolleyResponse volleyResponse) {
-
         try {
-
             HashMap<String, Object> params = new HashMap<String, Object>();
             ConnectionVO connectionVO = IRCTCBO.getPaymentOpationForService();
             CustomerVO customerVO = new CustomerVO();
