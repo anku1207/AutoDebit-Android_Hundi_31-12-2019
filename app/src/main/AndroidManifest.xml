@@ -42,7 +42,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Activity.MandateRevoke"></activity>
+        <activity android:name=".Activity.UPI_Mandate"></activity>
+        <activity android:name=".Activity.MandateRevoke" />
         <activity android:name=".Activity.TermAndCondition_Webview" />
         <activity
             android:name=".Activity.Mandate_Revoke_Dialog"

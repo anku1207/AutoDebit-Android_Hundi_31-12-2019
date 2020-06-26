@@ -100,18 +100,15 @@ public class BillPayRequest {
                             ok.dismiss();
                         }),"Alert",oxigenTransactionVOresp.getAnonymousString());*/
 
-
-                        Utility.showSelectPaymentTypeDialog(context,"Payment Type",oxigenTransactionVOresp.getPaymentType(),new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess)(position)->{
+                        Utility.showSelectPaymentTypeDialog(context,"Payment Type",oxigenTransactionVOresp.getPaymentTypeObject(),new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess)(position)->{
                             int selectPosition=Integer.parseInt(position);
-                            if(selectPosition==0 ){
-
-                                Toast.makeText(context, ""+oxigenTransactionVOresp.getServiceId(), Toast.LENGTH_SHORT).show();
-
+                            if(selectPosition==ApplicationConstant.BankMandatePayment ){
+                                //bank
                                 Intent intent = new Intent(context,Enach_Mandate.class);
                                 intent.putExtra("selectservice",new ArrayList<Integer>(Arrays.asList(oxigenTransactionVOresp.getServiceId())));
                                 intent.putExtra("id", oxigenTransactionVOresp.getTypeId());
                                 ((Activity) context).startActivityForResult(intent,ApplicationConstant.REQ_MANDATE_FOR_BILL_FETCH_ERROR);
-                            }else if(selectPosition==1){
+                            }else if(selectPosition==ApplicationConstant.SIMandatePayment){
                                 Intent intent = new Intent(context,SI_First_Data.class);
                                 intent.putExtra("id",oxigenTransactionVOresp.getTypeId());
                                 intent.putExtra("amount",oxigenTransactionVOresp.getNetAmount());
@@ -120,7 +117,6 @@ public class BillPayRequest {
                                 ((Activity) context).startActivityForResult(intent,ApplicationConstant.REQ_SI_FOR_BILL_FETCH_ERROR);
                             }
                         }));
-
                         volleyResponse.onError(null);
                     }else {
                         volleyResponse.onSuccess(oxigenTransactionVOresp);
@@ -516,9 +512,9 @@ public class BillPayRequest {
                     }else{
                         //if due date > 2 paybill date show payment dialog select recharge mode
                         if(oxigenValidateResponce.getPaymentDialogShowMandate()){
-                            Utility.showSelectPaymentTypeDialog(context,"Payment Type",oxigenValidateResponce.getPaymentType(),new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess)(position)->{
+                            Utility.showSelectPaymentTypeDialog(context,"Payment Type",oxigenValidateResponce.getPaymentTypeObject(),new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess)(position)->{
                                 int selectPosition=Integer.parseInt(position);
-                                if(selectPosition==0 ){
+                                if(selectPosition==ApplicationConstant.BankMandatePayment ){
                                     // if service id is dish show mandate dialog
                                   if(oxigenValidateResponce.getShowDialog()){
                                       // 07/05/2020
@@ -535,10 +531,10 @@ public class BillPayRequest {
                                   }else {
                                       paymentGatewayResponse.onEnach(oxigenValidateResponce);
                                   }
-                                }else if(selectPosition==1){
+                                }else if(selectPosition==ApplicationConstant.SIMandatePayment){
                                     paymentGatewayResponse.onSiMandate(oxigenValidateResponce);
-                                }else {
-                                    paymentGatewayResponse.onPg(oxigenValidateResponce);
+                                }else if(selectPosition==ApplicationConstant.UPIMandatePayment) {
+                                    //paymentGatewayResponse.onPg(oxigenValidateResponce);
                                 }
                             }));
                         }else {

@@ -1521,7 +1521,7 @@ public class Utility {
     }
 
 
-    public static void showSelectPaymentTypeDialog(Context context ,String title ,List<String> strings ,AlertSelectDialogClick alertSelectDialogClick){
+    public static void showSelectPaymentTypeDialog(Context context ,String title ,String paymentTypeString ,AlertSelectDialogClick alertSelectDialogClick) throws JSONException {
         final Dialog dialog = new Dialog(context);
         dialog.requestWindowFeature(1);
         Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(0));
@@ -1535,11 +1535,12 @@ public class Utility {
 
         RadioGroup radiogroup = dialog.findViewById(R.id.radiogroup);
 
-        for(int j=0;j<strings.size();j++){
-            String text = strings.get(j);
+        JSONArray paymentTypeObject = new JSONArray(paymentTypeString);
+        for(int j=0;j<paymentTypeObject.length();j++){
+            JSONObject  paymentJson = paymentTypeObject.getJSONObject(j);
             RadioButton rdbtn = new RadioButton(context);
-            rdbtn.setId(j);
-            rdbtn.setText(text);
+            rdbtn.setId(paymentJson.getInt("id"));
+            rdbtn.setText(paymentJson.getString("key"));
             rdbtn.setChecked(false);
             RadioGroup.LayoutParams params = new RadioGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             params.setMargins(15, 15, 15, 15);

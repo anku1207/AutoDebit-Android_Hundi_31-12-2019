@@ -470,9 +470,9 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                         return;
                     }
 
-                    Utility.showSelectPaymentTypeDialog(Mobile_Prepaid_Recharge_Service.this, "Payment Type", oxigenValidateResponce.getPaymentType(), new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess) (position) -> {
+                    Utility.showSelectPaymentTypeDialog(Mobile_Prepaid_Recharge_Service.this, "Payment Type", oxigenValidateResponce.getPaymentTypeObject(), new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess) (position) -> {
                         int selectPosition = Integer.parseInt(position);
-                        if (selectPosition == 0){
+                        if (selectPosition == ApplicationConstant.BankMandatePayment){
                             // 07/05/2020
                             MyDialog.showWebviewConditionalAlertDialog(Mobile_Prepaid_Recharge_Service.this, oxigenValidateResponce.getClinkingOnBankMandate(),true,new ConfirmationGetObjet((ConfirmationGetObjet.OnOk)(ok)->{
                                 HashMap<String,Object> objectHashMap = (HashMap<String, Object>) ok;
@@ -495,7 +495,7 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                                 }
                             }));
 
-                        } else {
+                        } else if(selectPosition == ApplicationConstant.SIMandatePayment) {
                             // recharge on pg
                             startActivityForResult(new Intent(Mobile_Prepaid_Recharge_Service.this, PaymentGateWay.class).putExtra("oxigenTypeId", oxigenValidateResponce.getTypeId().toString()), 200);
 

@@ -1,5 +1,7 @@
 package com.uav.autodebit.vo;
 
+import org.json.JSONArray;
+
 import java.util.List;
 
 public class BaseVO {
@@ -33,7 +35,7 @@ public class BaseVO {
     private String dialogTitle;
     private Integer notificationId;
     private String appHash;
-
+    private String paymentTypeObject;
 
 
 
@@ -257,5 +259,14 @@ public class BaseVO {
 
     public void setAppHash(String appHash) {
         this.appHash = appHash;
+    }
+
+
+    public String getPaymentTypeObject() {
+        return paymentTypeObject;
+    }
+
+    public void setPaymentTypeObject(String paymentTypeObject) {
+        this.paymentTypeObject = paymentTypeObject;
     }
 }

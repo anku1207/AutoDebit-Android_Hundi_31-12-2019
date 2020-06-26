@@ -159,6 +159,9 @@ public class IRCTC extends Base_Activity {
                                 case 2:
                                     startSIActivity(IRCTC.this,1.00,ApplicationConstant.IRCTC,ApplicationConstant.PG_MANDATE);
                                     break;
+                                case 3:
+                                    startActivityForResult(new Intent(IRCTC.this,UPI_Mandate.class),ApplicationConstant.REQ_UPI_FOR_BILL_FETCH_ERROR);
+                                    break;
                             }
                         }
                     });
@@ -188,7 +191,6 @@ public class IRCTC extends Base_Activity {
                                     setBankForService(ApplicationConstant.IRCTC,Integer.parseInt(Session.getCustomerId(context)),Integer.parseInt(bankId));
                                 }else {
                                     startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(serviceId))), ApplicationConstant.REQ_ENACH_MANDATE);
-
                                 }
                             }));
                         }
@@ -196,7 +198,6 @@ public class IRCTC extends Base_Activity {
                         public void modify(Dialog dialog) {
                             dialog.dismiss();
                             startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(serviceId))), ApplicationConstant.REQ_ENACH_MANDATE);
-
                         }
                     }, context, oxigenTransactionVO.getErrorMsgs().get(0), "", buttons);
                 }
@@ -272,6 +273,8 @@ public class IRCTC extends Base_Activity {
                      }else {
                          Utility.showSingleButtonDialog(this,"Error !","Something went wrong, Please try again!",false);
                      }
+                 }else if(requestCode==ApplicationConstant.REQ_UPI_FOR_BILL_FETCH_ERROR){
+                     Toast.makeText(this, "sdfsdfsdf", Toast.LENGTH_SHORT).show();
                  }
             }
         }catch (Exception e){
