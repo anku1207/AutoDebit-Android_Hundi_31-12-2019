@@ -79,6 +79,7 @@ public class D2H extends Base_Activity implements View.OnClickListener {
         back_activity_button=findViewById(R.id.back_activity_button);
 
 
+
         proceed.setOnClickListener(this);
         back_activity_button.setOnClickListener(this);
     }

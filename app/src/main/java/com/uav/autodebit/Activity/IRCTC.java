@@ -160,7 +160,7 @@ public class IRCTC extends Base_Activity {
                                     startSIActivity(IRCTC.this,1.00,ApplicationConstant.IRCTC,ApplicationConstant.PG_MANDATE);
                                     break;
                                 case 3:
-                                    startActivityForResult(new Intent(IRCTC.this,UPI_Mandate.class),ApplicationConstant.REQ_UPI_FOR_BILL_FETCH_ERROR);
+                                    startActivityForResult(new Intent(IRCTC.this,UPI_Mandate.class),ApplicationConstant.REQ_UPI_FOR_MANDATE);
                                     break;
                             }
                         }
@@ -273,7 +273,7 @@ public class IRCTC extends Base_Activity {
                      }else {
                          Utility.showSingleButtonDialog(this,"Error !","Something went wrong, Please try again!",false);
                      }
-                 }else if(requestCode==ApplicationConstant.REQ_UPI_FOR_BILL_FETCH_ERROR){
+                 }else if(requestCode==ApplicationConstant.REQ_UPI_FOR_MANDATE){
                      Toast.makeText(this, "sdfsdfsdf", Toast.LENGTH_SHORT).show();
                  }
             }

@@ -313,7 +313,6 @@ public class Dish_Tv  extends Base_Activity implements View.OnClickListener  {
                     }
                 });
             }
-
         }catch (Exception e){
             ExceptionsNotification.ExceptionHandling(this , Utility.getStackTrace(e));
         }
@@ -321,7 +320,6 @@ public class Dish_Tv  extends Base_Activity implements View.OnClickListener  {
 
 
     private void addBank(Button button,String mandateAmt) {
-
         try {
             Gson gson =new Gson();
 

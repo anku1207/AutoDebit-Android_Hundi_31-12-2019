@@ -86,6 +86,8 @@ public class DTH_Recharge_Service extends Base_Activity implements View.OnClickL
     PermissionUtils permissionUtils;
 
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -186,96 +188,104 @@ public class DTH_Recharge_Service extends Base_Activity implements View.OnClickL
             operator.setEnabled(true);
 
             if(resultCode==RESULT_OK){
-
-
-
                 if(requestCode==100){
-                    //clear element maplist
-                    eleMap.clear();
-
                     operatorname =data.getStringExtra("operatorname");
                     operatorcode=data.getStringExtra("operator");
+                    if(operatorcode.equals("VideoconD2hEchargeSubscriber")){
+                        startActivity(new Intent(DTH_Recharge_Service.this,D2H.class));
+                        finish();
+                    }else if(operatorcode.equals("Dishtv")){
+                        startActivity(new Intent(DTH_Recharge_Service.this,Dish_Tv.class));
+                        finish();
+                    }else{
+                        //clear element maplist
+                        eleMap.clear();
+                        amountlayout.setVisibility(View.VISIBLE);
 
-                    amountlayout.setVisibility(View.VISIBLE);
+                        DataAdapterVO dataAdapterVO = (DataAdapterVO) data.getSerializableExtra("datavo");
+                        operator.setText(operatorname);
+                        operator.setTag(operatorcode);
 
-                    DataAdapterVO dataAdapterVO = (DataAdapterVO) data.getSerializableExtra("datavo");
-                    operator.setText(operatorname);
-                    operator.setTag(operatorcode);
-
-                    operator.setError(null);
-                    amount.setError(null);
-
-                    //add fetch bill btn
-                    if (dataAdapterVO.getIsbillFetch().equals("1")) {
-                        fetchbill.setVisibility(View.VISIBLE);
-                        amount.setEnabled(false);
-                        isFetchBill=true;
-                    } else {
-                        fetchbill.setVisibility(View.GONE);
-                        amount.setEnabled(true);
-                        isFetchBill=false;
-                    }
+                        operator.setError(null);
+                        amount.setError(null);
 
 
 
-                    //add min Amt Layout
-                    if(dataAdapterVO.getMinTxnAmount()!=null){
-                        if(min_amt_layout.getChildCount()>0)min_amt_layout.removeAllViews();
-                        minAmt=dataAdapterVO.getMinTxnAmount();
-                        Animation animFadeIn = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fadein);
-                        min_amt_layout.startAnimation(animFadeIn);
-                        min_amt_layout.setVisibility(View.VISIBLE);
-                        min_amt_layout.setBackgroundColor(Utility.getColorWithAlpha(Color.rgb(224,224,224), 0.5f));
-                        min_amt_layout.setPadding(Utility.getPixelsFromDPs(DTH_Recharge_Service.this,15),Utility.getPixelsFromDPs(DTH_Recharge_Service.this,15),0,Utility.getPixelsFromDPs(DTH_Recharge_Service.this,15));
-
-                        min_amt_layout.addView(DynamicLayout.billMinLayout(DTH_Recharge_Service.this,dataAdapterVO));
-
-                    }else {
-                        min_amt_layout.setVisibility(View.GONE);
-                    }
-
-                    //Remove dynamic cards from the layout and arraylist
-                    if(dynamicCardViewContainer.getChildCount()>0) dynamicCardViewContainer.removeAllViews();
-                    removefetchbilllayout();
-
-                    questionsVOS.clear();
-
-                    //Create dynamic cards of edit text
-                    if(dataAdapterVO.getQuestionsData() !=null){
-                        JSONArray jsonArray = new JSONArray(dataAdapterVO.getQuestionsData());
-                        for(int i=0; i<jsonArray.length(); i++){
-                            JSONObject jsonObject = jsonArray.getJSONObject(i);
-                            Gson gson = new Gson();
-                            OxigenQuestionsVO oxigenQuestionsVO = gson.fromJson(jsonObject.toString(), OxigenQuestionsVO.class);
-
-                            CardView cardView = Utility.getCardViewStyle(this);
-                            //EditText et = new EditText(new ContextThemeWrapper(this,R.style.edittext));
-
-                            UAVEditText et = Utility.getUavEditText(this);
-                            et.setId(View.generateViewId());
-                            et.setHint(oxigenQuestionsVO.getQuestionLabel());
-                            changeEdittextValue(et);
 
 
-                            // Add mobileicon on Edittext for mobile
-                            if(oxigenQuestionsVO.getQuestionLabel().contains("Mobile")){
-                                eleMap.put("mobile",et);
-                                DynamicLayout.addContectIconEdittext(DTH_Recharge_Service.this,permissionUtils,et);
-                            }
-
-                            cardView.addView(et);
-
-
-                            dynamicCardViewContainer.addView(cardView);
-                            if(oxigenQuestionsVO.getInstructions()!=null){
-                                TextView tv = Utility.getTextView(this, oxigenQuestionsVO.getInstructions());
-                                dynamicCardViewContainer.addView(tv);
-                            }
-                            oxigenQuestionsVO.setElementId(et.getId());
-                            questionsVOS.add(oxigenQuestionsVO);
+                        //add fetch bill btn
+                        if (dataAdapterVO.getIsbillFetch().equals("1")) {
+                            fetchbill.setVisibility(View.VISIBLE);
+                            amount.setEnabled(false);
+                            isFetchBill=true;
+                        } else {
+                            fetchbill.setVisibility(View.GONE);
+                            amount.setEnabled(true);
+                            isFetchBill=false;
                         }
-                        EditText editText =(EditText) findViewById(questionsVOS.get(0).getElementId());
-                        editText.requestFocus();
+
+
+
+                        //add min Amt Layout
+                        if(dataAdapterVO.getMinTxnAmount()!=null){
+                            if(min_amt_layout.getChildCount()>0)min_amt_layout.removeAllViews();
+                            minAmt=dataAdapterVO.getMinTxnAmount();
+                            Animation animFadeIn = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fadein);
+                            min_amt_layout.startAnimation(animFadeIn);
+                            min_amt_layout.setVisibility(View.VISIBLE);
+                            min_amt_layout.setBackgroundColor(Utility.getColorWithAlpha(Color.rgb(224,224,224), 0.5f));
+                            min_amt_layout.setPadding(Utility.getPixelsFromDPs(DTH_Recharge_Service.this,15),Utility.getPixelsFromDPs(DTH_Recharge_Service.this,15),0,Utility.getPixelsFromDPs(DTH_Recharge_Service.this,15));
+
+                            min_amt_layout.addView(DynamicLayout.billMinLayout(DTH_Recharge_Service.this,dataAdapterVO));
+
+                        }else {
+                            min_amt_layout.setVisibility(View.GONE);
+                        }
+
+                        //Remove dynamic cards from the layout and arraylist
+                        if(dynamicCardViewContainer.getChildCount()>0) dynamicCardViewContainer.removeAllViews();
+                        removefetchbilllayout();
+
+                        questionsVOS.clear();
+
+                        //Create dynamic cards of edit text
+                        if(dataAdapterVO.getQuestionsData() !=null){
+                            JSONArray jsonArray = new JSONArray(dataAdapterVO.getQuestionsData());
+                            for(int i=0; i<jsonArray.length(); i++){
+                                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                Gson gson = new Gson();
+                                OxigenQuestionsVO oxigenQuestionsVO = gson.fromJson(jsonObject.toString(), OxigenQuestionsVO.class);
+
+                                CardView cardView = Utility.getCardViewStyle(this);
+                                //EditText et = new EditText(new ContextThemeWrapper(this,R.style.edittext));
+
+                                UAVEditText et = Utility.getUavEditText(this);
+                                et.setId(View.generateViewId());
+                                et.setHint(oxigenQuestionsVO.getQuestionLabel());
+                                changeEdittextValue(et);
+
+
+                                // Add mobileicon on Edittext for mobile
+                                if(oxigenQuestionsVO.getQuestionLabel().contains("Mobile")){
+                                    eleMap.put("mobile",et);
+                                    DynamicLayout.addContectIconEdittext(DTH_Recharge_Service.this,permissionUtils,et);
+                                }
+
+                                cardView.addView(et);
+
+
+                                dynamicCardViewContainer.addView(cardView);
+                                if(oxigenQuestionsVO.getInstructions()!=null){
+                                    TextView tv = Utility.getTextView(this, oxigenQuestionsVO.getInstructions());
+                                    dynamicCardViewContainer.addView(tv);
+                                }
+                                oxigenQuestionsVO.setElementId(et.getId());
+                                questionsVOS.add(oxigenQuestionsVO);
+                            }
+                            EditText editText =(EditText) findViewById(questionsVOS.get(0).getElementId());
+                            editText.requestFocus();
+                        }
+
                     }
 
                 }else if(requestCode==101){
@@ -290,6 +300,8 @@ public class DTH_Recharge_Service extends Base_Activity implements View.OnClickL
                     }else {
                         Utility.showSingleButtonDialog(this,"Error !","Something went wrong, Please try again!",false);
                     }
+                }else if(requestCode==ApplicationConstant.REQ_Code_D2H){
+                    finish();
                 }
             }
         }catch (Exception e){
