@@ -43,7 +43,7 @@ import java.util.Objects;
 
 public class CheckMandateAndShowDialog {
 
-    public static void oxiServiceMandateCheck(Context context,Integer serivceId ,VolleyResponse volleyResponse) {
+    public static void oxiServiceMandateCheck(Context context,Integer serivceId ,int providerId ,VolleyResponse volleyResponse) {
         // isrecharge is true is before recharge  and fleas alter recharge
         HashMap<String, Object> params = new HashMap<String, Object>();
         ConnectionVO connectionVO = OxigenPlanBO.oxiServiceMandateCheck();
@@ -55,6 +55,10 @@ public class CheckMandateAndShowDialog {
         ServiceTypeVO serviceTypeVO =new ServiceTypeVO();
         serviceTypeVO.setServiceTypeId(serivceId);
         oxigenTransactionVO.setServiceType(serviceTypeVO);
+
+        AuthServiceProviderVO authServiceProviderVO =new AuthServiceProviderVO();
+        authServiceProviderVO.setProviderId(providerId);
+        oxigenTransactionVO.setProvider(authServiceProviderVO);
 
         Gson gson=new Gson();
         String json = gson.toJson(oxigenTransactionVO);
@@ -281,7 +285,7 @@ public class CheckMandateAndShowDialog {
         CustomerVO customerVO=new CustomerVO();
         customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(context)));
         customerVO.setCustoemrHistoryId(historyId);
-       Gson gson =new Gson();
+        Gson gson =new Gson();
         String json = gson.toJson(customerVO);
         params.put("volley", json);
         connectionVO.setParams(params);

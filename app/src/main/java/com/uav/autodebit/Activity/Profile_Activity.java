@@ -455,6 +455,11 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
                     getProfileDate(Session.getCustomerId(Profile_Activity.this));
                 }
 
+            }else{
+                if(requestCode==PIC_CROP){
+                    imageView1.setImageBitmap(bmp);
+                    setCustomerProfileImage();
+                }
             }
         }catch (Exception e) {
             ExceptionsNotification.ExceptionHandling(Profile_Activity.this , Utility.getStackTrace(e));
@@ -472,6 +477,7 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
             Intent cropIntent = new Intent( "com.android.camera.action.CROP");
             //indicate image type and Uri
             cropIntent.setDataAndType(picUri, "image/*");
+
             //set crop properties
             cropIntent.putExtra("crop", "true");
             //indicate aspect of desired crop

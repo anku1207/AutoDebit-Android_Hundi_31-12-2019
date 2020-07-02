@@ -111,6 +111,7 @@ public class IRCTC extends Base_Activity {
                         tv.setText(s);
                         tv.setTypeface(typeface);
                         tv.setLayoutParams(Utility.getLayoutparams(this,20,0,20,0));
+                        tv.setTextColor(Utility.getColorWrapper(this,R.color.defaultTextColor));
                         main_layout.addView(tv);
                     }
                 }
@@ -174,7 +175,7 @@ public class IRCTC extends Base_Activity {
     }
 
     public  void BankMandate(Context context , int  serviceId){
-        CheckMandateAndShowDialog.oxiServiceMandateCheck(context,serviceId,new VolleyResponse((VolleyResponse.OnSuccess)(mandatecheckresp)->{
+        CheckMandateAndShowDialog.oxiServiceMandateCheck(context,serviceId,3,new VolleyResponse((VolleyResponse.OnSuccess)(mandatecheckresp)->{
             OxigenTransactionVO oxigenTransactionVO = (OxigenTransactionVO) mandatecheckresp;
             if(oxigenTransactionVO!=null){
                 if(oxigenTransactionVO.getStatusCode().equals("ap102")) {
