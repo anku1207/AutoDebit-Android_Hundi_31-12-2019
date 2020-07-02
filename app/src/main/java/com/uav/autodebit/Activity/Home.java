@@ -706,7 +706,6 @@ public class Home extends Base_Activity
                     // 12/04/2020
                     MyDialog.showWebviewAlertDialog(Home.this, customerVO.getHtmlString(),true,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(d)->{
                         d.dismiss();
-
                         String[] buttons = {"New Bank","Existing Bank"};
                         Utility.showDoubleButtonDialogConfirmation( new DialogInterface() {
                             @Override

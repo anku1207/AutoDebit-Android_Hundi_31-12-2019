@@ -425,29 +425,40 @@ public class BillPayRequest {
             OxigenTransactionVO oxigenTransactionVO = (OxigenTransactionVO) mandatecheckresp;
             if(oxigenTransactionVO!=null){
                 if(oxigenTransactionVO.getStatusCode().equals("ap102")) {
-                    failFetchBillDetailStartActivity(context,oxigenPlanresp);
+                    MyDialog.showWebviewAlertDialog(context, oxigenTransactionVO.getHtmlString(),true,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(d)->{
+                        d.dismiss();
+                        failFetchBillDetailStartActivity(context,oxigenPlanresp);
+                    },(ConfirmationDialogInterface.OnCancel)(cancel)->{
+                        cancel.dismiss();
+                    }));
+
                 }else if(oxigenTransactionVO.getStatusCode().equals("ap103")){
-                    String[] buttons = {"New Mandate", "Existing Mandate"};
-                    Utility.showDoubleButtonDialogConfirmation(new DialogInterface() {
-                        @Override
-                        public void confirm(Dialog dialog) {
-                            dialog.dismiss();
-                            createBankListInDialog(context,oxigenPlanresp.getServiceId(),oxigenTransactionVO,new CallBackInterface((CallBackInterface.OnSuccess)(onclick)->{
-                                String bankId = (String) onclick;
-                                if(!bankId.equals("0")){
-                                    oxigenPlanresp.setAnonymousInteger(Integer.parseInt(bankId));
-                                    updateMandateAgainstOpeator(context,Integer.parseInt(bankId),oxigenPlanresp.getTypeId(),oxigenPlanresp.getProvider().getProviderId(),false);
-                                }else {
-                                    failFetchBillDetailStartActivity(context,oxigenPlanresp);
-                                }
-                            }));
-                        }
-                        @Override
-                        public void modify(Dialog dialog) {
-                            dialog.dismiss();
-                            failFetchBillDetailStartActivity(context,oxigenPlanresp);
-                        }
-                    }, context, oxigenTransactionVO.getErrorMsgs().get(0), "", buttons);
+                    MyDialog.showWebviewAlertDialog(context, oxigenTransactionVO.getHtmlString(),true,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(d)->{
+                        d.dismiss();
+                        String[] buttons = {"New Mandate", "Existing Mandate"};
+                        Utility.showDoubleButtonDialogConfirmation(new DialogInterface() {
+                            @Override
+                            public void confirm(Dialog dialog) {
+                                dialog.dismiss();
+                                createBankListInDialog(context,oxigenPlanresp.getServiceId(),oxigenTransactionVO,new CallBackInterface((CallBackInterface.OnSuccess)(onclick)->{
+                                    String bankId = (String) onclick;
+                                    if(!bankId.equals("0")){
+                                        oxigenPlanresp.setAnonymousInteger(Integer.parseInt(bankId));
+                                        updateMandateAgainstOpeator(context,Integer.parseInt(bankId),oxigenPlanresp.getTypeId(),oxigenPlanresp.getProvider().getProviderId(),false);
+                                    }else {
+                                        failFetchBillDetailStartActivity(context,oxigenPlanresp);
+                                    }
+                                }));
+                            }
+                            @Override
+                            public void modify(Dialog dialog) {
+                                dialog.dismiss();
+                                failFetchBillDetailStartActivity(context,oxigenPlanresp);
+                            }
+                        }, context, oxigenTransactionVO.getErrorMsgs().get(0), "", buttons);
+                    },(ConfirmationDialogInterface.OnCancel)(cancel)->{
+                        cancel.dismiss();
+                    }));
                 }
             }
         }));
@@ -476,41 +487,54 @@ public class BillPayRequest {
             OxigenTransactionVO oxigenTransactionVO = (OxigenTransactionVO) mandatecheckresp;
             if(oxigenTransactionVO!=null){
                 if(oxigenTransactionVO.getStatusCode().equals("ap102")) {
-                    if(oxigenPlanresp.getProvider().getProviderId()== AuthServiceProviderVO.AUTOPE_PG){
-                        startSIActivity(context,oxigenPlanresp,ApplicationConstant.PG_PAYMENT);
-                    }else if(oxigenPlanresp.getProvider().getProviderId()== AuthServiceProviderVO.ENACHIDFC){
-                        ((Activity) context).startActivityForResult(new Intent(context, Enach_Mandate.class).putExtra("forresutl", true).putExtra("selectservice", new ArrayList<Integer>(Arrays.asList(oxigenPlanresp.getServiceId()))), ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE);
-                    }
+                    // 12/04/2020
+                    MyDialog.showWebviewAlertDialog(context, oxigenTransactionVO.getHtmlString(),true,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(d)->{
+                        d.dismiss();
+                        if(oxigenPlanresp.getProvider().getProviderId()== AuthServiceProviderVO.AUTOPE_PG){
+                            startSIActivity(context,oxigenPlanresp,ApplicationConstant.PG_PAYMENT);
+                        }else if(oxigenPlanresp.getProvider().getProviderId()== AuthServiceProviderVO.ENACHIDFC){
+                            ((Activity) context).startActivityForResult(new Intent(context, Enach_Mandate.class).putExtra("forresutl", true).putExtra("selectservice", new ArrayList<Integer>(Arrays.asList(oxigenPlanresp.getServiceId()))), ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE);
+                        }
+                    },(ConfirmationDialogInterface.OnCancel)(cancel)->{
+                        cancel.dismiss();
+                    }));
                 }else if(oxigenTransactionVO.getStatusCode().equals("ap103")){
-                    String[] buttons = {"New Mandate", "Existing Mandate"};
-                    Utility.showDoubleButtonDialogConfirmation(new DialogInterface() {
-                        @Override
-                        public void confirm(Dialog dialog) {
-                            dialog.dismiss();
-                            createBankListInDialog(context,oxigenPlanresp.getServiceId(),oxigenTransactionVO,new CallBackInterface((CallBackInterface.OnSuccess)(onclick)->{
-                                String bankId = (String) onclick;
-                                if(!bankId.equals("0")){
-                                    oxigenPlanresp.setAnonymousInteger(Integer.parseInt(bankId));
-                                    proceedRechargeOnMandate(context,oxigenPlanresp);
-                                }else {
-                                    if(oxigenPlanresp.getProvider().getProviderId()== AuthServiceProviderVO.AUTOPE_PG){
-                                        startSIActivity(context,oxigenPlanresp,ApplicationConstant.PG_PAYMENT);
-                                    }else if(oxigenPlanresp.getProvider().getProviderId()== AuthServiceProviderVO.ENACHIDFC){
-                                        ((Activity) context).startActivityForResult(new Intent(context, Enach_Mandate.class).putExtra("forresutl", true).putExtra("selectservice", new ArrayList<Integer>(Arrays.asList(oxigenPlanresp.getServiceId()))), ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE);
+                    // 12/04/2020
+                    MyDialog.showWebviewAlertDialog(context, oxigenTransactionVO.getHtmlString(),true,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(d)->{
+                        d.dismiss();
+
+                        String[] buttons = {"New Mandate", "Existing Mandate"};
+                        Utility.showDoubleButtonDialogConfirmation(new DialogInterface() {
+                            @Override
+                            public void confirm(Dialog dialog) {
+                                dialog.dismiss();
+                                createBankListInDialog(context,oxigenPlanresp.getServiceId(),oxigenTransactionVO,new CallBackInterface((CallBackInterface.OnSuccess)(onclick)->{
+                                    String bankId = (String) onclick;
+                                    if(!bankId.equals("0")){
+                                        oxigenPlanresp.setAnonymousInteger(Integer.parseInt(bankId));
+                                        proceedRechargeOnMandate(context,oxigenPlanresp);
+                                    }else {
+                                        if(oxigenPlanresp.getProvider().getProviderId()== AuthServiceProviderVO.AUTOPE_PG){
+                                            startSIActivity(context,oxigenPlanresp,ApplicationConstant.PG_PAYMENT);
+                                        }else if(oxigenPlanresp.getProvider().getProviderId()== AuthServiceProviderVO.ENACHIDFC){
+                                            ((Activity) context).startActivityForResult(new Intent(context, Enach_Mandate.class).putExtra("forresutl", true).putExtra("selectservice", new ArrayList<Integer>(Arrays.asList(oxigenPlanresp.getServiceId()))), ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE);
+                                        }
                                     }
-                                }
-                            }));
-                        }
-                        @Override
-                        public void modify(Dialog dialog) {
-                            dialog.dismiss();
-                            if(oxigenPlanresp.getProvider().getProviderId()== AuthServiceProviderVO.AUTOPE_PG){
-                                startSIActivity(context,oxigenPlanresp,ApplicationConstant.PG_PAYMENT);
-                            }else if(oxigenPlanresp.getProvider().getProviderId()== AuthServiceProviderVO.ENACHIDFC){
-                                ((Activity) context).startActivityForResult(new Intent(context, Enach_Mandate.class).putExtra("forresutl", true).putExtra("selectservice", new ArrayList<Integer>(Arrays.asList(oxigenPlanresp.getServiceId()))), ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE);
+                                }));
                             }
-                        }
-                    }, context, oxigenTransactionVO.getErrorMsgs().get(0), "", buttons);
+                            @Override
+                            public void modify(Dialog dialog) {
+                                dialog.dismiss();
+                                if(oxigenPlanresp.getProvider().getProviderId()== AuthServiceProviderVO.AUTOPE_PG){
+                                    startSIActivity(context,oxigenPlanresp,ApplicationConstant.PG_PAYMENT);
+                                }else if(oxigenPlanresp.getProvider().getProviderId()== AuthServiceProviderVO.ENACHIDFC){
+                                    ((Activity) context).startActivityForResult(new Intent(context, Enach_Mandate.class).putExtra("forresutl", true).putExtra("selectservice", new ArrayList<Integer>(Arrays.asList(oxigenPlanresp.getServiceId()))), ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE);
+                                }
+                            }
+                        }, context, oxigenTransactionVO.getErrorMsgs().get(0), "", buttons);
+                    },(ConfirmationDialogInterface.OnCancel)(cancel)->{
+                        cancel.dismiss();
+                    }));
                 }
             }
         }));

@@ -52,6 +52,7 @@ import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.Utility;
 
 import com.uav.autodebit.vo.ConnectionVO;
+import com.uav.autodebit.vo.CustomerAuthServiceVO;
 import com.uav.autodebit.vo.CustomerVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
 import com.uav.autodebit.volley.VolleyUtils;
@@ -325,16 +326,20 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
 
             if(ApplicationConstant.SI_SERVICE.equals("autopepg")){
 
-                CustomerVO customerVO = new CustomerVO();
-                String anonymousString = object.getString("anonymousString");
+                CustomerAuthServiceVO customerAuthServiceVO = new CustomerAuthServiceVO();
+                String anonymousString = object.getString("anonymousString");//json SI response
                 String anonymousInteger = object.getString("anonymousInteger");
 
+
+                CustomerVO customerVO = new CustomerVO();
                 customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(SI_First_Data.this)));
-                customerVO.setAnonymousString(anonymousString);
-                customerVO.setAnonymousInteger(Integer.parseInt(anonymousInteger));
+                customerAuthServiceVO.setCustomer(customerVO);
+                customerAuthServiceVO.setAnonymousString(anonymousString);
+                customerAuthServiceVO.setAnonymousInteger(Integer.parseInt(anonymousInteger));
+                customerAuthServiceVO.setCustomerAuthId(respjson.getInt("customerAuthId"));
 
                 Gson gson = new Gson();
-                String json = gson.toJson(customerVO);
+                String json = gson.toJson(customerAuthServiceVO);
                 params.put("volley", json);
 
                 connectionVO.setParams(params);
@@ -356,9 +361,6 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
             }
 
             Log.w("htmlresultRequest",connectionVO.getParams().toString());
-
-
-
             VolleyUtils.makeJsonObjectRequest(this, connectionVO, new VolleyResponseListener() {
                 @Override
                 public void onError(String message) {
