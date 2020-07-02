@@ -336,7 +336,6 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
                 customerAuthServiceVO.setCustomer(customerVO);
                 customerAuthServiceVO.setAnonymousString(anonymousString);
                 customerAuthServiceVO.setAnonymousInteger(Integer.parseInt(anonymousInteger));
-                customerAuthServiceVO.setCustomerAuthId(respjson.getInt("customerAuthId"));
 
                 Gson gson = new Gson();
                 String json = gson.toJson(customerAuthServiceVO);
