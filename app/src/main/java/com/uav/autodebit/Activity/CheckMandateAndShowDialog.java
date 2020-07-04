@@ -257,7 +257,7 @@ public class CheckMandateAndShowDialog {
 
     public static void showMandateSchedulerBeforeRecharge(Context context ,String htmlUrl ,VolleyResponse volleyResponse ){
         // ask to customer bank mandate after recharge
-        MyDialog.showWebviewConditionalAlertDialog(context,htmlUrl,false,new ConfirmationGetObjet((ConfirmationGetObjet.OnOk)(ok)->{
+        MyDialog.showWebviewConditionalAlertDialog(context,htmlUrl,true,new ConfirmationGetObjet((ConfirmationGetObjet.OnOk)(ok)->{
             //((Activity)context).startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(oxigenTransactionVOresp.getServiceId()))), ApplicationConstant.REQ_ENACH_MANDATE);
             HashMap<String,Object> objectHashMap = (HashMap<String, Object>) ok;
             //add Dialog object in list

@@ -26,6 +26,7 @@ public class ApplicationConstant {
 
     public static String PG_MANDATE="mandate";
     public static String PG_PAYMENT="payment";
+    public static String PG_MANDATE_AND_RECHARGE="mandateandrecharge";
     public static String NOTIFICATION_ACTION="notification_act";
 
 
@@ -73,7 +74,7 @@ public class ApplicationConstant {
 
     private static String getServerAddress(){
         if(IS_PRODUCTION_ENVIRONMENT){
-           return "http://app.autope.in/hundi/rest/stateless/";
+            return "http://app.autope.in/hundi/rest/stateless/";
           //  return "http://164.52.192.45";
         }else{
              return  "http://205.147.103.18:8080/hundi/rest/stateless/" ;

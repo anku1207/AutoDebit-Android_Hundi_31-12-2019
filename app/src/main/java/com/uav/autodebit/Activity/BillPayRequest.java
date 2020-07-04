@@ -338,7 +338,8 @@ public class BillPayRequest {
             }),"Alert","Bill Fetch Is required!");
         }else {
            BillPayRequest.oxiBillPaymentValdated(context,oxigenTransactionVO,new PaymentGatewayResponse((PaymentGatewayResponse.OnPg)(pg)->{
-               Toast.makeText(context, "Pg", Toast.LENGTH_SHORT).show();
+               OxigenTransactionVO oxigenPGResp=(OxigenTransactionVO) pg;
+               startSIActivity(context,oxigenPGResp,ApplicationConstant.PG_MANDATE_AND_RECHARGE);
            },(PaymentGatewayResponse.OnEnach)(onEnach)->{
                OxigenTransactionVO oxigenPlanresp=(OxigenTransactionVO) onEnach;
                if(oxigenPlanresp.isEventIs()){
@@ -346,55 +347,16 @@ public class BillPayRequest {
                    //proceedRechargeOnMandate(context,oxigenPlanresp);
                }else {
                    // 30/06/2020
-                   oxigenPlanresp.setProvider(getAuthServiceProvider(AuthServiceProviderVO.ENACHIDFC));
+                   //oxi bill validate tym  set provider id
                    beforeRechargeAddMandate(context,oxigenPlanresp);
                }
                  
            },(PaymentGatewayResponse.OnEnachScheduler)(scheduler)->{
-               OxigenTransactionVO oxigenPlanresp=(OxigenTransactionVO) scheduler;
-               if(oxigenPlanresp.isEventIs()){
-                   proceedRechargeOnMandate(context,oxigenPlanresp);
-
-               }else {
-                   CheckMandateAndShowDialog.showMandateSchedulerBeforeRecharge(context,oxigenPlanresp.getHtmlString(),new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
-                       if(success!=null){
-                           try {
-                               JSONObject alertDialogDate = (JSONObject) success;
-                               CheckMandateAndShowDialog.beforeRechargeMandateSchedule(context,oxigenPlanresp,alertDialogDate,new VolleyResponse((VolleyResponse.OnSuccess)(beforeRechargeMandateresp)->{
-                                   CustomerVO cusVO = (CustomerVO) beforeRechargeMandateresp;
-                                   if(cusVO.isEventIs()){
-                                       proceedRechargeOnMandate(context,oxigenPlanresp);
-                                   }else{
-                                       // 30/06/2020
-                                       oxigenPlanresp.setProvider(getAuthServiceProvider(AuthServiceProviderVO.ENACHIDFC));
-                                       beforeRechargeAddMandate(context,oxigenPlanresp);
-                                   }
-                               }));
-                           }catch (Exception e){
-                               ExceptionsNotification.ExceptionHandling(context , Utility.getStackTrace(e));
-                           }
-                       }else{
-                           CheckMandateAndShowDialog.checkMandateforService(context,oxigenPlanresp,new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
-                               CustomerVO customerVO = (CustomerVO) s;
-                               //if mandate is exist proceed bill  direct
-                               if (customerVO.isEventIs()) {
-                                   // recharge on bank mandate
-                                   proceedRechargeOnMandate(context,oxigenPlanresp);
-                               } else {
-                                   //if mandate is not exist check bank bank mandate
-                                   // check mandate and adopt bank for service
-                                   // 30/06/2020
-                                   oxigenPlanresp.setProvider(getAuthServiceProvider(AuthServiceProviderVO.ENACHIDFC));
-                                   beforeRechargeAddMandate(context,oxigenPlanresp);
-                               }
-                           }));
-                       }
-                   }));
-               }
+               Toast.makeText(context, "Scheduler Next Recharge", Toast.LENGTH_SHORT).show();
            },(PaymentGatewayResponse.OnSiMandate)(siClickResp)->{
                OxigenTransactionVO oxigenPlanresp=(OxigenTransactionVO) siClickResp;
                // 30/06/2020
-               oxigenPlanresp.setProvider(getAuthServiceProvider(AuthServiceProviderVO.AUTOPE_PG));
+               //oxi bill validate tym  set provider id
                beforeRechargeAddMandate(context,oxigenPlanresp);
 
            }));
@@ -630,7 +592,7 @@ public class BillPayRequest {
                     }else{
                         //if due date > 2 paybill date show payment dialog select recharge mode
                         if(oxigenValidateResponce.getPaymentDialogShowMandate()){
-                            Utility.showSelectPaymentTypeDialog(context,"Payment Type",oxigenValidateResponce.getPaymentTypeObject(),new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess)(position)->{
+                            Utility.showSelectPaymentTypeDialog(context,"Add Mandate",oxigenValidateResponce.getPaymentTypeObject(),new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess)(position)->{
                                 int selectPosition=Integer.parseInt(position);
                                 if(selectPosition==ApplicationConstant.BankMandatePayment ){
                                     // if service id is dish show mandate dialog
@@ -644,13 +606,17 @@ public class BillPayRequest {
                                           }
                                       },(ConfirmationGetObjet.OnCancel)(cancel)->{
                                           ((Dialog)cancel).dismiss();
-                                          paymentGatewayResponse.onEnachScheduler(oxigenValidateResponce);
+                                          oxigenValidateResponce.setProvider(getAuthServiceProvider(AuthServiceProviderVO.ENACHIDFC));
+                                          paymentGatewayResponse.onEnach(oxigenValidateResponce);
                                       }));
                                   }else {
+                                      oxigenValidateResponce.setProvider(getAuthServiceProvider(AuthServiceProviderVO.ENACHIDFC));
                                       paymentGatewayResponse.onEnach(oxigenValidateResponce);
                                   }
                                 }else if(selectPosition==ApplicationConstant.SIMandatePayment){
+                                    oxigenValidateResponce.setProvider(getAuthServiceProvider(AuthServiceProviderVO.AUTOPE_PG));
                                     paymentGatewayResponse.onSiMandate(oxigenValidateResponce);
+
                                 }else if(selectPosition==ApplicationConstant.UPIMandatePayment) {
                                     //paymentGatewayResponse.onPg(oxigenValidateResponce);
                                 }
@@ -665,19 +631,8 @@ public class BillPayRequest {
         });
     }
 
-     public static void handelRechargeSuccess(Context context,OxigenTransactionVO oxigenTransactionVOSuccess) {
-        // ask to customer for bank mandate
-        dismissDialog();
-        //replace oxigenValidateResponce change on oxigenTransactionVOresp
-        oxigenValidateResponce=oxigenTransactionVOSuccess;
-        MyDialog.showSingleButtonBigContentDialog(context,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
-            ok.dismiss();
-            afterRechargeMoveHistorySummaryActivity(context,false,oxigenTransactionVOSuccess);
-        }),oxigenTransactionVOSuccess.getDialogTitle(),oxigenTransactionVOSuccess.getAnonymousString());
-    }
 
-
-   /* public static void handelRechargeSuccess(Context context,OxigenTransactionVO oxigenTransactionVOSuccess) {
+    public static void handelRechargeSuccess(Context context,OxigenTransactionVO oxigenTransactionVOSuccess) {
         // ask to customer for bank mandate
         dismissDialog();
         //replace oxigenValidateResponce change on oxigenTransactionVOresp
@@ -690,7 +645,7 @@ public class BillPayRequest {
             }),oxigenTransactionVOSuccess.getDialogTitle(),oxigenTransactionVOSuccess.getAnonymousString());
 
         }else {
-            MyDialog.showWebviewConditionalAlertDialog(context,oxigenTransactionVOSuccess.getAnonymousString(),false,new ConfirmationGetObjet((ConfirmationGetObjet.OnOk)(ok)->{
+            MyDialog.showWebviewConditionalAlertDialog(context,oxigenTransactionVOSuccess.getHtmlString(),false,new ConfirmationGetObjet((ConfirmationGetObjet.OnOk)(ok)->{
                 //((Activity)context).startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(oxigenTransactionVOresp.getServiceId()))), ApplicationConstant.REQ_ENACH_MANDATE);
                 HashMap<String,Object> objectHashMap = (HashMap<String, Object>) ok;
                 // ((Dialog) Objects.requireNonNull(objectHashMap.get("dialog"))).dismiss();
@@ -698,7 +653,7 @@ public class BillPayRequest {
                 GlobalApplication.dialog_List.add(((Dialog) Objects.requireNonNull(objectHashMap.get("dialog"))));
 
                 if(String.valueOf(objectHashMap.get("data")).equalsIgnoreCase("ok")){
-                    afterRechargeAddMandate(context,oxigenTransactionVOSuccess);
+                    //afterRechargeAddMandate(context,oxigenTransactionVOSuccess);
                 }else{
                     try {
                         JSONObject alertDialogDate =new JSONObject((String) objectHashMap.get("data"));
@@ -707,7 +662,7 @@ public class BillPayRequest {
                             if(customerVO.isEventIs()){
                                 afterRechargeMoveHistorySummaryActivity(context,true,oxigenTransactionVOSuccess);
                             }else {
-                                afterRechargeAddMandate(context,oxigenTransactionVOSuccess);
+                                //afterRechargeAddMandate(context,oxigenTransactionVOSuccess);
                             }
                         }));
                     }catch (Exception e){
@@ -721,7 +676,6 @@ public class BillPayRequest {
 
         }
     }
-*/
 
 
    /* public static void afterRechargeAddMandate(Context context , OxigenTransactionVO oxigenTransactionVOresp){

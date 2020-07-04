@@ -460,6 +460,8 @@ public class Home extends Base_Activity
                             Utility.enableDisableView(view,false);
                             startUserClickService(activitylayout.getTag().toString(),view);
 
+                        },(ConfirmationDialogInterface.OnCancel)(cancelbtn)->{
+                            cancelbtn.dismiss();
                         }));
                      }
                 }

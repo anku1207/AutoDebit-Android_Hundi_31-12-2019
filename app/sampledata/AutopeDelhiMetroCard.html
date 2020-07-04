@@ -61,28 +61,50 @@
 		.button-wrapper {
 		    padding-top: 20px;
 		}
+		.button-group {
+		    display: table;
+		    width: 100%;
+		}
+
+		.button-group > div {
+		    width: 50%;
+		    float: left;
+		}
 	</style>
 </head>
 <body>
-<h1 align="center">Autope Delhi Metro Card</h1>
-<p align="center">No more waiting in long queues and tapping your cards at AVM</p>
+<h1 align="center">AutoPe Delhi Metro Card</h1>
+<p align="center"><i>No more waiting in long queues or<br> tapping your cards at AVM</i></p>
 
-<p>Link your bank account online and avail auto top-up facility at entry gates itself.
+<p>Link your card / bank account and avail auto top-up facility.
+    As and when the value in the card falls below Rs.100, it will automatically get recharged with Rs. 200 at the Automatic Fare Collection (AFC) entry gate itself.<br>
 
-    As and when the value in the card falls below Rs.100, it will automatically be recharged with Rs. 200 at the Automatic Fare Collection (AFC) entry gates itself.
-
-    <strong>Autope</strong>  will auto-debit your linked card/bank account with the topped up value.</p>
+    <b>AutoPe</b> will auto-debit your linked card / bank account with the topped up value.</p>
 <br>
-<p><strong>Benefits:</strong></p>
+<b>Benefits:</b>
 <ul>
+    <li>Avail additional 5% discount* </li>
     <li>No need to track usage of the card </li>
-    <li>No need to recharge it every time</li>
-    <li>15% discount on Delhi metro fare</li>
-    <li>Home delivery of cards</li>
-    <li>Customisation of cards</li>
+    <li>Get rid of recharging everytime </li>
+    <li>Free home delivery of cards</li>
+    <li>Customisation of cards with personalised photographs**</li>
 </ul>
-<div class="button-wrapper">
-    <a onclick= 'ok.performClick("ok")'>Next</a>
+
+<p> *T&C apply <br>- The card attracts a one-time fee of Rs. 300 plus<br>   applicable taxes paid in advance.<br>
+    - 1% plus applicable taxes as convenience fee for each <br>top-up. <br>
+    ** Additional charge of Rs.150 over & above the one-time fee.
+</p>
+
+<div class="button-group">
+    <div class="button-wrapper">
+        <a onclick= 'ok.performClick("ok")'>Proceed</a>
+    </div>
+
+    <div class="button-wrapper">
+        <a onclick= 'ok.performClick("cancel")'>Cancel</a>
+    </div>
 </div>
+
+
 </body>
 </html>
