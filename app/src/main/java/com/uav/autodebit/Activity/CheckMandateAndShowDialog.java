@@ -96,15 +96,17 @@ public class CheckMandateAndShowDialog {
 
         HashMap<String, Object> params = new HashMap<String, Object>();
         ConnectionVO connectionVO = ServiceBO.setBankForServiceManuallyService();
-        CustomerVO customerVO=new CustomerVO();
+        OxigenTransactionVO oxigenTransactionVORequ=new OxigenTransactionVO();
+
+        CustomerVO customerVO = new CustomerVO();
         customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(context)));
-        customerVO.setServiceId(oxigenTransactionVO.getServiceId());
-        customerVO.setAnonymounsDay(Integer.parseInt(alertDialogDate.getString("day")));
-        customerVO.setAnonymousAmount(Double.parseDouble(alertDialogDate.getString("amount")));
-        customerVO.setCustoemrHistoryId(oxigenTransactionVO.getAnonymousInteger());
+        oxigenTransactionVORequ.setAnonymounsDay(Integer.parseInt(alertDialogDate.getString("day")));
+        oxigenTransactionVORequ.setAnonymousAmount(Double.parseDouble(alertDialogDate.getString("amount")));
+        oxigenTransactionVORequ.setTypeId(oxigenTransactionVO.getTypeId());
+        oxigenTransactionVORequ.setCustomer(customerVO);
 
         Gson gson =new Gson();
-        String json = gson.toJson(customerVO);
+        String json = gson.toJson(oxigenTransactionVORequ);
         params.put("volley", json);
         connectionVO.setParams(params);
         Log.w("request",params.toString());
@@ -116,17 +118,17 @@ public class CheckMandateAndShowDialog {
             public void onResponse(Object resp) throws JSONException {
                 JSONObject response = (JSONObject) resp;
                 Gson gson = new Gson();
-                CustomerVO customerVO = gson.fromJson(response.toString(), CustomerVO.class);
+                OxigenTransactionVO transactionVO = gson.fromJson(response.toString(), OxigenTransactionVO.class);
 
-                if(customerVO.getStatusCode().equals("400")){
-                    ArrayList error = (ArrayList) customerVO.getErrorMsgs();
+                if(transactionVO.getStatusCode().equals("400")){
+                    ArrayList error = (ArrayList) transactionVO.getErrorMsgs();
                     StringBuilder sb = new StringBuilder();
                     for(int i=0; i<error.size(); i++){
                         sb.append(error.get(i)).append("\n");
                     }
                     Utility.showSingleButtonDialog(context,"Alert",sb.toString(),false);
                 }else {
-                    volleyResponse.onSuccess(customerVO);
+                    volleyResponse.onSuccess(transactionVO);
                 }
             }
         });
@@ -279,12 +281,13 @@ public class CheckMandateAndShowDialog {
 
 
 
-    public static void afterRechargeGetRechargeDetails(Context context  ,Integer historyId,VolleyResponse volleyResponse ){
+    public static void afterRechargeGetRechargeDetails(Context context  ,Integer historyId , String customerServiceOperator,VolleyResponse volleyResponse ){
         HashMap<String, Object> params = new HashMap<String, Object>();
         ConnectionVO connectionVO = ServiceBO.afterRechargeGetRechargeDetails();
         CustomerVO customerVO=new CustomerVO();
         customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(context)));
         customerVO.setCustoemrHistoryId(historyId);
+        customerVO.setAnonymousInteger(Integer.parseInt(customerServiceOperator));
         Gson gson =new Gson();
         String json = gson.toJson(customerVO);
         params.put("volley", json);

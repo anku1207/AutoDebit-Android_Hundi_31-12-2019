@@ -16,6 +16,7 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -237,6 +238,8 @@ public class Loan_Repayment extends Base_Activity implements View.OnClickListene
 
                             CardView cardView = Utility.getCardViewStyle(this);
                             UAVEditText et = Utility.getUavEditText(Loan_Repayment.this);
+                            et.setInputType(InputType.TYPE_CLASS_TEXT);
+
                             et.setId(View.generateViewId());
                             et.setHint(oxigenQuestionsVO.getQuestionLabel());
 

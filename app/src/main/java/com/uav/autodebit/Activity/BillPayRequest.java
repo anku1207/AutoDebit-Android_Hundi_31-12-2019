@@ -453,7 +453,7 @@ public class BillPayRequest {
                     MyDialog.showWebviewAlertDialog(context, oxigenTransactionVO.getHtmlString(),true,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(d)->{
                         d.dismiss();
                         if(oxigenPlanresp.getProvider().getProviderId()== AuthServiceProviderVO.AUTOPE_PG){
-                            startSIActivity(context,oxigenPlanresp,ApplicationConstant.PG_PAYMENT);
+                            startSIActivity(context,oxigenPlanresp,ApplicationConstant.PG_MANDATE_AND_RECHARGE);
                         }else if(oxigenPlanresp.getProvider().getProviderId()== AuthServiceProviderVO.ENACHIDFC){
                             ((Activity) context).startActivityForResult(new Intent(context, Enach_Mandate.class).putExtra("forresutl", true).putExtra("selectservice", new ArrayList<Integer>(Arrays.asList(oxigenPlanresp.getServiceId()))), ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE);
                         }
@@ -477,7 +477,7 @@ public class BillPayRequest {
                                         proceedRechargeOnMandate(context,oxigenPlanresp);
                                     }else {
                                         if(oxigenPlanresp.getProvider().getProviderId()== AuthServiceProviderVO.AUTOPE_PG){
-                                            startSIActivity(context,oxigenPlanresp,ApplicationConstant.PG_PAYMENT);
+                                            startSIActivity(context,oxigenPlanresp,ApplicationConstant.PG_MANDATE_AND_RECHARGE);
                                         }else if(oxigenPlanresp.getProvider().getProviderId()== AuthServiceProviderVO.ENACHIDFC){
                                             ((Activity) context).startActivityForResult(new Intent(context, Enach_Mandate.class).putExtra("forresutl", true).putExtra("selectservice", new ArrayList<Integer>(Arrays.asList(oxigenPlanresp.getServiceId()))), ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE);
                                         }
@@ -488,7 +488,7 @@ public class BillPayRequest {
                             public void modify(Dialog dialog) {
                                 dialog.dismiss();
                                 if(oxigenPlanresp.getProvider().getProviderId()== AuthServiceProviderVO.AUTOPE_PG){
-                                    startSIActivity(context,oxigenPlanresp,ApplicationConstant.PG_PAYMENT);
+                                    startSIActivity(context,oxigenPlanresp,ApplicationConstant.PG_MANDATE_AND_RECHARGE);
                                 }else if(oxigenPlanresp.getProvider().getProviderId()== AuthServiceProviderVO.ENACHIDFC){
                                     ((Activity) context).startActivityForResult(new Intent(context, Enach_Mandate.class).putExtra("forresutl", true).putExtra("selectservice", new ArrayList<Integer>(Arrays.asList(oxigenPlanresp.getServiceId()))), ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE);
                                 }
@@ -649,7 +649,6 @@ public class BillPayRequest {
                 //((Activity)context).startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(oxigenTransactionVOresp.getServiceId()))), ApplicationConstant.REQ_ENACH_MANDATE);
                 HashMap<String,Object> objectHashMap = (HashMap<String, Object>) ok;
                 // ((Dialog) Objects.requireNonNull(objectHashMap.get("dialog"))).dismiss();
-
                 GlobalApplication.dialog_List.add(((Dialog) Objects.requireNonNull(objectHashMap.get("dialog"))));
 
                 if(String.valueOf(objectHashMap.get("data")).equalsIgnoreCase("ok")){
@@ -658,12 +657,8 @@ public class BillPayRequest {
                     try {
                         JSONObject alertDialogDate =new JSONObject((String) objectHashMap.get("data"));
                         CheckMandateAndShowDialog.setManuallyServiceSchedule(context,oxigenTransactionVOSuccess,alertDialogDate,new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
-                            CustomerVO customerVO = (CustomerVO) success;
-                            if(customerVO.isEventIs()){
-                                afterRechargeMoveHistorySummaryActivity(context,true,oxigenTransactionVOSuccess);
-                            }else {
-                                //afterRechargeAddMandate(context,oxigenTransactionVOSuccess);
-                            }
+                            OxigenTransactionVO oxigenTransactionVO = (OxigenTransactionVO) success;
+                            afterRechargeMoveHistorySummaryActivity(context,true,oxigenTransactionVO);
                         }));
                     }catch (Exception e){
                         ExceptionsNotification.ExceptionHandling(context , Utility.getStackTrace(e));
@@ -721,16 +716,16 @@ public class BillPayRequest {
     public static void afterRechargeMoveHistorySummaryActivity(Context context , boolean getHistoryDetails , OxigenTransactionVO oxigenTransactionVO){
         dismissDialog();
         if(getHistoryDetails){
-            CheckMandateAndShowDialog.afterRechargeGetRechargeDetails(context,oxigenTransactionVO.getAnonymousInteger(),new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
+            CheckMandateAndShowDialog.afterRechargeGetRechargeDetails(context,oxigenTransactionVO.getAnonymousInteger(),oxigenTransactionVO.getAnonymousString(),new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
                 CustomerVO customerVO = (CustomerVO) success;
                 MyDialog.showSingleButtonBigContentDialog(context,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
                     ok.dismiss();
-                    //((Activity)context).startActivity(new Intent(context,HistorySummary.class).putExtra("historyId",oxigenTransactionVO.getAnonymousInteger().toString()));
+                    ((Activity)context).startActivity(new Intent(context,HistorySummary.class).putExtra("historyId",oxigenTransactionVO.getAnonymousInteger().toString()));
                     ((Activity)context).finish();
                 }),customerVO.getDialogTitle(),customerVO.getAnonymousString());
             }));
         }else {
-            //((Activity)context).startActivity(new Intent(context,HistorySummary.class).putExtra("historyId",oxigenTransactionVO.getAnonymousInteger().toString()));
+            ((Activity)context).startActivity(new Intent(context,HistorySummary.class).putExtra("historyId",oxigenTransactionVO.getAnonymousInteger().toString()));
             ((Activity)context).finish();
         }
 
