@@ -646,7 +646,12 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                                 oxigenTransactionVO.setProvider(authServiceProviderVO);
 
                                 BeforeRecharge.beforeRechargeAddMandate(Dmrc_Card_Request.this,oxigenTransactionVO,new MandateAndRechargeInterface((MandateAndRechargeInterface.OnRecharge)(recharge)->{
-                                    allotDmrcCard(dmrc_customer_SI_cardVO.getDmrcid(), (Integer) recharge);
+                                    try {
+                                        allotDmrcCard(dmrc_customer_SI_cardVO.getDmrcid(), (Integer) recharge);
+                                    }catch (Exception e){
+                                        ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this , Utility.getStackTrace(e));
+                                    }
+
                                 }, (MandateAndRechargeInterface.OnMandate)(mandate)->{
                                     startSIActivity(Dmrc_Card_Request.this,dmrc_customer_SI_cardVO.getDmrcid(),1.00,ApplicationConstant.Dmrc,ApplicationConstant.PG_MANDATE);
                                 }));

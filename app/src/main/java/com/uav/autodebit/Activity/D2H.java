@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.uav.autodebit.BO.D2HBO;
 import com.uav.autodebit.BO.ServiceBO;
 import com.uav.autodebit.CustomDialog.MyDialog;
@@ -39,6 +40,8 @@ import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerAuthServiceVO;
 import com.uav.autodebit.vo.CustomerVO;
 import com.uav.autodebit.vo.D2HVO;
+import com.uav.autodebit.vo.OxigenTransactionVO;
+import com.uav.autodebit.vo.ServiceTypeVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
 import com.uav.autodebit.volley.VolleyUtils;
 import org.json.JSONArray;
@@ -309,7 +312,7 @@ public class D2H extends Base_Activity implements View.OnClickListener {
                                     @Override
                                     public void confirm(Dialog dialog) {
                                         dialog.dismiss();
-                                        addBank(button,editText.getText().toString());
+                                        addBank(button,editText.getText().toString(),planDetailarr);
                                     }
                                     @Override
                                     public void modify(Dialog dialog) {
@@ -327,10 +330,35 @@ public class D2H extends Base_Activity implements View.OnClickListener {
           //  Utility.exceptionAlertDialog(context,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
     }
-    private void addBank(Button button,String mandateAmt) {
+    private void addBank(Button button, String mandateAmt , JSONArray planDetailarr) {
 
         try {
-            Gson gson =new Gson();
+
+            JSONObject detailfiled=new JSONObject();
+
+            for(int i=0;i<planDetailarr.length();i++){
+                JSONObject object = planDetailarr.getJSONObject(i);
+                detailfiled.put(object.getString("key"),object.getString("value"));
+            }
+
+            OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
+            oxigenTransactionVO.setOperateName("Dishtv");
+            oxigenTransactionVO.setAmount(Double.valueOf(mandateAmt));
+            oxigenTransactionVO.setAnonymousString(detailfiled.toString());
+
+            ServiceTypeVO serviceTypeVO =new ServiceTypeVO();
+            serviceTypeVO.setServiceTypeId(ApplicationConstant.DISHTV);
+            oxigenTransactionVO.setServiceType(serviceTypeVO);
+
+            CustomerVO customerVO =new CustomerVO();
+            customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(this)));
+            oxigenTransactionVO.setCustomer(customerVO);
+
+            BillPayRequest.proceedRecharge(this,false,oxigenTransactionVO);
+
+
+
+         /*   Gson gson =new Gson();
 
             HashMap<String, Object> params = new HashMap<String, Object>();
             ConnectionVO connectionVO = D2HBO.mandateAmountOverrideByServiceId();
@@ -436,7 +464,7 @@ public class D2H extends Base_Activity implements View.OnClickListener {
                     }
                 }
 
-            });
+            });*/
         } catch (Exception e) {
             ExceptionsNotification.ExceptionHandling(D2H.this , Utility.getStackTrace(e));
             //Utility.exceptionAlertDialog(context,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
@@ -577,10 +605,12 @@ public class D2H extends Base_Activity implements View.OnClickListener {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode==RESULT_OK){
-            if(requestCode==ApplicationConstant.REQ_ENACH_MANDATE){
-                plandetailslayout.removeAllViews();
-                double v=monthlySubscriptionAmount!=null?Math.ceil(Double.parseDouble(monthlySubscriptionAmount)):0.00;
-                addBank(null,(int)v+"");
+            if(requestCode==200 || requestCode== ApplicationConstant.REQ_ENACH_MANDATE || requestCode==ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE || requestCode== ApplicationConstant.REQ_SI_MANDATE || requestCode== ApplicationConstant.REQ_MANDATE_FOR_BILL_FETCH_ERROR || requestCode== ApplicationConstant.REQ_SI_FOR_BILL_FETCH_ERROR){
+                if(data !=null){
+                    BillPayRequest.onActivityResult(this,data,requestCode);
+                }else {
+                    Utility.showSingleButtonDialog(this,"Error !","Something went wrong, Please try again!",false);
+                }
             }
         }
     }
