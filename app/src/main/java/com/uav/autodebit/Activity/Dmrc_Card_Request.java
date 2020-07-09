@@ -49,10 +49,12 @@ import com.squareup.picasso.Picasso;
 import com.uav.autodebit.BO.MetroBO;
 import com.uav.autodebit.BO.PinCodeBO;
 import com.uav.autodebit.BO.SiBO;
+import com.uav.autodebit.CustomDialog.BeforeRecharge;
 import com.uav.autodebit.CustomDialog.MyDialog;
 import com.uav.autodebit.Interface.AlertSelectDialogClick;
 import com.uav.autodebit.Interface.BigContentDialogIntetface;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
+import com.uav.autodebit.Interface.MandateAndRechargeInterface;
 import com.uav.autodebit.R;
 import com.uav.autodebit.adpater.CustomPagerAdapter;
 import com.uav.autodebit.constant.ApplicationConstant;
@@ -68,6 +70,7 @@ import com.uav.autodebit.util.BackgroundAsyncServiceGetList;
 import com.uav.autodebit.util.BackgroundAsyncServiceGetListInterface;
 import com.uav.autodebit.util.BackgroundServiceInterface;
 import com.uav.autodebit.util.Utility;
+import com.uav.autodebit.vo.AuthServiceProviderVO;
 import com.uav.autodebit.vo.CityVO;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerAuthServiceVO;
@@ -508,7 +511,6 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                         finish();*/
                         if(!dmrc_customer_cardVO.getStatusCode().equals("200") && !dmrc_customer_cardVO.getStatusCode().equals("ap104")){
                             if(dmrc_customer_cardVO.getStatusCode().equals("ap105") || dmrc_customer_cardVO.getStatusCode().equals("ap107") ||dmrc_customer_cardVO.getStatusCode().equals("ap102")){
-
                                // 12/04/2020
                                 MyDialog.showWebviewAlertDialog(Dmrc_Card_Request.this, dmrc_customer_cardVO.getHtmlString(),false,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(dialog)->{
                                     dialog.dismiss();
@@ -593,6 +595,8 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
         customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(Dmrc_Card_Request.this)));
         request_dmrc_customer_cardVO.setCustomer(customerVO);
         request_dmrc_customer_cardVO.setDmrcid(dmrc_customer_cardVO.getDmrcid());
+
+        //set customer auth bank id select by BANK list mandate
         request_dmrc_customer_cardVO.setAnonymousInteger(bankId);
 
         Gson gson =new Gson();
@@ -633,16 +637,27 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
 
                             MyDialog.showDoubleButtonBigContentDialog(Dmrc_Card_Request.this,new BigContentDialogIntetface((BigContentDialogIntetface.Button1)(button1)->{
                                 button1.dismiss();
-                                startSIActivity(Dmrc_Card_Request.this,dmrc_customer_SI_cardVO.getDmrcid(),1.00,ApplicationConstant.Dmrc,ApplicationConstant.PG_MANDATE);
 
-                                },(BigContentDialogIntetface.Button2)(button2)->{
+                                OxigenTransactionVO oxigenTransactionVO = new OxigenTransactionVO();
+                                oxigenTransactionVO.setServiceId(serviceId);
+
+                                AuthServiceProviderVO authServiceProviderVO =new AuthServiceProviderVO();
+                                authServiceProviderVO.setProviderId(AuthServiceProviderVO.AUTOPE_PG);
+                                oxigenTransactionVO.setProvider(authServiceProviderVO);
+
+                                BeforeRecharge.beforeRechargeAddMandate(Dmrc_Card_Request.this,oxigenTransactionVO,new MandateAndRechargeInterface((MandateAndRechargeInterface.OnRecharge)(recharge)->{
+                                    allotDmrcCard(dmrc_customer_SI_cardVO.getDmrcid(), (Integer) recharge);
+                                }, (MandateAndRechargeInterface.OnMandate)(mandate)->{
+                                    startSIActivity(Dmrc_Card_Request.this,dmrc_customer_SI_cardVO.getDmrcid(),1.00,ApplicationConstant.Dmrc,ApplicationConstant.PG_MANDATE);
+                                }));
+                            },(BigContentDialogIntetface.Button2)(button2)->{
                                 button2.dismiss();
                                 dmrcCustomerCardSecurityDeposti(dmrc_customer_SI_cardVO.getDmrcid());
 
                             }),dmrc_customer_SI_cardVO.getDialogTitle(),dmrc_customer_SI_cardVO.getHtmlString(),btnText);
 
                         }else{
-                            allotDmrcCard(dmrc_customer_SI_cardVO.getDmrcid());
+                            allotDmrcCard(dmrc_customer_SI_cardVO.getDmrcid(),null);
                         }
                     }
                 }catch (Exception e){
@@ -696,13 +711,13 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                     }
                     Utility.showSingleButtonDialog(Dmrc_Card_Request.this,"Error !",sb.toString(),false);
                 }else {
-                    allotDmrcCard(dmrcid);
+                    allotDmrcCard(dmrcid,null);
                 }
             }
         });
     }
 
-    public void allotDmrcCard(Integer cardId){
+    public void allotDmrcCard(Integer cardId , Integer sIMandateId){
         HashMap<String, Object> params = new HashMap<String, Object>();
         ConnectionVO connectionVO = MetroBO.allotDmrcCard();
         DMRC_Customer_CardVO request_dmrc_customer_cardVO=new DMRC_Customer_CardVO();
@@ -710,6 +725,9 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
         customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(Dmrc_Card_Request.this)));
         request_dmrc_customer_cardVO.setCustomer(customerVO);
         request_dmrc_customer_cardVO.setDmrcid(cardId);
+
+        //set customer auth si id select by SI Mandate list mandate
+        request_dmrc_customer_cardVO.setAnonymousInteger(sIMandateId);
 
 
         Gson gson =new Gson();
@@ -948,7 +966,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                 }else if(requestCode==ApplicationConstant.REQ_SI_MANDATE){
                     int actionId=data.getIntExtra("actionId",0);
                     if(actionId!=0){
-                        allotDmrcCard(actionId);
+                        allotDmrcCard(actionId,null);
                     }else {
                         Utility.showSingleButtonDialog(Dmrc_Card_Request.this,"Error !", "Something went wrong",false);
                     }

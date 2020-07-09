@@ -463,13 +463,13 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
                     webview.setVisibility(View.GONE);
                 }
             }
-            if(progressBar!=null && !progressBar.isShowing())  progressBar.show();
+            if(!SI_First_Data.this.isFinishing() &&  progressBar!=null && !progressBar.isShowing())  progressBar.show();
 
         }
 
         @Override
         public void onPageFinished(WebView view, String url) {
-            if (progressBar!=null && progressBar.isShowing()) {
+            if (!SI_First_Data.this.isFinishing() && progressBar!=null && progressBar.isShowing()) {
                 progressBar.dismiss();
             }
             Log.w("loadurlresp", url);
@@ -497,7 +497,7 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
         @SuppressWarnings("deprecation")
         public void onReceivedError(WebView view, int errorCode,
                                     String description, String failingUrl) {
-            if (progressBar!=null && progressBar.isShowing()) {
+            if (!SI_First_Data.this.isFinishing() &&  progressBar!=null && progressBar.isShowing()) {
                 progressBar.dismiss();
             }
             showError(description);
@@ -505,7 +505,7 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
 
         @TargetApi(android.os.Build.VERSION_CODES.M)
         public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-            if (progressBar!=null && progressBar.isShowing()) {
+            if (!SI_First_Data.this.isFinishing() && progressBar!=null && progressBar.isShowing()) {
                 progressBar.dismiss();
             }
             showError((String) error.getDescription());
@@ -513,7 +513,7 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
 
         @TargetApi(android.os.Build.VERSION_CODES.M)
         public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
-            if (progressBar!=null && progressBar.isShowing()) {
+            if (!SI_First_Data.this.isFinishing() && progressBar!=null && progressBar.isShowing()) {
                 progressBar.dismiss();
             }
             showError(errorResponse.getReasonPhrase().toString());

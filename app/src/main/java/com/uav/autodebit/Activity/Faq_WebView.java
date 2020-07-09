@@ -121,12 +121,12 @@ public class Faq_WebView extends Base_Activity implements View.OnClickListener {
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
 
-            if(progressBar!=null && !progressBar.isShowing())  progressBar.show();
+            if(!Faq_WebView.this.isFinishing() && progressBar!=null && !progressBar.isShowing())  progressBar.show();
         }
 
         @Override
         public void onPageFinished(WebView view, String url) {
-            if (progressBar!=null && progressBar.isShowing()) {
+            if (!Faq_WebView.this.isFinishing() && progressBar!=null && progressBar.isShowing()) {
                 progressBar.dismiss();
             }
 
@@ -135,14 +135,14 @@ public class Faq_WebView extends Base_Activity implements View.OnClickListener {
         @SuppressWarnings("deprecation")
         public void onReceivedError(WebView view, int errorCode,
                                     String description, String failingUrl) {
-            if (progressBar!=null && progressBar.isShowing()) {
+            if (!Faq_WebView.this.isFinishing() && progressBar!=null && progressBar.isShowing()) {
                 progressBar.dismiss();
             }
             showError(description);
         }
         @TargetApi(android.os.Build.VERSION_CODES.M)
         public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-            if (progressBar!=null && progressBar.isShowing()) {
+            if (!Faq_WebView.this.isFinishing() && progressBar!=null && progressBar.isShowing()) {
                 progressBar.dismiss();
             }
             showError((String) error.getDescription());
@@ -150,7 +150,7 @@ public class Faq_WebView extends Base_Activity implements View.OnClickListener {
 
         @TargetApi(android.os.Build.VERSION_CODES.M)
         public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
-            if (progressBar!=null && progressBar.isShowing()) {
+            if (!Faq_WebView.this.isFinishing() && progressBar!=null && progressBar.isShowing()) {
                 progressBar.dismiss();
             }
             showError(errorResponse.getReasonPhrase().toString());

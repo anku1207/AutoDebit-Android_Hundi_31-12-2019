@@ -33,7 +33,9 @@ import com.squareup.picasso.Picasso;
 import com.uav.autodebit.BO.IRCTCBO;
 import com.uav.autodebit.BO.OxigenPlanBO;
 import com.uav.autodebit.BO.ServiceBO;
+import com.uav.autodebit.CustomDialog.BeforeRecharge;
 import com.uav.autodebit.Interface.CallBackInterface;
+import com.uav.autodebit.Interface.MandateAndRechargeInterface;
 import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
@@ -175,35 +177,19 @@ public class IRCTC extends Base_Activity {
     }
 
     public  void BankMandate(Context context , int  serviceId){
-        CheckMandateAndShowDialog.oxiServiceMandateCheck(context,serviceId,3,new VolleyResponse((VolleyResponse.OnSuccess)(mandatecheckresp)->{
-            OxigenTransactionVO oxigenTransactionVO = (OxigenTransactionVO) mandatecheckresp;
-            if(oxigenTransactionVO!=null){
-                if(oxigenTransactionVO.getStatusCode().equals("ap102")) {
-                  startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(serviceId))), ApplicationConstant.REQ_ENACH_MANDATE);
-                }else if(oxigenTransactionVO.getStatusCode().equals("ap103")){
-                    String[] buttons = {"New Bank", "Existing Bank"};
-                    Utility.showDoubleButtonDialogConfirmation(new DialogInterface() {
-                        @Override
-                        public void confirm(Dialog dialog) {
-                            dialog.dismiss();
-                            BillPayRequest.createBankListInDialog(context,serviceId,oxigenTransactionVO,new CallBackInterface((CallBackInterface.OnSuccess)(onclick)->{
-                                String bankId = (String) onclick;
-                                if(!bankId.equals("0")){
-                                    setBankForService(ApplicationConstant.IRCTC,Integer.parseInt(Session.getCustomerId(context)),Integer.parseInt(bankId));
-                                }else {
-                                    startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(serviceId))), ApplicationConstant.REQ_ENACH_MANDATE);
-                                }
-                            }));
-                        }
-                        @Override
-                        public void modify(Dialog dialog) {
-                            dialog.dismiss();
-                            startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(serviceId))), ApplicationConstant.REQ_ENACH_MANDATE);
-                        }
-                    }, context, oxigenTransactionVO.getErrorMsgs().get(0), "", buttons);
-                }
-            }
+        OxigenTransactionVO oxigenTransactionVO = new OxigenTransactionVO();
+        oxigenTransactionVO.setServiceId(serviceId);
+
+        AuthServiceProviderVO authServiceProviderVO =new AuthServiceProviderVO();
+        authServiceProviderVO.setProviderId(AuthServiceProviderVO.ENACHIDFC);
+        oxigenTransactionVO.setProvider(authServiceProviderVO);
+
+        BeforeRecharge.beforeRechargeAddMandate(context,oxigenTransactionVO,new MandateAndRechargeInterface((MandateAndRechargeInterface.OnRecharge)(recharge)->{
+            setBankForService(ApplicationConstant.IRCTC,Integer.parseInt(Session.getCustomerId(context)),Integer.parseInt(String.valueOf(recharge)));
+        }, (MandateAndRechargeInterface.OnMandate)(mandate)->{
+            startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(serviceId))), ApplicationConstant.REQ_ENACH_MANDATE);
         }));
+
     }
 
     //bank list select bank for service
