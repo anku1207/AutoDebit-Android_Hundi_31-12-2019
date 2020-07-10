@@ -2,7 +2,7 @@ package com.uav.autodebit.vo;
 
 import java.io.Serializable;
 
-public class CCTransactionStatusVO  extends BannerVO  implements Serializable {
+public class CCTransactionStatusVO  extends BaseVO  implements Serializable {
 
     public static final int SUCCESS =1;
     public static final int  PENDING=2;

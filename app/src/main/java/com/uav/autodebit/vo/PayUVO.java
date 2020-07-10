@@ -2,7 +2,7 @@ package com.uav.autodebit.vo;
 
 import java.io.Serializable;
 
-public class PayUVO extends BannerVO  implements Serializable {
+public class PayUVO extends BaseVO  implements Serializable {
 
     private Integer payuId;
     private CustomerVO customer;

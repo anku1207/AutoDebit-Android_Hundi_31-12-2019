@@ -2,7 +2,7 @@ package com.uav.autodebit.vo;
 
 import java.io.Serializable;
 
-public class PaymentGatewayVO extends BannerVO  implements Serializable {
+public class PaymentGatewayVO extends BaseVO  implements Serializable {
     public static final int PAYUINDIA=1;
     public static final int IRCTCCOD=2;
     public static final int IRCTCCODMOB=3;

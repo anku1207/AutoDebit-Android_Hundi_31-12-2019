@@ -323,12 +323,12 @@ public class Dish_Tv  extends Base_Activity implements View.OnClickListener  {
 
     private void addBank(Button button,String mandateAmt , JSONArray planDetailarr) {
         try {
-
                 JSONObject detailfiled=new JSONObject();
-
                 for(int i=0;i<planDetailarr.length();i++){
-                    JSONObject object = planDetailarr.getJSONObject(i);
-                    detailfiled.put(object.getString("key"),object.getString("value"));
+                    JSONObject jsonObject1 =planDetailarr.getJSONObject(i);
+                    if(jsonObject1.getString("key").equals("VCNO")){
+                        detailfiled.put("Registered Mobile Number / Viewing Card Number",jsonObject1.getString("value"));
+                    }
                 }
 
                 OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();

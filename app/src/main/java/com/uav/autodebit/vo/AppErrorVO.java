@@ -2,7 +2,7 @@ package com.uav.autodebit.vo;
 
 import java.io.Serializable;
 
-public class AppErrorVO extends BannerVO  implements Serializable {
+public class AppErrorVO extends BaseVO  implements Serializable {
 
     private Integer appErrorId;
     private String customerId;

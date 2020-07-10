@@ -306,8 +306,6 @@ public class D2H extends Base_Activity implements View.OnClickListener {
                             if(Double.parseDouble(monthlySubscriptionAmount) > Double.parseDouble(editText.getText().toString()) ){
                                 Utility.showSingleButtonDialog(context,"Error !","Mandate Amount Should Be Greater then or equal Rs." +Math.ceil(Double.parseDouble(monthlySubscriptionAmount)),false);
                             }else {
-                              //  addBank(button,editText.getText().toString());
-
                                 Utility.confirmationDialog(new DialogInterface() {
                                     @Override
                                     public void confirm(Dialog dialog) {
@@ -337,12 +335,15 @@ public class D2H extends Base_Activity implements View.OnClickListener {
             JSONObject detailfiled=new JSONObject();
 
             for(int i=0;i<planDetailarr.length();i++){
-                JSONObject object = planDetailarr.getJSONObject(i);
-                detailfiled.put(object.getString("key"),object.getString("value"));
+                JSONObject jsonObject1 =planDetailarr.getJSONObject(i);
+                if(jsonObject1.getString("key").equals("VCNO")){
+                    detailfiled.put("Registered Mobile Number / Viewing Card Number",jsonObject1.getString("value"));
+                }
             }
 
+
             OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
-            oxigenTransactionVO.setOperateName("Dishtv");
+            oxigenTransactionVO.setOperateName("VideoconD2hEchargeSubscriber");
             oxigenTransactionVO.setAmount(Double.valueOf(mandateAmt));
             oxigenTransactionVO.setAnonymousString(detailfiled.toString());
 

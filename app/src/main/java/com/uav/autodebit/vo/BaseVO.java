@@ -36,6 +36,7 @@ public class BaseVO {
     private Integer notificationId;
     private String appHash;
     private String paymentTypeObject;
+    private String siMandateType;
 
 
 
@@ -268,5 +269,13 @@ public class BaseVO {
 
     public void setPaymentTypeObject(String paymentTypeObject) {
         this.paymentTypeObject = paymentTypeObject;
+    }
+
+    public String getSiMandateType() {
+        return siMandateType;
+    }
+
+    public void setSiMandateType(String siMandateType) {
+        this.siMandateType = siMandateType;
     }
 }

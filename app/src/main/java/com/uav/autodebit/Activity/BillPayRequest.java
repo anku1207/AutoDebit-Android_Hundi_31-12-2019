@@ -359,6 +359,12 @@ public class BillPayRequest {
                OxigenTransactionVO oxigenPlanresp=(OxigenTransactionVO) siClickResp;
                // 30/06/2020
                //oxi bill validate tym  set provider id
+               int serviceTypeId=oxigenPlanresp.getServiceId();
+               if(serviceTypeId==ApplicationConstant.DTH || serviceTypeId==ApplicationConstant.DISHTV || serviceTypeId==ApplicationConstant.D2h){
+                   oxigenPlanresp.setSiMandateType(ApplicationConstant.PG_MANDATE_AND_RECHARGE);
+               }else {
+                   oxigenPlanresp.setSiMandateType(ApplicationConstant.PG_PAYMENT);
+               }
                setBankMandateOrRecharge(context,oxigenPlanresp);
 
            }));
@@ -371,7 +377,7 @@ public class BillPayRequest {
             proceedRechargeOnMandate(context,oxigenTransactionVO);
         }, (MandateAndRechargeInterface.OnMandate)(mandate)->{
             if(oxigenTransactionVO.getProvider().getProviderId()== AuthServiceProviderVO.AUTOPE_PG){
-                startSIActivity(context,oxigenTransactionVO,ApplicationConstant.PG_MANDATE_AND_RECHARGE);
+                startSIActivity(context,oxigenTransactionVO,oxigenTransactionVO.getSiMandateType());
             }else if(oxigenTransactionVO.getProvider().getProviderId()== AuthServiceProviderVO.ENACHIDFC){
                 ((Activity) context).startActivityForResult(new Intent(context, Enach_Mandate.class).putExtra("forresutl", true).putExtra("selectservice", new ArrayList<Integer>(Arrays.asList(oxigenTransactionVO.getServiceId()))), ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE);
             }
@@ -704,7 +710,7 @@ public class BillPayRequest {
 
         try {
             if(getHistoryDetails){
-                CheckMandateAndShowDialog.afterRechargeGetRechargeDetails(context,oxigenTransactionVO.getAnonymousInteger(),oxigenTransactionVO.getAnonymousString(),new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
+                CheckMandateAndShowDialog.afterRechargeGetRechargeDetails(context,oxigenTransactionVO.getCustoemrHistoryId(),oxigenTransactionVO.getAnonymousString(),new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
                     CustomerVO customerVO = (CustomerVO) success;
                     MyDialog.showSingleButtonBigContentDialog(context,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
                         ok.dismiss();

@@ -8,7 +8,7 @@ public class DishTVBO implements Serializable {
 
     public static ConnectionVO getDishTvPlanDetail() {
         ConnectionVO connectionVO = new ConnectionVO();
-        connectionVO.setMethodName("getDishTvPlanDetail");
+        connectionVO.setMethodName("getDishTvPlanDetailForApp");
         connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
         return connectionVO;
     }

@@ -2,7 +2,7 @@ package com.uav.autodebit.vo;
 
 import java.io.Serializable;
 
-public class OxigenPlanVO extends BannerVO  implements Serializable {
+public class OxigenPlanVO extends BaseVO  implements Serializable {
 
 
     private Integer planId;

@@ -8,7 +8,7 @@ public class D2HBO implements Serializable {
 
     public static ConnectionVO getD2HPlanDetail() {
         ConnectionVO connectionVO = new ConnectionVO();
-        connectionVO.setMethodName("getD2HPlanDetail");
+        connectionVO.setMethodName("getD2HPlanDetailForApp");
         connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
         return connectionVO;
     }

@@ -2,7 +2,7 @@ package com.uav.autodebit.vo;
 
 import java.io.Serializable;
 
-public class AuthServiceProviderVO extends BannerVO  implements Serializable {
+public class AuthServiceProviderVO extends BaseVO  implements Serializable {
 
     public static int PAYNIMOSI=0; //currently service suspended
     public static int FIRSTDATA =1;
