@@ -171,81 +171,76 @@ public class Water extends Base_Activity implements View.OnClickListener {
             operator.setEnabled(true);
 
             if(resultCode==RESULT_OK){
+                if(requestCode==100){
+                    operatorname =data.getStringExtra("operatorname");
+                    operatorcode=data.getStringExtra("operator");
 
+                    DataAdapterVO dataAdapterVO = (DataAdapterVO) data.getSerializableExtra("datavo");
+                    operator.setText(operatorname);
+                    operator.setTag(operatorcode);
 
-                if(resultCode==RESULT_OK){
+                    operator.setError(null);
 
-                    if(requestCode==100){
-                        operatorname =data.getStringExtra("operatorname");
-                        operatorcode=data.getStringExtra("operator");
+                    //add fetch bill btn
+                    if (dataAdapterVO.getIsbillFetch().equals("1")) {
+                        isFetchBill=true;
+                        fetchbill.setVisibility(View.VISIBLE);
+                    } else {
+                        isFetchBill=false;
+                        fetchbill.setVisibility(View.GONE);
+                    }
 
-                        DataAdapterVO dataAdapterVO = (DataAdapterVO) data.getSerializableExtra("datavo");
-                        operator.setText(operatorname);
-                        operator.setTag(operatorcode);
+                    //add min Amt Layout
+                    if(dataAdapterVO.getMinTxnAmount()!=null){
+                        if(min_amt_layout.getChildCount()>0)min_amt_layout.removeAllViews();
+                        minAmt=dataAdapterVO.getMinTxnAmount();
+                        Animation animFadeIn = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fadein);
+                        min_amt_layout.startAnimation(animFadeIn);
+                        min_amt_layout.setVisibility(View.VISIBLE);
+                        min_amt_layout.setBackgroundColor(Utility.getColorWithAlpha(Color.rgb(224,224,224), 0.5f));
+                        min_amt_layout.setPadding(Utility.getPixelsFromDPs(this,15),Utility.getPixelsFromDPs(this,15),0,Utility.getPixelsFromDPs(this,15));
 
-                        operator.setError(null);
+                        min_amt_layout.addView(DynamicLayout.billMinLayout(this,dataAdapterVO));
 
-                        //add fetch bill btn
-                        if (dataAdapterVO.getIsbillFetch().equals("1")) {
-                            isFetchBill=true;
-                            fetchbill.setVisibility(View.VISIBLE);
-                        } else {
-                            isFetchBill=false;
-                            fetchbill.setVisibility(View.GONE);
-                        }
+                    }else {
+                        min_amt_layout.setVisibility(View.GONE);
+                    }
 
-                        //add min Amt Layout
-                        if(dataAdapterVO.getMinTxnAmount()!=null){
-                            if(min_amt_layout.getChildCount()>0)min_amt_layout.removeAllViews();
-                            minAmt=dataAdapterVO.getMinTxnAmount();
-                            Animation animFadeIn = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.fadein);
-                            min_amt_layout.startAnimation(animFadeIn);
-                            min_amt_layout.setVisibility(View.VISIBLE);
-                            min_amt_layout.setBackgroundColor(Utility.getColorWithAlpha(Color.rgb(224,224,224), 0.5f));
-                            min_amt_layout.setPadding(Utility.getPixelsFromDPs(this,15),Utility.getPixelsFromDPs(this,15),0,Utility.getPixelsFromDPs(this,15));
+                    //Remove dynamic cards from the layout and arraylist
+                    if(dynamicCardViewContainer.getChildCount()>0) dynamicCardViewContainer.removeAllViews();
 
-                            min_amt_layout.addView(DynamicLayout.billMinLayout(this,dataAdapterVO));
+                    //remove fetch bill layout and remove amount layout and amount value is set null  and show bill fetch button
+                    removefetchbilllayout();
 
-                        }else {
-                            min_amt_layout.setVisibility(View.GONE);
-                        }
+                    questionsVOS.clear();
 
-                        //Remove dynamic cards from the layout and arraylist
-                        if(dynamicCardViewContainer.getChildCount()>0) dynamicCardViewContainer.removeAllViews();
+                    //Create dynamic cards of edit text
+                    if(dataAdapterVO.getQuestionsData() !=null){
+                        JSONArray jsonArray = new JSONArray(dataAdapterVO.getQuestionsData());
+                        for(int i=0; i<jsonArray.length(); i++){
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+                            OxigenQuestionsVO oxigenQuestionsVO = gson.fromJson(jsonObject.toString(), OxigenQuestionsVO.class);
 
-                        //remove fetch bill layout and remove amount layout and amount value is set null  and show bill fetch button
-                        removefetchbilllayout();
+                            CardView cardView = Utility.getCardViewStyle(this);
 
-                        questionsVOS.clear();
+                            EditText et = Utility.getEditText(this);
+                            et.setInputType(InputType.TYPE_CLASS_TEXT);
+                            et.setId(View.generateViewId());
+                            et.setHint(oxigenQuestionsVO.getQuestionLabel());
 
-                        //Create dynamic cards of edit text
-                        if(dataAdapterVO.getQuestionsData() !=null){
-                            JSONArray jsonArray = new JSONArray(dataAdapterVO.getQuestionsData());
-                            for(int i=0; i<jsonArray.length(); i++){
-                                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                OxigenQuestionsVO oxigenQuestionsVO = gson.fromJson(jsonObject.toString(), OxigenQuestionsVO.class);
+                            changeEdittextValue(et);
 
-                                CardView cardView = Utility.getCardViewStyle(this);
-
-                                EditText et = Utility.getEditText(this);
-                                et.setInputType(InputType.TYPE_CLASS_TEXT);
-                                et.setId(View.generateViewId());
-                                et.setHint(oxigenQuestionsVO.getQuestionLabel());
-
-                                changeEdittextValue(et);
-
-                                cardView.addView(et);
-                                dynamicCardViewContainer.addView(cardView);
-                                if(oxigenQuestionsVO.getInstructions()!=null){
-                                    TextView tv = Utility.getTextView(this, oxigenQuestionsVO.getInstructions());
-                                    dynamicCardViewContainer.addView(tv);
-                                }
-                                oxigenQuestionsVO.setElementId(et.getId());
-                                questionsVOS.add(oxigenQuestionsVO);
+                            cardView.addView(et);
+                            dynamicCardViewContainer.addView(cardView);
+                            if(oxigenQuestionsVO.getInstructions()!=null){
+                                TextView tv = Utility.getTextView(this, oxigenQuestionsVO.getInstructions());
+                                dynamicCardViewContainer.addView(tv);
                             }
-                            EditText editText =(EditText) findViewById(questionsVOS.get(0).getElementId());
-                            editText.requestFocus();
+                            oxigenQuestionsVO.setElementId(et.getId());
+                            questionsVOS.add(oxigenQuestionsVO);
                         }
+                        EditText editText =(EditText) findViewById(questionsVOS.get(0).getElementId());
+                        editText.requestFocus();
                     }
                 }else if(requestCode==200 || requestCode== ApplicationConstant.REQ_ENACH_MANDATE || requestCode==ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE || requestCode== ApplicationConstant.REQ_SI_MANDATE || requestCode== ApplicationConstant.REQ_MANDATE_FOR_BILL_FETCH_ERROR || requestCode== ApplicationConstant.REQ_SI_FOR_BILL_FETCH_ERROR){
                     if(data !=null){
@@ -254,6 +249,7 @@ public class Water extends Base_Activity implements View.OnClickListener {
                         Utility.showSingleButtonDialog(this,"Error !","Something went wrong, Please try again!",false);
                     }
                 }
+
 
             }
         }catch (Exception e){
