@@ -524,7 +524,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                                 // 12/04/2020
                                 MyDialog.showWebviewAlertDialog(Dmrc_Card_Request.this, dmrc_customer_cardVO.getHtmlString(), false, new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk) (dialog) -> {
                                     dialog.dismiss();
-                                    String[] buttons = {"New Bank","Existing Bank"};
+                                    String[] buttons = {" New " ," Existing "};
                                     Utility.showDoubleButtonDialogConfirmation(new com.uav.autodebit.util.DialogInterface() {
                                         @Override
                                         public void confirm(Dialog dialog) {

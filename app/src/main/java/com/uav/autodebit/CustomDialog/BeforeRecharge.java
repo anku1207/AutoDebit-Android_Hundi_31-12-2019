@@ -41,12 +41,12 @@ public class BeforeRecharge {
                     }*/
 
                 }else if(oxigenTransactionVO.getStatusCode().equals("ap103")){
-                    String[] buttons = {"New Bank", "Existing Bank"};
+                    String[] buttons = {" New ", " Existing "};
                     Utility.showDoubleButtonDialogConfirmation(new DialogInterface() {
                         @Override
                         public void confirm(Dialog dialog) {
                             dialog.dismiss();
-                            createBankListInDialog(context,oxigenTransactionVOresp.getServiceId(),oxigenTransactionVO,new CallBackInterface((CallBackInterface.OnSuccess)(onclick)->{
+                            createBankListInDialog(context,oxigenTransactionVOresp.getProvider().getProviderId(),oxigenTransactionVO,new CallBackInterface((CallBackInterface.OnSuccess)(onclick)->{
                                 String bankId = (String) onclick;
                                 if(!bankId.equals("0")){
                                     mandateAndRechargeInterface.onRecharge(bankId);
@@ -79,7 +79,7 @@ public class BeforeRecharge {
     }
 
 
-    public static void createBankListInDialog(Context context, Integer serivceId, OxigenTransactionVO checkMandateResponse , CallBackInterface callBackInterface){
+    public static void createBankListInDialog(Context context, Integer providerId, OxigenTransactionVO checkMandateResponse , CallBackInterface callBackInterface){
         try {
             JSONArray arryjson = new JSONArray(checkMandateResponse.getAnonymousString());
             ArrayList<CustomerAuthServiceVO> customerAuthServiceArry = new ArrayList<>();
@@ -98,8 +98,15 @@ public class BeforeRecharge {
             customerAuthServiceVO.setCustomerAuthId(0);
             customerAuthServiceVO.setAnonymousString(null);
             customerAuthServiceArry.add(customerAuthServiceVO);
+            String title="Choose from existing Bank";
 
-            Utility.alertselectdialog(context, "Choose from existing Bank", customerAuthServiceArry, new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess) callBackInterface::onSuccess));
+            if(providerId==AuthServiceProviderVO.EQUIFAX){
+                title = "Choose from existing Bank";
+            }else if(providerId==AuthServiceProviderVO.AUTOPE_PG){
+                title = "Choose from existing Card";
+            }
+
+            Utility.alertselectdialog(context, title, customerAuthServiceArry, new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess) callBackInterface::onSuccess));
 
         } catch (Exception e) {
             ExceptionsNotification.ExceptionHandling(context , Utility.getStackTrace(e));
