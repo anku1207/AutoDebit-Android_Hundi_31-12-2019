@@ -657,7 +657,13 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                                 }));
                             },(BigContentDialogIntetface.Button2)(button2)->{
                                 button2.dismiss();
-                                dmrcCustomerCardSecurityDeposti(dmrc_customer_SI_cardVO.getDmrcid());
+                                String [] proceedBtn= {"Proceed"};
+                                MyDialog.showSingleButtonBigContentDialog(Dmrc_Card_Request.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                                    ok.dismiss();
+                                    dmrcCustomerCardSecurityDeposti(dmrc_customer_SI_cardVO.getDmrcid());
+                                }),null,dmrc_customer_SI_cardVO.getDialogMessage(),proceedBtn);
+
+
 
                             }),dmrc_customer_SI_cardVO.getDialogTitle(),dmrc_customer_SI_cardVO.getHtmlString(),btnText);
 

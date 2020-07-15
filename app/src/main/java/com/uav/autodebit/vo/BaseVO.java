@@ -37,6 +37,7 @@ public class BaseVO {
     private String appHash;
     private String paymentTypeObject;
     private String siMandateType;
+    private String dialogMessage;
 
 
 
@@ -277,5 +278,13 @@ public class BaseVO {
 
     public void setSiMandateType(String siMandateType) {
         this.siMandateType = siMandateType;
+    }
+
+    public String getDialogMessage() {
+        return dialogMessage;
+    }
+
+    public void setDialogMessage(String dialogMessage) {
+        this.dialogMessage = dialogMessage;
     }
 }
