@@ -12,6 +12,7 @@ public class ConfirmationDialogInterface {
     private OnOk onOk;
     private OnCancel onCancel;
 
+
     public ConfirmationDialogInterface(OnOk onOk, OnCancel onCancel) {
         this.onOk = onOk;
         this.onCancel = onCancel;

@@ -65,6 +65,7 @@ import com.uav.autodebit.util.BackgroundServiceInterface;
 import com.uav.autodebit.util.DialogInterface;
 import com.uav.autodebit.util.ExceptionHandler;
 import com.uav.autodebit.util.Utility;
+import com.uav.autodebit.vo.AuthServiceProviderVO;
 import com.uav.autodebit.vo.BannerVO;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerAuthServiceVO;
@@ -734,7 +735,7 @@ public class Home extends Base_Activity
                                     customerAuthServiceArry.add(customerAuthServiceVO);
 
 
-                                    Utility.alertselectdialog(Home.this,"Choose from existing Bank",customerAuthServiceArry,new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess)(s)->{
+                                    Utility.alertselectdialog(Home.this, AuthServiceProviderVO.ENACHIDFC,customerAuthServiceArry,new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess)(s)->{
                                         if(!s.equals("0")){
                                             Log.w("Home_value",s);
                                             setBankForService(serviceId,Integer.parseInt(Session.getCustomerId(Home.this)),Integer.parseInt(s));

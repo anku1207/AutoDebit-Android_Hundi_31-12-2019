@@ -39,6 +39,9 @@ public class BaseVO {
     private String siMandateType;
     private String dialogMessage;
 
+    private String siMandateHtml;
+    private String bankMandateHtml;
+
 
 
 
@@ -286,5 +289,21 @@ public class BaseVO {
 
     public void setDialogMessage(String dialogMessage) {
         this.dialogMessage = dialogMessage;
+    }
+
+    public String getSiMandateHtml() {
+        return siMandateHtml;
+    }
+
+    public void setSiMandateHtml(String siMandateHtml) {
+        this.siMandateHtml = siMandateHtml;
+    }
+
+    public String getBankMandateHtml() {
+        return bankMandateHtml;
+    }
+
+    public void setBankMandateHtml(String bankMandateHtml) {
+        this.bankMandateHtml = bankMandateHtml;
     }
 }

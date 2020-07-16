@@ -78,7 +78,7 @@ public class ApplicationConstant {
             //return "http://164.52.192.45";
         }else{
             return  "http://205.147.103.18:8080/hundi/rest/stateless/" ;
-            //return  "http://192.168.1.25:8080/hundi/rest/stateless/" ;
+           // return  "http://192.168.1.25:8080/hundi/rest/stateless/" ;
         }
     }
 

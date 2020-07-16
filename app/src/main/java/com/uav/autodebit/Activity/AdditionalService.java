@@ -48,6 +48,7 @@ import com.uav.autodebit.util.BackgroundAsyncService;
 import com.uav.autodebit.util.BackgroundServiceInterface;
 import com.uav.autodebit.util.DialogInterface;
 import com.uav.autodebit.util.Utility;
+import com.uav.autodebit.vo.AuthServiceProviderVO;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerAuthServiceVO;
 import com.uav.autodebit.vo.CustomerVO;
@@ -273,7 +274,7 @@ public class AdditionalService extends Base_Activity implements View.OnClickList
                                         customerAuthServiceVO.setAnonymousString(null);
                                         customerAuthServiceArry.add(customerAuthServiceVO);
 
-                                        Utility.alertselectdialog(AdditionalService.this, "Choose from existing Bank", customerAuthServiceArry, new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess) (s) -> {
+                                        Utility.alertselectdialog(AdditionalService.this, AuthServiceProviderVO.ENACHIDFC, customerAuthServiceArry, new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess) (s) -> {
                                             if (!s.equals("0")) {
                                                 Log.w("Home_value", s);
                                                 setBankForServiceList(Integer.parseInt(Session.getCustomerId(AdditionalService.this)), arrayList,Integer.parseInt(s));

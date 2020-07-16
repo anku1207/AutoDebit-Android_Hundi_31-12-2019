@@ -98,16 +98,7 @@ public class BeforeRecharge {
             customerAuthServiceVO.setCustomerAuthId(0);
             customerAuthServiceVO.setAnonymousString(null);
             customerAuthServiceArry.add(customerAuthServiceVO);
-            String title="Choose from existing Bank";
-
-            if(providerId==AuthServiceProviderVO.EQUIFAX){
-                title = "Choose from existing Bank";
-            }else if(providerId==AuthServiceProviderVO.AUTOPE_PG){
-                title = "Choose from existing Card";
-            }
-
-            Utility.alertselectdialog(context, title, customerAuthServiceArry, new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess) callBackInterface::onSuccess));
-
+            Utility.alertselectdialog(context, providerId, customerAuthServiceArry, new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess) callBackInterface::onSuccess));
         } catch (Exception e) {
             ExceptionsNotification.ExceptionHandling(context , Utility.getStackTrace(e));
         }

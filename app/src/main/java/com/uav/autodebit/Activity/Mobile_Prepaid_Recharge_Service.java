@@ -474,27 +474,34 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                         int selectPosition = Integer.parseInt(position);
                         if (selectPosition == ApplicationConstant.BankMandatePayment){
                             // 07/05/2020
-                            MyDialog.showWebviewConditionalAlertDialog(Mobile_Prepaid_Recharge_Service.this, oxigenValidateResponce.getClinkingOnBankMandate(),true,new ConfirmationGetObjet((ConfirmationGetObjet.OnOk)(ok)->{
-                                HashMap<String,Object> objectHashMap = (HashMap<String, Object>) ok;
-                                ((Dialog) Objects.requireNonNull(objectHashMap.get("dialog"))).dismiss();
-                                if(String.valueOf(objectHashMap.get("data")).equalsIgnoreCase("ok")){
-                                    //on si or recharge and mandate
-                                    startSIActivity(Mobile_Prepaid_Recharge_Service.this,oxigenValidateResponce,ApplicationConstant.PG_MANDATE_AND_RECHARGE);
-                                }
-                            },(ConfirmationGetObjet.OnCancel)(cancel)->{
-                                ((Dialog)cancel).dismiss();
-                                //if mandate is exist proceed bill  direct
-                                //if mandate is not exist check bank bank mandate
-                                // check mandate and adopt bank for service
-                                //oxiPripaidServiceMandateCheck(Mobile_Prepaid_Recharge_Service.this,oxigenValidateResponce.getServiceId(),true,oxigenValidateResponce);
-                                oxigenValidateResponce.setProvider(getAuthServiceProvider(AuthServiceProviderVO.ENACHIDFC));
-                                setBankMandateOrRecharge(Mobile_Prepaid_Recharge_Service.this,oxigenValidateResponce);
+
+                            BillPayRequest.showBankMandateOrSiMandateInfo(Mobile_Prepaid_Recharge_Service.this,oxigenValidateResponce.getBankMandateHtml(),new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                                MyDialog.showWebviewConditionalAlertDialog(Mobile_Prepaid_Recharge_Service.this, oxigenValidateResponce.getClinkingOnBankMandate(),true,new ConfirmationGetObjet((ConfirmationGetObjet.OnOk)(bankmandatedialog)->{
+                                    HashMap<String,Object> objectHashMap = (HashMap<String, Object>) bankmandatedialog;
+                                    ((Dialog) Objects.requireNonNull(objectHashMap.get("dialog"))).dismiss();
+                                    if(String.valueOf(objectHashMap.get("data")).equalsIgnoreCase("ok")){
+                                        //on si or recharge and mandate
+                                        startSIActivity(Mobile_Prepaid_Recharge_Service.this,oxigenValidateResponce,ApplicationConstant.PG_MANDATE_AND_RECHARGE);
+                                    }
+                                },(ConfirmationGetObjet.OnCancel)(cancel)->{
+                                    ((Dialog)cancel).dismiss();
+                                    //if mandate is exist proceed bill  direct
+                                    //if mandate is not exist check bank bank mandate
+                                    // check mandate and adopt bank for service
+                                    //oxiPripaidServiceMandateCheck(Mobile_Prepaid_Recharge_Service.this,oxigenValidateResponce.getServiceId(),true,oxigenValidateResponce);
+                                    oxigenValidateResponce.setProvider(getAuthServiceProvider(AuthServiceProviderVO.ENACHIDFC));
+                                    setBankMandateOrRecharge(Mobile_Prepaid_Recharge_Service.this,oxigenValidateResponce);
+                                }));
                             }));
+
 
                         } else if(selectPosition == ApplicationConstant.SIMandatePayment) {
                             // recharge on SI mandate
-                            oxigenValidateResponce.setProvider(getAuthServiceProvider(AuthServiceProviderVO.AUTOPE_PG));
-                            setBankMandateOrRecharge(Mobile_Prepaid_Recharge_Service.this,oxigenValidateResponce);
+
+                            BillPayRequest.showBankMandateOrSiMandateInfo(Mobile_Prepaid_Recharge_Service.this,oxigenValidateResponce.getSiMandateHtml(),new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                                oxigenValidateResponce.setProvider(getAuthServiceProvider(AuthServiceProviderVO.AUTOPE_PG));
+                                setBankMandateOrRecharge(Mobile_Prepaid_Recharge_Service.this,oxigenValidateResponce);
+                            }));
                             // proceedToRecharge(oxigenValidateResponce.getTypeId().toString(),"AUTOPETXNID60", AuthServiceProviderVO.PAYU);
                         }
                     }));
@@ -503,6 +510,9 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
             }
         });
     }
+
+
+
 
     public  void setBankMandateOrRecharge(Context context , OxigenTransactionVO oxigenTransactionVO){
         BeforeRecharge.beforeRechargeAddMandate(context,oxigenTransactionVO,new MandateAndRechargeInterface((MandateAndRechargeInterface.OnRecharge)(recharge)->{
@@ -756,10 +766,13 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                 }),customerVO.getDialogTitle(),customerVO.getAnonymousString());
             }));
         }else {
-            ((Activity)context).startActivity(new Intent(context,HistorySummary.class).putExtra("historyId",oxigenTransactionVO.getCustoemrHistoryId().toString()));
-            ((Activity)context).finish();
+            if(oxigenTransactionVO.getCustoemrHistoryId()!=null){
+                ((Activity)context).startActivity(new Intent(context,HistorySummary.class).putExtra("historyId",oxigenTransactionVO.getCustoemrHistoryId().toString()));
+                ((Activity)context).finish();
+            }else {
+                ((Activity)context).finish();
+            }
         }
-
     }
 
 

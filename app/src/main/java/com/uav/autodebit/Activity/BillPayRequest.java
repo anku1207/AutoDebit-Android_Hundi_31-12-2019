@@ -107,10 +107,11 @@ public class BillPayRequest {
                             int selectPosition=Integer.parseInt(position);
                             if(selectPosition==ApplicationConstant.BankMandatePayment ){
                                 //bank
-                                oxigenTransactionVOresp.setProvider(getAuthServiceProvider(AuthServiceProviderVO.ENACHIDFC));
-                                BillFetchFailAddMandate(context,oxigenTransactionVOresp);
 
-
+                                showBankMandateOrSiMandateInfo(context,oxigenValidateResponce.getBankMandateHtml(),new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                                    oxigenTransactionVOresp.setProvider(getAuthServiceProvider(AuthServiceProviderVO.ENACHIDFC));
+                                    BillFetchFailAddMandate(context,oxigenTransactionVOresp);
+                                }));
 
                                 /*Intent intent = new Intent(context,Enach_Mandate.class);
                                 intent.putExtra("selectservice",new ArrayList<Integer>(Arrays.asList(oxigenTransactionVOresp.getServiceId())));
@@ -119,11 +120,10 @@ public class BillPayRequest {
                                 */
 
                             }else if(selectPosition==ApplicationConstant.SIMandatePayment){
-
-                                oxigenTransactionVOresp.setProvider(getAuthServiceProvider(AuthServiceProviderVO.AUTOPE_PG));
-                                BillFetchFailAddMandate(context,oxigenTransactionVOresp);
-
-
+                                showBankMandateOrSiMandateInfo(context,oxigenValidateResponce.getSiMandateHtml(),new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                                    oxigenTransactionVOresp.setProvider(getAuthServiceProvider(AuthServiceProviderVO.AUTOPE_PG));
+                                    BillFetchFailAddMandate(context,oxigenTransactionVOresp);
+                                }));
                                /* Intent intent = new Intent(context,SI_First_Data.class);
                                 intent.putExtra("id",oxigenTransactionVOresp.getTypeId());
                                 intent.putExtra("amount",oxigenTransactionVOresp.getNetAmount());
@@ -587,28 +587,34 @@ public class BillPayRequest {
                             Utility.showSelectPaymentTypeDialog(context,"Add Mandate",oxigenValidateResponce.getPaymentTypeObject(),new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess)(position)->{
                                 int selectPosition=Integer.parseInt(position);
                                 if(selectPosition==ApplicationConstant.BankMandatePayment ){
-                                    // if service id is dish show mandate dialog
-                                  if(oxigenValidateResponce.getShowDialog()){
-                                      // 07/05/2020
-                                      MyDialog.showWebviewConditionalAlertDialog(context,oxigenValidateResponce.getClinkingOnBankMandate(),true,new ConfirmationGetObjet((ConfirmationGetObjet.OnOk)(ok)->{
-                                          HashMap<String,Object> objectHashMap = (HashMap<String, Object>) ok;
-                                          ((Dialog) Objects.requireNonNull(objectHashMap.get("dialog"))).dismiss();
-                                          if(String.valueOf(objectHashMap.get("data")).equalsIgnoreCase("ok")){
-                                              paymentGatewayResponse.onPg(oxigenValidateResponce);
-                                          }
-                                      },(ConfirmationGetObjet.OnCancel)(cancel)->{
-                                          ((Dialog)cancel).dismiss();
-                                          oxigenValidateResponce.setProvider(getAuthServiceProvider(AuthServiceProviderVO.ENACHIDFC));
-                                          paymentGatewayResponse.onEnach(oxigenValidateResponce);
-                                      }));
-                                  }else {
-                                      oxigenValidateResponce.setProvider(getAuthServiceProvider(AuthServiceProviderVO.ENACHIDFC));
-                                      paymentGatewayResponse.onEnach(oxigenValidateResponce);
-                                  }
-                                }else if(selectPosition==ApplicationConstant.SIMandatePayment){
-                                    oxigenValidateResponce.setProvider(getAuthServiceProvider(AuthServiceProviderVO.AUTOPE_PG));
-                                    paymentGatewayResponse.onSiMandate(oxigenValidateResponce);
+                                    // 07/05/2020
 
+
+                                    showBankMandateOrSiMandateInfo(context,oxigenValidateResponce.getBankMandateHtml(),new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                                        if(oxigenValidateResponce.getShowDialog()){
+                                            // 07/05/2020
+                                            MyDialog.showWebviewConditionalAlertDialog(context,oxigenValidateResponce.getClinkingOnBankMandate(),true,new ConfirmationGetObjet((ConfirmationGetObjet.OnOk)(rechargenow)->{
+                                                HashMap<String,Object> objectHashMap = (HashMap<String, Object>) rechargenow;
+                                                ((Dialog) Objects.requireNonNull(objectHashMap.get("dialog"))).dismiss();
+                                                if(String.valueOf(objectHashMap.get("data")).equalsIgnoreCase("ok")){
+                                                    paymentGatewayResponse.onPg(oxigenValidateResponce);
+                                                }
+                                            },(ConfirmationGetObjet.OnCancel)(cancel)->{
+                                                ((Dialog)cancel).dismiss();
+                                                oxigenValidateResponce.setProvider(getAuthServiceProvider(AuthServiceProviderVO.ENACHIDFC));
+                                                paymentGatewayResponse.onEnach(oxigenValidateResponce);
+                                            }));
+                                        }else {
+                                            oxigenValidateResponce.setProvider(getAuthServiceProvider(AuthServiceProviderVO.ENACHIDFC));
+                                            paymentGatewayResponse.onEnach(oxigenValidateResponce);
+                                        }
+                                    }));
+                                    // if service id is dish show mandate dialog
+                                }else if(selectPosition==ApplicationConstant.SIMandatePayment){
+                                    showBankMandateOrSiMandateInfo(context,oxigenValidateResponce.getSiMandateHtml(),new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                                        oxigenValidateResponce.setProvider(getAuthServiceProvider(AuthServiceProviderVO.AUTOPE_PG));
+                                        paymentGatewayResponse.onSiMandate(oxigenValidateResponce);
+                                    }));
                                 }else if(selectPosition==ApplicationConstant.UPIMandatePayment) {
                                     //paymentGatewayResponse.onPg(oxigenValidateResponce);
                                 }
@@ -621,6 +627,19 @@ public class BillPayRequest {
                 }
             }
         });
+    }
+
+    public static void showBankMandateOrSiMandateInfo(Context context ,String htmlUrl, ConfirmationDialogInterface confirmationDialogInterface){
+        MyDialog.showWebviewConditionalAlertDialog(context,htmlUrl,true,new ConfirmationGetObjet((ConfirmationGetObjet.OnOk)(ok)->{
+            HashMap<String,Object> objectHashMapMandateDialog = (HashMap<String, Object>) ok;
+            ((Dialog) Objects.requireNonNull(objectHashMapMandateDialog.get("dialog"))).dismiss();
+            if(String.valueOf(objectHashMapMandateDialog.get("data")).equalsIgnoreCase("ok")){
+                confirmationDialogInterface.onOk(null);
+            }
+        },(ConfirmationGetObjet.OnCancel)(cancel)->{
+            ((Dialog)cancel).dismiss();
+        }));
+
     }
 
 

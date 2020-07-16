@@ -113,102 +113,107 @@ public class MyDialog {
 
     @SuppressLint("SetJavaScriptEnabled")
     public static void showWebviewConditionalAlertDialog(Context context , String value, boolean backBtnCloseDialog, ConfirmationGetObjet confirmationGetObjet){
-        final Dialog cusdialog = new Dialog(context);
-        cusdialog.requestWindowFeature(1);
-        Objects.requireNonNull(cusdialog.getWindow()).setBackgroundDrawable(new ColorDrawable(0));
-        cusdialog.setContentView(R.layout.webview_alert_dialog);
-        cusdialog.setCanceledOnTouchOutside(false);
-        cusdialog.setCancelable(backBtnCloseDialog);
-        // cusdialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        try {
+            final Dialog cusdialog = new Dialog(context);
+            cusdialog.requestWindowFeature(1);
+            Objects.requireNonNull(cusdialog.getWindow()).setBackgroundDrawable(new ColorDrawable(0));
+            cusdialog.setContentView(R.layout.webview_alert_dialog);
+            cusdialog.setCanceledOnTouchOutside(false);
+            cusdialog.setCancelable(backBtnCloseDialog);
+            // cusdialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
 
-        String[] value_split = value.split("\\|");
-        WebView webview = cusdialog.findViewById(R.id.webview);
-        LinearLayout addview = cusdialog.findViewById(R.id.addview);
+            String[] value_split = value.split("\\|");
+            WebView webview = cusdialog.findViewById(R.id.webview);
+            LinearLayout addview = cusdialog.findViewById(R.id.addview);
 
-        if(value_split.length>1){
-            TextView textView =Utility.getTextView(context,value_split[1]);
-            addview.addView(textView);
-            textView.setLayoutParams(Utility.getLayoutparams(context,0,0,0,0));
-            addview.setVisibility(View.VISIBLE);
-            addview.setPadding(10,10,10,10);
+            if(value_split.length>1){
+                TextView textView =Utility.getTextView(context,value_split[1]);
+                addview.addView(textView);
+                textView.setLayoutParams(Utility.getLayoutparams(context,0,0,0,0));
+                addview.setVisibility(View.VISIBLE);
+                addview.setPadding(10,10,10,10);
+            }
+
+            WebSettings ws = webview.getSettings() ;
+            ws.setJavaScriptEnabled( true ) ;
+            webview.setWebChromeClient(new WebChromeClient() {
+                @Override
+                public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
+                    return super.onJsAlert(view, url, message, result);
+                }
+                @Override
+                public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
+                    android.util.Log.d("WebView", consoleMessage.message());
+                    return true;
+                }
+            });
+
+
+            webview.setVerticalScrollBarEnabled(false);
+            webview.setHorizontalScrollBarEnabled(false);
+            webview.getSettings().setBuiltInZoomControls(false);
+
+            webview.getSettings().setLoadsImagesAutomatically(true);
+            webview.getSettings().setDomStorageEnabled(true);
+            webview.setInitialScale(1);
+            webview.getSettings().setUseWideViewPort(true);
+
+            // webview.loadData(html, "text/html; charset=utf-8", "UTF-8");
+            webview.loadUrl(value_split[0]); //receiptUrl
+            webview.addJavascriptInterface( new Object() {
+                @JavascriptInterface // For API 17+
+                public void performClick (String message) {
+                    ((Activity)context).runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(message.equalsIgnoreCase("cancel")){
+                                confirmationGetObjet.onCancel(cusdialog);
+                            }else {
+                                HashMap<String,Object> objectsHashMap = new HashMap<>();
+                                objectsHashMap.put("dialog",cusdialog);
+                                objectsHashMap.put("data",message);
+                                confirmationGetObjet.onOk(objectsHashMap);
+                            }
+                        }
+                    });
+                }
+            },"ok" );
+            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+            lp.copyFrom(cusdialog.getWindow().getAttributes());
+            lp.width = (WindowManager.LayoutParams.MATCH_PARENT);
+            lp.height = (WindowManager.LayoutParams.WRAP_CONTENT);
+            cusdialog.getWindow().setAttributes(lp);
+
+            webview.setWebViewClient(new WebViewClient(){
+                final ProgressDialog progressBar = ProgressDialog.show(context, null, " Please wait...", false, false);
+                @Override
+                public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                    view.loadUrl(url);
+                    return true;
+                }
+                @Override
+                public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                    super.onPageStarted(view, url, favicon);
+                    if(progressBar!=null && !progressBar.isShowing())  progressBar.show();
+                }
+                @Override
+                public void onPageFinished(WebView view, String url) {
+                    if (progressBar!=null && progressBar.isShowing()) {
+                        progressBar.dismiss();
+                    }
+                    if(!cusdialog.isShowing())cusdialog.show();
+                }
+                @TargetApi(android.os.Build.VERSION_CODES.M)
+                public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
+                    if (progressBar!=null && progressBar.isShowing()) {
+                        progressBar.dismiss();
+                    }
+                }
+            });
+        }catch (Exception e){
+            ExceptionsNotification.ExceptionHandling(context , Utility.getStackTrace(e));
         }
 
-        WebSettings ws = webview.getSettings() ;
-        ws.setJavaScriptEnabled( true ) ;
-        webview.setWebChromeClient(new WebChromeClient() {
-            @Override
-            public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
-                return super.onJsAlert(view, url, message, result);
-            }
-            @Override
-            public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-                android.util.Log.d("WebView", consoleMessage.message());
-                return true;
-            }
-        });
-
-
-        webview.setVerticalScrollBarEnabled(false);
-        webview.setHorizontalScrollBarEnabled(false);
-        webview.getSettings().setBuiltInZoomControls(false);
-
-        webview.getSettings().setLoadsImagesAutomatically(true);
-        webview.getSettings().setDomStorageEnabled(true);
-        webview.setInitialScale(1);
-        webview.getSettings().setUseWideViewPort(true);
-
-        // webview.loadData(html, "text/html; charset=utf-8", "UTF-8");
-        webview.loadUrl(value_split[0]); //receiptUrl
-        webview.addJavascriptInterface( new Object() {
-            @JavascriptInterface // For API 17+
-            public void performClick (String message) {
-                ((Activity)context).runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if(message.equalsIgnoreCase("cancel")){
-                            confirmationGetObjet.onCancel(cusdialog);
-                        }else {
-                            HashMap<String,Object> objectsHashMap = new HashMap<>();
-                            objectsHashMap.put("dialog",cusdialog);
-                            objectsHashMap.put("data",message);
-                            confirmationGetObjet.onOk(objectsHashMap);
-                        }
-                    }
-                });
-            }
-        },"ok" );
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        lp.copyFrom(cusdialog.getWindow().getAttributes());
-        lp.width = (WindowManager.LayoutParams.MATCH_PARENT);
-        lp.height = (WindowManager.LayoutParams.WRAP_CONTENT);
-        cusdialog.getWindow().setAttributes(lp);
-
-        webview.setWebViewClient(new WebViewClient(){
-            final ProgressDialog progressBar = ProgressDialog.show(context, null, " Please wait...", false, false);
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url);
-                return true;
-            }
-            @Override
-            public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                super.onPageStarted(view, url, favicon);
-                if(progressBar!=null && !progressBar.isShowing())  progressBar.show();
-            }
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                if (progressBar!=null && progressBar.isShowing()) {
-                    progressBar.dismiss();
-                }
-                if(!cusdialog.isShowing())cusdialog.show();
-            }
-            @TargetApi(android.os.Build.VERSION_CODES.M)
-            public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
-                if (progressBar!=null && progressBar.isShowing()) {
-                    progressBar.dismiss();
-                }
-            }
-        });
     }
 
 

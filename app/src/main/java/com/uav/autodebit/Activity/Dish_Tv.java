@@ -136,7 +136,7 @@ public class Dish_Tv  extends Base_Activity implements View.OnClickListener  {
                         }
                         Utility.showSingleButtonDialog(context,"Error !",sb.toString(),false);
                     }else{
-                        if(response_DishTVVO.getEnachMandateId()==null || response_DishTVVO.getEnachMandateId().equals("")){
+                       // if(response_DishTVVO.getEnachMandateId()==null || response_DishTVVO.getEnachMandateId().equals("")){
                             Utility.removeEle(proceed);
                             Utility.removeEle(accountnumber);
                             JSONObject detailJson=(new JSONObject(response_DishTVVO.getVcDetails())).getJSONObject("Result");
@@ -183,9 +183,9 @@ public class Dish_Tv  extends Base_Activity implements View.OnClickListener  {
                                 planDetailarr.put(jsonObject);
                             }
                             createLayout(planDetailarr,false,null);
-                        }else {
+                        /*}else {
                             getDishTvPostMandate();
-                        }
+                        }*/
                     }
                 }
             });

@@ -120,6 +120,7 @@ import com.uav.autodebit.constant.ErrorMsg;
 import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.override.ExpandableHeightListView;
 import com.uav.autodebit.override.UAVEditText;
+import com.uav.autodebit.vo.AuthServiceProviderVO;
 import com.uav.autodebit.vo.CustomerAuthServiceVO;
 import com.uav.autodebit.vo.DataAdapterVO;
 import com.uav.autodebit.volley.VolleyUtils;
@@ -128,6 +129,7 @@ import com.uav.autodebit.volley.VolleyUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -1225,17 +1227,34 @@ public class Utility {
     }
 
 
-    public static void alertselectdialog(Context context, String title, ArrayList<CustomerAuthServiceVO> dataArray, AlertSelectDialogClick alertSelectDialogClick){
-         final Dialog var3 = new Dialog(context);
-         var3.requestWindowFeature(1);
-         var3.getWindow().setBackgroundDrawable(new ColorDrawable(0));
-         var3.setContentView(R.layout.alertselectdialog);
-         // var3.setCanceledOnTouchOutside(false);
-         TextView title_text = (TextView)var3.findViewById(R.id.dialog_one_tv_title);
-         title_text.setText(title);
-         ListView listView = (ListView) var3.findViewById(R.id.listview);
+    public static void alertselectdialog(Context context, int providerId, ArrayList<CustomerAuthServiceVO> dataArray, AlertSelectDialogClick alertSelectDialogClick){
+        final Dialog var3 = new Dialog(context);
+        var3.requestWindowFeature(1);
+        var3.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        var3.setContentView(R.layout.alertselectdialog);
+        // var3.setCanceledOnTouchOutside(false);
 
-         ListViewAlertSelectListBaseAdapter myAdapter=new ListViewAlertSelectListBaseAdapter(context, dataArray, R.layout.design_list_text_with_card);
+        TextView title_text = (TextView)var3.findViewById(R.id.dialog_one_tv_title);
+        TextView title1=var3.findViewById(R.id.title1);
+        TextView title2=var3.findViewById(R.id.title2);
+        TextView title3=var3.findViewById(R.id.title3);
+
+        if(providerId== AuthServiceProviderVO.ENACHIDFC){
+            title_text.setText("Select An Existing Mandate");
+            title1.setText("Bank");
+            title2.setText("MandateId");
+            title3.setText("Status");
+        }else if(providerId==AuthServiceProviderVO.AUTOPE_PG){
+            title_text.setText("Select An Existing Mandate");
+            title1.setText("Bank");
+            title2.setText("Card No.");
+            title3.setText("Status");
+        }
+
+
+        ListView listView = (ListView) var3.findViewById(R.id.listview);
+
+        ListViewAlertSelectListBaseAdapter myAdapter=new ListViewAlertSelectListBaseAdapter(context, dataArray, R.layout.design_list_text_with_card);
         listView.setAdapter(myAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
