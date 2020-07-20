@@ -41,6 +41,7 @@ public class BaseVO {
 
     private String siMandateHtml;
     private String bankMandateHtml;
+    private String upiMandateHtml;
 
 
 
@@ -305,5 +306,13 @@ public class BaseVO {
 
     public void setBankMandateHtml(String bankMandateHtml) {
         this.bankMandateHtml = bankMandateHtml;
+    }
+
+    public String getUpiMandateHtml() {
+        return upiMandateHtml;
+    }
+
+    public void setUpiMandateHtml(String upiMandateHtml) {
+        this.upiMandateHtml = upiMandateHtml;
     }
 }

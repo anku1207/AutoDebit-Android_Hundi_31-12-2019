@@ -651,7 +651,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
 
                                     BeforeRecharge.beforeRechargeAddMandate(Dmrc_Card_Request.this,oxigenTransactionVO,new MandateAndRechargeInterface((MandateAndRechargeInterface.OnRecharge)(recharge)->{
                                         try {
-                                            allotDmrcCard(dmrc_customer_SI_cardVO.getDmrcid(), (Integer) recharge);
+                                            allotDmrcCard(dmrc_customer_SI_cardVO.getDmrcid(),Integer.parseInt((String) recharge));
                                         }catch (Exception e){
                                             ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this , Utility.getStackTrace(e));
                                         }

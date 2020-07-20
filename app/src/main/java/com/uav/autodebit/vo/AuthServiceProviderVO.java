@@ -11,6 +11,7 @@ public class AuthServiceProviderVO extends BaseVO  implements Serializable {
     public static int CCAVENUE=4;
     public static int PAYU=5;
     public static int AUTOPE_PG=6;
+    public static int AUTOPE_PG_UPI=7;
 
 
     private Integer providerId;

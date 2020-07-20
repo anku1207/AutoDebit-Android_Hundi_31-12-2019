@@ -107,12 +107,10 @@ public class BillPayRequest {
                             int selectPosition=Integer.parseInt(position);
                             if(selectPosition==ApplicationConstant.BankMandatePayment ){
                                 //bank
-
-                                showBankMandateOrSiMandateInfo(context,oxigenValidateResponce.getBankMandateHtml(),new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                                showBankMandateOrSiMandateInfo(context,oxigenTransactionVOresp.getBankMandateHtml(),new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
                                     oxigenTransactionVOresp.setProvider(getAuthServiceProvider(AuthServiceProviderVO.ENACHIDFC));
                                     BillFetchFailAddMandate(context,oxigenTransactionVOresp);
                                 }));
-
                                 /*Intent intent = new Intent(context,Enach_Mandate.class);
                                 intent.putExtra("selectservice",new ArrayList<Integer>(Arrays.asList(oxigenTransactionVOresp.getServiceId())));
                                 intent.putExtra("id", oxigenTransactionVOresp.getTypeId());
@@ -120,7 +118,7 @@ public class BillPayRequest {
                                 */
 
                             }else if(selectPosition==ApplicationConstant.SIMandatePayment){
-                                showBankMandateOrSiMandateInfo(context,oxigenValidateResponce.getSiMandateHtml(),new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                                showBankMandateOrSiMandateInfo(context,oxigenTransactionVOresp.getSiMandateHtml(),new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
                                     oxigenTransactionVOresp.setProvider(getAuthServiceProvider(AuthServiceProviderVO.AUTOPE_PG));
                                     BillFetchFailAddMandate(context,oxigenTransactionVOresp);
                                 }));
@@ -630,15 +628,20 @@ public class BillPayRequest {
     }
 
     public static void showBankMandateOrSiMandateInfo(Context context ,String htmlUrl, ConfirmationDialogInterface confirmationDialogInterface){
-        MyDialog.showWebviewConditionalAlertDialog(context,htmlUrl,true,new ConfirmationGetObjet((ConfirmationGetObjet.OnOk)(ok)->{
-            HashMap<String,Object> objectHashMapMandateDialog = (HashMap<String, Object>) ok;
-            ((Dialog) Objects.requireNonNull(objectHashMapMandateDialog.get("dialog"))).dismiss();
-            if(String.valueOf(objectHashMapMandateDialog.get("data")).equalsIgnoreCase("ok")){
-                confirmationDialogInterface.onOk(null);
-            }
-        },(ConfirmationGetObjet.OnCancel)(cancel)->{
-            ((Dialog)cancel).dismiss();
-        }));
+        try {
+            MyDialog.showWebviewConditionalAlertDialog(context,htmlUrl,true,new ConfirmationGetObjet((ConfirmationGetObjet.OnOk)(ok)->{
+                HashMap<String,Object> objectHashMapMandateDialog = (HashMap<String, Object>) ok;
+                ((Dialog) Objects.requireNonNull(objectHashMapMandateDialog.get("dialog"))).dismiss();
+                if(String.valueOf(objectHashMapMandateDialog.get("data")).equalsIgnoreCase("ok")){
+                    confirmationDialogInterface.onOk(null);
+                }
+            },(ConfirmationGetObjet.OnCancel)(cancel)->{
+                ((Dialog)cancel).dismiss();
+            }));
+        }catch (Exception e){
+            ExceptionsNotification.ExceptionHandling(context , Utility.getStackTrace(e));
+        }
+
 
     }
 

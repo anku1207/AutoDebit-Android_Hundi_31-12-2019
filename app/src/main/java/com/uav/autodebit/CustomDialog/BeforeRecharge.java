@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.widget.Toast;
 
 import com.uav.autodebit.Activity.CheckMandateAndShowDialog;
 import com.uav.autodebit.Activity.Enach_Mandate;

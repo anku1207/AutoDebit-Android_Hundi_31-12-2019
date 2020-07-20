@@ -388,7 +388,7 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
                                 text2.setText(orderreap.getString("txnId"));
                                 text3.setText(df.format(Double.parseDouble(orderreap.getString("orderAmount"))));
                                 continuebtn.setVisibility(View.VISIBLE);
-                            }else if(htmlRequestResp.getTokenId().equalsIgnoreCase(ApplicationConstant.PG_PAYMENT)){
+                            }else{
                                 Intent intent =new Intent();
                                 setResult(RESULT_OK,intent);
                                 intent.putExtra("actionId",actionId);

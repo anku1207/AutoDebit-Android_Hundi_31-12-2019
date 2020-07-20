@@ -503,6 +503,13 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                                 setBankMandateOrRecharge(Mobile_Prepaid_Recharge_Service.this,oxigenValidateResponce);
                             }));
                             // proceedToRecharge(oxigenValidateResponce.getTypeId().toString(),"AUTOPETXNID60", AuthServiceProviderVO.PAYU);
+                        }else if(selectPosition == ApplicationConstant.UPIMandatePayment) {
+                            // recharge on SI mandate
+                            BillPayRequest.showBankMandateOrSiMandateInfo(Mobile_Prepaid_Recharge_Service.this,oxigenValidateResponce.getSiMandateHtml(),new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                                oxigenValidateResponce.setProvider(getAuthServiceProvider(AuthServiceProviderVO.AUTOPE_PG_UPI));
+                                setBankMandateOrRecharge(Mobile_Prepaid_Recharge_Service.this,oxigenValidateResponce);
+                            }));
+                            // proceedToRecharge(oxigenValidateResponce.getTypeId().toString(),"AUTOPETXNID60", AuthServiceProviderVO.PAYU);
                         }
                     }));
 
@@ -510,7 +517,6 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
             }
         });
     }
-
 
 
 
@@ -522,6 +528,8 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                 startSIActivity(context,oxigenTransactionVO,ApplicationConstant.PG_MANDATE_AND_RECHARGE);
             }else if(oxigenTransactionVO.getProvider().getProviderId()== AuthServiceProviderVO.ENACHIDFC){
                 ((Activity) context).startActivityForResult(new Intent(context, Enach_Mandate.class).putExtra("forresutl", true).putExtra("selectservice", new ArrayList<Integer>(Arrays.asList(oxigenTransactionVO.getServiceId()))), ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE);
+            }else if(oxigenTransactionVO.getProvider().getProviderId()== AuthServiceProviderVO.AUTOPE_PG_UPI){
+                startUPIActivity(context,oxigenTransactionVO,ApplicationConstant.PG_MANDATE_AND_RECHARGE);
             }
         }));
 
@@ -543,6 +551,15 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
         ((Activity) context).startActivityForResult(intent,ApplicationConstant.REQ_SI_MANDATE);
     }
 
+
+    public static void startUPIActivity(Context context , OxigenTransactionVO  oxigenTransactionVO , String paymentType){
+        Intent intent = new Intent(context,UPI_Mandate.class);
+        intent.putExtra("id",oxigenTransactionVO.getTypeId());
+        intent.putExtra("amount",oxigenTransactionVO.getNetAmount());
+        intent.putExtra("serviceId",oxigenTransactionVO.getServiceId()+"");
+        intent.putExtra("paymentType",paymentType);
+        ((Activity) context).startActivityForResult(intent,ApplicationConstant.REQ_UPI_FOR_MANDATE);
+    }
    /* public void beforeRechargeAddMandate(Context context , OxigenTransactionVO oxigenTransactionVOresp){
         CheckMandateAndShowDialog.oxiServiceMandateCheck(context,oxigenTransactionVOresp.getServiceId(),oxigenTransactionVOresp.getProvider().getProviderId(),new VolleyResponse((VolleyResponse.OnSuccess)(mandatecheckresp)->{
             OxigenTransactionVO oxigenTransactionVO = (OxigenTransactionVO) mandatecheckresp;
