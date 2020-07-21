@@ -56,6 +56,7 @@ import com.uav.autodebit.Interface.BigContentDialogIntetface;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.Interface.ConfirmationGetObjet;
 import com.uav.autodebit.Interface.MandateAndRechargeInterface;
+import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
 import com.uav.autodebit.adpater.CustomPagerAdapter;
 import com.uav.autodebit.constant.ApplicationConstant;
@@ -511,61 +512,37 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                         intent.putExtra("dmrccard",gson.toJson(dmrc_customer_cardVO));
                         startActivity(intent);
                         finish();*/
-                        if(!dmrc_customer_cardVO.getStatusCode().equals("200") && !dmrc_customer_cardVO.getStatusCode().equals("ap104")){
-                            showBankMandateOrSiMandateInfo(Dmrc_Card_Request.this,dmrc_customer_cardVO.getBankMandateHtml(),new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
-                                if(dmrc_customer_cardVO.getStatusCode().equals("ap105") || dmrc_customer_cardVO.getStatusCode().equals("ap107") ||dmrc_customer_cardVO.getStatusCode().equals("ap102")){
-                                    // 12/04/2020
-                                    startActivityForResult(new Intent(Dmrc_Card_Request.this,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(serviceId))),ApplicationConstant.REQ_ENACH_MANDATE);
-                                }else if(dmrc_customer_cardVO.getStatusCode().equals("ap106") || dmrc_customer_cardVO.getStatusCode().equals("ap103") || dmrc_customer_cardVO.getStatusCode().equals("ap108")) {
-                                    // 12/04/2020
-                                    String[] buttons = {" New " ," Existing "};
-                                    Utility.showDoubleButtonDialogConfirmation(new com.uav.autodebit.util.DialogInterface() {
-                                        @Override
-                                        public void confirm(Dialog dialog) {
-                                            dialog.dismiss();
-                                            try {
-                                                JSONArray arryjson = new JSONArray(dmrc_customer_cardVO.getAnonymousString());
-                                                ArrayList<CustomerAuthServiceVO> customerAuthServiceArry = new ArrayList<>();
-                                                for (int i = 0; i < arryjson.length(); i++) {
-                                                    JSONObject jsonObject = arryjson.getJSONObject(i);
-                                                    CustomerAuthServiceVO customerAuthServiceVO = new CustomerAuthServiceVO();
-                                                    customerAuthServiceVO.setBankName(jsonObject.getString("bankName"));
-                                                    customerAuthServiceVO.setProviderTokenId(jsonObject.getString("mandateId"));
-                                                    customerAuthServiceVO.setCustomerAuthId(jsonObject.getInt("id"));
-                                                    customerAuthServiceVO.setAnonymousString(jsonObject.getString("status"));
-                                                    customerAuthServiceArry.add(customerAuthServiceVO);
-                                                }
-                                                CustomerAuthServiceVO customerAuthServiceVO = new CustomerAuthServiceVO();
-                                                customerAuthServiceVO.setBankName(null);
-                                                customerAuthServiceVO.setProviderTokenId("Add New Mandate");
-                                                customerAuthServiceVO.setCustomerAuthId(0);
-                                                customerAuthServiceVO.setAnonymousString(null);
-                                                customerAuthServiceArry.add(customerAuthServiceVO);
+                        if(dmrc_customer_cardVO.isEventIs()){
+                            Utility.showSelectPaymentTypeDialog(Dmrc_Card_Request.this, "Payment Type", dmrc_customer_cardVO.getPaymentTypeObject(), new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess) (position) -> {
+                                int selectPosition = Integer.parseInt(position);
+                                if (selectPosition == ApplicationConstant.BankMandatePayment){
+                                    // 07/05/2020
+                                    BillPayRequest.showBankMandateOrSiMandateInfo(Dmrc_Card_Request.this,dmrc_customer_cardVO.getBankMandateHtml(),new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                                        dmrc_customer_cardVO.setAnonymousInteger(AuthServiceProviderVO.ENACHIDFC);
+                                        setBankMandateOrRecharge(Dmrc_Card_Request.this,dmrc_customer_cardVO);
+                                    }));
 
-                                                Utility.alertselectdialog(Dmrc_Card_Request.this, AuthServiceProviderVO.ENACHIDFC, customerAuthServiceArry, new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess) (s) -> {
-                                                    if (!s.equals("0")) {
-                                                        Log.w("Home_value", s);
-                                                        sIMandateDmrc(Integer.parseInt(s));
-                                                    } else {
-                                                        startActivityForResult(new Intent(Dmrc_Card_Request.this, Enach_Mandate.class).putExtra("forresutl", true).putExtra("selectservice", new ArrayList<Integer>(Arrays.asList(serviceId))), ApplicationConstant.REQ_ENACH_MANDATE);
-                                                    }
-                                                }));
-                                            } catch (Exception e) {
-                                                ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this , Utility.getStackTrace(e));
-                                                // Utility.exceptionAlertDialog(Dmrc_Card_Request.this, "Alert!", "Something went wrong, Please try again!", "Report", Utility.getStackTrace(e));
-                                            }
-                                        }
-                                        @Override
-                                        public void modify(Dialog dialog) {
-                                            dialog.dismiss();
-                                            startActivityForResult(new Intent(Dmrc_Card_Request.this, Enach_Mandate.class).putExtra("forresutl", true).putExtra("selectservice", new ArrayList<Integer>(Arrays.asList(serviceId))), ApplicationConstant.REQ_ENACH_MANDATE);
-                                        }
-                                    }, Dmrc_Card_Request.this, dmrc_customer_cardVO.getErrorMsgs().get(0), "", buttons);
+
+                                } else if(selectPosition == ApplicationConstant.SIMandatePayment) {
+                                    // recharge on SI mandate
+
+                                    BillPayRequest.showBankMandateOrSiMandateInfo(Dmrc_Card_Request.this,dmrc_customer_cardVO.getSiMandateHtml(),new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                                        dmrc_customer_cardVO.setAnonymousInteger(AuthServiceProviderVO.AUTOPE_PG);
+                                        setBankMandateOrRecharge(Dmrc_Card_Request.this,dmrc_customer_cardVO);
+                                    }));
+                                    // proceedToRecharge(oxigenValidateResponce.getTypeId().toString(),"AUTOPETXNID60", AuthServiceProviderVO.PAYU);
+                                }else if(selectPosition == ApplicationConstant.UPIMandatePayment) {
+                                    // recharge on SI mandate
+                                    BillPayRequest.showBankMandateOrSiMandateInfo(Dmrc_Card_Request.this,dmrc_customer_cardVO.getUpiMandateHtml(),new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                                        dmrc_customer_cardVO.setAnonymousInteger(AuthServiceProviderVO.AUTOPE_PG_UPI);
+                                        setBankMandateOrRecharge(Dmrc_Card_Request.this,dmrc_customer_cardVO);
+                                    }));
+                                    // proceedToRecharge(oxigenValidateResponce.getTypeId().toString(),"AUTOPETXNID60", AuthServiceProviderVO.PAYU);
                                 }
                             }));
 
                         }else {
-                            sIMandateDmrc(null);
+                            sIMandateDmrc(null,null);
                         }
                     }
                 }
@@ -576,21 +553,59 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
         }
     }
 
-    public static void showBankMandateOrSiMandateInfo(Context context ,String htmlUrl, ConfirmationDialogInterface confirmationDialogInterface){
-        MyDialog.showWebviewConditionalAlertDialog(context,htmlUrl,true,new ConfirmationGetObjet((ConfirmationGetObjet.OnOk)(ok)->{
-            HashMap<String,Object> objectHashMapMandateDialog = (HashMap<String, Object>) ok;
-            ((Dialog) Objects.requireNonNull(objectHashMapMandateDialog.get("dialog"))).dismiss();
-            if(String.valueOf(objectHashMapMandateDialog.get("data")).equalsIgnoreCase("ok")){
-                confirmationDialogInterface.onOk(null);
+    public  void setBankMandateOrRecharge(Context context , DMRC_Customer_CardVO dmrc_customer_cardVO){
+        OxigenTransactionVO oxigenTransactionVO = new OxigenTransactionVO();
+        oxigenTransactionVO.setServiceId(dmrc_customer_cardVO.getServiceId());
+
+        AuthServiceProviderVO authServiceProviderVO = new AuthServiceProviderVO();
+        authServiceProviderVO.setProviderId(dmrc_customer_cardVO.getAnonymousInteger());
+        oxigenTransactionVO.setProvider(authServiceProviderVO);
+
+        BeforeRecharge.beforeRechargeAddMandate(context,oxigenTransactionVO,new MandateAndRechargeInterface((MandateAndRechargeInterface.OnRecharge)(recharge)->{
+            sIMandateDmrc(Integer.parseInt((String) recharge),dmrc_customer_cardVO.getAnonymousInteger());
+        }, (MandateAndRechargeInterface.OnMandate)(mandate)->{
+            if(oxigenTransactionVO.getProvider().getProviderId()== AuthServiceProviderVO.AUTOPE_PG){
+                startSIActivity(context,dmrc_customer_cardVO,ApplicationConstant.PG_MANDATE);
+            }else if(oxigenTransactionVO.getProvider().getProviderId()== AuthServiceProviderVO.ENACHIDFC){
+                startBankMandateActivity(context,dmrc_customer_cardVO);
+            }else if(oxigenTransactionVO.getProvider().getProviderId()== AuthServiceProviderVO.AUTOPE_PG_UPI){
+                startUPIActivity(context,dmrc_customer_cardVO,ApplicationConstant.PG_MANDATE);
             }
-        },(ConfirmationGetObjet.OnCancel)(cancel)->{
-            ((Dialog)cancel).dismiss();
         }));
+    }
+
+    public static void startBankMandateActivity(Context context , DMRC_Customer_CardVO  dmrc_customer_cardVO){
+        Intent intent = new Intent(context,Enach_Mandate.class);
+        intent.putExtra("forresutl",true);
+        intent.putExtra("selectservice",new ArrayList<Integer>(Arrays.asList(dmrc_customer_cardVO.getServiceId())));
+        ((Activity) context).startActivityForResult(intent,ApplicationConstant.REQ_ENACH_MANDATE);
+    }
+
+
+    public static void startSIActivity(Context context ,  DMRC_Customer_CardVO  dmrc_customer_cardVO , String paymentType){
+        Intent intent = new Intent(context,SI_First_Data.class);
+        intent.putExtra("id",dmrc_customer_cardVO.getDmrcid());
+        intent.putExtra("amount",dmrc_customer_cardVO.getAnonymousAmount());
+        intent.putExtra("serviceId",dmrc_customer_cardVO.getServiceId()+"");
+        intent.putExtra("paymentType",paymentType);
+        ((Activity) context).startActivityForResult(intent,ApplicationConstant.REQ_SI_MANDATE);
+    }
+
+
+    public static void startUPIActivity(Context context ,  DMRC_Customer_CardVO  dmrc_customer_cardVO , String paymentType){
+        Intent intent = new Intent(context,UPI_Mandate.class);
+        intent.putExtra("id",dmrc_customer_cardVO.getDmrcid());
+        intent.putExtra("amount",dmrc_customer_cardVO.getAnonymousAmount());
+        intent.putExtra("serviceId",dmrc_customer_cardVO.getServiceId()+"");
+        intent.putExtra("paymentType",paymentType);
+        ((Activity) context).startActivityForResult(intent,ApplicationConstant.REQ_UPI_FOR_MANDATE);
     }
 
 
 
-    public void sIMandateDmrc(Integer bankId){
+
+
+    public void sIMandateDmrc(Integer bankId , Integer providerId){
         HashMap<String, Object> params = new HashMap<String, Object>();
         ConnectionVO connectionVO = SiBO.sIMandateDmrc();
         DMRC_Customer_CardVO request_dmrc_customer_cardVO=new DMRC_Customer_CardVO();
@@ -598,6 +613,9 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
         customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(Dmrc_Card_Request.this)));
         request_dmrc_customer_cardVO.setCustomer(customerVO);
         request_dmrc_customer_cardVO.setDmrcid(dmrc_customer_cardVO.getDmrcid());
+
+        //set provider id  anonymousInteger
+        request_dmrc_customer_cardVO.setAnonymousInteger1(providerId);
 
         //set customer auth bank id select by BANK list mandate
         request_dmrc_customer_cardVO.setAnonymousInteger(bankId);
@@ -641,9 +659,9 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                             MyDialog.showDoubleButtonBigContentDialog(Dmrc_Card_Request.this,new BigContentDialogIntetface((BigContentDialogIntetface.Button1)(button1)->{
                                 button1.dismiss();
 
-                                showBankMandateOrSiMandateInfo(Dmrc_Card_Request.this,dmrc_customer_SI_cardVO.getSiMandateHtml(),new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                                BillPayRequest.showBankMandateOrSiMandateInfo(Dmrc_Card_Request.this,dmrc_customer_SI_cardVO.getSiMandateHtml(),new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
                                     OxigenTransactionVO oxigenTransactionVO = new OxigenTransactionVO();
-                                    oxigenTransactionVO.setServiceId(serviceId);
+                                    oxigenTransactionVO.setServiceId(oxigenTransactionVO.getServiceId());
 
                                     AuthServiceProviderVO authServiceProviderVO =new AuthServiceProviderVO();
                                     authServiceProviderVO.setProviderId(AuthServiceProviderVO.AUTOPE_PG);
@@ -655,9 +673,8 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                                         }catch (Exception e){
                                             ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this , Utility.getStackTrace(e));
                                         }
-
                                     }, (MandateAndRechargeInterface.OnMandate)(mandate)->{
-                                        startSIActivity(Dmrc_Card_Request.this,dmrc_customer_SI_cardVO.getDmrcid(),1.00,ApplicationConstant.Dmrc,ApplicationConstant.PG_MANDATE);
+                                        startSIActivity(Dmrc_Card_Request.this,dmrc_customer_SI_cardVO.getDmrcid(),oxigenTransactionVO.getAnonymousAmount(),oxigenTransactionVO.getServiceId(),ApplicationConstant.PG_MANDATE);
                                     }));
                                 }));
                            },(BigContentDialogIntetface.Button2)(button2)->{
@@ -686,7 +703,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
         intent.putExtra("amount",amount);
         intent.putExtra("serviceId",serviceId+"");
         intent.putExtra("paymentType",paymentType);
-        ((Activity) context).startActivityForResult(intent,ApplicationConstant.REQ_SI_MANDATE);
+        ((Activity) context).startActivityForResult(intent,ApplicationConstant.REQ_DMRC_MANDATE_SI_BUCKET);
     }
 
 
@@ -968,20 +985,28 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                     bmp = (Bitmap) extras.get("data");
                     //display the returned cropped image
                     addressimage.setImageBitmap(bmp);
-                }else if(requestCode==ApplicationConstant.REQ_ENACH_MANDATE){
-                    boolean enachMandateStatus=data.getBooleanExtra("mandate_status",false);
-                    if(enachMandateStatus){
-                        sIMandateDmrc(null);
-                    }else{
-                        Utility.showSingleButtonDialog(Dmrc_Card_Request.this,"Alert",data.getStringExtra("msg"),false);
-                    }
-                }else if(requestCode==ApplicationConstant.REQ_SI_MANDATE){
+                }else if(requestCode==ApplicationConstant.REQ_DMRC_MANDATE_SI_BUCKET){
                     int actionId=data.getIntExtra("actionId",0);
                     if(actionId!=0){
                         allotDmrcCard(actionId,null);
                     }else {
                         Utility.showSingleButtonDialog(Dmrc_Card_Request.this,"Error !", "Something went wrong",false);
                     }
+                }else if(requestCode==ApplicationConstant.REQ_ENACH_MANDATE){
+                    boolean enachMandateStatus=data.getBooleanExtra("mandate_status",false);
+                    if(enachMandateStatus){
+                        sIMandateDmrc(null,null);
+                    }else{
+                        Utility.showSingleButtonDialog(Dmrc_Card_Request.this,"Alert",data.getStringExtra("msg"),false);
+                    }
+                }else if(requestCode == ApplicationConstant.REQ_UPI_FOR_MANDATE || requestCode == ApplicationConstant.REQ_SI_MANDATE){
+                    int SIMandateId=data.getIntExtra("mandateId",0);
+                    if(SIMandateId!=0){
+                        sIMandateDmrc(null,null);
+                    }else{
+                        Utility.showSingleButtonDialog(Dmrc_Card_Request.this,"Alert", Content_Message.error_message,false);
+                    }
+
                 }
             } catch (Exception e) {
                 ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this , Utility.getStackTrace(e));

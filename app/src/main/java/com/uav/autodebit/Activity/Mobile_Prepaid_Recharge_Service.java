@@ -294,6 +294,8 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                 }else{
                     Utility.showSingleButtonDialog(Mobile_Prepaid_Recharge_Service.this,"Alert", Content_Message.error_message,false);
                 }
+            }else if(requestCode==ApplicationConstant.REQ_UPI_FOR_MANDATE){
+                Toast.makeText(this, "REQ_UPI_FOR_MANDATE", Toast.LENGTH_SHORT).show();
             }
         }
     }

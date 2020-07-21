@@ -6,12 +6,14 @@ public class PaymentGatewayResponse {
     private PaymentGatewayResponse.OnEnach onEnach;
     private PaymentGatewayResponse.OnEnachScheduler onEnachScheduler;
     private PaymentGatewayResponse.OnSiMandate onSiMandate;
+    private OnUPIMandate onUPIMandate;
 
-    public PaymentGatewayResponse(PaymentGatewayResponse.OnPg onPg,PaymentGatewayResponse.OnEnach onEnach , PaymentGatewayResponse.OnEnachScheduler onEnachScheduler,OnSiMandate onSiMandate ){
+    public PaymentGatewayResponse(PaymentGatewayResponse.OnPg onPg,PaymentGatewayResponse.OnEnach onEnach , PaymentGatewayResponse.OnEnachScheduler onEnachScheduler,OnSiMandate onSiMandate ,OnUPIMandate onUPIMandate){
         this.onPg  = onPg;
         this.onEnach = onEnach;
         this.onEnachScheduler=onEnachScheduler;
         this.onSiMandate=onSiMandate;
+        this.onUPIMandate=onUPIMandate;
     }
     public PaymentGatewayResponse(PaymentGatewayResponse.OnPg onPg){
         this.onPg  = onPg;
@@ -24,6 +26,9 @@ public class PaymentGatewayResponse {
 
     public void onEnach(Object s) {
         onEnach.onEnach(s);
+    }
+    public void onUPIMandate(Object o){
+        onUPIMandate.onUpiMandate(o);
     }
 
 
@@ -51,6 +56,10 @@ public class PaymentGatewayResponse {
 
     public interface OnSiMandate {
         void onSiMandate(Object s);
+    }
+
+    public interface OnUPIMandate {
+        void onUpiMandate(Object s);
     }
 
 }

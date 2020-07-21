@@ -73,6 +73,112 @@
             >
         </WebView>
 
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/orderlayout"
+            android:layout_margin="30dp"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Mandate Successfully Approved "
+                    android:paddingTop="30dp"
+                    android:layout_gravity="center"
+                    android:textAlignment="center"
+                    android:textSize="19dp"
+                    android:fontFamily="@font/poppinslight"
+                    android:textColor="@color/black"
+                    android:id="@+id/text1"
+                    />
+            </LinearLayout>
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="Transaction Id:"
+                    android:paddingTop="30dp"
+                    android:layout_gravity="center"
+                    android:textSize="19dp"
+                    android:gravity="end"
+                    android:fontFamily="@font/poppinslight"
+                    android:textColor="@color/black"
+                    />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight=".5"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:paddingTop="30dp"
+                    android:layout_gravity="end"
+                    android:gravity="end"
+                    android:textSize="19dp"
+                    android:fontFamily="@font/poppinslight"
+                    android:textColor="@color/black"
+                    android:id="@+id/text2"
+                    android:layout_marginRight="50dp"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="Amount :"
+                    android:paddingTop="30dp"
+                    android:layout_gravity="center"
+                    android:gravity="end"
+                    android:textSize="19dp"
+                    android:fontFamily="@font/poppinslight"
+                    android:textColor="@color/black"
+                    />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight=".5"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:paddingTop="30dp"
+                    android:layout_gravity="end"
+                    android:gravity="end"
+                    android:textSize="19dp"
+                    android:fontFamily="@font/poppinslight"
+                    android:textColor="@color/black"
+                    android:layout_marginRight="50dp"
+                    android:id="@+id/text3"
+                    />
+            </LinearLayout>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/continuebtn"
+                android:text="Continue"
+                android:layout_gravity="center"
+                android:layout_marginBottom="30dp"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/cornerbutton"
+                android:textColor="@color/white"
+                />
+        </LinearLayout>
+
+
     </LinearLayout>
 
 </LinearLayout>

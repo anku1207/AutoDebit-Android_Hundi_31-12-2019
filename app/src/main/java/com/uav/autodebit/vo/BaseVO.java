@@ -42,6 +42,7 @@ public class BaseVO {
     private String siMandateHtml;
     private String bankMandateHtml;
     private String upiMandateHtml;
+    private Integer anonymousInteger1;
 
 
 
@@ -314,5 +315,13 @@ public class BaseVO {
 
     public void setUpiMandateHtml(String upiMandateHtml) {
         this.upiMandateHtml = upiMandateHtml;
+    }
+
+    public Integer getAnonymousInteger1() {
+        return anonymousInteger1;
+    }
+
+    public void setAnonymousInteger1(Integer anonymousInteger1) {
+        this.anonymousInteger1 = anonymousInteger1;
     }
 }

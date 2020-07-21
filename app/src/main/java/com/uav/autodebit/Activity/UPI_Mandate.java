@@ -62,10 +62,15 @@ public class UPI_Mandate extends AppCompatActivity  implements MyJavaScriptInter
     LinearLayout main_layout;
     WebView webview;
 
-    boolean foractivity;
     int actionId;
     double amount;
     String redirectUrl, cancelUrl,paymentType,serviceId;
+    CustomerVO htmlRequestResp;
+
+    TextView text1, text2, text3;
+    Button continuebtn;
+    LinearLayout orderlayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,14 +84,19 @@ public class UPI_Mandate extends AppCompatActivity  implements MyJavaScriptInter
         back_activity_button=findViewById(R.id.back_activity_button);
         webview=findViewById(R.id.webview);
 
-        foractivity=getIntent().getBooleanExtra("forresutl",true);//success finish activity
         actionId=getIntent().getIntExtra("id",0);
         amount=getIntent().getDoubleExtra("amount",1.00);
         serviceId=getIntent().getStringExtra("serviceId");
         paymentType=getIntent().getStringExtra("paymentType");
 
-        Log.w("getIntentResult",foractivity+"="+actionId+"="+amount+"="+serviceId+"="+paymentType);
+        Log.w("getIntentResult","="+actionId+"="+amount+"="+serviceId+"="+paymentType);
 
+        htmlRequestResp=new CustomerVO();
+        text1 = findViewById(R.id.text1);
+        text2 = findViewById(R.id.text2);
+        text3 = findViewById(R.id.text3);
+        orderlayout = findViewById(R.id.orderlayout);
+        continuebtn = findViewById(R.id.continuebtn);
 
         back_activity_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,6 +109,9 @@ public class UPI_Mandate extends AppCompatActivity  implements MyJavaScriptInter
             try {
                 Log.w("resp",success+"");
                 JSONObject respjson = (JSONObject) success;
+
+                redirectUrl = respjson.getString("redirectUrl");
+                cancelUrl = respjson.getString("cancelUrl");
                 String url = respjson.getString("url") + "?customerId=" + Session.getCustomerId(UPI_Mandate.this) + "&entityTypeId=2" + "&versioncode="+ Utility.getVersioncode(UPI_Mandate.this)+ "&Amount="+amount + "&serviceId="+serviceId + "&paymentType="+paymentType;
                 openWebView(url);
             }catch (Exception e){
@@ -106,6 +119,20 @@ public class UPI_Mandate extends AppCompatActivity  implements MyJavaScriptInter
             }
 
         }));
+
+
+        continuebtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent =new Intent();
+                setResult(RESULT_OK,intent);
+                intent.putExtra("actionId",actionId);
+                //server response get customer auth service id
+                intent.putExtra("mandateId",htmlRequestResp.getAnonymousInteger());
+                finish();
+            }
+        });
+
     }
 
 
@@ -224,6 +251,10 @@ public class UPI_Mandate extends AppCompatActivity  implements MyJavaScriptInter
         webview.loadUrl(receiptUrl); //receiptUrl
     }
 
+
+
+
+
     private void showError(String description) {
         Log.e("weverrir", description);
     }
@@ -231,6 +262,77 @@ public class UPI_Mandate extends AppCompatActivity  implements MyJavaScriptInter
     @Override
     public void htmlresult(String result) {
         Log.w("htmlresp", result);
+
+        try {
+            JSONObject object = new JSONObject(result);
+            HashMap<String, Object> params = new HashMap<String, Object>();
+            ConnectionVO connectionVO = UPIBO.proceedAutoPeUPIRecurringResponse();
+
+
+            CustomerAuthServiceVO customerAuthServiceVO = new CustomerAuthServiceVO();
+            String anonymousString = object.getString("anonymousString");//json SI response
+            String anonymousInteger = object.getString("anonymousInteger");
+
+
+            CustomerVO customerVO = new CustomerVO();
+            customerVO.setCustomerId(Integer.parseInt(Session.getCustomerId(UPI_Mandate.this)));
+            customerAuthServiceVO.setCustomer(customerVO);
+            customerAuthServiceVO.setAnonymousString(anonymousString);
+            customerAuthServiceVO.setAnonymousInteger(Integer.parseInt(anonymousInteger));
+
+            Gson gson = new Gson();
+            String json = gson.toJson(customerAuthServiceVO);
+            params.put("volley", json);
+
+            connectionVO.setParams(params);
+
+            Log.w("htmlresultRequest",connectionVO.getParams().toString());
+            VolleyUtils.makeJsonObjectRequest(this, connectionVO, new VolleyResponseListener() {
+                @Override
+                public void onError(String message) {
+                }
+
+                @Override
+                public void onResponse(Object resp) throws JSONException {
+                    JSONObject response = (JSONObject) resp;
+                    Log.w("htmlresult_resp",response.toString());
+                    Gson gson = new Gson();
+                    htmlRequestResp = gson.fromJson(response.toString(), CustomerVO.class);
+
+                    if (!htmlRequestResp.getStatusCode().equals("200")) {
+                        Utility.showSingleButtonDialog(UPI_Mandate.this,"Alert",htmlRequestResp.getErrorMsgs().get(0),true);
+                    } else {
+                        if(htmlRequestResp.getAnonymousInteger()==null){
+                            Utility.showSingleButtonDialog(UPI_Mandate.this,"Alert",Content_Message.error_message,true);
+                        }else{
+
+                            if(htmlRequestResp.getTokenId().equalsIgnoreCase(ApplicationConstant.PG_MANDATE)){
+                                DecimalFormat df = new DecimalFormat();
+                                df.setMinimumFractionDigits(2);
+                                JSONObject orderreap = new JSONObject(htmlRequestResp.getAnonymousString());
+                                webview.setVisibility(View.GONE);
+                                orderlayout.setVisibility(View.VISIBLE);
+                                text2.setText(orderreap.getString("txnId"));
+                                text3.setText(df.format(Double.parseDouble(orderreap.getString("orderAmount"))));
+                                continuebtn.setVisibility(View.VISIBLE);
+                            }else{
+                                Intent intent =new Intent();
+                                setResult(RESULT_OK,intent);
+                                intent.putExtra("actionId",actionId);
+                                //server response get customer auth service id
+                                intent.putExtra("mandateId",htmlRequestResp.getAnonymousInteger());
+                                finish();
+                            }
+
+                        }
+
+
+                    }
+                }
+            });
+        } catch (Exception e) {
+            ExceptionsNotification.ExceptionHandling(UPI_Mandate.this , Utility.getStackTrace(e));
+        }
     }
 
 
@@ -262,6 +364,13 @@ public class UPI_Mandate extends AppCompatActivity  implements MyJavaScriptInter
             if (!UPI_Mandate.this.isFinishing() && progressBar!=null && progressBar.isShowing()) {
                 progressBar.dismiss();
             }
+
+
+            if (url.equals(redirectUrl + "app/") || url.equals(cancelUrl + "app/")) {
+                webview.loadUrl("javascript:HTMLOUT.showHTML(document.getElementById('siresp').innerHTML);");
+                webview.loadUrl("javascript:console.log('MAGIC'+document.getElementById('siresp').innerHTML);");
+            }
+
 
         }
 

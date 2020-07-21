@@ -365,6 +365,10 @@ public class BillPayRequest {
                }
                setBankMandateOrRecharge(context,oxigenPlanresp);
 
+           },(PaymentGatewayResponse.OnUPIMandate)(upimandate)->{
+               OxigenTransactionVO upimandateOxigenresp=(OxigenTransactionVO) upimandate;
+               upimandateOxigenresp.setSiMandateType(ApplicationConstant.PG_MANDATE);
+               setBankMandateOrRecharge(context,upimandateOxigenresp);
            }));
         }
     }
@@ -378,6 +382,8 @@ public class BillPayRequest {
                 startSIActivity(context,oxigenTransactionVO,oxigenTransactionVO.getSiMandateType());
             }else if(oxigenTransactionVO.getProvider().getProviderId()== AuthServiceProviderVO.ENACHIDFC){
                 ((Activity) context).startActivityForResult(new Intent(context, Enach_Mandate.class).putExtra("forresutl", true).putExtra("selectservice", new ArrayList<Integer>(Arrays.asList(oxigenTransactionVO.getServiceId()))), ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE);
+            }else if(oxigenTransactionVO.getProvider().getProviderId()== AuthServiceProviderVO.AUTOPE_PG_UPI){
+                startUPIActivity(context,oxigenTransactionVO,oxigenTransactionVO.getSiMandateType());
             }
         }));
 
@@ -399,6 +405,15 @@ public class BillPayRequest {
         intent.putExtra("serviceId",oxigenTransactionVO.getServiceId()+"");
         intent.putExtra("paymentType",paymentType);
         ((Activity) context).startActivityForResult(intent,ApplicationConstant.REQ_SI_MANDATE);
+    }
+
+    public static void startUPIActivity(Context context , OxigenTransactionVO  oxigenTransactionVO , String paymentType){
+        Intent intent = new Intent(context,UPI_Mandate.class);
+        intent.putExtra("id",oxigenTransactionVO.getTypeId());
+        intent.putExtra("amount",oxigenTransactionVO.getNetAmount());
+        intent.putExtra("serviceId",oxigenTransactionVO.getServiceId()+"");
+        intent.putExtra("paymentType",paymentType);
+        ((Activity) context).startActivityForResult(intent,ApplicationConstant.REQ_UPI_FOR_MANDATE);
     }
 
 
@@ -614,7 +629,8 @@ public class BillPayRequest {
                                         paymentGatewayResponse.onSiMandate(oxigenValidateResponce);
                                     }));
                                 }else if(selectPosition==ApplicationConstant.UPIMandatePayment) {
-                                    //paymentGatewayResponse.onPg(oxigenValidateResponce);
+                                    oxigenValidateResponce.setProvider(getAuthServiceProvider(AuthServiceProviderVO.AUTOPE_PG_UPI));
+                                    paymentGatewayResponse.onUPIMandate(oxigenValidateResponce);
                                 }
                             }));
                         }else {
@@ -834,6 +850,8 @@ public class BillPayRequest {
             }else{
                 Utility.showSingleButtonDialog(context,"Alert", Content_Message.error_message,false);
             }
+        }else if(requestCode == ApplicationConstant.REQ_UPI_FOR_MANDATE){
+            Toast.makeText(context, "REQ_UPI_FOR_MANDATE", Toast.LENGTH_SHORT).show();
         }
     }
 
