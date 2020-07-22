@@ -121,14 +121,24 @@ public class TermAndCondition_Webview extends Base_Activity implements View.OnCl
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
-            if(progressBar!=null && !progressBar.isShowing())  progressBar.show();
+            if(progressBar!=null && !progressBar.isShowing()) {
+                try {
+                    progressBar.show();
+                }catch (Exception e){
+
+                }
+            }
 
         }
 
         @Override
         public void onPageFinished(WebView view, String url) {
             if (progressBar!=null && progressBar.isShowing()) {
-                progressBar.dismiss();
+                try {
+                    progressBar.dismiss();
+                }catch (Exception e){
+
+                }
             }
 
         }
@@ -137,14 +147,22 @@ public class TermAndCondition_Webview extends Base_Activity implements View.OnCl
         public void onReceivedError(WebView view, int errorCode,
                                     String description, String failingUrl) {
             if (progressBar!=null && progressBar.isShowing()) {
-                progressBar.dismiss();
+                try {
+                    progressBar.dismiss();
+                }catch (Exception e){
+
+                }
             }
             showError(description);
         }
         @TargetApi(android.os.Build.VERSION_CODES.M)
         public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
             if (progressBar.isShowing()) {
-                progressBar.dismiss();
+                try {
+                    progressBar.dismiss();
+                }catch (Exception e){
+
+                }
             }
             showError((String) error.getDescription());
         }
@@ -152,7 +170,12 @@ public class TermAndCondition_Webview extends Base_Activity implements View.OnCl
         @TargetApi(android.os.Build.VERSION_CODES.M)
         public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
             if (progressBar!=null && progressBar.isShowing()) {
-                progressBar.dismiss();
+                try {
+                    progressBar.dismiss();
+                }catch (Exception e){
+
+                }
+
             }
             showError(errorResponse.getReasonPhrase().toString());
         }

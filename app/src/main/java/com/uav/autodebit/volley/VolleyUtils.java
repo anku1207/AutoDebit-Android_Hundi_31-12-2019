@@ -16,6 +16,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -86,7 +87,15 @@ public class VolleyUtils {
         pDialog.setCancelable(false);
         pDialog.setCanceledOnTouchOutside(false);
 
-        if(connectionVO.getLoaderAvoided()==null || !connectionVO.getLoaderAvoided())  pDialog.show();
+        if(connectionVO.getLoaderAvoided()==null || !connectionVO.getLoaderAvoided()) {
+            try {
+                pDialog.show();
+            }
+            catch (Exception e) {
+                //use a log message
+            }
+
+        }
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (connectionVO.getRequestType(), ApplicationConstant.getHttpURL(context) + connectionVO.getMethodName() , jsonParams, response -> {

@@ -16,6 +16,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.webkit.ConsoleMessage;
 import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
@@ -345,7 +346,6 @@ public class UPI_Mandate extends AppCompatActivity  implements MyJavaScriptInter
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             Log.w("URL", url);
             view.loadUrl(url);
-            if(!UPI_Mandate.this.isFinishing() &&  progressBar!=null && !progressBar.isShowing())  progressBar.show();
             return true;
         }
 
@@ -354,7 +354,13 @@ public class UPI_Mandate extends AppCompatActivity  implements MyJavaScriptInter
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
             Log.w("pagestart", url);
-            if(!UPI_Mandate.this.isFinishing() &&  progressBar!=null && !progressBar.isShowing())  progressBar.show();
+            if(!UPI_Mandate.this.isFinishing() &&  progressBar!=null && !progressBar.isShowing()) {
+                try {
+                    progressBar.show();
+                }catch (Exception e) {
+                    //use a log message
+                }
+            }
 
 
         }
@@ -362,7 +368,11 @@ public class UPI_Mandate extends AppCompatActivity  implements MyJavaScriptInter
         @Override
         public void onPageFinished(WebView view, String url) {
             if (!UPI_Mandate.this.isFinishing() && progressBar!=null && progressBar.isShowing()) {
-                progressBar.dismiss();
+                try {
+                    progressBar.dismiss();
+                }catch (Exception e) {
+                    //use a log message
+                }
             }
 
 

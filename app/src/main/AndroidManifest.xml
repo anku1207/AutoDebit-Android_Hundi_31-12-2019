@@ -44,18 +44,45 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Activity.UPI_Mandate"></activity>
-        <activity android:name=".Activity.MandateRevoke" />
-        <activity android:name=".Activity.TermAndCondition_Webview" />
+        <activity
+            android:name=".Activity.UPI_Mandate"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"
+            tools:ignore="LockedOrientationActivity"
+            >
+        </activity>
+        <activity
+            android:name=".Activity.MandateRevoke"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"
+            tools:ignore="LockedOrientationActivity"/>
+        <activity
+            android:name=".Activity.TermAndCondition_Webview"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"
+            tools:ignore="LockedOrientationActivity"
+            />
         <activity
             android:name=".Activity.Mandate_Revoke_Dialog"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.pop"
             android:windowSoftInputMode="stateHidden"
             tools:ignore="LockedOrientationActivity" />
-        <activity android:name=".Activity.Track_Dmrc_Card" />
-        <activity android:name=".Activity.Faq_WebView" />
-        <activity android:name=".Activity.ManualEnachMandate" />
+        <activity
+            android:name=".Activity.Track_Dmrc_Card"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"
+            tools:ignore="LockedOrientationActivity"/>
+        <activity
+            android:name=".Activity.Faq_WebView"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"
+            tools:ignore="LockedOrientationActivity"/>
+        <activity
+            android:name=".Activity.ManualEnachMandate"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"
+            tools:ignore="LockedOrientationActivity"/>
         <activity
             android:name=".Activity.PayBillByNotification"
             android:screenOrientation="portrait"

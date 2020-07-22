@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 
 import android.view.View;
+import android.view.WindowManager;
 import android.webkit.ConsoleMessage;
 import android.webkit.JavascriptInterface;
 import android.webkit.JsResult;
@@ -463,14 +464,24 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
                     webview.setVisibility(View.GONE);
                 }
             }
-            if(!SI_First_Data.this.isFinishing() &&  progressBar!=null && !progressBar.isShowing())  progressBar.show();
+            if(!SI_First_Data.this.isFinishing() &&  progressBar!=null && !progressBar.isShowing())
+                try {
+                    progressBar.show();
+                }catch (Exception e){
+
+                }
 
         }
 
         @Override
         public void onPageFinished(WebView view, String url) {
             if (!SI_First_Data.this.isFinishing() && progressBar!=null && progressBar.isShowing()) {
-                progressBar.dismiss();
+                try {
+                    progressBar.dismiss();
+                }
+                catch (Exception e) {
+                    //use a log message
+                }
             }
             Log.w("loadurlresp", url);
             if (ApplicationConstant.SI_SERVICE.equals("icici")) {
@@ -498,7 +509,12 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
         public void onReceivedError(WebView view, int errorCode,
                                     String description, String failingUrl) {
             if (!SI_First_Data.this.isFinishing() &&  progressBar!=null && progressBar.isShowing()) {
-                progressBar.dismiss();
+                try {
+                    progressBar.dismiss();
+                }catch (Exception e){
+
+                }
+
             }
             showError(description);
         }
@@ -506,7 +522,11 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
         @TargetApi(android.os.Build.VERSION_CODES.M)
         public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
             if (!SI_First_Data.this.isFinishing() && progressBar!=null && progressBar.isShowing()) {
-                progressBar.dismiss();
+                try {
+                    progressBar.dismiss();
+                }catch (Exception e){
+
+                }
             }
             showError((String) error.getDescription());
         }
@@ -514,7 +534,11 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
         @TargetApi(android.os.Build.VERSION_CODES.M)
         public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
             if (!SI_First_Data.this.isFinishing() && progressBar!=null && progressBar.isShowing()) {
-                progressBar.dismiss();
+                try {
+                    progressBar.dismiss();
+                }catch (Exception e){
+
+                }
             }
             showError(errorResponse.getReasonPhrase().toString());
         }

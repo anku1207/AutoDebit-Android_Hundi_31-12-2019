@@ -121,13 +121,23 @@ public class Faq_WebView extends Base_Activity implements View.OnClickListener {
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
 
-            if(!Faq_WebView.this.isFinishing() && progressBar!=null && !progressBar.isShowing())  progressBar.show();
+            if(!Faq_WebView.this.isFinishing() && progressBar!=null && !progressBar.isShowing()) {
+                try {
+                    progressBar.show();
+                }catch (Exception e) {
+                    //use a log message
+                }
+            }
         }
 
         @Override
         public void onPageFinished(WebView view, String url) {
             if (!Faq_WebView.this.isFinishing() && progressBar!=null && progressBar.isShowing()) {
-                progressBar.dismiss();
+                try {
+                    progressBar.dismiss();
+                }catch (Exception e) {
+                    //use a log message
+                }
             }
 
         }
@@ -136,14 +146,22 @@ public class Faq_WebView extends Base_Activity implements View.OnClickListener {
         public void onReceivedError(WebView view, int errorCode,
                                     String description, String failingUrl) {
             if (!Faq_WebView.this.isFinishing() && progressBar!=null && progressBar.isShowing()) {
-                progressBar.dismiss();
+                try {
+                    progressBar.dismiss();
+                }catch (Exception e) {
+                    //use a log message
+                }
             }
             showError(description);
         }
         @TargetApi(android.os.Build.VERSION_CODES.M)
         public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
             if (!Faq_WebView.this.isFinishing() && progressBar!=null && progressBar.isShowing()) {
-                progressBar.dismiss();
+                try {
+                    progressBar.dismiss();
+                }catch (Exception e) {
+                    //use a log message
+                }
             }
             showError((String) error.getDescription());
         }
@@ -151,7 +169,11 @@ public class Faq_WebView extends Base_Activity implements View.OnClickListener {
         @TargetApi(android.os.Build.VERSION_CODES.M)
         public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
             if (!Faq_WebView.this.isFinishing() && progressBar!=null && progressBar.isShowing()) {
-                progressBar.dismiss();
+                try {
+                    progressBar.dismiss();
+                }catch (Exception e) {
+                    //use a log message
+                }
             }
             showError(errorResponse.getReasonPhrase().toString());
         }
