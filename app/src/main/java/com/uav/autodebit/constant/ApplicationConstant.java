@@ -16,7 +16,7 @@ public class ApplicationConstant {
 
     public final static String AUTHKEY= "G4s4cCMx2aM7lky1";
 
-    public final static  boolean IS_PRODUCTION_ENVIRONMENT= false;
+    public final static  boolean IS_PRODUCTION_ENVIRONMENT= true;
 
     public static int MobilePostpaid=14,D2h=17,Dmrc=2,Electricity=10,Landline=7,Water=12,Broadband=8,PNG=6,Gas=11,DTH=13,DISHTV=18,INSURANCE_RENEWAL=19,LOAN_REPAYMENT=20,FASTAG=21,CABLE_TV=22 ,Uber=16,IRCTC=1 ;
 
@@ -46,6 +46,7 @@ public class ApplicationConstant {
 
     public static final String INTENT_EXTRA_CONNECTION = "connection";
 
+    public static final double SI_UPI_MANDATE_AMOUNT=1.00;
 
     public static Integer BankMandatePayment=1,SIMandatePayment=2,UPIMandatePayment=3;
 

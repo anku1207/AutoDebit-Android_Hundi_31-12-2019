@@ -529,7 +529,7 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
             if(oxigenTransactionVO.getProvider().getProviderId()== AuthServiceProviderVO.AUTOPE_PG){
                 startSIActivity(context,oxigenTransactionVO,ApplicationConstant.PG_MANDATE_AND_RECHARGE);
             }else if(oxigenTransactionVO.getProvider().getProviderId()== AuthServiceProviderVO.ENACHIDFC){
-                ((Activity) context).startActivityForResult(new Intent(context, Enach_Mandate.class).putExtra("forresutl", true).putExtra("selectservice", new ArrayList<Integer>(Arrays.asList(oxigenTransactionVO.getServiceId()))), ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE);
+                startBankMandateActivity(context,oxigenTransactionVO);
             }else if(oxigenTransactionVO.getProvider().getProviderId()== AuthServiceProviderVO.AUTOPE_PG_UPI){
                 startUPIActivity(context,oxigenTransactionVO,ApplicationConstant.PG_MANDATE_AND_RECHARGE);
             }
@@ -542,6 +542,20 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
         AuthServiceProviderVO authServiceProviderVO =new AuthServiceProviderVO();
         authServiceProviderVO.setProviderId(providerId);
         return authServiceProviderVO;
+    }
+
+
+    public static void startBankMandateActivity(Context context , OxigenTransactionVO  oxigenTransactionVO){
+        try {
+            Intent intent = new Intent(context,Enach_Mandate.class);
+            intent.putExtra("forresutl",true);
+            intent.putExtra("selectservice", new ArrayList<Integer>(Arrays.asList(oxigenTransactionVO.getServiceId())));
+            ((Activity) context).startActivityForResult(intent,ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE);
+        }catch (Exception e){
+            e.printStackTrace();
+            ExceptionsNotification.ExceptionHandling(context , Utility.getStackTrace(e));
+        }
+
     }
 
     public static void startSIActivity(Context context , OxigenTransactionVO  oxigenTransactionVO , String paymentType){
@@ -557,7 +571,7 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
     public static void startUPIActivity(Context context , OxigenTransactionVO  oxigenTransactionVO , String paymentType){
         Intent intent = new Intent(context,UPI_Mandate.class);
         intent.putExtra("id",oxigenTransactionVO.getTypeId());
-        intent.putExtra("amount",oxigenTransactionVO.getNetAmount());
+        intent.putExtra("amount",ApplicationConstant.SI_UPI_MANDATE_AMOUNT);
         intent.putExtra("serviceId",oxigenTransactionVO.getServiceId()+"");
         intent.putExtra("paymentType",paymentType);
         ((Activity) context).startActivityForResult(intent,ApplicationConstant.REQ_UPI_FOR_MANDATE);

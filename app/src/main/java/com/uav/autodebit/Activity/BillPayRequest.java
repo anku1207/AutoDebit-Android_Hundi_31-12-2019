@@ -339,7 +339,7 @@ public class BillPayRequest {
         }else {
            BillPayRequest.oxiBillPaymentValdated(context,oxigenTransactionVO,new PaymentGatewayResponse((PaymentGatewayResponse.OnPg)(pg)->{
                OxigenTransactionVO oxigenPGResp=(OxigenTransactionVO) pg;
-               startSIActivity(context,oxigenPGResp,ApplicationConstant.PG_MANDATE_AND_RECHARGE);
+               startSIActivity(context,oxigenPGResp,ApplicationConstant.PG_PAYMENT);
            },(PaymentGatewayResponse.OnEnach)(onEnach)->{
                OxigenTransactionVO oxigenPlanresp=(OxigenTransactionVO) onEnach;
                if(oxigenPlanresp.isEventIs()){
@@ -381,7 +381,7 @@ public class BillPayRequest {
             if(oxigenTransactionVO.getProvider().getProviderId()== AuthServiceProviderVO.AUTOPE_PG){
                 startSIActivity(context,oxigenTransactionVO,oxigenTransactionVO.getSiMandateType());
             }else if(oxigenTransactionVO.getProvider().getProviderId()== AuthServiceProviderVO.ENACHIDFC){
-                ((Activity) context).startActivityForResult(new Intent(context, Enach_Mandate.class).putExtra("forresutl", true).putExtra("selectservice", new ArrayList<Integer>(Arrays.asList(oxigenTransactionVO.getServiceId()))), ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE);
+                startBankMandateActivity(context,oxigenTransactionVO);
             }else if(oxigenTransactionVO.getProvider().getProviderId()== AuthServiceProviderVO.AUTOPE_PG_UPI){
                 startUPIActivity(context,oxigenTransactionVO,oxigenTransactionVO.getSiMandateType());
             }
@@ -398,22 +398,47 @@ public class BillPayRequest {
         return authServiceProviderVO;
     }
 
+    public static void startBankMandateActivity(Context context , OxigenTransactionVO  oxigenTransactionVO){
+        try {
+            Intent intent = new Intent(context,Enach_Mandate.class);
+            intent.putExtra("forresutl",true);
+            intent.putExtra("selectservice", new ArrayList<Integer>(Arrays.asList(oxigenTransactionVO.getServiceId())));
+            ((Activity) context).startActivityForResult(intent,ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE);
+        }catch (Exception e){
+            e.printStackTrace();
+            ExceptionsNotification.ExceptionHandling(context , Utility.getStackTrace(e));
+        }
+
+    }
+
     public static void startSIActivity(Context context , OxigenTransactionVO  oxigenTransactionVO , String paymentType){
-        Intent intent = new Intent(context,SI_First_Data.class);
-        intent.putExtra("id",oxigenTransactionVO.getTypeId());
-        intent.putExtra("amount",oxigenTransactionVO.getNetAmount());
-        intent.putExtra("serviceId",oxigenTransactionVO.getServiceId()+"");
-        intent.putExtra("paymentType",paymentType);
-        ((Activity) context).startActivityForResult(intent,ApplicationConstant.REQ_SI_MANDATE);
+        try {
+            Intent intent = new Intent(context,SI_First_Data.class);
+            intent.putExtra("id",oxigenTransactionVO.getTypeId());
+            intent.putExtra("amount",oxigenTransactionVO.getNetAmount());
+            intent.putExtra("serviceId",oxigenTransactionVO.getServiceId()+"");
+            intent.putExtra("paymentType",paymentType);
+            ((Activity) context).startActivityForResult(intent,ApplicationConstant.REQ_SI_MANDATE);
+        }catch (Exception e ){
+            e.printStackTrace();
+            ExceptionsNotification.ExceptionHandling(context , Utility.getStackTrace(e));
+        }
+
     }
 
     public static void startUPIActivity(Context context , OxigenTransactionVO  oxigenTransactionVO , String paymentType){
-        Intent intent = new Intent(context,UPI_Mandate.class);
-        intent.putExtra("id",oxigenTransactionVO.getTypeId());
-        intent.putExtra("amount",oxigenTransactionVO.getNetAmount());
-        intent.putExtra("serviceId",oxigenTransactionVO.getServiceId()+"");
-        intent.putExtra("paymentType",paymentType);
-        ((Activity) context).startActivityForResult(intent,ApplicationConstant.REQ_UPI_FOR_MANDATE);
+        try {
+            Intent intent = new Intent(context,UPI_Mandate.class);
+            intent.putExtra("id",oxigenTransactionVO.getTypeId());
+            intent.putExtra("amount",ApplicationConstant.SI_UPI_MANDATE_AMOUNT);
+            intent.putExtra("serviceId",oxigenTransactionVO.getServiceId()+"");
+            intent.putExtra("paymentType",paymentType);
+            ((Activity) context).startActivityForResult(intent,ApplicationConstant.REQ_UPI_FOR_MANDATE);
+        }catch (Exception e){
+            e.printStackTrace();
+            ExceptionsNotification.ExceptionHandling(context , Utility.getStackTrace(e));
+        }
+
     }
 
 
@@ -852,6 +877,24 @@ public class BillPayRequest {
             }
         }else if(requestCode == ApplicationConstant.REQ_UPI_FOR_MANDATE){
             Toast.makeText(context, "REQ_UPI_FOR_MANDATE", Toast.LENGTH_SHORT).show();
+
+            int UPIMandateId=data.getIntExtra("mandateId",0);
+            if(UPIMandateId!=0){
+                AuthServiceProviderVO authServiceProviderVO =new AuthServiceProviderVO();
+                authServiceProviderVO.setProviderId(AuthServiceProviderVO.AUTOPE_PG_UPI);
+                OxigenTransactionVO responseOxigenTransactionVO =new OxigenTransactionVO();
+                responseOxigenTransactionVO.setTypeId(oxigenValidateResponce.getTypeId());
+                responseOxigenTransactionVO.setAnonymousString(String.valueOf(UPIMandateId));
+                responseOxigenTransactionVO.setProvider(authServiceProviderVO);
+                responseOxigenTransactionVO.setEventIs(true);
+                //recharge for after enach mandate
+                BillPayRequest.proceedBillPayment(responseOxigenTransactionVO,context,new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
+                    handelRechargeSuccess(context,(OxigenTransactionVO)s);
+                },(VolleyResponse.OnError)(e)->{
+                }));
+            }else{
+                Utility.showSingleButtonDialog(context,"Alert", Content_Message.error_message,false);
+            }
         }
     }
 

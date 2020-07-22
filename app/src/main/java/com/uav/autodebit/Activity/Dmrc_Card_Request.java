@@ -574,36 +574,49 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
         }));
     }
 
-    public static void startBankMandateActivity(Context context , DMRC_Customer_CardVO  dmrc_customer_cardVO){
-        Intent intent = new Intent(context,Enach_Mandate.class);
-        intent.putExtra("forresutl",true);
-        intent.putExtra("selectservice",new ArrayList<Integer>(Arrays.asList(dmrc_customer_cardVO.getServiceId())));
-        ((Activity) context).startActivityForResult(intent,ApplicationConstant.REQ_ENACH_MANDATE);
+    public  void startBankMandateActivity(Context context , DMRC_Customer_CardVO  dmrc_customer_cardVO){
+        try {
+            Intent intent = new Intent(context,Enach_Mandate.class);
+            intent.putExtra("forresutl",true);
+            intent.putExtra("selectservice",new ArrayList<Integer>(Arrays.asList(dmrc_customer_cardVO.getServiceId())));
+            ((Activity) context).startActivityForResult(intent,ApplicationConstant.REQ_ENACH_MANDATE);
+        }catch (Exception e){
+            e.printStackTrace();
+            ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this , Utility.getStackTrace(e));
+        }
+
     }
 
 
-    public static void startSIActivity(Context context ,  DMRC_Customer_CardVO  dmrc_customer_cardVO , String paymentType){
-        Intent intent = new Intent(context,SI_First_Data.class);
-        intent.putExtra("id",dmrc_customer_cardVO.getDmrcid());
-        intent.putExtra("amount",dmrc_customer_cardVO.getAnonymousAmount());
-        intent.putExtra("serviceId",dmrc_customer_cardVO.getServiceId()+"");
-        intent.putExtra("paymentType",paymentType);
-        ((Activity) context).startActivityForResult(intent,ApplicationConstant.REQ_SI_MANDATE);
+    public  void startSIActivity(Context context ,  DMRC_Customer_CardVO  dmrc_customer_cardVO , String paymentType){
+        try {
+            Intent intent = new Intent(context,SI_First_Data.class);
+            intent.putExtra("id",dmrc_customer_cardVO.getDmrcid());
+            intent.putExtra("amount",dmrc_customer_cardVO.getAnonymousAmount());
+            intent.putExtra("serviceId",dmrc_customer_cardVO.getServiceId()+"");
+            intent.putExtra("paymentType",paymentType);
+            ((Activity) context).startActivityForResult(intent,ApplicationConstant.REQ_SI_MANDATE);
+        }catch (Exception e){
+            e.printStackTrace();
+            ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this , Utility.getStackTrace(e));
+        }
+
     }
 
 
-    public static void startUPIActivity(Context context ,  DMRC_Customer_CardVO  dmrc_customer_cardVO , String paymentType){
-        Intent intent = new Intent(context,UPI_Mandate.class);
-        intent.putExtra("id",dmrc_customer_cardVO.getDmrcid());
-        intent.putExtra("amount",dmrc_customer_cardVO.getAnonymousAmount());
-        intent.putExtra("serviceId",dmrc_customer_cardVO.getServiceId()+"");
-        intent.putExtra("paymentType",paymentType);
-        ((Activity) context).startActivityForResult(intent,ApplicationConstant.REQ_UPI_FOR_MANDATE);
+    public  void startUPIActivity(Context context ,  DMRC_Customer_CardVO  dmrc_customer_cardVO , String paymentType){
+        try {
+            Intent intent = new Intent(context,UPI_Mandate.class);
+            intent.putExtra("id",dmrc_customer_cardVO.getDmrcid());
+            intent.putExtra("amount",dmrc_customer_cardVO.getAnonymousAmount());
+            intent.putExtra("serviceId",dmrc_customer_cardVO.getServiceId()+"");
+            intent.putExtra("paymentType",paymentType);
+            ((Activity) context).startActivityForResult(intent,ApplicationConstant.REQ_UPI_FOR_MANDATE);
+        }catch (Exception e){
+            e.printStackTrace();
+            ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this , Utility.getStackTrace(e));
+        }
     }
-
-
-
-
 
     public void sIMandateDmrc(Integer bankId , Integer providerId){
         HashMap<String, Object> params = new HashMap<String, Object>();
@@ -661,7 +674,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
 
                                 BillPayRequest.showBankMandateOrSiMandateInfo(Dmrc_Card_Request.this,dmrc_customer_SI_cardVO.getSiMandateHtml(),new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
                                     OxigenTransactionVO oxigenTransactionVO = new OxigenTransactionVO();
-                                    oxigenTransactionVO.setServiceId(oxigenTransactionVO.getServiceId());
+                                    oxigenTransactionVO.setServiceId(dmrc_customer_SI_cardVO.getServiceId());
 
                                     AuthServiceProviderVO authServiceProviderVO =new AuthServiceProviderVO();
                                     authServiceProviderVO.setProviderId(AuthServiceProviderVO.AUTOPE_PG);
@@ -674,7 +687,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                                             ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this , Utility.getStackTrace(e));
                                         }
                                     }, (MandateAndRechargeInterface.OnMandate)(mandate)->{
-                                        startSIActivity(Dmrc_Card_Request.this,dmrc_customer_SI_cardVO.getDmrcid(),oxigenTransactionVO.getAnonymousAmount(),oxigenTransactionVO.getServiceId(),ApplicationConstant.PG_MANDATE);
+                                        startSIActivity(Dmrc_Card_Request.this,dmrc_customer_SI_cardVO.getDmrcid(),dmrc_customer_SI_cardVO.getAnonymousAmount(),dmrc_customer_SI_cardVO.getServiceId(),ApplicationConstant.PG_MANDATE);
                                     }));
                                 }));
                            },(BigContentDialogIntetface.Button2)(button2)->{
@@ -697,13 +710,20 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
         });
     }
 
-    public static void startSIActivity(Context context , int id,double amount,int serviceId, String paymentType){
-        Intent intent = new Intent(context,SI_First_Data.class);
-        intent.putExtra("id",id);
-        intent.putExtra("amount",amount);
-        intent.putExtra("serviceId",serviceId+"");
-        intent.putExtra("paymentType",paymentType);
-        ((Activity) context).startActivityForResult(intent,ApplicationConstant.REQ_DMRC_MANDATE_SI_BUCKET);
+    public  void startSIActivity(Context context , int id,double amount,int serviceId, String paymentType){
+        try {
+            Intent intent = new Intent(context,SI_First_Data.class);
+            intent.putExtra("id",id);
+            intent.putExtra("amount",amount);
+            intent.putExtra("serviceId",serviceId+"");
+            intent.putExtra("paymentType",paymentType);
+            ((Activity) context).startActivityForResult(intent,ApplicationConstant.REQ_DMRC_MANDATE_SI_BUCKET);
+
+        }catch (Exception e){
+            e.printStackTrace();
+            ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this , Utility.getStackTrace(e));
+        }
+
     }
 
 
