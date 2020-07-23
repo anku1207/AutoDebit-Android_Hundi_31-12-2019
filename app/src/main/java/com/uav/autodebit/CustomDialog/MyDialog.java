@@ -85,7 +85,9 @@ public class MyDialog {
         webview.setInitialScale(1);
         webview.getSettings().setUseWideViewPort(true);
 
-        webview.loadData(html, "text/html; charset=utf-8", "UTF-8");
+       // webview.loadData(html, "text/html; charset=utf-8", "UTF-8");
+
+        webview.loadDataWithBaseURL("", html, "text/html", "UTF-8", "");
         webview.addJavascriptInterface( new Object() {
             @JavascriptInterface // For API 17+
             public void performClick (String message) {

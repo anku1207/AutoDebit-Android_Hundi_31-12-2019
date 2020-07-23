@@ -337,7 +337,7 @@ public class D2H extends Base_Activity implements View.OnClickListener {
             for(int i=0;i<planDetailarr.length();i++){
                 JSONObject jsonObject1 =planDetailarr.getJSONObject(i);
                 if(jsonObject1.getString("key").equals("VCNO")){
-                    detailfiled.put("Registered Mobile Number / Viewing Card Number",jsonObject1.getString("value"));
+                    detailfiled.put("Subscriber ID",jsonObject1.getString("value"));
                 }
             }
 

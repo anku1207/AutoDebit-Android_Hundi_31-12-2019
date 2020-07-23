@@ -7,8 +7,8 @@
         android:name="android.hardware.telephony"
         android:required="false" />
 
-    <uses-feature android:name="com.android.camera.action.CROP" />
-
+  <!--  <uses-feature android:name="com.android.camera.action.CROP" />
+-->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />

@@ -255,12 +255,12 @@ public class Home extends Base_Activity
         logoutbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SharedPreferences.Editor editor = sharedPreferences.edit();
+              /*  SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.remove(Session.CACHE_CUSTOMER);
                 editor.remove(Session.CACHE_USER_LOGINID);
-                editor.commit();
+                editor.commit();*/
                 startActivity(new Intent(Home.this,Login.class));
-                finish();
+                finishAffinity();
             }
         });
 

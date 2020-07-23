@@ -16,6 +16,7 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -225,6 +226,7 @@ public class Insurance_Renewal extends Base_Activity implements View.OnClickList
                             CardView cardView = Utility.getCardViewStyle(this);
 
                             EditText et = Utility.getEditText(this);
+                            et.setInputType(InputType.TYPE_CLASS_TEXT);
                             et.setId(View.generateViewId());
                             et.setHint(oxigenQuestionsVO.getQuestionLabel());
 

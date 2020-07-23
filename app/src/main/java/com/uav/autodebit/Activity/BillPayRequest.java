@@ -777,8 +777,13 @@ public class BillPayRequest {
                     CustomerVO customerVO = (CustomerVO) success;
                     MyDialog.showSingleButtonBigContentDialog(context,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
                         ok.dismiss();
-                        ((Activity)context).startActivity(new Intent(context,HistorySummary.class).putExtra("historyId",customerVO.getCustoemrHistoryId().toString()));
-                        ((Activity)context).finish();
+                        if(customerVO.getCustoemrHistoryId()!=null){
+                            ((Activity)context).startActivity(new Intent(context,HistorySummary.class).putExtra("historyId",customerVO.getCustoemrHistoryId().toString()));
+                            ((Activity)context).finish();
+                        }else{
+                            ((Activity)context).finish();
+                        }
+
                     }),customerVO.getDialogTitle(),customerVO.getAnonymousString());
                 }));
             }else {
