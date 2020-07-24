@@ -654,8 +654,11 @@ public class BillPayRequest {
                                         paymentGatewayResponse.onSiMandate(oxigenValidateResponce);
                                     }));
                                 }else if(selectPosition==ApplicationConstant.UPIMandatePayment) {
-                                    oxigenValidateResponce.setProvider(getAuthServiceProvider(AuthServiceProviderVO.AUTOPE_PG_UPI));
-                                    paymentGatewayResponse.onUPIMandate(oxigenValidateResponce);
+                                    showBankMandateOrSiMandateInfo(context,oxigenValidateResponce.getUpiMandateHtml(),new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                                        oxigenValidateResponce.setProvider(getAuthServiceProvider(AuthServiceProviderVO.AUTOPE_PG_UPI));
+                                        paymentGatewayResponse.onUPIMandate(oxigenValidateResponce);
+                                    }));
+
                                 }
                             }));
                         }else {

@@ -507,7 +507,7 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                             // proceedToRecharge(oxigenValidateResponce.getTypeId().toString(),"AUTOPETXNID60", AuthServiceProviderVO.PAYU);
                         }else if(selectPosition == ApplicationConstant.UPIMandatePayment) {
                             // recharge on SI mandate
-                            BillPayRequest.showBankMandateOrSiMandateInfo(Mobile_Prepaid_Recharge_Service.this,oxigenValidateResponce.getSiMandateHtml(),new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                            BillPayRequest.showBankMandateOrSiMandateInfo(Mobile_Prepaid_Recharge_Service.this,oxigenValidateResponce.getUpiMandateHtml(),new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
                                 oxigenValidateResponce.setProvider(getAuthServiceProvider(AuthServiceProviderVO.AUTOPE_PG_UPI));
                                 setBankMandateOrRecharge(Mobile_Prepaid_Recharge_Service.this,oxigenValidateResponce);
                             }));
