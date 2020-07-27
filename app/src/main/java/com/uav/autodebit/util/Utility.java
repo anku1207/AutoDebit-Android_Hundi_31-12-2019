@@ -12,7 +12,9 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -1245,7 +1247,7 @@ public class Utility {
             title2.setText("MandateId");
             title3.setText("Status");
         }else if(providerId==AuthServiceProviderVO.AUTOPE_PG){
-            title_text.setText("Select An Existing Mandate");
+            title_text.setText("Select An Existing Card");
             title1.setText("Bank");
             title2.setText("Card No.");
             title3.setText("Status");
@@ -1685,6 +1687,39 @@ public class Utility {
 
     public static boolean containsIgnoreCase(String str, String subString) {
         return str.toLowerCase().contains(subString.toLowerCase());
+    }
+
+    public static List<String> getAllInstallApp(Context context){
+        PackageManager packageManager = context.getPackageManager();
+        List<PackageInfo> packageList = packageManager
+                .getInstalledPackages(PackageManager.GET_PERMISSIONS);
+
+        List<PackageInfo> packageList1 = new ArrayList<PackageInfo>();
+
+        /*To filter out System apps*/
+        for(PackageInfo pi : packageList) {
+            boolean b = isSystemPackage(pi);
+            if(!b) {
+                packageList1.add(pi);
+            }
+        }
+
+        List<String> applist=new ArrayList<>();
+
+        for(int i=0;i<packageList1.size();i++){
+            PackageInfo packageInfo = (PackageInfo) packageList1.get(i);
+            String appName = packageManager.getApplicationLabel(
+                    packageInfo.applicationInfo).toString();
+            applist.add(appName);
+
+        }
+
+        return applist;
+
+    }
+    public static boolean isSystemPackage(PackageInfo pkgInfo) {
+        return ((pkgInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) ? true
+                : false;
     }
 }
 
