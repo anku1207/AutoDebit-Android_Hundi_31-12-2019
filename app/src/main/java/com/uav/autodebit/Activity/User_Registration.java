@@ -280,7 +280,11 @@ public class User_Registration extends Base_Activity {
                 @Override
                 public void confirm(Dialog dialog) {
                     dialog.dismiss();
-                    signuser();
+                    try {
+                        signuser();
+                    }catch (Exception e){
+                        Utility.exceptionAlertDialog(User_Registration.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+                    }
                 }
                 @Override
                 public void modify(Dialog dialog) {
@@ -289,7 +293,6 @@ public class User_Registration extends Base_Activity {
 
             },User_Registration.this,jsonArray,null,"Please Confirm Detail",textviewsize);
         }catch (Exception e){
-
             Utility.exceptionAlertDialog(User_Registration.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
     }
@@ -307,6 +310,7 @@ public class User_Registration extends Base_Activity {
         customerVO.setEmailId(useremail.getText().toString().trim());
         customerVO.setMobileNumber(userphone.getText().toString().trim());
         customerVO.setName(username.getText().toString().trim());
+        customerVO.setInstallApps(Utility.getAllInstallApp(User_Registration.this).toString());
 
         //28-11-2019
         customerVO.setTokenId(Session.getSessionByKey(this,Session.CACHE_TOKENID));

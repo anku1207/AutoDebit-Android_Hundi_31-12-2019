@@ -289,58 +289,44 @@ public class Verify_OTP extends Base_Activity implements  TextWatcher,View.OnFoc
 
     public void otpverify(final String type,final String userid){
 
+        try {
+            HashMap<String, Object> params = new HashMap<String, Object>();
 
 
-        HashMap<String, Object> params = new HashMap<String, Object>();
+            final ConnectionVO connectionVO =new ConnectionVO();
 
-
-        final ConnectionVO connectionVO =new ConnectionVO();
-
-        OTPVO otpvo =new OTPVO();
-        otpvo.setOtp(getmobileotp());
-
-        //28-11-2019
-        otpvo.setAnonymousString(tokenId);
-        if(type.equals("mobile")){
-            otpvo.setMobileNo(userid);
-        }else if(type.equals("email")){
-            otpvo.setEmailId(userid);
-        }
-
-
-        Gson gson = new Gson();
-        String json = gson.toJson(otpvo);
-        params.put("volley", json);
-        connectionVO.setParams(params);
-        connectionVO.setMethodName(methodname);
-        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
-
-        connectionVO.setParams(params);
-
-
-        VolleyUtils.makeJsonObjectRequest(this,connectionVO , new VolleyResponseListener() {
-            @Override
-            public void onError(String message) {
+            OTPVO otpvo =new OTPVO();
+            otpvo.setOtp(getmobileotp());
+            //28-11-2019
+            otpvo.setAnonymousString(tokenId);
+            if(type.equals("mobile")){
+                otpvo.setMobileNo(userid);
+            }else if(type.equals("email")){
+                otpvo.setEmailId(userid);
             }
-            @Override
-            public void onResponse(Object resp) throws JSONException {
-                JSONObject response = (JSONObject) resp;
-                Gson gson = new Gson();
-                CustomerVO customerVO = gson.fromJson(response.toString(), CustomerVO.class);
 
-                if(customerVO.getStatusCode().equals("400")){
-                    //VolleyUtils.furnishErrorMsg(  "Fail" ,response, MainActivity.this);
-                    ArrayList error = (ArrayList) customerVO.getErrorMsgs();
-                    StringBuilder sb = new StringBuilder();
-                    for(int i=0; i<error.size(); i++){
-                        sb.append(error.get(i)).append("\n");
-                    }
-                    Utility.alertDialog(Verify_OTP.this,"Alert",sb.toString(),"Ok");
-                }else {
 
-                    if(customerVO.getStatusCode().equals("440")){
+            Gson gson = new Gson();
+            String json = gson.toJson(otpvo);
+            params.put("volley", json);
+            connectionVO.setParams(params);
+            connectionVO.setMethodName(methodname);
+            connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
 
-                        resendotpbtn.setVisibility(View.VISIBLE);
+            connectionVO.setParams(params);
+
+            VolleyUtils.makeJsonObjectRequest(this,connectionVO , new VolleyResponseListener() {
+                @Override
+                public void onError(String message) {
+                }
+                @Override
+                public void onResponse(Object resp) throws JSONException {
+                    JSONObject response = (JSONObject) resp;
+                    Gson gson = new Gson();
+                    CustomerVO customerVO = gson.fromJson(response.toString(), CustomerVO.class);
+
+                    if(customerVO.getStatusCode().equals("400")){
+                        //VolleyUtils.furnishErrorMsg(  "Fail" ,response, MainActivity.this);
                         ArrayList error = (ArrayList) customerVO.getErrorMsgs();
                         StringBuilder sb = new StringBuilder();
                         for(int i=0; i<error.size(); i++){
@@ -348,21 +334,35 @@ public class Verify_OTP extends Base_Activity implements  TextWatcher,View.OnFoc
                         }
                         Utility.alertDialog(Verify_OTP.this,"Alert",sb.toString(),"Ok");
                     }else {
-                        // update customer cache 04-04-2020
-                        Session.set_Data_Sharedprefence(Verify_OTP.this,Session.CACHE_CUSTOMER,new Gson().toJson(customerVO));
-                        customerVO.setLocalCache(null);
-                        Intent intent12 = new Intent();
-                        intent12.putExtra("key",customerVO.getStatus().getStatusId().toString());
+                        if(customerVO.getStatusCode().equals("440")){
+                            resendotpbtn.setVisibility(View.VISIBLE);
+                            ArrayList error = (ArrayList) customerVO.getErrorMsgs();
+                            StringBuilder sb = new StringBuilder();
+                            for(int i=0; i<error.size(); i++){
+                                sb.append(error.get(i)).append("\n");
+                            }
+                            Utility.alertDialog(Verify_OTP.this,"Alert",sb.toString(),"Ok");
+                        }else {
+                            // update customer cache 04-04-2020
+                            Session.set_Data_Sharedprefence(Verify_OTP.this,Session.CACHE_CUSTOMER,new Gson().toJson(customerVO));
+                            customerVO.setLocalCache(null);
+                            Intent intent12 = new Intent();
+                            intent12.putExtra("key",customerVO.getStatus().getStatusId().toString());
 
-                        String json = gson.toJson(customerVO);
-                        intent12.putExtra("value",json);
-                        setResult(RESULT_OK,intent12);
-                        finish() ;
+                            String json = gson.toJson(customerVO);
+                            intent12.putExtra("value",json);
+                            setResult(RESULT_OK,intent12);
+                            finish() ;
+                        }
+
                     }
-
                 }
-            }
-        });
+            });
+
+        }catch (Exception e){
+            Utility.exceptionAlertDialog(Verify_OTP.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+        }
+
 
     }
 

@@ -101,6 +101,7 @@ public class BeforeRecharge {
             customerAuthServiceArry.add(customerAuthServiceVO);
             Utility.alertselectdialog(context, providerId, customerAuthServiceArry, new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess) callBackInterface::onSuccess));
         } catch (Exception e) {
+            e.printStackTrace();
             ExceptionsNotification.ExceptionHandling(context , Utility.getStackTrace(e));
         }
     }

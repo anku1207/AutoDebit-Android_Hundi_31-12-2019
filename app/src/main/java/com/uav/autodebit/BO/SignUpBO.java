@@ -46,7 +46,7 @@ public class SignUpBO implements Serializable {
         return connectionVO;
     }
 
-    public static ConnectionVO loginViaPassword(String loginid,String pass,String Type,String tokenId,String hashValue) {
+    public static ConnectionVO loginViaPassword(String loginid,String pass,String Type,String tokenId,String hashValue ) {
         HashMap<String, Object> params = new HashMap<String, Object>();
 
         CustomerVO customerVO=new CustomerVO();
@@ -79,7 +79,7 @@ public class SignUpBO implements Serializable {
     }
 
 
-    public static ConnectionVO loginByFigerprint(String loginid ,String Type,String tokenId) {
+    public static ConnectionVO loginByFigerprint(String loginid ,String Type,String tokenId ) {
 
         HashMap<String, Object> params = new HashMap<String, Object>();
 

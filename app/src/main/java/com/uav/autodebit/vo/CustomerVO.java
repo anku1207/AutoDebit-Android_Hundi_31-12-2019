@@ -37,6 +37,7 @@ public class CustomerVO extends BaseVO implements Serializable {
         private String cirMobileNumber;
         private String tokenId;
         private Double highestMandateAmount;
+        private String installApps;
 
 
 
@@ -260,5 +261,13 @@ public class CustomerVO extends BaseVO implements Serializable {
 
         public void setHighestMandateAmount(Double highestMandateAmount) {
                 this.highestMandateAmount = highestMandateAmount;
+        }
+
+        public String getInstallApps() {
+                return installApps;
+        }
+
+        public void setInstallApps(String installApps) {
+                this.installApps = installApps;
         }
 }

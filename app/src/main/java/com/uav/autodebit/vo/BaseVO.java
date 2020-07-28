@@ -9,6 +9,7 @@ public class BaseVO {
     private String statusCode;
     private List<String> errorMsgs;
     private String anonymousString;
+    private String anonymousString1;
     private Integer otpExpiredMobile;
     private Integer otpExpiredEmail;
     private String actionname;
@@ -323,5 +324,13 @@ public class BaseVO {
 
     public void setAnonymousInteger1(Integer anonymousInteger1) {
         this.anonymousInteger1 = anonymousInteger1;
+    }
+
+    public String getAnonymousString1() {
+        return anonymousString1;
+    }
+
+    public void setAnonymousString1(String anonymousString1) {
+        this.anonymousString1 = anonymousString1;
     }
 }

@@ -178,33 +178,38 @@ public class Login extends Base_Activity implements View.OnClickListener, View.O
     }
 
     public void loginByFigerprint(String loginId,String type){
-        VolleyUtils.makeJsonObjectRequest(Login.this,SignUpBO.loginByFigerprint(loginId,type,Session.getSessionByKey(this,Session.CACHE_TOKENID)), new VolleyResponseListener() {
-            @Override
-            public void onError(String message) {
-            }
-            @Override
-            public void onResponse(Object resp) throws JSONException {
-                JSONObject response = (JSONObject) resp;
-                Gson gson = new Gson();
-                CustomerVO customerVO = gson.fromJson(response.toString(), CustomerVO.class);
+        try {
+            VolleyUtils.makeJsonObjectRequest(Login.this,SignUpBO.loginByFigerprint(loginId,type,Session.getSessionByKey(this,Session.CACHE_TOKENID)), new VolleyResponseListener() {
+                @Override
+                public void onError(String message) {
+                }
+                @Override
+                public void onResponse(Object resp) throws JSONException {
+                    JSONObject response = (JSONObject) resp;
+                    Gson gson = new Gson();
+                    CustomerVO customerVO = gson.fromJson(response.toString(), CustomerVO.class);
 
-                if(customerVO.getStatusCode().equals("400")){
-                    ArrayList error = (ArrayList) customerVO.getErrorMsgs();
-                    StringBuilder sb = new StringBuilder();
-                    for(int i=0; i<error.size(); i++){
-                        sb.append(error.get(i)).append("\n");
-                    }
-                    Utility.showSingleButtonDialog(Login.this,"Alert",sb.toString(),false);
-                }else {
-                    String json = gson.toJson(customerVO);
-                    Session.set_Data_Sharedprefence(Login.this,Session.CACHE_CUSTOMER,json);
+                    if(customerVO.getStatusCode().equals("400")){
+                        ArrayList error = (ArrayList) customerVO.getErrorMsgs();
+                        StringBuilder sb = new StringBuilder();
+                        for(int i=0; i<error.size(); i++){
+                            sb.append(error.get(i)).append("\n");
+                        }
+                        Utility.showSingleButtonDialog(Login.this,"Alert",sb.toString(),false);
+                    }else {
+                        String json = gson.toJson(customerVO);
+                        Session.set_Data_Sharedprefence(Login.this,Session.CACHE_CUSTOMER,json);
                   /*  startActivity(new Intent(Login.this,Home.class));
                     finish();*/
-                    startActivity();
+                        startActivity();
 
+                    }
                 }
-            }
-        });
+            });
+        }catch (Exception e){
+            Utility.exceptionAlertDialog(Login.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+        }
+
     }
 
     @Override
