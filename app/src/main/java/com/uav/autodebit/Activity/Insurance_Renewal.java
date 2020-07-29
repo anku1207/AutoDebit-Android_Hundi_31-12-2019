@@ -226,7 +226,13 @@ public class Insurance_Renewal extends Base_Activity implements View.OnClickList
                             CardView cardView = Utility.getCardViewStyle(this);
 
                             EditText et = Utility.getEditText(this);
-                            et.setInputType(InputType.TYPE_CLASS_TEXT);
+
+                            //only policy number
+                            if(Utility.containsIgnoreCase(oxigenQuestionsVO.getQuestionLabel(),"policy number")  ){
+                                et.setInputType(InputType.TYPE_CLASS_TEXT);
+                            }
+
+
                             et.setId(View.generateViewId());
                             et.setHint(oxigenQuestionsVO.getQuestionLabel());
 

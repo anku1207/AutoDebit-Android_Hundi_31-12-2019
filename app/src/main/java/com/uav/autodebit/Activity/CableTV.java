@@ -16,6 +16,7 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -238,6 +239,14 @@ public class CableTV extends Base_Activity implements View.OnClickListener , Per
 
                             CardView cardView = Utility.getCardViewStyle(this);
                             UAVEditText et = Utility.getUavEditText(CableTV.this);
+                            //only cable tv type
+                            if(Utility.containsIgnoreCase(oxigenQuestionsVO.getQuestionLabel(),"account no") || Utility.containsIgnoreCase(oxigenQuestionsVO.getQuestionLabel(),"vc no")
+                            || Utility.containsIgnoreCase(oxigenQuestionsVO.getQuestionLabel(),"mac id") || Utility.containsIgnoreCase(oxigenQuestionsVO.getQuestionLabel(),"vsc no")
+                                    || Utility.containsIgnoreCase(oxigenQuestionsVO.getQuestionLabel(),"rmn")){
+                                et.setInputType(InputType.TYPE_CLASS_TEXT);
+                            }
+
+
                             et.setId(View.generateViewId());
                             et.setHint(oxigenQuestionsVO.getQuestionLabel());
 

@@ -320,6 +320,8 @@ public class User_Registration extends Base_Activity {
         params.put("volley", json);
         connectionVO.setParams(params);
 
+        Log.d("customersign",json);
+
 
         VolleyUtils.makeJsonObjectRequest(this,connectionVO, new VolleyResponseListener() {
             @Override
