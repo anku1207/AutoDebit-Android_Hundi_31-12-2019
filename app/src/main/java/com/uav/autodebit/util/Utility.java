@@ -1428,7 +1428,10 @@ public class Utility {
 
     }
     /// manoj shakya
-    public static File createTemporaryFile(String part, String ext) throws Exception {
+    public static File createTemporaryFile(String part, String ext,Context context) throws Exception {
+
+        //File tempDir= context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+
         File tempDir= Environment.getExternalStorageDirectory();
         tempDir=new File(tempDir.getAbsolutePath()+"/HUNDI/");
         if(!tempDir.exists()){
@@ -1721,6 +1724,12 @@ public class Utility {
 
         return ((pkgInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) ? true
                 : false;
+    }
+
+    public static int  getDeviceWidth(Context context){
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        return displayMetrics.widthPixels;
     }
 }
 

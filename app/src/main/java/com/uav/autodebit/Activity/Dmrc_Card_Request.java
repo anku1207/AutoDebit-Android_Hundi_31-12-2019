@@ -914,7 +914,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
         try
         {
             // place where to store camera taken picture
-            photofileurl = Utility.createTemporaryFile("picture", ".jpg");
+            photofileurl = Utility.createTemporaryFile("picture", ".jpg",Dmrc_Card_Request.this);
             photofileurl.delete();
             Uri mImageUri = FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", photofileurl);
 

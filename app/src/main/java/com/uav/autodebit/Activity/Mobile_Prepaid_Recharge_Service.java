@@ -295,7 +295,12 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                     Utility.showSingleButtonDialog(Mobile_Prepaid_Recharge_Service.this,"Alert", Content_Message.error_message,false);
                 }
             }else if(requestCode==ApplicationConstant.REQ_UPI_FOR_MANDATE){
-                Toast.makeText(this, "REQ_UPI_FOR_MANDATE", Toast.LENGTH_SHORT).show();
+                int upiMandateId=data.getIntExtra("mandateId",0);
+                if(upiMandateId!=0){
+                    proceedToRecharge(oxigenValidateResponce.getTypeId().toString(),String.valueOf(upiMandateId), AuthServiceProviderVO.AUTOPE_PG_UPI,true);
+                }else{
+                    Utility.showSingleButtonDialog(Mobile_Prepaid_Recharge_Service.this,"Alert", Content_Message.error_message,false);
+                }
             }
         }
     }

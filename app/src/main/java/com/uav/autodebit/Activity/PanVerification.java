@@ -396,7 +396,7 @@ public class PanVerification extends Base_Activity implements  PermissionUtils.P
         try
         {
             // place where to store camera taken picture
-            photo = Utility.createTemporaryFile("picture", ".jpg");
+            photo = Utility.createTemporaryFile("picture", ".jpg",PanVerification.this);
             photo.delete();
             mImageUri = Uri.fromFile(photo);
             /*Uri mImageUri = CustomProvider.getPhotoUri(photo);

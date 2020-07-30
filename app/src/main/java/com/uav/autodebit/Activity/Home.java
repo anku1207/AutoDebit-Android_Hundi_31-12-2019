@@ -15,6 +15,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.widget.NestedScrollView;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -431,6 +432,13 @@ public class Home extends Base_Activity
             View galView = getLayoutInflater().inflate(activity, null);
 
             final LinearLayout activitylayout=galView.findViewById(R.id.layout_servicesgallery);
+
+            if (dataList.size() < 5) {
+                activitylayout.setLayoutParams(new LinearLayout.LayoutParams(
+                       Utility.getDeviceWidth(Home.this)/dataList.size(),
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                ));
+            }
             activitylayout.setTag(serviceTypeVO.getServiceTypeId());
             ImageView img = (ImageView) galView.findViewById(R.id.id_index_gallery_item_image);
             final ImageView activeservice=galView.findViewById(R.id.serviceactive);

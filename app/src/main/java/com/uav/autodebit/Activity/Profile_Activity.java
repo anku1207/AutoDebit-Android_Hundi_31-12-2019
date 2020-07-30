@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.provider.MediaStore;
 
 import androidx.annotation.NonNull;
@@ -54,6 +55,7 @@ import com.uav.autodebit.util.BackgroundServiceInterface;
 import com.uav.autodebit.util.DialogInterface;
 import com.uav.autodebit.util.DownloadTask;
 import com.uav.autodebit.util.FileDownloadInterface;
+import com.uav.autodebit.util.RealPathUtil;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerAuthServiceVO;
@@ -331,6 +333,7 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
         Intent galleryIntent = new Intent(Intent.ACTION_PICK,
                 android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(galleryIntent,REQ_GALLERY );
+
     }
 
     public void cameraimage(){
@@ -339,7 +342,7 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
         try
         {
             // place where to store camera taken picture
-            photofileurl = Utility.createTemporaryFile("picture", ".jpg");
+            photofileurl = Utility.createTemporaryFile("picture", ".jpg",Profile_Activity.this);
             photofileurl.delete();
             Uri mImageUri = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", photofileurl);
 
@@ -347,6 +350,7 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
             startActivityForResult(intent, REQ_IMAGE);
         }
         catch(Exception e){
+            e.printStackTrace();
             ExceptionsNotification.ExceptionHandling(Profile_Activity.this , Utility.getStackTrace(e));
             //Utility.exceptionAlertDialog(this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
@@ -356,6 +360,8 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
+
+
     }
 
 
@@ -454,7 +460,6 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
                 }else if(requestCode==REQ_ADDBANK_ANDSERVICE){
                     getProfileDate(Session.getCustomerId(Profile_Activity.this));
                 }
-
             }else{
                 if(requestCode==PIC_CROP){
                     imageView1.setImageBitmap(bmp);
@@ -466,6 +471,9 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
             //Utility.exceptionAlertDialog(this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
     }
+
+
+
 
 
 
