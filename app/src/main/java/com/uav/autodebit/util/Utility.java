@@ -1429,9 +1429,7 @@ public class Utility {
     }
     /// manoj shakya
     public static File createTemporaryFile(String part, String ext,Context context) throws Exception {
-
         //File tempDir= context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-
         File tempDir= Environment.getExternalStorageDirectory();
         tempDir=new File(tempDir.getAbsolutePath()+"/HUNDI/");
         if(!tempDir.exists()){

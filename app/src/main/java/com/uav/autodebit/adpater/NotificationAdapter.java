@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.JsonObject;
 import com.squareup.picasso.Picasso;
 import com.uav.autodebit.Activity.Home;
 import com.uav.autodebit.Activity.Notifications;
@@ -74,7 +75,10 @@ public class NotificationAdapter  extends RecyclerView.Adapter<NotificationAdapt
 
                 try {
                     if(pro.getMoveActivity()!=null){
-                        ((Notifications)mctx).setActionOnNotificationClick(pro.getMoveActivity());
+                        JSONObject jsonObject = new JSONObject(pro.getMoveActivity());
+                        if(jsonObject.getBoolean("action")){
+                            ((Notifications)mctx).setActionOnNotificationClick(pro.getMoveActivity());
+                        }
                     }
                 }catch (Exception e){
                     ExceptionsNotification.ExceptionHandling(mctx , Utility.getStackTrace(e));
