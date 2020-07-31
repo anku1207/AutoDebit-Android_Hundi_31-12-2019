@@ -112,7 +112,8 @@
             android:padding="10dp"
             android:id="@+id/revoke"
             android:background="@drawable/edittext_bottom_line"
-            android:textColor="@drawable/slidemenutextcolor"/>
+            android:textColor="@drawable/slidemenutextcolor"
+            android:visibility="gone"/>
 
 
     </LinearLayout>
