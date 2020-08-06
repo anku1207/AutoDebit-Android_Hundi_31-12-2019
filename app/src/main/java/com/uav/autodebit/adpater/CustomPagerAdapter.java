@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Context;
 
 import android.content.Intent;
+import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -82,6 +83,9 @@ public class CustomPagerAdapter extends PagerAdapter {
         fcardstatus=itemView.findViewById(R.id.fcardstatus);
         track=itemView.findViewById(R.id.track);
 
+        //track text view set underline
+        track.setPaintFlags(track.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+
         DMRC_Customer_CardVO pro=models.get(position);
         name.setText("  "+pro.getCustomerName());
         fcardstatus.setText("Status : "+pro.getDmrccardStaus().getStatusName());
@@ -106,7 +110,7 @@ public class CustomPagerAdapter extends PagerAdapter {
         clickViewpager.put(position,false);
 
         if(pro.getDmrccardStaus().getStatusId()==4){
-            track.setVisibility(View.GONE);
+            //track.setVisibility(View.GONE);
         }
 
         track.setOnClickListener(new View.OnClickListener() {

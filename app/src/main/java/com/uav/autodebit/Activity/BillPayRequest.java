@@ -838,6 +838,8 @@ public class BillPayRequest {
                 responseOxigenTransactionVO.setTypeId(oxigenValidateResponce.getTypeId());
                 responseOxigenTransactionVO.setAnonymousString(data.getStringExtra("bankMandateId"));
                 responseOxigenTransactionVO.setProvider(authServiceProviderVO);
+                // 01-08-2020
+                responseOxigenTransactionVO.setEventIs(true);
                 //recharge for after enach mandate
                 BillPayRequest.proceedBillPayment(responseOxigenTransactionVO,context,new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
                     handelRechargeSuccess(context,(OxigenTransactionVO)s);
@@ -871,7 +873,7 @@ public class BillPayRequest {
             int actionId=data.getIntExtra("actionId",0);
             if(enachMandateStatus && actionId!=0 && mandateId!=null){
                 //responseOxigenTransactionVO.setAnonymousString(data.getStringExtra("bankMandateId"));
-                updateMandateAgainstOpeator(context,Integer.parseInt(mandateId),actionId,AuthServiceProviderVO.ENACHIDFC,false);
+                updateMandateAgainstOpeator(context,Integer.parseInt(mandateId),actionId,AuthServiceProviderVO.ENACHIDFC,true);
             }else{
                 Utility.showSingleButtonDialog(context,"Alert",data.getStringExtra("msg"),false);
             }
@@ -884,7 +886,6 @@ public class BillPayRequest {
                 Utility.showSingleButtonDialog(context,"Alert", Content_Message.error_message,false);
             }
         }else if(requestCode == ApplicationConstant.REQ_UPI_FOR_MANDATE){
-            Toast.makeText(context, "REQ_UPI_FOR_MANDATE", Toast.LENGTH_SHORT).show();
 
             int UPIMandateId=data.getIntExtra("mandateId",0);
             if(UPIMandateId!=0){

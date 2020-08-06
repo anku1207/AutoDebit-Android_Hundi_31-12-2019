@@ -348,7 +348,7 @@ public class D2H extends Base_Activity implements View.OnClickListener {
             oxigenTransactionVO.setAnonymousString(detailfiled.toString());
 
             ServiceTypeVO serviceTypeVO =new ServiceTypeVO();
-            serviceTypeVO.setServiceTypeId(ApplicationConstant.DISHTV);
+            serviceTypeVO.setServiceTypeId(ApplicationConstant.D2h);
             oxigenTransactionVO.setServiceType(serviceTypeVO);
 
             CustomerVO customerVO =new CustomerVO();

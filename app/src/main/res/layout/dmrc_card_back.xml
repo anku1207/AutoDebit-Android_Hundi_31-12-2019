@@ -16,7 +16,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:padding="10dp"
             android:id="@+id/mainlayout"
             >
 
@@ -28,7 +27,7 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:src="@drawable/dmrcbacksideimage"
+                    android:src="@drawable/dmrc_card_back"
                     android:scaleType="fitXY"
                     />
 
@@ -187,7 +186,20 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_alignParentTop="true"
+                    android:padding="10dp"
                     >
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text=""
+                        android:id="@+id/cardnumber"
+                        android:fontFamily="@font/poppinssemibold"
+                        android:textColor="@color/white"
+                        android:textAlignment="textStart"
+                        android:textAllCaps="true"
+                        />
 
                     <TextView
                         android:layout_width="0dp"
@@ -196,19 +208,11 @@
                         android:text=""
                         android:id="@+id/issuedate"
                         android:fontFamily="@font/poppinssemibold"
-                        android:textColor="@color/black"
-                        android:textAlignment="textStart"
-                        android:visibility="gone"/>
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text=""
-                        android:id="@+id/cardnumber"
-                        android:fontFamily="@font/poppinssemibold"
-                        android:textColor="@color/black"
+                        android:textColor="@color/white"
                         android:textAlignment="textEnd"
-                        />
+                        android:visibility="gone"
+                        android:textAllCaps="true"/>
+
                 </LinearLayout>
             </RelativeLayout>
 

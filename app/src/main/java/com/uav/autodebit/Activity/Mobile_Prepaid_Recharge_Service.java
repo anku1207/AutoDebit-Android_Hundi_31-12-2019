@@ -283,7 +283,7 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
             }else if(requestCode==ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE){
                 boolean enachMandateStatus=data.getBooleanExtra("mandate_status",false);
                 if(enachMandateStatus){
-                    proceedToRecharge(oxigenValidateResponce.getTypeId().toString(),data.getStringExtra("bankMandateId"), AuthServiceProviderVO.ENACHIDFC,false);
+                    proceedToRecharge(oxigenValidateResponce.getTypeId().toString(),data.getStringExtra("bankMandateId"), AuthServiceProviderVO.ENACHIDFC,true);
                 }else{
                     Utility.showSingleButtonDialog(Mobile_Prepaid_Recharge_Service.this,"Alert",data.getStringExtra("msg"),false);
                 }

@@ -18,11 +18,38 @@
             android:orientation="vertical"
             android:padding="10dp"
             android:id="@+id/mainlayout"
+            android:background="@drawable/dmrc_card_front"
+            android:layout_gravity="right"
+            android:gravity="right"
             >
 
-            <RelativeLayout
-                xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="Track"
+                android:textColor="@color/white"
+                android:gravity="right"
+                android:textSize="15dp"
+                android:id="@+id/track"
+                android:fontFamily="@font/poppinsmedium"
+                android:textAllCaps="true"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text=""
+                android:textColor="@color/white"
+                android:gravity="bottom"
+                android:textSize="15dp"
+                android:id="@+id/fcardstatus"
+                android:fontFamily="@font/poppinsmedium"
+                android:textAllCaps="true"
+                />
+
+          <!--  <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
                 <LinearLayout
@@ -33,7 +60,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text=""
+                        android:text="sdfsdfsdfsdf"
                         android:textColor="@color/black"
                         android:gravity="left"
                         android:textSize="15dp"
@@ -54,13 +81,13 @@
 
                 </LinearLayout>
 
-                <ImageView
+              &lt;!&ndash;  <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:src="@drawable/dmrc_autope_logo"
-                    android:scaleType="center"
-                    />
-            </RelativeLayout>
+                    android:src="@drawable/dmrc_card_front"
+                    android:scaleType="fitXY"
+                     />&ndash;&gt;
+            </RelativeLayout>-->
 
         </LinearLayout>
 
