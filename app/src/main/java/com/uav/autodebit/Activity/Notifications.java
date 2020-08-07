@@ -2,37 +2,28 @@ package com.uav.autodebit.Activity;
 
 import android.app.Dialog;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.SimpleItemAnimator;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.uav.autodebit.adpater.NotificationAdapter;
 import com.uav.autodebit.BO.CustomerBO;
-import com.uav.autodebit.BO.MetroBO;
 import com.uav.autodebit.Interface.CallBackInterface;
-import com.uav.autodebit.Interface.ServiceClick;
 import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
 import com.uav.autodebit.SQlLite.DataBaseHelper;
 import com.uav.autodebit.SQlLite.GetSqlLiteData;
 import com.uav.autodebit.SQlLite.InsertDateOnSqlLite;
-import com.uav.autodebit.adpater.NotificationAdapter;
-import com.uav.autodebit.adpater.RecyclerItemTouchHelper;
 import com.uav.autodebit.constant.ApplicationConstant;
-import com.uav.autodebit.constant.Content_Message;
 import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.DialogInterface;
@@ -40,17 +31,13 @@ import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerNotificationVO;
 import com.uav.autodebit.vo.CustomerVO;
-import com.uav.autodebit.vo.DMRC_Customer_CardVO;
-import com.uav.autodebit.vo.LocalCacheVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
 import com.uav.autodebit.volley.VolleyUtils;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -214,6 +201,8 @@ public class Notifications extends Base_Activity implements View.OnClickListener
         if (view.getId() == R.id.back_activity_button) {
             finish();
         }else if(view.getId() == R.id.clear_notification){
+            Utility.enableDisableView(view,false);
+
             String [] btn={"No","Yes"};
             Utility.showDoubleButtonDialogConfirmation(new DialogInterface() {
                 @Override
@@ -223,12 +212,14 @@ public class Notifications extends Base_Activity implements View.OnClickListener
                     customerNotificationVOS.clear(); // clear list
                     recyclerView.getAdapter().notifyDataSetChanged();  // let your adapter know about the changes and reload view
                     GetSqlLiteData.deleteNotificationData(Notifications.this,"notification");
+                    Utility.enableDisableView(view,true);
                 }
                 @Override
                 public void modify(Dialog dialog) {
                     dialog.dismiss();
+                    Utility.enableDisableView(view,true);
                 }
-            }, Notifications.this,"Do you want to remove all Notification ?" ,null,btn);
+            }, Notifications.this,"Do you want to remove all notifications ?" ,null,btn);
         }
     }
 

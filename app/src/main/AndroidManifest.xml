@@ -6,15 +6,12 @@
     <uses-feature
         android:name="android.hardware.telephony"
         android:required="false" />
-
-  <!--  <uses-feature android:name="com.android.camera.action.CROP" />
--->
+    <!--   <uses-feature android:name="com.android.camera.action.CROP" /> -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <!-- Mosambee permissions -->
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- Mosambee permissions -->
     <!--
  <uses-permission android:name="android.permission.ACCESS_GPS" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -30,13 +27,9 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission
         android:name="android.permission.USE_BIOMETRIC"
-        android:requiredFeature="false" />
-
-
-    <!--add notification issue-->
+        android:requiredFeature="false" /> <!-- add notification issue -->
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-
 
     <application
         android:name=".constant.GlobalApplication"
@@ -46,30 +39,28 @@
         android:icon="@mipmap/autopehomelogo"
         android:label="@string/app_name"
         android:largeHeap="true"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/autopehomelogo"
         android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:usesCleartextTraffic="true"
-        android:requestLegacyExternalStorage="true">
+        android:usesCleartextTraffic="true">
+        <activity android:name=".Activity.NotificatinDesc"></activity>
         <activity
             android:name=".Activity.UPI_Mandate"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden"
-            tools:ignore="LockedOrientationActivity"
-            >
-        </activity>
+            tools:ignore="LockedOrientationActivity"></activity>
         <activity
             android:name=".Activity.MandateRevoke"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden"
-            tools:ignore="LockedOrientationActivity"/>
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".Activity.TermAndCondition_Webview"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden"
-            tools:ignore="LockedOrientationActivity"
-            />
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".Activity.Mandate_Revoke_Dialog"
             android:screenOrientation="portrait"
@@ -80,17 +71,17 @@
             android:name=".Activity.Track_Dmrc_Card"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden"
-            tools:ignore="LockedOrientationActivity"/>
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".Activity.Faq_WebView"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden"
-            tools:ignore="LockedOrientationActivity"/>
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".Activity.ManualEnachMandate"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden"
-            tools:ignore="LockedOrientationActivity"/>
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".Activity.PayBillByNotification"
             android:screenOrientation="portrait"

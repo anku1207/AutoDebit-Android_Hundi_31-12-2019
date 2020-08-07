@@ -1,6 +1,5 @@
 package com.uav.autodebit.exceptions;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.os.Handler;
@@ -10,17 +9,12 @@ import android.widget.Toast;
 
 
 import com.google.gson.Gson;
-import com.uav.autodebit.Activity.Home;
-import com.uav.autodebit.Activity.Notifications;
-import com.uav.autodebit.BO.CustomerBO;
 import com.uav.autodebit.BO.ExceptionsBO;
 import com.uav.autodebit.constant.Content_Message;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.AppErrorVO;
 import com.uav.autodebit.vo.ConnectionVO;
-import com.uav.autodebit.vo.CustomerNotificationVO;
-import com.uav.autodebit.vo.CustomerVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
 import com.uav.autodebit.volley.VolleyUtils;
 

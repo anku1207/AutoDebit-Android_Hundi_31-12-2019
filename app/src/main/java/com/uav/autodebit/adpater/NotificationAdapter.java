@@ -1,6 +1,5 @@
 package com.uav.autodebit.adpater;
 
-import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,26 +7,21 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.gson.JsonObject;
 import com.squareup.picasso.Picasso;
-import com.uav.autodebit.Activity.Home;
 import com.uav.autodebit.Activity.Notifications;
 import com.uav.autodebit.R;
 import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.CustomerNotificationVO;
-import com.uav.autodebit.vo.DataAdapterVO;
-import com.uav.autodebit.vo.ServiceTypeVO;
 
 import org.json.JSONObject;
 
 import java.util.List;
 
-public class NotificationAdapter  extends RecyclerView.Adapter<NotificationAdapter.ProdectViewHolder>{
+public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.ProdectViewHolder>{
     Context mctx ;
     List<CustomerNotificationVO> customerNotificationVOS;
 

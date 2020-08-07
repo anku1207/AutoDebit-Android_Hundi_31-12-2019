@@ -1,8 +1,6 @@
 package com.uav.autodebit.Activity;
 
-import android.app.Activity;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,7 +13,6 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.widget.NestedScrollView;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.View;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -27,14 +24,11 @@ import androidx.viewpager.widget.ViewPager;
 import android.view.MenuItem;
 import android.view.WindowManager;
 import android.view.animation.TranslateAnimation;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
-import android.widget.TableLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -45,7 +39,6 @@ import com.google.gson.Gson;
 import com.uav.autodebit.BO.MetroBO;
 import com.uav.autodebit.BO.ServiceBO;
 import com.uav.autodebit.CustomDialog.MyDialog;
-import com.uav.autodebit.HtmlPage.HtmlPages;
 import com.uav.autodebit.Interface.AlertSelectDialogClick;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.Interface.ServiceClick;
@@ -55,7 +48,6 @@ import com.uav.autodebit.R;
 import com.uav.autodebit.adpater.BannerAdapter;
 import com.uav.autodebit.adpater.UitilityAdapter;
 import com.uav.autodebit.constant.ApplicationConstant;
-import com.uav.autodebit.constant.Content_Message;
 import com.uav.autodebit.constant.GlobalApplication;
 import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.override.ClickableViewPager;
@@ -64,7 +56,6 @@ import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.BackgroundAsyncService;
 import com.uav.autodebit.util.BackgroundServiceInterface;
 import com.uav.autodebit.util.DialogInterface;
-import com.uav.autodebit.util.ExceptionHandler;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.AuthServiceProviderVO;
 import com.uav.autodebit.vo.BannerVO;
@@ -1025,7 +1016,7 @@ public class Home extends Base_Activity
                 break;
             case R.id.notification_layout:
                 GlobalApplication.notificationCount=0;
-                startActivity(new Intent(Home.this,Notifications.class));
+                startActivity(new Intent(Home.this, Notifications.class));
                 break;
             case R.id.faq_layout:
                 startActivity(new Intent(Home.this,Faq_WebView.class));
