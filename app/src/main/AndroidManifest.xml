@@ -3,15 +3,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.uav.autodebit">
 
+
+
     <uses-feature
         android:name="android.hardware.telephony"
-        android:required="false" />
-    <!--   <uses-feature android:name="com.android.camera.action.CROP" /> -->
+        android:required="false" /> <!-- <uses-feature android:name="com.android.camera.action.CROP" /> -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" /> <!-- Mosambee permissions -->
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+
     <!--
  <uses-permission android:name="android.permission.ACCESS_GPS" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -45,12 +48,23 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Activity.NotificatinDesc"></activity>
+        <activity android:name=".Activity.AddOldDmrcCardAutoPe"></activity>
+        <activity
+            android:name=".Activity.Dmrc_NewAndExist_Card_Dialog"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.pop"
+            android:windowSoftInputMode="stateHidden"
+            tools:ignore="LockedOrientationActivity"></activity>
+        <activity
+            android:name=".Activity.NotificatinDesc"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".Activity.UPI_Mandate"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden"
-            tools:ignore="LockedOrientationActivity"></activity>
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".Activity.MandateRevoke"
             android:screenOrientation="portrait"
@@ -393,6 +407,7 @@
         <activity
             android:name=".Activity.Splash_Screen"
             android:configChanges="orientation"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/fullscreen"
             android:windowSoftInputMode="stateHidden"
@@ -401,6 +416,22 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <!-- Branch URI Scheme -->
+            <intent-filter>
+                <data
+                    android:host="open"
+                    android:scheme="autope" />
+
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="autope.in"
+                    android:scheme="http" />
             </intent-filter>
         </activity>
 
@@ -459,7 +490,16 @@
             android:name=".Activity.PNG"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity" />
+            tools:ignore="LockedOrientationActivity" /> <!-- Branch init -->
+        <meta-data
+            android:name="io.branch.sdk.BranchKey"
+            android:value="key_live_plGZst7KaRRNw20OGJwTfopjEvpfwt1j" />
+        <meta-data
+            android:name="io.branch.sdk.BranchKey.test"
+            android:value="key_test_cbL9tB9KbTGTC1YKTPzJimmeusklFxQ6" />
+        <meta-data
+            android:name="io.branch.sdk.TestMode"
+            android:value="false" />
     </application>
 
 </manifest>

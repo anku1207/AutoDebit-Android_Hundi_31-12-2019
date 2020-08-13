@@ -622,7 +622,7 @@ public class BillPayRequest {
                     }else{
                         //if due date > 2 paybill date show payment dialog select recharge mode
                         if(oxigenValidateResponce.getPaymentDialogShowMandate()){
-                            Utility.showSelectPaymentTypeDialog(context,"Add Mandate",oxigenValidateResponce.getPaymentTypeObject(),new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess)(position)->{
+                            Utility.showSelectPaymentTypeDialog(context,"Payment Type",oxigenValidateResponce.getPaymentTypeObject(),new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess)(position)->{
                                 int selectPosition=Integer.parseInt(position);
                                 if(selectPosition==ApplicationConstant.BankMandatePayment ){
                                     // 07/05/2020

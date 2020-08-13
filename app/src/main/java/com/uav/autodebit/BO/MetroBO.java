@@ -13,6 +13,16 @@ public class MetroBO implements Serializable {
         return connectionVO;
     }
 
+    public static ConnectionVO saveDmarcExitingCards() {
+        ConnectionVO connectionVO = new ConnectionVO();
+        connectionVO.setMethodName("saveDmarcExitingCards");
+        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
+        return connectionVO;
+    }
+
+
+
+
     public static ConnectionVO saveDmarcCards() {
         ConnectionVO connectionVO = new ConnectionVO();
         connectionVO.setMethodName("saveDmarcCards");

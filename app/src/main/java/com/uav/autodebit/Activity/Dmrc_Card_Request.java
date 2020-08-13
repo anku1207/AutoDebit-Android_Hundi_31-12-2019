@@ -587,7 +587,6 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
 
     }
 
-
     public  void startSIActivity(Context context ,  DMRC_Customer_CardVO  dmrc_customer_cardVO , String paymentType){
         try {
             Intent intent = new Intent(context,SI_First_Data.class);

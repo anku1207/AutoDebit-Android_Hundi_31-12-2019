@@ -33,9 +33,9 @@ import java.util.List;
 
 public class CustomPagerAdapter extends PagerAdapter {
 
-  private List<DMRC_Customer_CardVO> models;
-  private LayoutInflater layoutInflater;
-  private Context context;
+    private List<DMRC_Customer_CardVO> models;
+    private LayoutInflater layoutInflater;
+    private Context context;
 
 
     private AnimatorSet mSetRightOut;

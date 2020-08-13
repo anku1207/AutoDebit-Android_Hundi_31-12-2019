@@ -16,5 +16,8 @@ public class ErrorMsg {
     public static String CONTACT_PERMISSION="Need this permission for read contact ";
 
 
+    public static String Filed_Required="this filed is required";
+
+
 
 }

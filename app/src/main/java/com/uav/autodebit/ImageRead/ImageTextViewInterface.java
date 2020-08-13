@@ -1,4 +1,4 @@
-package com.uav.autodebit.Activity;
+package com.uav.autodebit.ImageRead;
 
 public interface ImageTextViewInterface {
 

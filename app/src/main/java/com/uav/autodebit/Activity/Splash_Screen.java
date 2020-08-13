@@ -4,20 +4,23 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
+import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.reflect.TypeToken;
@@ -45,8 +48,13 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.branch.indexing.BranchUniversalObject;
+import io.branch.referral.Branch;
+import io.branch.referral.BranchError;
+import io.branch.referral.util.LinkProperties;
 
-public class Splash_Screen extends Base_Activity implements BitmapInterface {
+
+public class Splash_Screen extends AppCompatActivity implements BitmapInterface {
     ProgressBar progressBar;
 
     List<BannerVO> slBannerVos= new ArrayList<>();
@@ -61,7 +69,7 @@ public class Splash_Screen extends Base_Activity implements BitmapInterface {
         ImageView imageView = (ImageView) findViewById( R.id.appstarticon);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
-        if(!Utility.isNetworkAvailable(Splash_Screen.this)){
+      /*  if(!Utility.isNetworkAvailable(Splash_Screen.this)){
             AlertDialog.Builder builder = new AlertDialog.Builder(Splash_Screen.this);
             builder.setMessage("Sorry, no Internet Connectivity detected. Please reconnect and try again ")
                     .setTitle("No Internet Connection!")
@@ -96,8 +104,72 @@ public class Splash_Screen extends Base_Activity implements BitmapInterface {
                     });
 
             startDownloadCache();
+        }*/
+    }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if(!Utility.isNetworkAvailable(Splash_Screen.this)){
+            AlertDialog.Builder builder = new AlertDialog.Builder(Splash_Screen.this);
+            builder.setMessage("Sorry, no Internet Connectivity detected. Please reconnect and try again ")
+                    .setTitle("No Internet Connection!")
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setCancelable(false)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            //do things
+                            android.os.Process.killProcess(android.os.Process.myPid());
+                        }
+                    });
+            AlertDialog alert = builder.create();
+            alert.setCanceledOnTouchOutside(false);
+            alert.setCancelable(false);
+            alert.show();
+        }else {
+            Branch.sessionBuilder(this).withCallback(branchReferralInitListener).withData(getIntent() != null ? getIntent().getData() : null).init();
         }
     }
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        // if activity is in foreground (or in backstack but partially visible) launching the same
+        // activity will skip onStart, handle this case with reInitSession
+        Branch.sessionBuilder(this).withCallback(branchReferralInitListener).reInit();
+    }
+    private Branch.BranchReferralInitListener branchReferralInitListener = new Branch.BranchReferralInitListener() {
+        @Override
+        public void onInitFinished(JSONObject linkProperties, BranchError error) {
+            // do stuff with deep link data (nav to page, display content, etc)
+
+            if(error==null && linkProperties!=null ){
+
+                Log.w("linkProperties",linkProperties.toString());
+
+                FirebaseMessaging.getInstance().subscribeToTopic("global");
+                FirebaseInstanceId.getInstance().getInstanceId()
+                        .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                                if (!task.isSuccessful()) {
+                                    Log.w( "getInstanceId failed", task.getException());
+                                    return;
+                                }
+                                // Get new Instance ID token
+                                String token = task.getResult().getToken();
+                                Session.set_Data_Sharedprefence(Splash_Screen.this,Session.CACHE_TOKENID,token);
+                                Log.w("token",token);
+                            }
+                        });
+
+                startDownloadCache();
+            }else {
+                Log.i("BRANCH SDK", error.getMessage());
+            }
+        }
+    };
 
 
 
@@ -127,6 +199,8 @@ public class Splash_Screen extends Base_Activity implements BitmapInterface {
             finish();
         }
     }
+
+
 
     private  void loadHomeActivity(){
 

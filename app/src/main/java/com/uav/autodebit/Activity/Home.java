@@ -150,7 +150,7 @@ public class Home extends Base_Activity
         try {
             activityhasmap=new HashMap<>();
             activityhasmap.put("1",IRCTC.class);
-            activityhasmap.put("2",Dmrc_Card_Request.class);
+            activityhasmap.put("2",Dmrc_NewAndExist_Card_Dialog.class);
             activityhasmap.put("3",Hyd_Metro.class);
             activityhasmap.put("4",Mum_Metro.class);
             activityhasmap.put("5",Mobile_Prepaid_Recharge_Service.class);
@@ -180,13 +180,17 @@ public class Home extends Base_Activity
 
             //check notification send  activity move
             if(getIntent().getStringExtra(ApplicationConstant.NOTIFICATION_ACTION)!=null){
-                JSONObject jsonObject =new JSONObject(getIntent().getStringExtra(ApplicationConstant.NOTIFICATION_ACTION));
-                Class <?>clazz = Class.forName(getApplicationContext().getPackageName()+".Activity."+jsonObject.getString("key"));
-                Intent intent =new Intent(this, clazz);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.putExtra(ApplicationConstant.NOTIFICATION_ACTION,jsonObject.toString());
-                startActivity(intent);
+                try {
+                    JSONObject jsonObject =new JSONObject(getIntent().getStringExtra(ApplicationConstant.NOTIFICATION_ACTION));
+                    Class <?>clazz = Class.forName(getApplicationContext().getPackageName()+".Activity."+jsonObject.getString("key"));
+                    Intent intent =new Intent(this, clazz);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra(ApplicationConstant.NOTIFICATION_ACTION,jsonObject.toString());
+                    startActivity(intent);
+                }catch (Exception e){
+                    ExceptionsNotification.ExceptionHandling(Home.this , Utility.getStackTrace(e));
+                }
             }
             //check customer level and start activity
             Gson gson =new Gson();
@@ -345,9 +349,7 @@ public class Home extends Base_Activity
                     if(banners.get(pager.getCurrentItem()).getServiceType()!=null && banners.get(pager.getCurrentItem()).getServiceType().getServiceTypeId()!=null){
 
 
-                        if(banners.get(pager.getCurrentItem()).getServiceType().getServiceTypeId()==ApplicationConstant.Dmrc){
-                            dmrcCardRequest();
-                        }else if(banners.get(pager.getCurrentItem()).getServiceType().getServiceTypeId()==ApplicationConstant.Uber){
+                        if(banners.get(pager.getCurrentItem()).getServiceType().getServiceTypeId()==ApplicationConstant.Uber){
                             actionUberServiceOnclick(banners.get(pager.getCurrentItem()).getServiceType().getServiceTypeId());
                         } else{
                             Intent intent;
@@ -362,11 +364,7 @@ public class Home extends Base_Activity
 
             }
         });
-
        // viewPager.onclic
-
-
-
 
         List<ServiceTypeVO> utilityServices = localCacheVO.getUtilityBills();
         List<ServiceTypeVO> addservice =new ArrayList<>();
@@ -374,22 +372,22 @@ public class Home extends Base_Activity
         String utilityService =localCacheVO.getUitiyServiceHomePage();
         String[] utilServiceArr =  utilityService.split(",");
 
-        for(ServiceTypeVO utility:utilityServices){
-            for(int c=0; c<utilServiceArr.length; c++ ){
-                if( utilServiceArr[c].equals( utility.getServiceTypeId().toString()) ){
+        for (String s : utilServiceArr) {
+            for (ServiceTypeVO utility : utilityServices) {
+                Log.w("Id", s);
+                if (s.equals(utility.getServiceTypeId().toString())) {
                     addservice.add(utility);
+                    Log.w("serviceTypeId", s);
                 }
             }
         }
+
         UitilityAdapter utility=new UitilityAdapter(this,addservice ,R.layout.two_tailes, pd);
         recyclerView.setAdapter(utility);
 
         List<ServiceTypeVO> mImgIds;
         mImgIds=localCacheVO.getSerives();
         setHorizontalScrollView(mImgIds,R.id.id_servicegallery ,R.layout.services_gallery);
-
-
-
     }
 
     /*Banner slider*/
@@ -814,9 +812,7 @@ public class Home extends Base_Activity
                     Session.set_Data_Sharedprefence(Home.this, Session.LOCAL_CACHE,customerVO.getLocalCache());
                     loadDateInRecyclerView();*/
 
-                    if(serviceId==ApplicationConstant.Dmrc){
-                        dmrcCardRequest();
-                    }else if(serviceId==ApplicationConstant.Uber){
+                    if(serviceId==ApplicationConstant.Uber){
                         actionUberServiceOnclick(serviceId);
                     } else{
                         Intent intent;
