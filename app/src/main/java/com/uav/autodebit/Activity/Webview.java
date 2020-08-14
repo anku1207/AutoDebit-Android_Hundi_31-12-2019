@@ -55,12 +55,7 @@ public class Webview extends Base_Activity {
         Intent intent = getIntent();
         openWebView(intent.getStringExtra("url")); //http://d.eze.cc/r/o/0zfATRE7
 
-
-
-
-
     }
-
         @SuppressLint("SetJavaScriptEnabled")
         void openWebView(final String receiptUrl) {
 
@@ -70,7 +65,6 @@ public class Webview extends Base_Activity {
             webView.setVerticalScrollBarEnabled(false);
             webView.setHorizontalScrollBarEnabled(false);
 
-
             webView.getSettings().setBuiltInZoomControls(true);
 
             //  wv.setWebViewClient(new MyBrowser());
@@ -79,7 +73,6 @@ public class Webview extends Base_Activity {
             //wv.getSettings().setLoadsImagesAutomatically(true);
             webView.getSettings().setLoadsImagesAutomatically(true);
             webView.getSettings().setDomStorageEnabled(true);
-
 
             webView.setInitialScale(1);
             webView.getSettings().setUseWideViewPort(true);
@@ -220,7 +213,6 @@ public class Webview extends Base_Activity {
                 finish() ;
             }
         }
-
         @Override
         public void onPageFinished(WebView view, String url) {
             if (!Webview.this.isFinishing() && progressBar!=null && progressBar.isShowing()) {
@@ -230,9 +222,7 @@ public class Webview extends Base_Activity {
                     //use a log message
                 }
             }
-
         }
-
         @SuppressWarnings("deprecation")
         public void onReceivedError(WebView view, int errorCode,
                                     String description, String failingUrl) {

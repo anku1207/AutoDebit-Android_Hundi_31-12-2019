@@ -198,15 +198,6 @@ public class PanVerification extends Base_Activity implements  PermissionUtils.P
                 permissionUtils.check_permission(PermissionHandler.imagePermissionArrayList(PanVerification.this), Content_Message.CAMERA_PERMISSION,ApplicationConstant.REQ_CAMERA_PERMISSION);
             }
         });
-
-
-
-
-
-
-
-
-
         pin.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             public void onFocusChange(View v, boolean gainFocus) {
                 //onFocus
@@ -239,8 +230,6 @@ public class PanVerification extends Base_Activity implements  PermissionUtils.P
             public void afterTextChanged(Editable editable) {
             }
         });
-
-
 
         panverify.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -275,8 +264,6 @@ public class PanVerification extends Base_Activity implements  PermissionUtils.P
                      Utility.showSingleButtonDialog(PanVerification.this,"Error !","Age not valid.",false);
                      return;
                  }
-
-
 
                 if(bmp==null){
                     verifyPan();
@@ -344,9 +331,6 @@ public class PanVerification extends Base_Activity implements  PermissionUtils.P
             String json = gson.toJson(customerVO);
             params.put("volley", json);
             connectionVO.setParams(params);
-
-
-
 
             VolleyUtils.makeJsonObjectRequest(this,connectionVO, new VolleyResponseListener() {
                 @Override

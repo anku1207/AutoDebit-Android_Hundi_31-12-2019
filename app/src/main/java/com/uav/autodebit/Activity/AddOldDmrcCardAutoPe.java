@@ -145,6 +145,9 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
 
         customerId = Session.getCustomerId(this);
         dmrc_customer_cardVO = gson.fromJson(getIntent().getStringExtra("dmrccard"), DMRC_Customer_CardVO.class);
+
+        setDetail(dmrc_customer_cardVO);
+
         addRequestDmrcCardBanner(dmrc_customer_cardVO);
 
         add_Card_Link.setPaintFlags(add_Card_Link.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
@@ -171,11 +174,35 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
         });
     }
 
+    private void setDetail(DMRC_Customer_CardVO dmrc_customer_cardVO) {
+        if(dmrc_customer_cardVO.getDmrcid()!=null){
+            card_Number.setText(dmrc_customer_cardVO.getCardNo());
+            confirm_Card_Number.setText(dmrc_customer_cardVO.getCardNo());
+            Picasso.with(this).load(dmrc_customer_cardVO.getImage()).fit()
+                    .into(addDmrcImage);
+            bottom_layout.setVisibility(View.VISIBLE);
+            image_Read_Number.setText(dmrc_customer_cardVO.getCardNo());
+            checkCardImageUpload=true;
+        }
+
+    }
+
 
     public void addRequestDmrcCardBanner(DMRC_Customer_CardVO dmrc_customer_cardVO){
         addcardlistlayout.removeAllViewsInLayout();
 
         if(dmrc_customer_cardVO.getDmrcCustomerList()!=null && dmrc_customer_cardVO.getDmrcCustomerList().size()>0){
+            if(dmrc_customer_cardVO.getDmrcid()==null){
+                // restart layout
+                bottom_layout.setVisibility(View.GONE);
+                image_Read_Number.setText("");
+                card_Number.setText("");
+                confirm_Card_Number.setText("");
+                addDmrcImage.setImageDrawable(Utility.getDrawableResources(AddOldDmrcCardAutoPe.this,R.drawable.old_dmrc_image));
+                card_Number.setEnabled(true);
+                confirm_Card_Number.setEnabled(true);
+            }
+
             ArrayList<DMRC_Customer_CardVO> listforcard= (ArrayList<DMRC_Customer_CardVO>) dmrc_customer_cardVO.getDmrcCustomerList();
             getdata(listforcard);
         }else{
@@ -267,12 +294,20 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
             BackgroundAsyncService backgroundAsyncService = new BackgroundAsyncService(pd,true, new BackgroundServiceInterface() {
                 @Override
                 public void doInBackGround() {
-                    stringimg= Utility.BitMapToString(bmp);
+                    try {
+                        stringimg=  Utility.BitMapToString(bmp);
+                    }catch (Exception e){
+                        ExceptionsNotification.ExceptionHandling(AddOldDmrcCardAutoPe.this , Utility.getStackTrace(e));
+                    }
+
                 }
                 @Override
                 public void doPostExecute() {
                     pd.dismiss();
-                    saveDmrcCardInServer();
+                    if(stringimg!=null){
+                        saveDmrcCardInServer();
+                    }
+
                 }
             });
             backgroundAsyncService.execute();
@@ -290,6 +325,9 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
             request_dmrc_customer_cardVO.setCustomer(customerVO);
             request_dmrc_customer_cardVO.setCardNo(image_Read_Number.getText().toString().trim());
             request_dmrc_customer_cardVO.setImage(stringimg);
+
+            // exist dmrc card id
+            request_dmrc_customer_cardVO.setDmrcid(dmrc_customer_cardVO.getDmrcid());
 
             Gson gson =new Gson();
             String json = gson.toJson(request_dmrc_customer_cardVO);
@@ -618,6 +656,7 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
                         Session.set_Data_Sharedprefence(AddOldDmrcCardAutoPe.this,Session.CACHE_CUSTOMER,json);
                         Session.set_Data_Sharedprefence(AddOldDmrcCardAutoPe.this, Session.LOCAL_CACHE,dmrc_customer_cardVO.getCustomer().getLocalCache());
                     }
+
                     addRequestDmrcCardBanner(dmrc_customer_cardVO);
                 }
             }

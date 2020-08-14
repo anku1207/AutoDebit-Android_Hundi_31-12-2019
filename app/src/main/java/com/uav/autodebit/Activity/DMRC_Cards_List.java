@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-
 public class DMRC_Cards_List extends Base_Activity implements View.OnClickListener {
 
     RecyclerView recyclerView;
@@ -49,12 +48,9 @@ public class DMRC_Cards_List extends Base_Activity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dmrc__cards__list);
         getSupportActionBar().hide();
-
-
         Gson gson = new Gson();
 
         LocalCacheVO localCacheVO = gson.fromJson( Session.getSessionByKey(this, Session.LOCAL_CACHE), LocalCacheVO.class);
-
 
         /* Banner code started here*/
         viewPager=(ViewPager) findViewById(R.id.viewPager);
@@ -71,13 +67,10 @@ public class DMRC_Cards_List extends Base_Activity implements View.OnClickListen
         // sets a margin b/w individual pages to ensure that there is a gap b/w them
         viewPager.setPageMargin(20);*/
 
-
         bannerIndicator.setupWithViewPager(viewPager, true);
 
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new SliderTimer(), 4000, 6000);
-
-
 
        //listforcard= (ArrayList<DMRC_Customer_CardVO>) Utility.fromJson(getIntent().getStringExtra("dmrccard"), new TypeToken<ArrayList<DMRC_Customer_CardVO>>() { }.getType());
 
@@ -120,7 +113,6 @@ public class DMRC_Cards_List extends Base_Activity implements View.OnClickListen
             });
         }
     }
-
     public ArrayList<DMRC_Customer_CardVO> getdata(){
         ArrayList<DMRC_Customer_CardVO> dmrc_customer_cardVOS=new ArrayList<>();
         for(DMRC_Customer_CardVO dmrc_customer_cardVOS1 :listforcard ){
@@ -137,10 +129,8 @@ public class DMRC_Cards_List extends Base_Activity implements View.OnClickListen
 
             dmrc_customer_cardVOS.add(dmrc_customer_cardVO);
         }
-
         return dmrc_customer_cardVOS;
     }
-
     @Override
     public void onClick(View view) {
         switch (view.getId()){

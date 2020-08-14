@@ -199,31 +199,31 @@ public class Profile extends Fragment {
         datalist.add(dataAdapterVO);
 
         dataAdapterVO=new DataAdapterVO();
-        dataAdapterVO.setImage(R.drawable.gas_service);
+        dataAdapterVO.setImage(R.drawable.gas);
         dataAdapterVO.setText("");
         datalist.add(dataAdapterVO);
 
 
         dataAdapterVO=new DataAdapterVO();
-        dataAdapterVO.setImage(R.drawable.gas_service);
+        dataAdapterVO.setImage(R.drawable.gas);
         dataAdapterVO.setText("");
         datalist.add(dataAdapterVO)
 
         ;
         dataAdapterVO=new DataAdapterVO();
-        dataAdapterVO.setImage(R.drawable.gas_service);
+        dataAdapterVO.setImage(R.drawable.gas);
         dataAdapterVO.setText("");;
         datalist.add(dataAdapterVO);
 
         dataAdapterVO=new DataAdapterVO();
-        dataAdapterVO.setImage(R.drawable.gas_service);
+        dataAdapterVO.setImage(R.drawable.gas);
         dataAdapterVO.setText("");
         datalist.add(dataAdapterVO);
 
 
 
         dataAdapterVO=new DataAdapterVO();
-        dataAdapterVO.setImage(R.drawable.gas_service);
+        dataAdapterVO.setImage(R.drawable.gas);
         dataAdapterVO.setText("");
         datalist.add(dataAdapterVO);
 
@@ -231,7 +231,7 @@ public class Profile extends Fragment {
 
 
         dataAdapterVO=new DataAdapterVO();
-       dataAdapterVO.setImage(R.drawable.gauge);
+        dataAdapterVO.setImage(R.drawable.gauge);
         dataAdapterVO.setText("");
         datalist.add(dataAdapterVO);
 
@@ -242,7 +242,7 @@ public class Profile extends Fragment {
 
 
         dataAdapterVO=new DataAdapterVO();
-        dataAdapterVO.setImage(R.drawable.mobile_service);
+        dataAdapterVO.setImage(R.drawable.mobile_prepaid_service);
         dataAdapterVO.setText("");
         datalist.add(dataAdapterVO);
 

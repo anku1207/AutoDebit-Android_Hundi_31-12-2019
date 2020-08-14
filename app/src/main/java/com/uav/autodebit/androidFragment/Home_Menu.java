@@ -67,7 +67,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.TimerTask;
 
-
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -82,7 +81,7 @@ public class Home_Menu extends Fragment {
     ImageView allutilityservice;
 
     Context cntxt;
-    UAVProgressDialog pd ;
+    UAVProgressDialog pd;
     ServiceTypeVO selectedService ;
 
 

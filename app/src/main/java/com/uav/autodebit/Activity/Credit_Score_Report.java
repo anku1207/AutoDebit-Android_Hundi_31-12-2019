@@ -216,22 +216,16 @@ public class Credit_Score_Report extends Base_Activity implements FileDownloadIn
             }
         });
         webView.loadUrl(receiptUrl); //receiptUrl
-
-
         creditreportbtn=findViewById(R.id.creditreportbtn);
         proceed=findViewById(R.id.proceed);
         activitytext=findViewById(R.id.activitytext);
         back_activity_button1=findViewById(R.id.back_activity_button1);
-
-
-
 
         creditreportbtn.setVisibility(View.VISIBLE);
 
         if(fileurl.equals("")){
             creditreportbtn.setText("Credit history not available");
         }
-
         proceed.setVisibility(View.VISIBLE);
         activitytext.setText(customername+", here's your latest Credit Score");
 
@@ -258,21 +252,15 @@ public class Credit_Score_Report extends Base_Activity implements FileDownloadIn
                 permissionUtils.check_permission(PermissionHandler.fileDownloadAndReadPermissionArrayList(Credit_Score_Report.this), Content_Message.DOWNLOAD_PERMISSION,ApplicationConstant.REQ_DOWNLOAD_PERMISSION);
             }
         });
-
-
         back_activity_button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
             }
         });
-
-
     }
-
     public void setCustomerBucket() throws Exception{
         Gson gson =new Gson();
-
 
         HashMap<String, Object> params = new HashMap<String, Object>();
         ConnectionVO connectionVO = CustomerBO.setCustomerBucket();

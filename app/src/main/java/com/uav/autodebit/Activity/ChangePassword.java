@@ -48,9 +48,6 @@ public class ChangePassword extends Base_Activity {
         repeatpassword=findViewById(R.id.repeatpassword);
         loginbtn=findViewById(R.id.loginbtn);
 
-
-
-
         Intent intent =getIntent();
         Gson gson=new Gson();
          customerid=intent.getStringExtra("customerid");

@@ -93,11 +93,6 @@ public class FCMService extends FirebaseMessagingService {
                 // If the app is in background, firebase itself handles the notification
             }
     }
-
-
-
-
-
     private void handleDataMessage(JSONObject data) {
         Log.e(TAG, "push json: " + data.toString());
         try {

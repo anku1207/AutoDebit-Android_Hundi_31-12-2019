@@ -81,12 +81,8 @@ public class Mobile_Postpaid extends Base_Activity implements View.OnClickListen
     OxigenTransactionVO oxigenTransactionVOresp;
     Gson gson;
     int minAmt;
-
-
     HashMap<String,Object> eleMap;
     PermissionUtils permissionUtils;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -190,9 +186,6 @@ public class Mobile_Postpaid extends Base_Activity implements View.OnClickListen
 
                     //clear element maplist
                     eleMap.clear();
-
-
-
                     operatorname =data.getStringExtra("operatorname");
                     operatorcode=data.getStringExtra("operator");
 
@@ -313,8 +306,6 @@ public class Mobile_Postpaid extends Base_Activity implements View.OnClickListen
                     BillPayRequest.proceedFetchBill(oxigenTransactionVO,this,new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
                         try {
                             oxigenTransactionVOresp=(OxigenTransactionVO)s;
-
-
                             //hide fetch bill button and show amount layout and set amount value
                             fetchbill.setVisibility(View.GONE);
                             amountlayout.setVisibility(View.VISIBLE);
@@ -336,7 +327,6 @@ public class Mobile_Postpaid extends Base_Activity implements View.OnClickListen
                                 text.setEllipsize(TextUtils.TruncateAt.END);
                                 text.setTypeface(typeface);
                                 text.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-
 
                                 TextView value = new TextView(new ContextThemeWrapper(this, R.style.confirmation_dialog_value));
                                 value.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,1));

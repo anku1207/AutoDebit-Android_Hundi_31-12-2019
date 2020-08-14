@@ -10,7 +10,6 @@ import java.util.HashMap;
 
 public class SignUpBO implements Serializable {
 
-
     public static ConnectionVO signuser() {
 
         ConnectionVO connectionVO = new ConnectionVO();
@@ -18,21 +17,18 @@ public class SignUpBO implements Serializable {
         connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
         return connectionVO;
     }
-
     public static ConnectionVO signotpverify() {
         ConnectionVO connectionVO = new ConnectionVO();
         connectionVO.setMethodName("verifySignUp");
         connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
         return connectionVO;
     }
-
     public static ConnectionVO resendOTP() {
         ConnectionVO connectionVO = new ConnectionVO();
         connectionVO.setMethodName("resendOTP");
         connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
         return connectionVO;
     }
-
     public static ConnectionVO signInOTP() {
         ConnectionVO connectionVO = new ConnectionVO();
         connectionVO.setMethodName("signInViaOTP");
@@ -45,7 +41,6 @@ public class SignUpBO implements Serializable {
         connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
         return connectionVO;
     }
-
     public static ConnectionVO loginViaPassword(String loginid,String pass,String Type,String tokenId,String hashValue ) {
         HashMap<String, Object> params = new HashMap<String, Object>();
 
@@ -70,15 +65,12 @@ public class SignUpBO implements Serializable {
         connectionVO.setParams(params);
         return connectionVO;
     }
-
     public static ConnectionVO forgotPasswordOTP() {
         ConnectionVO connectionVO = new ConnectionVO();
         connectionVO.setMethodName("forgotPasswordOTP");
         connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
         return connectionVO;
     }
-
-
     public static ConnectionVO loginByFigerprint(String loginid ,String Type,String tokenId ) {
 
         HashMap<String, Object> params = new HashMap<String, Object>();

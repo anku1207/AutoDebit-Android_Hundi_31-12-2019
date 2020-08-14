@@ -116,12 +116,8 @@ public class UPI_Mandate extends AppCompatActivity  implements MyJavaScriptInter
                 String url = respjson.getString("url") + "?customerId=" + Session.getCustomerId(UPI_Mandate.this) + "&entityTypeId=2" + "&versioncode="+ Utility.getVersioncode(UPI_Mandate.this)+ "&Amount="+amount + "&serviceId="+serviceId + "&paymentType="+paymentType;
                 openWebView(url);
             }catch (Exception e){
-
             }
-
         }));
-
-
         continuebtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -133,10 +129,7 @@ public class UPI_Mandate extends AppCompatActivity  implements MyJavaScriptInter
                 finish();
             }
         });
-
     }
-
-
     public void getServiceURL(Context context, VolleyResponse volleyResponse) {
         VolleyUtils.makeJsonObjectRequest(this, UPIBO.getAutopeUPIRecurringUrl(), new VolleyResponseListener() {
             @Override
@@ -156,8 +149,6 @@ public class UPI_Mandate extends AppCompatActivity  implements MyJavaScriptInter
         });
 
     }
-
-
     @SuppressLint({"SetJavaScriptEnabled", "JavascriptInterface"})
     void openWebView(final String receiptUrl) {
         Log.w("CallUrl", receiptUrl);
@@ -380,8 +371,6 @@ public class UPI_Mandate extends AppCompatActivity  implements MyJavaScriptInter
                 webview.loadUrl("javascript:HTMLOUT.showHTML(document.getElementById('siresp').innerHTML);");
                 webview.loadUrl("javascript:console.log('MAGIC'+document.getElementById('siresp').innerHTML);");
             }
-
-
         }
 
         @SuppressWarnings("deprecation")

@@ -69,6 +69,7 @@ public class CheckMandateAndShowDialog {
         VolleyUtils.makeJsonObjectRequest(context, connectionVO, new VolleyResponseListener() {
             @Override
             public void onError(String message) {
+
             }
             @Override
             public void onResponse(Object resp) throws JSONException {

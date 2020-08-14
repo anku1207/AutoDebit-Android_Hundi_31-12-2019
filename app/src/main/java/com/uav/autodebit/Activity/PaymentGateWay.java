@@ -70,7 +70,6 @@ public class PaymentGateWay extends AppCompatActivity implements MyJavaScriptInt
     ImageView back_activity_button;
     String redirectUrl, cancelUrl;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,10 +77,6 @@ public class PaymentGateWay extends AppCompatActivity implements MyJavaScriptInt
         setContentView(R.layout.activity_payment_gate_way);
         getPaymentGateWayURL(getIntent().getStringExtra("oxigenTypeId"));
     }
-
-
-
-
 
     public void getPaymentGateWayURL(String id) {
         Log.w("typeid",id);

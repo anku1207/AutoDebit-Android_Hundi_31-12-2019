@@ -87,7 +87,7 @@ public class Home extends Base_Activity
         implements View.OnClickListener {
 
     SharedPreferences sharedPreferences;
-    TextView profile,faqs,contact,condition,logoutbtn,revoke;
+    TextView profile,faqs,contact,condition,logoutbtn,revoke,app_Version_Code;
     ImageView closemenuactivity,active_notification_icon;
     DrawerLayout drawer;
     BottomNavigationView navigation;
@@ -236,6 +236,7 @@ public class Home extends Base_Activity
         faq_layout = findViewById(R.id.faq_layout);
         contact=findViewById(R.id.contact);
         revoke=findViewById(R.id.revoke);
+        app_Version_Code=findViewById(R.id.app_Version_Code);
 
         profile.setOnClickListener(this);
         faqs.setOnClickListener(this);
@@ -292,6 +293,10 @@ public class Home extends Base_Activity
 
         //show active notification indicator
         showNotificationIndicator();
+
+
+        //set app version
+        app_Version_Code.setText("version "+Utility.getVersionName(Home.this));
 
 
     }

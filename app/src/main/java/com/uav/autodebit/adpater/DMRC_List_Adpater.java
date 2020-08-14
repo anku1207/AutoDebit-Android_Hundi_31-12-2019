@@ -23,14 +23,11 @@ public class DMRC_List_Adpater extends RecyclerView.Adapter<DMRC_List_Adpater.Pr
     List<DMRC_Customer_CardVO> productslist;
     int Activityname;
 
-
-
     public DMRC_List_Adpater(Context mctx, List<DMRC_Customer_CardVO> productslist, int Activityname) {
         this.mctx = mctx;
         this.productslist = productslist;
         this.Activityname=Activityname;
     }
-
     @Override
     public DMRC_List_Adpater.ProdectViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
@@ -44,9 +41,7 @@ public class DMRC_List_Adpater extends RecyclerView.Adapter<DMRC_List_Adpater.Pr
         rootView.setLayoutParams(lp);
         return new ProdectViewHolder(rootView);
 */
-
     }
-
     @Override
     public void onBindViewHolder(DMRC_List_Adpater.ProdectViewHolder holder, int position) {
 

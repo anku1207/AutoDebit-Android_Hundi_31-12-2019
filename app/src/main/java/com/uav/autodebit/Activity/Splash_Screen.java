@@ -293,8 +293,6 @@ public class Splash_Screen extends AppCompatActivity implements BitmapInterface 
             ExceptionsNotification.ExceptionHandling(this , Utility.getStackTrace(e));
         }
     }
-
-
     public void managecachedata(){
 
         new DiskLruImageCache(Splash_Screen.this, Utils_Cache.CACHE_FILEPATH_BANNER,Utils_Cache.CACHE_FILE_SIZE,null ,100);
@@ -344,8 +342,6 @@ public class Splash_Screen extends AppCompatActivity implements BitmapInterface 
     public void error(String error) {
 
     }
-
-
     private void setBitmap(BannerVO bannerVO){
         BitmapVO bitmapVO =new BitmapVO();
         bitmapVO.setURL(bannerVO.getBannerImage());

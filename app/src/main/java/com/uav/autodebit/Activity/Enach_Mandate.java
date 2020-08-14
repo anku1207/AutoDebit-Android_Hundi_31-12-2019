@@ -108,7 +108,6 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
         disAmountEdittext=getIntent().getBooleanExtra("disAmountEdittext",false); //disable mandate amount edittext filed
         actionId=getIntent().getIntExtra("id",0);
 
-
         Log.w("getIntentResult",foractivity+"="+actionId+"="+selectServiceIds+"="+disAmountEdittext);
 
         if(disAmountEdittext)maxamount.setEnabled(false);
@@ -124,7 +123,6 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
         mandatebtn.setOnClickListener(this);
         condition_text.setOnClickListener(this);
 
-
         maxamount.setDrawableClickListener(new DrawableClickListener() {
             @Override
             public void onClick(DrawablePosition target) {
@@ -137,8 +135,6 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
                 }
             }
         });
-
-
         banklist(new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
 
             bankname.setOnTouchListener(new View.OnTouchListener() {
@@ -161,8 +157,6 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
                     return false;
                 }
             });
-
-
             account_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {

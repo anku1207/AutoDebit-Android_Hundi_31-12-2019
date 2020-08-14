@@ -125,9 +125,6 @@ public class AddBankAndServicelist extends Base_Activity implements View.OnClick
                 }
             });
 
-
-
-
             account_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {

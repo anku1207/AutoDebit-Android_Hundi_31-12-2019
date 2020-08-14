@@ -47,9 +47,6 @@ public class AutoSearchView extends Base_Activity {
     ImageView back_activity_button;
     TextView title;
 
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,10 +72,6 @@ public class AutoSearchView extends Base_Activity {
                 finish();
             }
         });
-
-
-
-
 
         listView=(ListView)findViewById(R.id.autosearch);
         params=new HashMap<>();
@@ -165,7 +158,6 @@ public class AutoSearchView extends Base_Activity {
             public void onError(String message) {
 
             }
-
             @Override
             public void onResponse(Object resp) throws JSONException {
                 JSONObject response = (JSONObject) resp;
@@ -174,20 +166,12 @@ public class AutoSearchView extends Base_Activity {
                     Utility.furnishErrorMsg(  connectionVO.getTitle() ,response, AutoSearchView.this);
                     return;
                 }
-
-
                 searchResponseHandler(response.toString());
                 progressBar.setVisibility(View.GONE);
 
-
-
-
             }
         });
-
-
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

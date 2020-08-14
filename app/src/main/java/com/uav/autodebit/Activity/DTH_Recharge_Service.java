@@ -85,9 +85,6 @@ public class DTH_Recharge_Service extends Base_Activity implements View.OnClickL
     HashMap<String,Object> eleMap;
     PermissionUtils permissionUtils;
 
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

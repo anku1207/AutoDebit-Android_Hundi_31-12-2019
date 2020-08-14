@@ -168,8 +168,6 @@ public class Gas_Bill extends Base_Activity implements View.OnClickListener {
 
             if(resultCode==RESULT_OK){
 
-
-
                 if(requestCode==100){
                     operatorname =data.getStringExtra("operatorname");
                     operatorcode=data.getStringExtra("operator");

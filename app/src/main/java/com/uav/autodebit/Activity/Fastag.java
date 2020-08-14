@@ -64,7 +64,6 @@ import java.util.List;
 
 public class Fastag extends Base_Activity implements View.OnClickListener , PermissionUtils.PermissionResultCallback , ActivityCompat.OnRequestPermissionsResultCallback {
 
-
     EditText amount,operator;
     ImageView back_activity_button;
     String operatorcode,operatorname=null;

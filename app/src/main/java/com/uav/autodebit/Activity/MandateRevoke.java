@@ -50,8 +50,6 @@ public class MandateRevoke extends Base_Activity implements View.OnClickListener
     List<ServiceTypeVO> serviceTypeVOS;
     LinearLayout buttonLayout;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

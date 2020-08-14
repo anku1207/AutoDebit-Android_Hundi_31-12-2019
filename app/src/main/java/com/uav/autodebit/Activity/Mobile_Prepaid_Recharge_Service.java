@@ -85,6 +85,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements View.OnClickListener , PermissionUtils.PermissionResultCallback , ActivityCompat.OnRequestPermissionsResultCallback{
+
     UAVEditText mobilenumber;
     EditText operator,amount;
     ImageView back_activity_button;
@@ -92,8 +93,7 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
     TextView browseplan;
     Button proceed;
     String serviceid;
-
-    PermissionUtils permissionUtils ;
+    PermissionUtils permissionUtils;
     static  OxigenTransactionVO oxigenValidateResponce;
 
     @Override
@@ -125,8 +125,6 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
         Intent intent =getIntent();
         serviceid=intent.getStringExtra("serviceid");
 
-
-
         //create offers and recent fragment
       /*  View offer_fragment;
         offer_fragment=findViewById(R.id.offer_fragment);
@@ -152,7 +150,6 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                 }
             }
         });
-
         amount.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -192,11 +189,7 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
             }
         });
 
-
-
     }
-
-
 
     public ArrayList<DataAdapterVO> getDataList(){
         ArrayList<DataAdapterVO> datalist = new ArrayList<>();

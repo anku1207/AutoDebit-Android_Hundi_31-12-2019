@@ -48,8 +48,6 @@ public class Fingerprint_Authentication {
     private FingerprintHandler helper;
     private  LinearLayout fingerprintlayout;
 
-
-
     public  void startFingerPrintScanning(Context context, LinearLayout fingerprintlayout, TextView textView, IFingerPrint iFingerPrint){
 
             this.fingerprintlayout=fingerprintlayout;

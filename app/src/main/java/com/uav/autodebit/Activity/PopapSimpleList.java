@@ -69,8 +69,6 @@ public class PopapSimpleList extends Base_Activity {
         params.y=y;
         getWindow().setAttributes(params);
 
-
-
         searchView = findViewById(R.id.search_view);
         pd=new UAVProgressDialog(this);
         dataAdapterVOS=null;
@@ -78,7 +76,6 @@ public class PopapSimpleList extends Base_Activity {
         listView.setExpanded(false);
 
         setDateOnListview();
-
 
         //  listView.setNestedScrollingEnabled(false);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

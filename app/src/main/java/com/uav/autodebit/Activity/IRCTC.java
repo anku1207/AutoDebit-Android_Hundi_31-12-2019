@@ -175,7 +175,6 @@ public class IRCTC extends Base_Activity {
             }
         }));
     }
-
     public  void BankMandate(Context context , int  serviceId){
         OxigenTransactionVO oxigenTransactionVO = new OxigenTransactionVO();
         oxigenTransactionVO.setServiceId(serviceId);
@@ -189,9 +188,7 @@ public class IRCTC extends Base_Activity {
         }, (MandateAndRechargeInterface.OnMandate)(mandate)->{
             startActivityForResult(new Intent(context,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(serviceId))), ApplicationConstant.REQ_ENACH_MANDATE);
         }));
-
     }
-
     //bank list select bank for service
     public  void setBankForService(int serviceId,int customerId,int bankId){
         HashMap<String, Object> params = new HashMap<String, Object>();

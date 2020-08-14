@@ -626,8 +626,6 @@ public class BillPayRequest {
                                 int selectPosition=Integer.parseInt(position);
                                 if(selectPosition==ApplicationConstant.BankMandatePayment ){
                                     // 07/05/2020
-
-
                                     showBankMandateOrSiMandateInfo(context,oxigenValidateResponce.getBankMandateHtml(),new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
                                         if(oxigenValidateResponce.getShowDialog()){
                                             // 07/05/2020
@@ -670,7 +668,6 @@ public class BillPayRequest {
             }
         });
     }
-
     public static void showBankMandateOrSiMandateInfo(Context context ,String htmlUrl, ConfirmationDialogInterface confirmationDialogInterface){
         try {
             MyDialog.showWebviewConditionalAlertDialog(context,htmlUrl,true,new ConfirmationGetObjet((ConfirmationGetObjet.OnOk)(ok)->{
@@ -685,11 +682,7 @@ public class BillPayRequest {
         }catch (Exception e){
             ExceptionsNotification.ExceptionHandling(context , Utility.getStackTrace(e));
         }
-
-
     }
-
-
     public static void handelRechargeSuccess(Context context,OxigenTransactionVO oxigenTransactionVOSuccess) {
         // ask to customer for bank mandate
         dismissDialog();
@@ -729,8 +722,6 @@ public class BillPayRequest {
 
         }
     }
-
-
    /* public static void afterRechargeAddMandate(Context context , OxigenTransactionVO oxigenTransactionVOresp){
       CheckMandateAndShowDialog.oxiServiceMandateCheck(context,oxigenTransactionVOresp.getServiceId(),3,new VolleyResponse((VolleyResponse.OnSuccess)(mandatecheckresp)->{
             OxigenTransactionVO oxigenTransactionVO = (OxigenTransactionVO) mandatecheckresp;
@@ -762,7 +753,6 @@ public class BillPayRequest {
             }
         }));
     }*/
-
     public static void dismissDialog(){
         if(GlobalApplication.dialog_List.size()>0){
             for (Dialog dialog : GlobalApplication.dialog_List){
@@ -770,7 +760,6 @@ public class BillPayRequest {
             }
         }
     }
-
     public static void afterRechargeMoveHistorySummaryActivity(Context context , boolean getHistoryDetails , OxigenTransactionVO oxigenTransactionVO){
         dismissDialog();
 
@@ -802,9 +791,6 @@ public class BillPayRequest {
             ExceptionsNotification.ExceptionHandling(context , Utility.getStackTrace(e));
         }
     }
-
-
-
     public static void onActivityResult(Context context,Intent data,int requestCode){
         if(requestCode==200){
             if(data.getIntExtra("status",0)== CCTransactionStatusVO.SUCCESS){

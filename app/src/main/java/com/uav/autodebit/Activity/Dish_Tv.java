@@ -224,14 +224,11 @@ public class Dish_Tv  extends Base_Activity implements View.OnClickListener  {
                 text.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
                 text.setPadding(10,0,10,10);
 
-
                 TextView commaText = new TextView(new ContextThemeWrapper(context, R.style.confirmation_dialog_filed));
                 commaText.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float) .1));
                 commaText.setText(":");
                 commaText.setTypeface(typeface);
                 commaText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-
-
 
                 TextView value = new TextView(new ContextThemeWrapper(context, R.style.confirmation_dialog_value));
                 value.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,1));

@@ -90,8 +90,6 @@ public class CableTV extends Base_Activity implements View.OnClickListener , Per
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cable_t_v);
 
-
-
         getSupportActionBar().hide();
 
         operatorListDate=null;

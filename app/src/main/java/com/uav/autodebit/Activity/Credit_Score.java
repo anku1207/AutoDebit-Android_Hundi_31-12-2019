@@ -123,8 +123,6 @@ public class Credit_Score extends Base_Activity {
             actiontype="Customernotfound";
             customername.setEnabled(true);
         }
-
-
         update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

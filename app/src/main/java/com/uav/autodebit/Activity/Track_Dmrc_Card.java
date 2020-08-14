@@ -47,17 +47,14 @@ public class Track_Dmrc_Card extends AppCompatActivity implements View.OnClickLi
         webView.setVerticalScrollBarEnabled(false);
         webView.setHorizontalScrollBarEnabled(false);
 
-
         webView.getSettings().setBuiltInZoomControls(false);
 
         webView.getSettings().setLoadsImagesAutomatically(true);
         webView.getSettings().setDomStorageEnabled(true);
 
-
         webView.setInitialScale(1);
         webView.getSettings().setUseWideViewPort(true);
         webView.getSettings().setLoadWithOverviewMode(true);
-
 
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
@@ -66,10 +63,8 @@ public class Track_Dmrc_Card extends AppCompatActivity implements View.OnClickLi
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             WebView.enableSlowWholeDocumentDraw();
         }
-
         webView.getSettings().setAppCacheEnabled(false);
         webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
-
 
         webView.setWebChromeClient(new WebChromeClient() {
             @Override
@@ -81,7 +76,6 @@ public class Track_Dmrc_Card extends AppCompatActivity implements View.OnClickLi
         webView.setWebViewClient(new MyBrowser());
         webView.loadUrl(receiptUrl); //receiptUrl
     }
-
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (event.getAction() == KeyEvent.ACTION_DOWN) {

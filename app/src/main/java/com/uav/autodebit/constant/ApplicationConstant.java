@@ -18,7 +18,7 @@ public class ApplicationConstant {
 
     public final static  boolean IS_PRODUCTION_ENVIRONMENT= false;
 
-    public static int MobilePostpaid=14,D2h=17,Dmrc=2,Electricity=10,Landline=7,Water=12,Broadband=8,PNG=6,Gas=11,DTH=13,DISHTV=18,INSURANCE_RENEWAL=19,LOAN_REPAYMENT=20,FASTAG=21,CABLE_TV=22 ,Uber=16,IRCTC=1 ;
+    public static int MobilePrepaid=14,MobilePostpaid=14,D2h=17,Dmrc=2,Electricity=10,Landline=7,Water=12,Broadband=8,PNG=6,Gas=11,DTH=13,DISHTV=18,INSURANCE_RENEWAL=19,LOAN_REPAYMENT=20,FASTAG=21,CABLE_TV=22 ,Uber=16,IRCTC=1 ;
 
     public static int  REQ_ENACH_MANDATE=1003,REQ_ALLSERVICE=1004,REQ_SI_MANDATE=1005,REQ_MANDATE_FOR_FIRSTTIME_RECHARGE=1006,REQ_POPAPACTIVITYRESULT=1007,REQ_MANDATE_FOR_BILL_FETCH_ERROR=1008,REQ_SI_FOR_BILL_FETCH_ERROR=1009,REQ_UPI_FOR_MANDATE=1010,REQ_DMRC_MANDATE_SI_BUCKET=1011;
     public static int  REQ_CAMERA_PERMISSION=2001, REQ_DOWNLOAD_PERMISSION=2002,REQ_READ_SMS_PERMISSION=2003,REQ_READ_CONTACT_PERMISSION=2004;
@@ -29,12 +29,9 @@ public class ApplicationConstant {
     public static String PG_MANDATE_AND_RECHARGE="mandateandrecharge";
     public static String NOTIFICATION_ACTION="notification_act";
 
-
     public final static  String SI_SERVICE="autopepg";
-
     //private final static String URL_ADDRESS = getServerAddress();
     private final static String HTTPURL = getServerAddress();
-
 
     public  static final int SOCKET_TIMEOUT_MILLISEC = 60000;
     public static final String SHAREDPREFENCE = "hundi";
@@ -49,10 +46,6 @@ public class ApplicationConstant {
     public static final double SI_UPI_MANDATE_AMOUNT=1.00;
 
     public static Integer BankMandatePayment=1,SIMandatePayment=2,UPIMandatePayment=3;
-
-
-
-
 
     public static final String CACHE_PORT="port";
     public static final String CACHE_IPADDRESS="ipaddress";
@@ -72,7 +65,6 @@ public class ApplicationConstant {
         }
 
     }
-
     private static String getServerAddress(){
         if(IS_PRODUCTION_ENVIRONMENT){
             return "http://app.autope.in/hundi/rest/stateless/";
@@ -82,6 +74,5 @@ public class ApplicationConstant {
            // return  "http://192.168.1.25:8080/hundi/rest/stateless/" ;
         }
     }
-
 }
 

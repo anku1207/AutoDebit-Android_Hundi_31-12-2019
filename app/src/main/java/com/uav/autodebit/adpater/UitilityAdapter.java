@@ -25,18 +25,13 @@ import java.util.List;
 
 import static java.lang.Class.forName;
 
-
 public class UitilityAdapter extends RecyclerView.Adapter<UitilityAdapter.ProdectViewHolder>  {
     Context mctx ;
     List<ServiceTypeVO> productslist;
     int Activityname;
     Activity activity;
     UAVProgressDialog pd;
-
     Integer level;
-
-
-
 
     public UitilityAdapter(Context mctx, List<ServiceTypeVO> productslist, int Activityname , UAVProgressDialog pd) {
         this.mctx = mctx;
@@ -45,7 +40,6 @@ public class UitilityAdapter extends RecyclerView.Adapter<UitilityAdapter.Prodec
         this.Activityname=Activityname;
         this.pd=pd;
     }
-
     @Override
     public UitilityAdapter.ProdectViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater= LayoutInflater.from(mctx);
@@ -54,7 +48,6 @@ public class UitilityAdapter extends RecyclerView.Adapter<UitilityAdapter.Prodec
         return holder;*/
         return new UitilityAdapter.ProdectViewHolder(view);
     }
-
     @Override
     public void onBindViewHolder(UitilityAdapter.ProdectViewHolder holder, int position) {
 
@@ -67,7 +60,6 @@ public class UitilityAdapter extends RecyclerView.Adapter<UitilityAdapter.Prodec
         }else {
             holder.serviceactive.setVisibility(View.GONE);
         }
-
         holder.mailmenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,19 +69,14 @@ public class UitilityAdapter extends RecyclerView.Adapter<UitilityAdapter.Prodec
             }
         });
     }
-
     @Override
     public int getItemCount() {
         return productslist.size();
     }
-
-
-
     public class ProdectViewHolder extends RecyclerView.ViewHolder {
         LinearLayout mailmenu;
         ImageView serviceactive,imageView;
         UAVTextView textViewTitle;
-
 
         public ProdectViewHolder(View itemView) {
             super(itemView);
@@ -97,7 +84,6 @@ public class UitilityAdapter extends RecyclerView.Adapter<UitilityAdapter.Prodec
             imageView=itemView.findViewById(R.id.imageView);
             textViewTitle=itemView.findViewById(R.id.textViewTitle);
             mailmenu=itemView.findViewById(R.id.mailmenu);
-
         }
     }
 

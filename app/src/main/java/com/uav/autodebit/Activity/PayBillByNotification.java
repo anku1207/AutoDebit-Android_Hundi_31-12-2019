@@ -198,10 +198,7 @@ public class PayBillByNotification extends AppCompatActivity implements View.OnC
                 ExceptionsNotification.ExceptionHandling(this, Utility.getStackTrace(e));
             }
         }
-
     }
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

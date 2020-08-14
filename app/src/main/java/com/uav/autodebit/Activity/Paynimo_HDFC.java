@@ -64,6 +64,7 @@ public class Paynimo_HDFC extends Base_Activity {
     }
 
     public void sifirstdata(){
+
         String customerId= Session.getCustomerId(Paynimo_HDFC.this);
         HashMap<String, Object> params = new HashMap<String, Object>();
         ConnectionVO connectionVO = SiBO.getSIMandateProperties();

@@ -1244,12 +1244,17 @@ public class Utility {
         if(providerId== AuthServiceProviderVO.ENACHIDFC){
             title_text.setText("Select An Existing Mandate");
             title1.setText("Bank");
-            title2.setText("MandateId");
+            title2.setText("Account No.");
             title3.setText("Status");
         }else if(providerId==AuthServiceProviderVO.AUTOPE_PG){
             title_text.setText("Select An Existing Card");
             title1.setText("Bank");
             title2.setText("Card No.");
+            title3.setText("Status");
+        }else if(providerId==AuthServiceProviderVO.AUTOPE_PG_UPI){
+            title_text.setText("Select An Existing UPI");
+            title1.setText("Bank");
+            title2.setText("UPI");
             title3.setText("Status");
         }
 
@@ -1714,9 +1719,7 @@ public class Utility {
             applist.add(appName);
 
         }
-
         return applist;
-
     }
     public static boolean isSystemPackage(PackageInfo pkgInfo) {
 
@@ -1728,6 +1731,18 @@ public class Utility {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         return displayMetrics.widthPixels;
+    }
+
+
+    public static String getVersionName(Context context){
+        String version = null;
+        try {
+            PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            version = pInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return version;
     }
 }
 

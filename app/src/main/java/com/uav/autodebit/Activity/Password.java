@@ -52,9 +52,6 @@ public class Password extends Base_Activity {
         repeatpassword=findViewById(R.id.repeatpassword);
         loginbtn=findViewById(R.id.loginbtn);
 
-
-
-
         Intent intent =getIntent();
         Gson gson=new Gson();
         CustomerVO customerVO=  gson.fromJson(intent.getStringExtra("customerid"),CustomerVO.class);

@@ -69,7 +69,7 @@ public class ListViewAlertSelectListBaseAdapter extends BaseAdapter {
         TextView textView3 =convertView.findViewById(R.id.text3);
 
         textView1.setText(customerAuthServiceVO.getBankName()!=null?customerAuthServiceVO.getBankName():"");
-        textView2.setText(customerAuthServiceVO.getProviderTokenId()!=null?customerAuthServiceVO.getProviderTokenId():"");
+        textView2.setText(customerAuthServiceVO.getAccountNumber()!=null?customerAuthServiceVO.getAccountNumber():"");
         textView3.setText(customerAuthServiceVO.getAnonymousString()!=null?customerAuthServiceVO.getAnonymousString()+"":"");
 
         if(customerAuthServiceVO.getCustomerAuthId()==0){

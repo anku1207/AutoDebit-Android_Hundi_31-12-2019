@@ -91,11 +91,12 @@ public class BeforeRecharge {
                 customerAuthServiceVO.setProviderTokenId(jsonObject.getString("mandateId"));
                 customerAuthServiceVO.setCustomerAuthId(jsonObject.getInt("id"));
                 customerAuthServiceVO.setAnonymousString(jsonObject.getString("status"));
+                customerAuthServiceVO.setAccountNumber(jsonObject.getString("accountNo"));
                 customerAuthServiceArry.add(customerAuthServiceVO);
             }
             CustomerAuthServiceVO customerAuthServiceVO = new CustomerAuthServiceVO();
             customerAuthServiceVO.setBankName(null);
-            customerAuthServiceVO.setProviderTokenId("Add New Mandate");
+            customerAuthServiceVO.setAccountNumber("Add New Mandate");
             customerAuthServiceVO.setCustomerAuthId(0);
             customerAuthServiceVO.setAnonymousString(null);
             customerAuthServiceArry.add(customerAuthServiceVO);
