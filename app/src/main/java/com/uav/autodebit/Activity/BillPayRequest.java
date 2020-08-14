@@ -9,8 +9,11 @@ import android.graphics.drawable.ColorDrawable;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -65,7 +68,6 @@ import static com.uav.autodebit.util.Utility.showDoubleButtonDialogConfirmation;
 public class BillPayRequest {
 
     private static OxigenTransactionVO oxigenValidateResponce;
-
 
     public static void proceedFetchBill(OxigenTransactionVO oxigenTransactionVO,Context context,VolleyResponse volleyResponse) throws Exception{
 
@@ -141,7 +143,6 @@ public class BillPayRequest {
             ExceptionsNotification.ExceptionHandling(context , Utility.getStackTrace(e));
         }
     }
-
     static void proceedBillPayment(OxigenTransactionVO oxigenTransactionVO, Context context, VolleyResponse volleyResponse) {
         try {
             Gson gson =new Gson();

@@ -49,6 +49,7 @@ import com.uav.autodebit.adpater.BannerAdapter;
 import com.uav.autodebit.adpater.UitilityAdapter;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.GlobalApplication;
+import com.uav.autodebit.dialogs.Mobile_Dialog;
 import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.override.ClickableViewPager;
 import com.uav.autodebit.override.UAVProgressDialog;
@@ -159,7 +160,7 @@ public class Home extends Base_Activity
             activityhasmap.put("8",Broadband.class);
             activityhasmap.put("9",CreditCardBill.class);
             activityhasmap.put("10",Electricity_Bill.class);
-            activityhasmap.put("11",Gas_Bill.class);
+            activityhasmap.put("11",Gas_Activity_Dialog.class);
             activityhasmap.put("12",Water.class);
             activityhasmap.put("13",DTH_Recharge_Service.class);
             activityhasmap.put("14",Mobile_Postpaid.class);
@@ -393,6 +394,12 @@ public class Home extends Base_Activity
         List<ServiceTypeVO> mImgIds;
         mImgIds=localCacheVO.getSerives();
         setHorizontalScrollView(mImgIds,R.id.id_servicegallery ,R.layout.services_gallery);
+    }
+
+    public void startmobiledialog(String serviceid,View v) {
+        Utility.enableDisableView(v,true);
+        Mobile_Dialog mobile_dialog = new Mobile_Dialog(this,serviceid,v);
+        mobile_dialog.showdialog();
     }
 
     /*Banner slider*/

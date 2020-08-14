@@ -1,11 +1,13 @@
 package com.uav.autodebit.adpater;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -65,7 +67,11 @@ public class UitilityAdapter extends RecyclerView.Adapter<UitilityAdapter.Prodec
             public void onClick(View v) {
                 level=null;
                 Utility.enableDisableView(v,false);
-                ((Home)mctx).startUserClickService(pro.getServiceTypeId().toString(),v);
+                if (pro.getServiceTypeId()==23){
+                    ((Home) mctx).startmobiledialog(pro.getServiceTypeId().toString(),v);
+                }else {
+                    ((Home) mctx).startUserClickService(pro.getServiceTypeId().toString(), v);
+                }
             }
         });
     }

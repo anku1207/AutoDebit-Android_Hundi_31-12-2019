@@ -168,7 +168,6 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                 }
             }
         });
-
         mobilenumber.addTextChangedListener(new  CustomTextWatcherLengthAction(mobilenumber,10,operator,"touch"));
         operator.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -188,9 +187,7 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                 return false;
             }
         });
-
     }
-
     public ArrayList<DataAdapterVO> getDataList(){
         ArrayList<DataAdapterVO> datalist = new ArrayList<>();
         String operator= Session.getSessionByKey(Mobile_Prepaid_Recharge_Service.this,Session.MOBILE_OPERATOR_LIST);

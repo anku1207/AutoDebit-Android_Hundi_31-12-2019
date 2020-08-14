@@ -500,6 +500,20 @@
         <meta-data
             android:name="io.branch.sdk.TestMode"
             android:value="false" />
+
+        <activity
+            android:name=".Activity.Mobile_Activity_Dialog"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.pop"
+            android:windowSoftInputMode="stateHidden"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".Activity.Gas_Activity_Dialog"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.pop"
+            android:windowSoftInputMode="stateHidden"
+            tools:ignore="LockedOrientationActivity" />
+
     </application>
 
 </manifest>
