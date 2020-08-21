@@ -51,7 +51,7 @@
             android:layout_gravity="center"
             android:fontFamily="@font/poppinsbold"
             android:gravity="center"
-            android:text="FAQ"
+            android:text="FAQs"
             android:textAlignment="center"
             android:textColor="@color/white"
             android:textSize="20dp"

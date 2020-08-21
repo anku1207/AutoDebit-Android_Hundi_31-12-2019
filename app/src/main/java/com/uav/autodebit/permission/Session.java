@@ -79,12 +79,12 @@ public class Session {
     }
 
 
-    public static void set_Data_Sharedprefence(Context context,String CacheName ,String data){
+    public static boolean set_Data_Sharedprefence(Context context,String CacheName ,String data){
         sharedPreferences = context.getSharedPreferences(ApplicationConstant.SHAREDPREFENCE,Context.MODE_PRIVATE);
         SharedPreferences.Editor edit= sharedPreferences.edit();
         edit.putString( CacheName,data);
         edit.apply();
-        edit.commit();
+        return edit.commit();
     }
 
 

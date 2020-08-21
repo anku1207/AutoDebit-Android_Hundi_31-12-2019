@@ -198,10 +198,12 @@ public class Login extends Base_Activity implements View.OnClickListener, View.O
                         Utility.showSingleButtonDialog(Login.this,"Alert",sb.toString(),false);
                     }else {
                         String json = gson.toJson(customerVO);
-                        Session.set_Data_Sharedprefence(Login.this,Session.CACHE_CUSTOMER,json);
-                  /*  startActivity(new Intent(Login.this,Home.class));
-                    finish();*/
-                        startActivity();
+                        if(Session.set_Data_Sharedprefence(Login.this,Session.CACHE_CUSTOMER,json)){
+                            /*  startActivity(new Intent(Login.this,Home.class));
+                        finish();*/
+                            startActivity();
+                        };
+
 
                     }
                 }
