@@ -109,8 +109,10 @@ public class CustomPagerAdapter extends PagerAdapter {
         }
         clickViewpager.put(position,false);
 
-        if(pro.getDmrccardStaus().getStatusId()==4){
-            //track.setVisibility(View.GONE);
+        if(pro.getDmrccardStaus().getStatusId()==7){
+            track.setVisibility(View.VISIBLE);
+        }else {
+            track.setVisibility(View.GONE);
         }
 
         track.setOnClickListener(new View.OnClickListener() {

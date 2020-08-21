@@ -160,7 +160,7 @@ public class Home extends Base_Activity
             activityhasmap.put("8",Broadband.class);
             activityhasmap.put("9",CreditCardBill.class);
             activityhasmap.put("10",Electricity_Bill.class);
-            activityhasmap.put("11",Gas_Activity_Dialog.class);
+            activityhasmap.put("11",Gas_Bill.class);
             activityhasmap.put("12",Water.class);
             activityhasmap.put("13",DTH_Recharge_Service.class);
             activityhasmap.put("14",Mobile_Postpaid.class);
@@ -210,96 +210,99 @@ public class Home extends Base_Activity
 
             // override local cache
             overrideLocalCache(customerVO);
-        }catch (Exception e){
-            ExceptionsNotification.ExceptionHandling(Home.this , Utility.getStackTrace(e));
-            //Utility.exceptionAlertDialog(Home.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
-        }
 
-        profile=findViewById(R.id.profile);
-        scrollView=findViewById(R.id.scrollView);
+            profile=findViewById(R.id.profile);
+            scrollView=findViewById(R.id.scrollView);
 
-        //19-10-2019
-        recyclerView=findViewById(R.id.recyclerview);
-        allutilityservice=findViewById(R.id.allutilityservice);
+            //19-10-2019
+            recyclerView=findViewById(R.id.recyclerview);
+            allutilityservice=findViewById(R.id.allutilityservice);
 
 
-        logoutbtn=findViewById(R.id.logoutbtn);
+            logoutbtn=findViewById(R.id.logoutbtn);
 
 
-        faqs=findViewById(R.id.faqs);
+            faqs=findViewById(R.id.faqs);
 
-        condition=findViewById(R.id.condition);
-        closemenuactivity=findViewById(R.id.closemenuactivity);
-        notificationicon=findViewById(R.id.notificationicon);
-        faq_icon=findViewById(R.id.faq_icon);
-        active_notification_icon=findViewById(R.id.active_notification_icon);
-        notification_layout=findViewById(R.id.notification_layout);
-        faq_layout = findViewById(R.id.faq_layout);
-        contact=findViewById(R.id.contact);
-        revoke=findViewById(R.id.revoke);
-        app_Version_Code=findViewById(R.id.app_Version_Code);
+            condition=findViewById(R.id.condition);
+            closemenuactivity=findViewById(R.id.closemenuactivity);
+            notificationicon=findViewById(R.id.notificationicon);
+            faq_icon=findViewById(R.id.faq_icon);
+            active_notification_icon=findViewById(R.id.active_notification_icon);
+            notification_layout=findViewById(R.id.notification_layout);
+            faq_layout = findViewById(R.id.faq_layout);
+            contact=findViewById(R.id.contact);
+            revoke=findViewById(R.id.revoke);
+            app_Version_Code=findViewById(R.id.app_Version_Code);
 
-        profile.setOnClickListener(this);
-        faqs.setOnClickListener(this);
-        condition.setOnClickListener(this);
-        closemenuactivity.setOnClickListener(this);
-        notification_layout.setOnClickListener(this);
-        faq_layout.setOnClickListener(this);
-        contact.setOnClickListener(this);
-        revoke.setOnClickListener(this);
-        //
-        notificationicon.setAnimation(Utility.getOnShakeAnimation(Home.this));
+            profile.setOnClickListener(this);
+            faqs.setOnClickListener(this);
+            condition.setOnClickListener(this);
+            closemenuactivity.setOnClickListener(this);
+            notification_layout.setOnClickListener(this);
+            faq_layout.setOnClickListener(this);
+            contact.setOnClickListener(this);
+            revoke.setOnClickListener(this);
+            //
+            notificationicon.setAnimation(Utility.getOnShakeAnimation(Home.this));
 
-        logoutbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            logoutbtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
               /*  SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.remove(Session.CACHE_CUSTOMER);
                 editor.remove(Session.CACHE_USER_LOGINID);
                 editor.commit();*/
-                startActivity(new Intent(Home.this,Login.class));
-                finishAffinity();
+                    startActivity(new Intent(Home.this,Login.class));
+                    finishAffinity();
+                }
+            });
+
+
+            sharedPreferences = getSharedPreferences(ApplicationConstant.SHAREDPREFENCE, Context.MODE_PRIVATE);
+
+            drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                    this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+            drawer.addDrawerListener(toggle);
+            toggle.syncState();
+
+
+            // loadFragment(new Home_Menu());
+            navigation = (BottomNavigationView) findViewById(R.id.navigation);
+            navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+            //show png image in bottom menu bar
+            // navigation.setItemIconTintList(null);
+            // navigation.setSelectedItemId(R.id.bottom_home);
+
+            try {
+                //19-10-2018
+                loadDateInRecyclerView();
+            }catch (Exception e){
+                ExceptionsNotification.ExceptionHandling(Home.this , Utility.getStackTrace(e));
             }
-        });
 
 
-        sharedPreferences = getSharedPreferences(ApplicationConstant.SHAREDPREFENCE, Context.MODE_PRIVATE);
 
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+            recyclerView.setHasFixedSize(true);
+            recyclerView.setLayoutManager(new GridLayoutManager(this, 4));
+            recyclerView.setNestedScrollingEnabled(true);
+            recyclerView.addItemDecoration(new DividerItemDecorator(4,2,false));
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
+            Timer timer = new Timer();
+            timer.scheduleAtFixedRate(new SliderTimer(), 4000, 6000);
 
+            //show active notification indicator
+            showNotificationIndicator();
 
-       // loadFragment(new Home_Menu());
-        navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
-        //show png image in bottom menu bar
-       // navigation.setItemIconTintList(null);
-       // navigation.setSelectedItemId(R.id.bottom_home);
-
-        //19-10-2018
-        loadDateInRecyclerView();
-
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 4));
-        recyclerView.setNestedScrollingEnabled(true);
-        recyclerView.addItemDecoration(new DividerItemDecorator(4,2,false));
-
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new SliderTimer(), 4000, 6000);
-
-        //show active notification indicator
-        showNotificationIndicator();
-
-
-        //set app version
-        app_Version_Code.setText("version "+Utility.getVersionName(Home.this));
-
-
+            //set app version
+            app_Version_Code.setText("version "+Utility.getVersionName(Home.this));
+        }catch (Exception e){
+            ExceptionsNotification.ExceptionHandling(Home.this , Utility.getStackTrace(e));
+            //Utility.exceptionAlertDialog(Home.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+        }
     }
 
     public void showNotificationIndicator(){
@@ -353,8 +356,6 @@ public class Home extends Base_Activity
 
                 try {
                     if(banners.get(pager.getCurrentItem()).getServiceType()!=null && banners.get(pager.getCurrentItem()).getServiceType().getServiceTypeId()!=null){
-
-
                         if(banners.get(pager.getCurrentItem()).getServiceType().getServiceTypeId()==ApplicationConstant.Uber){
                             actionUberServiceOnclick(banners.get(pager.getCurrentItem()).getServiceType().getServiceTypeId());
                         } else{
@@ -397,9 +398,35 @@ public class Home extends Base_Activity
     }
 
     public void startmobiledialog(String serviceid,View v) {
-        Utility.enableDisableView(v,true);
-        Mobile_Dialog mobile_dialog = new Mobile_Dialog(this,serviceid,v);
-        mobile_dialog.showdialog();
+        try {
+            LocalCacheVO  localCacheVO = new Gson().fromJson( Session.getSessionByKey(this, Session.LOCAL_CACHE), LocalCacheVO.class);
+            List<ServiceTypeVO> utilityServices = localCacheVO.getUtilityBills();
+
+            List<String> showDialogListServiceIds = new ArrayList<>();
+            if(Integer.parseInt(serviceid)==ApplicationConstant.PreAndPost){
+                showDialogListServiceIds =new ArrayList<>();
+                showDialogListServiceIds.add(String.valueOf(ApplicationConstant.MobilePrepaid));
+                showDialogListServiceIds.add(String.valueOf(ApplicationConstant.MobilePostpaid));
+            }else if(Integer.parseInt(serviceid)==ApplicationConstant.GasDual){
+                showDialogListServiceIds =new ArrayList<>();
+                showDialogListServiceIds.add(String.valueOf(ApplicationConstant.Gas));
+                showDialogListServiceIds.add(String.valueOf(ApplicationConstant.PNG));
+
+            }
+            List<ServiceTypeVO> showServiceTypeArry= new ArrayList<>();
+            for (String s : showDialogListServiceIds) {
+                for (ServiceTypeVO utility : utilityServices) {
+                    if (s.equals(utility.getServiceTypeId().toString())) {
+                        showServiceTypeArry.add(utility);
+                    }
+                }
+            }
+            Utility.enableDisableView(v,true);
+            Mobile_Dialog.showdialog(this,showServiceTypeArry,v);
+        }catch (Exception e){
+            ExceptionsNotification.ExceptionHandling(Home.this , Utility.getStackTrace(e));
+        }
+
     }
 
     /*Banner slider*/

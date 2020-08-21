@@ -989,6 +989,13 @@ public class Utility {
             modify.setText(leftButton);
             next.setText(rightButton);
 
+            if(title==null || title.equals("")){
+                titletext.setVisibility(View.GONE);
+            }
+            if(Msg==null || Msg.equals("")){
+                msg.setVisibility(View.GONE);
+            }
+
             titletext.setText(title);
             msg.setText(Msg);
 
@@ -1743,6 +1750,26 @@ public class Utility {
             e.printStackTrace();
         }
         return version;
+    }
+
+
+    public static int getClickBackgroundEffect(Context context){
+        int[] attrs = new int[]{R.attr.selectableItemBackground};
+        TypedArray typedArray = context.obtainStyledAttributes(attrs);
+        return  typedArray.getResourceId(0, 0);
+    }
+
+    public static boolean isNumeric(final String str) {
+        // null or empty
+        if (str == null || str.length() == 0) {
+            return false;
+        }
+        for (char c : str.toCharArray()) {
+            if (!Character.isDigit(c)) {
+                return false;
+            }
+        }
+        return true;
     }
 }
 

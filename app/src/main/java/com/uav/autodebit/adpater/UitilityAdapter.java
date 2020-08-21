@@ -67,7 +67,7 @@ public class UitilityAdapter extends RecyclerView.Adapter<UitilityAdapter.Prodec
             public void onClick(View v) {
                 level=null;
                 Utility.enableDisableView(v,false);
-                if (pro.getServiceTypeId()==23){
+                if (pro.getServiceTypeId()==23 || pro.getServiceTypeId()==24){
                     ((Home) mctx).startmobiledialog(pro.getServiceTypeId().toString(),v);
                 }else {
                     ((Home) mctx).startUserClickService(pro.getServiceTypeId().toString(), v);

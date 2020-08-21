@@ -4,11 +4,16 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
 import android.util.SparseArray;
+import android.widget.Toast;
 
 import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
+import com.uav.autodebit.exceptions.ExceptionsNotification;
+import com.uav.autodebit.util.Utility;
 
+import java.io.BufferedReader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,7 +50,19 @@ public class ImageTextApi {
                         stringBuilder.append("\n");
                     }
                     String value=stringBuilder.toString().replaceAll(" ", "");
-                    String replaceString= value.replaceAll("\n", "/");
+
+
+                    BufferedReader bufReader = new BufferedReader(new StringReader(value));
+                    String line=null;
+                    while( (line=bufReader.readLine()) != null ){
+                        Log.w("readline",line);
+                            if(Utility.isNumeric(line) && line.length()>=8){
+                                ic.onResult(line);
+                                break;
+                            }
+                    }
+                    ic.onResult(line);
+                  /*  String replaceString= value.replaceAll("\n", "/");
 
                     int i=0;
                     String nos = "";
@@ -72,9 +89,9 @@ public class ImageTextApi {
                             break;
                         }
                     }
-                    ic.onResult(pincode);
+                    ic.onResult(pincode);*/
                 }catch (Exception e){
-
+                    ExceptionsNotification.ExceptionHandling(context , Utility.getStackTrace(e));
                 }
 
             }

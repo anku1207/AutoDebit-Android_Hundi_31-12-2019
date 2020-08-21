@@ -7,8 +7,9 @@
     android:background="@drawable/paynimo_view_rounded_corner"
     android:gravity="center"
     android:layout_gravity="center"
-    android:visibility="visible"
+    android:visibility="gone"
     android:id="@+id/main_layout"
+    android:layout_margin="20dp"
     >
     <TextView
         android:id="@+id/textview"
@@ -17,10 +18,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:gravity="center"
-        android:text="Add Dmrc Card"
-        android:textSize="15dp"
-        android:minHeight="150dp"
-        android:textAlignment="center"/>
+        android:text="Add DMRC Card"
+        android:textSize="20dp"
+        android:minHeight="80dp"
+        android:textAlignment="center"
+        android:textColor="@color/appbar"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -44,7 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:id="@+id/existcard"
-            android:text="Exist Card"
+            android:text="Existing Card"
             android:layout_marginBottom="30dp"
             android:layout_marginTop="10dp"
             android:background="@drawable/cornerbutton"

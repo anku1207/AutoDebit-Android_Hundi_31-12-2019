@@ -30,9 +30,11 @@ public class LocalCacheVO implements Serializable {
     private String fastTag;
     private String cableTv;
 
-
-
     private String eNachReturnURL;
+
+    private boolean dmrcExistingCard;
+
+
     public LocalCacheVO(){
 
     }
@@ -213,5 +215,13 @@ public class LocalCacheVO implements Serializable {
 
     public void setCableTv(String cableTv) {
         this.cableTv = cableTv;
+    }
+
+    public boolean isDmrcExistingCard() {
+        return dmrcExistingCard;
+    }
+
+    public void setDmrcExistingCard(boolean dmrcExistingCard) {
+        this.dmrcExistingCard = dmrcExistingCard;
     }
 }

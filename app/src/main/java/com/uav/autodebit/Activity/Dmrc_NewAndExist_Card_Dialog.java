@@ -29,6 +29,7 @@ import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerVO;
 import com.uav.autodebit.vo.DMRC_Customer_CardVO;
+import com.uav.autodebit.vo.LocalCacheVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
 import com.uav.autodebit.volley.VolleyUtils;
 
@@ -42,6 +43,7 @@ public class Dmrc_NewAndExist_Card_Dialog extends AppCompatActivity implements V
     Button newcard,existcard;
     TextView textview;
     Gson gson;
+    LinearLayout main_layout;
 
 
     @Override
@@ -51,12 +53,28 @@ public class Dmrc_NewAndExist_Card_Dialog extends AppCompatActivity implements V
         getSupportActionBar().hide();
 
 
-
+        main_layout=findViewById(R.id.main_layout);
         newcard=findViewById(R.id.newcard);
         existcard=findViewById(R.id.existcard);
         textview=findViewById(R.id.textview);
 
         gson = new Gson();
+
+        LocalCacheVO localCacheVO = gson.fromJson( Session.getSessionByKey(this, Session.LOCAL_CACHE), LocalCacheVO.class);
+        if(!localCacheVO.isDmrcExistingCard()){
+            getDmrcCardListByCardType(Dmrc_NewAndExist_Card_Dialog.this , new VolleyResponse((VolleyResponse.OnSuccess)(newCardSuccess)->{
+                DMRC_Customer_CardVO dmrc_customer_cardVO = (DMRC_Customer_CardVO) newCardSuccess;
+                finish();
+                Session.set_Data_Sharedprefence(this,Session.CACHE_DMRC_MIN_CARD_CHARGE,dmrc_customer_cardVO.getAnonymousString());
+                Intent intent =new Intent(this,Dmrc_Card_Request.class);
+                intent.putExtra("onetimecharges",dmrc_customer_cardVO.getAnonymousString());
+                intent.putExtra("isdisable",false);
+                intent.putExtra("dmrccard",gson.toJson(dmrc_customer_cardVO));
+                startActivity(intent);
+            }),true);
+        }else {
+            main_layout.setVisibility(View.VISIBLE);
+        }
 
         DisplayMetrics displayMetrics =new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);

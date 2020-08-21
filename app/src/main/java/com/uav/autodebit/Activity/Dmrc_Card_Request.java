@@ -802,11 +802,11 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                     Utility.showSingleButtonDialog(Dmrc_Card_Request.this,"Error !",sb.toString(),false);
                 }else {
                     //update customer cache
-                    if(dmrc_customer_cardVO.getCustomer()!=null){
+                   /* if(dmrc_customer_cardVO.getCustomer()!=null){
                         String json = new Gson().toJson(dmrc_customer_cardVO.getCustomer());
                         Session.set_Data_Sharedprefence(Dmrc_Card_Request.this,Session.CACHE_CUSTOMER,json);
                         Session.set_Data_Sharedprefence(Dmrc_Card_Request.this, Session.LOCAL_CACHE,dmrc_customer_cardVO.getCustomer().getLocalCache());
-                    }
+                    }*/
 
                     addRequestDmrcCardBanner(dmrc_customer_cardVO);
                 }

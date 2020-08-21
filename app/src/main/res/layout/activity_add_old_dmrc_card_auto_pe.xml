@@ -58,7 +58,7 @@
             android:textAlignment="center"
             android:gravity="center"
             android:layout_gravity="center"
-            android:text="Add  Old DMRC Card"
+            android:text="Add  Existing DMRC Card"
             android:textStyle="bold"
             android:textSize="20dp"
             android:id="@+id/title"
@@ -118,7 +118,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Please fill this form below to apply for a new DMRC Card"
+                android:text="Please fill the form below"
                 android:layout_gravity="center"
                 android:textAlignment="center"
                 android:maxLines="1"
@@ -136,7 +136,7 @@
                 android:layout_margin="10dp"
                 app:cardCornerRadius="15dp"
                 >
-                <EditText
+                <com.uav.autodebit.override.UAVEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/edit"
@@ -163,7 +163,7 @@
                 android:layout_margin="10dp"
                 app:cardCornerRadius="15dp"
                 >
-                <EditText
+                <com.uav.autodebit.override.UAVEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/edit"
@@ -191,20 +191,21 @@
                 android:layout_gravity="center|center_vertical"
                 android:gravity="center"
                 android:layout_marginTop="7dp"
+                android:layout_margin="10dp"
                 >
                 <TextView
                     android:id="@+id/add_Card_Link"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
+                    android:layout_weight=".9"
                     android:layout_height="wrap_content"
-                    android:text="Add Dmrc Card Image"
+                    android:text="Upload your existing card image "
                     android:fontFamily="@font/poppinsmedium"
                     android:textColor="@drawable/text_change_color_blue"
                     android:ellipsize="end"
                     android:maxEms="15"
-                    android:singleLine="true"
-                    android:textAlignment="textEnd"
-
+                    android:gravity="left"
+                    android:drawableLeft="@drawable/attachicon"
+                    android:drawablePadding="10dp"
                     />
 
                 <ImageView

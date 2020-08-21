@@ -73,7 +73,7 @@ public class BeforeRecharge {
                                 ((Activity) context).startActivityForResult(new Intent(context, Enach_Mandate.class).putExtra("forresutl", true).putExtra("selectservice", new ArrayList<Integer>(Arrays.asList(oxigenTransactionVOresp.getServiceId()))), ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE);
                             }*/
                         }
-                    }, context, oxigenTransactionVO.getErrorMsgs().get(0), "", buttons);
+                    }, context, null, oxigenTransactionVO.getErrorMsgs().get(0), buttons);
                 }
             }
         }));

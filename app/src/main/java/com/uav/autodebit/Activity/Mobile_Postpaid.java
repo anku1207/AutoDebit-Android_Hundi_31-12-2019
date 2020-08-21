@@ -360,7 +360,6 @@ public class Mobile_Postpaid extends Base_Activity implements View.OnClickListen
                            // Utility.exceptionAlertDialog(this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
                         }
                     },(VolleyResponse.OnError)(e)->{
-                        Log.e("RESPONSE",e.toString());
                         // hide amount layout layout and net amount is null set and show fetch bill button
                         fetchbill.setVisibility(View.VISIBLE);
                         amountlayout.setVisibility(View.GONE);

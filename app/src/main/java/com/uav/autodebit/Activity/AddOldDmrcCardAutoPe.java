@@ -21,6 +21,8 @@ import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -55,6 +57,7 @@ import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.Content_Message;
 import com.uav.autodebit.constant.ErrorMsg;
 import com.uav.autodebit.exceptions.ExceptionsNotification;
+import com.uav.autodebit.override.UAVEditText;
 import com.uav.autodebit.override.UAVProgressDialog;
 import com.uav.autodebit.permission.PermissionHandler;
 import com.uav.autodebit.permission.PermissionUtils;
@@ -91,9 +94,10 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
     Bitmap bmp;
 
 
-    EditText card_Number,confirm_Card_Number,image_Read_Number;
+    UAVEditText card_Number,confirm_Card_Number;
+    EditText image_Read_Number;
     int  REQ_IMAGE=1001,REQ_GALLERY=1002,PIC_CROP=1004;
-    ImageView addDmrcImage,back_activity_button1 ;
+    ImageView addDmrcImage,back_activity_button ;
     String customerId;
     Gson gson = new Gson();
     boolean checkCardImageUpload;
@@ -133,7 +137,7 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
         addcardlistlayout=findViewById(R.id.addcardlistlayout);
         scrollView=findViewById(R.id.scrollView);
         tabLayout =findViewById(R.id.indicator);
-        back_activity_button1=findViewById(R.id.back_activity_button);
+        back_activity_button=findViewById(R.id.back_activity_button);
         bottom_layout=findViewById(R.id.bottom_layout);
         add_Card_Link=findViewById(R.id.add_Card_Link);
 
@@ -153,7 +157,7 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
         add_Card_Link.setPaintFlags(add_Card_Link.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
 
-        back_activity_button1.setOnClickListener(this);
+        back_activity_button.setOnClickListener(this);
         add_Card_Link.setOnClickListener(this);
         addCard.setOnClickListener(this);
 
@@ -183,6 +187,10 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
             bottom_layout.setVisibility(View.VISIBLE);
             image_Read_Number.setText(dmrc_customer_cardVO.getCardNo());
             checkCardImageUpload=true;
+
+            //set input type text
+            card_Number.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+            confirm_Card_Number.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
         }
 
     }
@@ -201,6 +209,10 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
                 addDmrcImage.setImageDrawable(Utility.getDrawableResources(AddOldDmrcCardAutoPe.this,R.drawable.old_dmrc_image));
                 card_Number.setEnabled(true);
                 confirm_Card_Number.setEnabled(true);
+
+                //set input type password
+                card_Number.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                confirm_Card_Number.setTransformationMethod(PasswordTransformationMethod.getInstance());
             }
 
             ArrayList<DMRC_Customer_CardVO> listforcard= (ArrayList<DMRC_Customer_CardVO>) dmrc_customer_cardVO.getDmrcCustomerList();
@@ -209,8 +221,10 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
             CardView cardView =Utility.getCardViewStyle(this);
             ImageView imageView =Utility.getImageView(this);
             imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+            LinearLayout.LayoutParams layoutparams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.MATCH_PARENT);
+            imageView.setLayoutParams(layoutparams);
             Picasso.with(this)
-                    .load("http://autope.in/images/apk/1577709175082.jpeg")
+                    .load("http://autope.in/images/apk/SampleDmrcCard.png")
                     .into(imageView, new com.squareup.picasso.Callback() {
                         @Override
                         public void onSuccess() {
@@ -251,7 +265,27 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
             @Override
             public void doPostExecute(List list) {
 
-                DmrcCardPagerAdapter models =new DmrcCardPagerAdapter(AddOldDmrcCardAutoPe.this,list);
+
+                CustomPagerAdapter models =new CustomPagerAdapter(list,AddOldDmrcCardAutoPe.this);
+
+                viewPager=Utility.getViewPager(AddOldDmrcCardAutoPe.this);
+                viewPager.setOverScrollMode(View.OVER_SCROLL_NEVER);
+                viewPager.setAdapter(models);
+                viewPager.setPadding(0,0,0,0);
+                tabLayout.setupWithViewPager(viewPager, false);
+                Utility.disable_Tab(tabLayout);
+                addcardlistlayout.addView(viewPager);
+
+                // add animation on viewpager
+               /* DepthTransformation depthTransformation = new DepthTransformation();
+                viewPager.setPageTransformer(true, depthTransformation);*/
+
+                View current = getCurrentFocus();
+                if (current != null) current.clearFocus();
+
+
+
+              /*  DmrcCardPagerAdapter models =new DmrcCardPagerAdapter(AddOldDmrcCardAutoPe.this,list);
 
                 viewPager=Utility.getViewPager(AddOldDmrcCardAutoPe.this);
                 viewPager.setOverScrollMode(View.OVER_SCROLL_NEVER);
@@ -261,10 +295,10 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
                 Utility.disable_Tab(tabLayout);
                 addcardlistlayout.addView(viewPager);
                 // add animation on viewpager
-               /* DepthTransformation depthTransformation = new DepthTransformation();
-                viewPager.setPageTransformer(true, depthTransformation);*/
+               *//* DepthTransformation depthTransformation = new DepthTransformation();
+                viewPager.setPageTransformer(true, depthTransformation);*//*
                 View current = getCurrentFocus();
-                if (current != null) current.clearFocus();
+                if (current != null) current.clearFocus();*/
             }
         });
         backgroundAsyncServiceGetList.execute();
@@ -285,6 +319,9 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
             case R.id.addCard:
                 addCard.startAnimation(animation);
                 saveExistDmrcCard();
+                break;
+            case R.id.back_activity_button:
+                finish();
                 break;
         }
     }
@@ -651,12 +688,12 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
                     Utility.showSingleButtonDialog(AddOldDmrcCardAutoPe.this,"Error !",sb.toString(),false);
                 }else {
                     //update customer cache
-                    if(dmrc_customer_cardVO.getCustomer()!=null){
+                 /*   if(dmrc_customer_cardVO.getCustomer()!=null){
                         String json = new Gson().toJson(dmrc_customer_cardVO.getCustomer());
                         Session.set_Data_Sharedprefence(AddOldDmrcCardAutoPe.this,Session.CACHE_CUSTOMER,json);
                         Session.set_Data_Sharedprefence(AddOldDmrcCardAutoPe.this, Session.LOCAL_CACHE,dmrc_customer_cardVO.getCustomer().getLocalCache());
                     }
-
+*/
                     addRequestDmrcCardBanner(dmrc_customer_cardVO);
                 }
             }
@@ -725,11 +762,7 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
                             matrix.postRotate(90);
                             bmp= Bitmap.createBitmap(bmp,0,0,bmp.getWidth(),bmp.getHeight(),matrix,true);
                         }
-                        int imagesizeinbyte=Utility.byteSizeOf(bmp);
-                        Log.w("image",imagesizeinbyte +"  ====   "+(imagesizeinbyte/1024) +"");
-                        imagesizeinbyte=Utility.byteSizeOf(bmp);
-                        Log.w("image",imagesizeinbyte +"  ====   "+(imagesizeinbyte/1024) +"");
-                        addDmrcImage.setImageBitmap(bmp);
+
                         performCrop(Utility.getVersionWiseUri(this,photofileurl));
                         View current = getCurrentFocus();
                         if (current != null) current.clearFocus();
@@ -740,7 +773,7 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
                         //get the cropped bitmap
                         bmp = (Bitmap) extras.get("data");
                         //display the returned cropped image
-                        getTextByImage();
+                        getTextByImage(bmp);
                     }else if(requestCode==ApplicationConstant.REQ_DMRC_MANDATE_SI_BUCKET){
                         int actionId=data.getIntExtra("actionId",0);
                         if(actionId!=0){
@@ -768,7 +801,7 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
 
             }else {
                 if(requestCode==PIC_CROP){
-                    getTextByImage();
+                    getTextByImage(bmp);
                 }
             }
         } catch (Exception e) {
@@ -776,7 +809,7 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
         }
     }
 
-    private void getTextByImage(){
+    private void getTextByImage(Bitmap bitmap){
         ImageTextApi imageTextApi = new ImageTextApi(new ImageTextViewInterface() {
             @Override
             public void onResult(String o) {
@@ -790,11 +823,23 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
                                 bottom_layout.setVisibility(View.VISIBLE);
                                 image_Read_Number.setText(o);
 
+
+                                //set input type text
+                                card_Number.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                                confirm_Card_Number.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+
+                                addDmrcImage.setImageBitmap(bitmap);
+
                                 checkCardImageUpload=true;
                             }else {
                                 Toast.makeText(AddOldDmrcCardAutoPe.this, "Card number " + o +" is mismatch", Toast.LENGTH_LONG).show();
                                 bottom_layout.setVisibility(View.GONE);
                                 image_Read_Number.setText("");
+
+
+                                //set input type password
+                                card_Number.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                                confirm_Card_Number.setTransformationMethod(PasswordTransformationMethod.getInstance());
 
                                 checkCardImageUpload=false;
                             }
@@ -804,6 +849,11 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
                             image_Read_Number.setText("");
                             card_Number.setEnabled(true);
                             confirm_Card_Number.setEnabled(true);
+
+
+                            //set input type password
+                            card_Number.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                            confirm_Card_Number.setTransformationMethod(PasswordTransformationMethod.getInstance());
 
                             checkCardImageUpload=false;
                         }
@@ -841,6 +891,7 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
             String errorMessage = "Whoops - your device doesn't support the crop action!";
             Toast toast = Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT);
             toast.show();
+            getTextByImage(bmp);
         }catch (Exception e){
             ExceptionsNotification.ExceptionHandling(this , Utility.getStackTrace(e));
             // Utility.exceptionAlertDialog(this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
