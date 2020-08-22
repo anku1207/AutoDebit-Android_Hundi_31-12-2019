@@ -48,13 +48,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Activity.AddOldDmrcCardAutoPe"></activity>
+        <activity
+            android:name=".Activity.AddOldDmrcCardAutoPe">
+        </activity>
         <activity
             android:name=".Activity.Dmrc_NewAndExist_Card_Dialog"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.pop"
             android:windowSoftInputMode="stateHidden"
-            tools:ignore="LockedOrientationActivity"></activity>
+            tools:ignore="LockedOrientationActivity">
+
+        </activity>
         <activity
             android:name=".Activity.NotificatinDesc"
             android:screenOrientation="portrait"
@@ -103,7 +106,6 @@
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".Activity.PopapSimpleList"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.pop"
             android:windowSoftInputMode="stateHidden"
             tools:ignore="LockedOrientationActivity" />
@@ -504,13 +506,11 @@
 
         <activity
             android:name=".Activity.Mobile_Activity_Dialog"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.pop"
             android:windowSoftInputMode="stateHidden"
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".Activity.Gas_Activity_Dialog"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.pop"
             android:windowSoftInputMode="stateHidden"
             tools:ignore="LockedOrientationActivity" />

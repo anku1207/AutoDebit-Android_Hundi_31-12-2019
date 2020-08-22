@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -50,7 +51,6 @@ public class Dmrc_NewAndExist_Card_Dialog extends AppCompatActivity implements V
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dmrc__new_and_exist__card__dialog);
-        getSupportActionBar().hide();
 
 
         main_layout=findViewById(R.id.main_layout);
@@ -75,7 +75,7 @@ public class Dmrc_NewAndExist_Card_Dialog extends AppCompatActivity implements V
         }else {
             main_layout.setVisibility(View.VISIBLE);
         }
-
+       //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         DisplayMetrics displayMetrics =new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int width=displayMetrics.widthPixels;

@@ -50,7 +50,7 @@ public class Mandate_Revoke_Dialog extends AppCompatActivity implements View.OnC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mandate__revoke__dialog);
-        getSupportActionBar().hide();
+
 
         yesbtn=findViewById(R.id.yesbtn);
         nobtn=findViewById(R.id.nobtn);

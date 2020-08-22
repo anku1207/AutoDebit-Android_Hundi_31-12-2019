@@ -50,7 +50,6 @@ public class PopapSimpleList extends Base_Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_popap_simple_list);
 
-        getSupportActionBar().hide();
 
 
         DisplayMetrics displayMetrics =new DisplayMetrics();

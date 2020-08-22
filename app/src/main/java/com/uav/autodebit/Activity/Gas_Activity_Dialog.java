@@ -22,7 +22,6 @@ public class Gas_Activity_Dialog extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.showgasbillconfirmation);
-        getSupportActionBar().hide();
         serviceid = getIntent().getStringExtra("serviceid");
 
         DisplayMetrics displayMetrics =new DisplayMetrics();
