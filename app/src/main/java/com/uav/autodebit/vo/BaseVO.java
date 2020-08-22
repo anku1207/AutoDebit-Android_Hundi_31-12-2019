@@ -140,7 +140,8 @@ public class BaseVO {
     }
 
 
-    public Double getServiceAdopteBMA() {
+    public Double
+    getServiceAdopteBMA() {
         return serviceAdopteBMA;
     }
 

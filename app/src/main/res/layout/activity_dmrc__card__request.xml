@@ -308,6 +308,7 @@
                     android:layout_marginLeft="2dp"
                     android:fontFamily="@font/poppinsmedium"
                     android:textSize="10dp"
+                    android:visibility="gone"
 
                     />
             </LinearLayout>

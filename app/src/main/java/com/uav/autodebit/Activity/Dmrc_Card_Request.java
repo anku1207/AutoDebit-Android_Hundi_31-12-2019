@@ -159,7 +159,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
 
         isdisable = getIntent().getBooleanExtra("isdisable",true);
         String onetimeamt = Session.getSessionByKey(Dmrc_Card_Request.this,Session.CACHE_DMRC_MIN_CARD_CHARGE);
-        cardcharges.setText("* INR "+onetimeamt +" One Time Charges");
+        cardcharges.setText("* INR "+onetimeamt +" Annual Charges");
         customerId = Session.getCustomerId(Dmrc_Card_Request.this);
 
         dmrc_customer_cardVO = gson.fromJson(getIntent().getStringExtra("dmrccard"), DMRC_Customer_CardVO.class);
@@ -927,7 +927,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
     }
     public void setCustomerDetail(DMRC_Customer_CardVO dmrc_customer_cardVO){
         if(dmrc_customer_cardVO.getDmrcid()==null){
-            CustomerVO customerVO = gson.fromJson(Session.getSessionByKey(Dmrc_Card_Request.this,Session.CACHE_CUSTOMER), CustomerVO.class);
+           /* CustomerVO customerVO = gson.fromJson(Session.getSessionByKey(Dmrc_Card_Request.this,Session.CACHE_CUSTOMER), CustomerVO.class);
             if(customerVO.getPanHolderName()!=null){
                 customername.setText(customerVO.getPanHolderName());
             }
@@ -945,7 +945,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
             }
             if(customerVO.getAddress1()!=null){
                 permanentaddress.setText(customerVO.getAddress1());
-            }
+            }*/
         }else {
             scrollviewAnimationAndVisibility();
             if(dmrc_customer_cardVO.getCustomerName()!=null){
@@ -1056,9 +1056,9 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
         }
         catch(ActivityNotFoundException anfe){
             //display an error message
-            String errorMessage = "Whoops - your device doesn't support the crop action!";
+          /*  String errorMessage = "Whoops - your device doesn't support the crop action!";
             Toast toast = Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT);
-            toast.show();
+            toast.show();*/
         }catch (Exception e){
             ExceptionsNotification.ExceptionHandling(this , Utility.getStackTrace(e));
             // Utility.exceptionAlertDialog(this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));

@@ -112,7 +112,7 @@ public class Home extends Base_Activity
     public static String clickServiceId;
     ServiceTypeVO selectServiceType;
 
-    NestedScrollView scrollView;
+    NestedScrollView scrollViewHome;
 
     Map<String,Class> activityhasmap;
     RelativeLayout notification_layout;
@@ -126,14 +126,15 @@ public class Home extends Base_Activity
 
         loadDateInRecyclerView();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        scrollView.fullScroll(ScrollView.FOCUS_UP);
+        scrollViewHome.fullScroll(ScrollView.FOCUS_UP);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        scrollView.fullScroll(ScrollView.FOCUS_UP);
+
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        scrollViewHome.fullScroll(ScrollView.FOCUS_UP);
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,52 +149,54 @@ public class Home extends Base_Activity
 
         selectedService=null;
         level=null;
-        try {
-            activityhasmap=new HashMap<>();
-            activityhasmap.put("1",IRCTC.class);
-            activityhasmap.put("2",Dmrc_NewAndExist_Card_Dialog.class);
-            activityhasmap.put("3",Hyd_Metro.class);
-            activityhasmap.put("4",Mum_Metro.class);
-            activityhasmap.put("5",Mobile_Prepaid_Recharge_Service.class);
-            activityhasmap.put("6",PNG.class);
-            activityhasmap.put("7",LandlineBill.class);
-            activityhasmap.put("8",Broadband.class);
-            activityhasmap.put("9",CreditCardBill.class);
-            activityhasmap.put("10",Electricity_Bill.class);
-            activityhasmap.put("11",Gas_Bill.class);
-            activityhasmap.put("12",Water.class);
-            activityhasmap.put("13",DTH_Recharge_Service.class);
-            activityhasmap.put("14",Mobile_Postpaid.class);
-            activityhasmap.put("15",All_Service.class);
-            activityhasmap.put("16",Uber.class);
-            activityhasmap.put("17",D2H.class);
-            activityhasmap.put("18",Dish_Tv.class);
-            activityhasmap.put("19",Insurance_Renewal.class);
-            activityhasmap.put("20",Loan_Repayment.class);
-            activityhasmap.put("21",Fastag.class);
-            activityhasmap.put("22",CableTV.class);
 
-            activityhasmap.put("L_2",PanVerification.class);
-            activityhasmap.put("L_3",Credit_Score_Report.class);
-            activityhasmap.put("L_4",Enach_Mandate.class);
-            activityhasmap.put("L_5",Enach_Mandate.class);
-            activityhasmap.put("L_6",SI_First_Data.class);
+        activityhasmap=new HashMap<>();
+        activityhasmap.put("1",IRCTC.class);
+        activityhasmap.put("2",Dmrc_NewAndExist_Card_Dialog.class);
+        activityhasmap.put("3",Hyd_Metro.class);
+        activityhasmap.put("4",Mum_Metro.class);
+        activityhasmap.put("5",Mobile_Prepaid_Recharge_Service.class);
+        activityhasmap.put("6",PNG.class);
+        activityhasmap.put("7",LandlineBill.class);
+        activityhasmap.put("8",Broadband.class);
+        activityhasmap.put("9",CreditCardBill.class);
+        activityhasmap.put("10",Electricity_Bill.class);
+        activityhasmap.put("11",Gas_Bill.class);
+        activityhasmap.put("12",Water.class);
+        activityhasmap.put("13",DTH_Recharge_Service.class);
+        activityhasmap.put("14",Mobile_Postpaid.class);
+        activityhasmap.put("15",All_Service.class);
+        activityhasmap.put("16",Uber.class);
+        activityhasmap.put("17",D2H.class);
+        activityhasmap.put("18",Dish_Tv.class);
+        activityhasmap.put("19",Insurance_Renewal.class);
+        activityhasmap.put("20",Loan_Repayment.class);
+        activityhasmap.put("21",Fastag.class);
+        activityhasmap.put("22",CableTV.class);
 
-            //check notification send  activity move
-            if(getIntent().getStringExtra(ApplicationConstant.NOTIFICATION_ACTION)!=null){
-                try {
-                    JSONObject jsonObject =new JSONObject(getIntent().getStringExtra(ApplicationConstant.NOTIFICATION_ACTION));
-                    Class <?>clazz = Class.forName(getApplicationContext().getPackageName()+".Activity."+jsonObject.getString("key"));
-                    Intent intent =new Intent(this, clazz);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.putExtra(ApplicationConstant.NOTIFICATION_ACTION,jsonObject.toString());
-                    startActivity(intent);
-                }catch (Exception e){
-                    ExceptionsNotification.ExceptionHandling(Home.this , Utility.getStackTrace(e));
-                }
+        activityhasmap.put("L_2",PanVerification.class);
+        activityhasmap.put("L_3",Credit_Score_Report.class);
+        activityhasmap.put("L_4",Enach_Mandate.class);
+        activityhasmap.put("L_5",Enach_Mandate.class);
+        activityhasmap.put("L_6",SI_First_Data.class);
+
+        //check notification send  activity move
+        if(getIntent().getStringExtra(ApplicationConstant.NOTIFICATION_ACTION)!=null){
+            try {
+                JSONObject jsonObject =new JSONObject(getIntent().getStringExtra(ApplicationConstant.NOTIFICATION_ACTION));
+                Class <?>clazz = Class.forName(getApplicationContext().getPackageName()+".Activity."+jsonObject.getString("key"));
+                Intent intent =new Intent(this, clazz);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra(ApplicationConstant.NOTIFICATION_ACTION,jsonObject.toString());
+                startActivity(intent);
+            }catch (Exception e){
+                ExceptionsNotification.ExceptionHandling(Home.this , Utility.getStackTrace(e));
             }
-            //check customer level and start activity
+        }
+        //check customer level and start activity
+
+        try {
             Gson gson =new Gson();
             CustomerVO customerVO = gson.fromJson(Session.getSessionByKey(Home.this,Session.CACHE_CUSTOMER), CustomerVO.class);
             if(customerVO.getLevel().getLevelId()<=2){
@@ -207,102 +210,103 @@ public class Home extends Base_Activity
                     return;
                 }
             }
-
-            // override local cache
-            overrideLocalCache(customerVO);
-
-            profile=findViewById(R.id.profile);
-            scrollView=findViewById(R.id.scrollView);
-
-            //19-10-2019
-            recyclerView=findViewById(R.id.recyclerview);
-            allutilityservice=findViewById(R.id.allutilityservice);
-
-
-            logoutbtn=findViewById(R.id.logoutbtn);
-
-
-            faqs=findViewById(R.id.faqs);
-
-            condition=findViewById(R.id.condition);
-            closemenuactivity=findViewById(R.id.closemenuactivity);
-            notificationicon=findViewById(R.id.notificationicon);
-            faq_icon=findViewById(R.id.faq_icon);
-            active_notification_icon=findViewById(R.id.active_notification_icon);
-            notification_layout=findViewById(R.id.notification_layout);
-            faq_layout = findViewById(R.id.faq_layout);
-            contact=findViewById(R.id.contact);
-            revoke=findViewById(R.id.revoke);
-            app_Version_Code=findViewById(R.id.app_Version_Code);
-
-            profile.setOnClickListener(this);
-            faqs.setOnClickListener(this);
-            condition.setOnClickListener(this);
-            closemenuactivity.setOnClickListener(this);
-            notification_layout.setOnClickListener(this);
-            faq_layout.setOnClickListener(this);
-            contact.setOnClickListener(this);
-            revoke.setOnClickListener(this);
-            //
-            notificationicon.setAnimation(Utility.getOnShakeAnimation(Home.this));
-
-            logoutbtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-              /*  SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.remove(Session.CACHE_CUSTOMER);
-                editor.remove(Session.CACHE_USER_LOGINID);
-                editor.commit();*/
-                    startActivity(new Intent(Home.this,Login.class));
-                    finishAffinity();
-                }
-            });
-
-
-            sharedPreferences = getSharedPreferences(ApplicationConstant.SHAREDPREFENCE, Context.MODE_PRIVATE);
-
-            drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-
-            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                    this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-            drawer.addDrawerListener(toggle);
-            toggle.syncState();
-
-
-            // loadFragment(new Home_Menu());
-            navigation = (BottomNavigationView) findViewById(R.id.navigation);
-            navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
-            //show png image in bottom menu bar
-            // navigation.setItemIconTintList(null);
-            // navigation.setSelectedItemId(R.id.bottom_home);
-
-            try {
-                //19-10-2018
-                loadDateInRecyclerView();
-            }catch (Exception e){
-                ExceptionsNotification.ExceptionHandling(Home.this , Utility.getStackTrace(e));
-            }
-
-
-
-            recyclerView.setHasFixedSize(true);
-            recyclerView.setLayoutManager(new GridLayoutManager(this, 4));
-            recyclerView.setNestedScrollingEnabled(true);
-            recyclerView.addItemDecoration(new DividerItemDecorator(4,2,false));
-
-            Timer timer = new Timer();
-            timer.scheduleAtFixedRate(new SliderTimer(), 4000, 6000);
-
-            //show active notification indicator
-            showNotificationIndicator();
-
-            //set app version
-            app_Version_Code.setText("version "+Utility.getVersionName(Home.this));
         }catch (Exception e){
             ExceptionsNotification.ExceptionHandling(Home.this , Utility.getStackTrace(e));
-            //Utility.exceptionAlertDialog(Home.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
+
+
+        // override local cache
+        //overrideLocalCache(customerVO);
+
+        profile=findViewById(R.id.profile);
+        scrollViewHome=findViewById(R.id.scrollView);
+
+        //19-10-2019
+        recyclerView=findViewById(R.id.recyclerview);
+        allutilityservice=findViewById(R.id.allutilityservice);
+
+
+        logoutbtn=findViewById(R.id.logoutbtn);
+
+
+        faqs=findViewById(R.id.faqs);
+
+        condition=findViewById(R.id.condition);
+        closemenuactivity=findViewById(R.id.closemenuactivity);
+        notificationicon=findViewById(R.id.notificationicon);
+        faq_icon=findViewById(R.id.faq_icon);
+        active_notification_icon=findViewById(R.id.active_notification_icon);
+        notification_layout=findViewById(R.id.notification_layout);
+        faq_layout = findViewById(R.id.faq_layout);
+        contact=findViewById(R.id.contact);
+        revoke=findViewById(R.id.revoke);
+        app_Version_Code=findViewById(R.id.app_Version_Code);
+
+        profile.setOnClickListener(this);
+        faqs.setOnClickListener(this);
+        condition.setOnClickListener(this);
+        closemenuactivity.setOnClickListener(this);
+        notification_layout.setOnClickListener(this);
+        faq_layout.setOnClickListener(this);
+        contact.setOnClickListener(this);
+        revoke.setOnClickListener(this);
+        //
+        notificationicon.setAnimation(Utility.getOnShakeAnimation(Home.this));
+
+        logoutbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+          /*  SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.remove(Session.CACHE_CUSTOMER);
+            editor.remove(Session.CACHE_USER_LOGINID);
+            editor.commit();*/
+                startActivity(new Intent(Home.this,Login.class));
+                finishAffinity();
+            }
+        });
+
+
+        sharedPreferences = getSharedPreferences(ApplicationConstant.SHAREDPREFENCE, Context.MODE_PRIVATE);
+
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+
+        // loadFragment(new Home_Menu());
+        navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        //show png image in bottom menu bar
+        // navigation.setItemIconTintList(null);
+        // navigation.setSelectedItemId(R.id.bottom_home);
+
+        try {
+            //19-10-2018
+            loadDateInRecyclerView();
+        }catch (Exception e){
+            ExceptionsNotification.ExceptionHandling(Home.this , Utility.getStackTrace(e));
+        }
+
+
+
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 4));
+        recyclerView.setNestedScrollingEnabled(true);
+        recyclerView.addItemDecoration(new DividerItemDecorator(4,2,false));
+
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new SliderTimer(), 4000, 6000);
+
+        //show active notification indicator
+        showNotificationIndicator();
+
+        //set app version
+        app_Version_Code.setText("version "+Utility.getVersionName(Home.this));
+
     }
 
     public void showNotificationIndicator(){
@@ -449,17 +453,17 @@ public class Home extends Base_Activity
 
 
     /*set horizontal scroll view layout elementes*/
-    private void setHorizontalScrollView(final List<ServiceTypeVO> dataList,  final int layout, final int activity ){
+    private void setHorizontalScrollView(List<ServiceTypeVO> dataList,  int layout,int activity ){
         LinearLayout mGallery = (LinearLayout) findViewById(layout);
         mGallery.removeAllViewsInLayout();
         level= Session.getCustomerLevel(Home.this);
-        for (final ServiceTypeVO serviceTypeVO: dataList){
+        for (ServiceTypeVO serviceTypeVO: dataList){
 
             //View galView = mInflater.inflate( activity ,  mGallery, false);
 
             View galView = getLayoutInflater().inflate(activity, null);
 
-            final LinearLayout activitylayout=galView.findViewById(R.id.layout_servicesgallery);
+            LinearLayout activitylayout=galView.findViewById(R.id.layout_servicesgallery);
 
             if (dataList.size() < 5) {
                 activitylayout.setLayoutParams(new LinearLayout.LayoutParams(
@@ -469,10 +473,10 @@ public class Home extends Base_Activity
             }
             activitylayout.setTag(serviceTypeVO.getServiceTypeId());
             ImageView img = (ImageView) galView.findViewById(R.id.id_index_gallery_item_image);
-            final ImageView activeservice=galView.findViewById(R.id.serviceactive);
+            ImageView activeservice=galView.findViewById(R.id.serviceactive);
             img.setImageDrawable(Utility.GetImage(this,serviceTypeVO.getAppIcon()));
 
-            if(serviceTypeVO.getAdopted()==1 && serviceTypeVO.getServiceAdopteBMA()!=null){
+            if(Integer.valueOf(1).equals(serviceTypeVO.getAdopted()) && serviceTypeVO.getServiceAdopteBMA()!=null){
                 activeservice.setVisibility(View.VISIBLE);
             }else {
                 activeservice.setVisibility(View.GONE);

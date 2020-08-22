@@ -888,9 +888,9 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
         }
         catch(ActivityNotFoundException anfe){
             //display an error message
-            String errorMessage = "Whoops - your device doesn't support the crop action!";
+          /*  String errorMessage = "Whoops - your device doesn't support the crop action!";
             Toast toast = Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT);
-            toast.show();
+            toast.show();*/
             getTextByImage(bmp);
         }catch (Exception e){
             ExceptionsNotification.ExceptionHandling(this , Utility.getStackTrace(e));

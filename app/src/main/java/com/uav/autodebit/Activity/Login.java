@@ -20,18 +20,16 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.uav.autodebit.BO.SignUpBO;
-import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.OTP.helper.AppSignatureHelper;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.Content_Message;
 import com.uav.autodebit.fingerprint.Fingerprint_Authentication;
 import com.uav.autodebit.fingerprint.IFingerPrint;
+import com.uav.autodebit.override.UAVProgressDialog;
 import com.uav.autodebit.permission.PermissionHandler;
 import com.uav.autodebit.permission.Session;
-import com.uav.autodebit.util.ExceptionHandler;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerStatusVO;
@@ -45,6 +43,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class Login extends Base_Activity implements View.OnClickListener, View.OnTouchListener {
     EditText password,userid;
@@ -197,22 +196,20 @@ public class Login extends Base_Activity implements View.OnClickListener, View.O
                         }
                         Utility.showSingleButtonDialog(Login.this,"Alert",sb.toString(),false);
                     }else {
-                        String json = gson.toJson(customerVO);
-                        if(Session.set_Data_Sharedprefence(Login.this,Session.CACHE_CUSTOMER,json)){
-                            /*  startActivity(new Intent(Login.this,Home.class));
-                        finish();*/
-                            startActivity();
-                        };
-
-
+                        String json =response.toString();
+                        Session.set_Data_Sharedprefence(Login.this,Session.CACHE_CUSTOMER,json);
+                        startActivity();
                     }
                 }
             });
         }catch (Exception e){
             Utility.exceptionAlertDialog(Login.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
-
     }
+
+
+
+
 
     @Override
     protected void onPause() {
@@ -336,7 +333,7 @@ public class Login extends Base_Activity implements View.OnClickListener, View.O
                     }
                     Utility.showSingleButtonDialog(Login.this,"Alert",sb.toString(),false);
                 }else {
-                    String json = gson.toJson(customerVO);
+                    String json = response.toString();
                     Session.set_Data_Sharedprefence(Login.this,Session.CACHE_USER_LOGINID,userid.getText().toString());
                     Session.set_Data_Sharedprefence(Login.this,Session.CACHE_CUSTOMER,json);
                    /* startActivity(new Intent(Login.this,Home.class));

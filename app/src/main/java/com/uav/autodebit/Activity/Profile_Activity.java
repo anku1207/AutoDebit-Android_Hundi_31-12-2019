@@ -412,6 +412,7 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
             }
         });
     }
+    
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -498,9 +499,9 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
         }
         catch(ActivityNotFoundException anfe){
             //display an error message
-            String errorMessage = "Whoops - your device doesn't support the crop action!";
+           /*String errorMessage = "Whoops - your device doesn't support the crop action!";
             Toast toast = Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT);
-            toast.show();
+            toast.show();*/
             imageView1.setImageBitmap(bmp);
             setCustomerProfileImage();
         }catch (Exception e){
