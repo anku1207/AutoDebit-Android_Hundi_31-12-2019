@@ -101,37 +101,56 @@ public class BillPayRequest {
                         Utility.showSingleButtonDialog(context,"Error !",sb.toString(),false);
                         volleyResponse.onError(null);
                     }else if(oxigenTransactionVOresp.getStatusCode().equals("01")){
-                      /*  Utility.showSingleButtonDialogconfirmation(context,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
-                            ok.dismiss();
-                        }),"Alert",oxigenTransactionVOresp.getAnonymousString());*/
+                        String btn[]={"Cancel","Ok"};
+                        JSONArray jsonArray =new JSONArray();
 
-                        Utility.showSelectPaymentTypeDialog(context,"Payment Type",oxigenTransactionVOresp.getPaymentTypeObject(),new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess)(position)->{
-                            int selectPosition=Integer.parseInt(position);
-                            if(selectPosition==ApplicationConstant.BankMandatePayment ){
-                                //bank
-                                showBankMandateOrSiMandateInfo(context,oxigenTransactionVOresp.getBankMandateHtml(),new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
-                                    oxigenTransactionVOresp.setProvider(getAuthServiceProvider(AuthServiceProviderVO.ENACHIDFC));
-                                    BillFetchFailAddMandate(context,oxigenTransactionVOresp);
-                                }));
-                                /*Intent intent = new Intent(context,Enach_Mandate.class);
-                                intent.putExtra("selectservice",new ArrayList<Integer>(Arrays.asList(oxigenTransactionVOresp.getServiceId())));
-                                intent.putExtra("id", oxigenTransactionVOresp.getTypeId());
-                                ((Activity) context).startActivityForResult(intent,ApplicationConstant.REQ_MANDATE_FOR_BILL_FETCH_ERROR);
-                                */
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.put("key","Operator");
+                        jsonObject.put("value",oxigenTransactionVO.getOperateName());
+                        jsonArray.put(jsonObject);
 
-                            }else if(selectPosition==ApplicationConstant.SIMandatePayment){
-                                showBankMandateOrSiMandateInfo(context,oxigenTransactionVOresp.getSiMandateHtml(),new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
-                                    oxigenTransactionVOresp.setProvider(getAuthServiceProvider(AuthServiceProviderVO.AUTOPE_PG));
-                                    BillFetchFailAddMandate(context,oxigenTransactionVOresp);
-                                }));
-                               /* Intent intent = new Intent(context,SI_First_Data.class);
-                                intent.putExtra("id",oxigenTransactionVOresp.getTypeId());
-                                intent.putExtra("amount",oxigenTransactionVOresp.getNetAmount());
-                                intent.putExtra("serviceId",oxigenTransactionVOresp.getServiceId()+"");
-                                intent.putExtra("paymentType",ApplicationConstant.PG_MANDATE);
-                                ((Activity) context).startActivityForResult(intent,ApplicationConstant.REQ_SI_FOR_BILL_FETCH_ERROR);*/
+                        JSONObject dataJson=new JSONObject(oxigenTransactionVO.getAnonymousString());
+
+                        Iterator<String> keys = dataJson.keys();
+
+                        while(keys.hasNext()) {
+                            String key = keys.next();
+                            jsonObject = new JSONObject();
+                            jsonObject.put("key",key);
+                            jsonObject.put("value",dataJson.getString(key));
+                            jsonArray.put(jsonObject);
+                        }
+
+                        Utility.confirmationDialog(new DialogInterface() {
+                            @Override
+                            public void confirm(Dialog dialog) {
+                                dialog.dismiss();
+                                try {
+                                    Utility.showSelectPaymentTypeDialog(context,"Payment Type",oxigenTransactionVOresp.getPaymentTypeObject(),new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess)(position)->{
+                                        int selectPosition=Integer.parseInt(position);
+                                        if(selectPosition==ApplicationConstant.BankMandatePayment ){
+                                            //bank
+                                            showBankMandateOrSiMandateInfo(context,oxigenTransactionVOresp.getBankMandateHtml(),new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                                                oxigenTransactionVOresp.setProvider(getAuthServiceProvider(AuthServiceProviderVO.ENACHIDFC));
+                                                BillFetchFailAddMandate(context,oxigenTransactionVOresp);
+                                            }));
+                                        }else if(selectPosition==ApplicationConstant.SIMandatePayment){
+                                            showBankMandateOrSiMandateInfo(context,oxigenTransactionVOresp.getSiMandateHtml(),new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                                                oxigenTransactionVOresp.setProvider(getAuthServiceProvider(AuthServiceProviderVO.AUTOPE_PG));
+                                                BillFetchFailAddMandate(context,oxigenTransactionVOresp);
+                                            }));
+                                        }
+                                    }));
+                                }catch (Exception e){
+                                    ExceptionsNotification.ExceptionHandling(context , Utility.getStackTrace(e));
+                                }
                             }
-                        }));
+                            @Override
+                            public void modify(Dialog dialog) {
+                                dialog.dismiss();
+                            }
+                        },context,jsonArray,null,"Do you want to proceed ?",btn);
+
                         volleyResponse.onError(null);
                     }else {
                         volleyResponse.onSuccess(oxigenTransactionVOresp);

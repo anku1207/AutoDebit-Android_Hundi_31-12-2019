@@ -1,5 +1,6 @@
 package com.uav.autodebit.Activity;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -105,7 +106,9 @@ public class Help extends Base_Activity implements View.OnClickListener {
                     }
                     Utility.showSingleButtonDialog(Help.this,"Alert",sb.toString(),false);
                 }else {
-                   Utility.showSingleButtonDialog(Help.this,customerVO.getDialogTitle(),customerVO.getAnonymousString(),false);
+                   MyDialog.showSingleButtonBigContentDialog(Help.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                       ((Dialog)ok).dismiss();
+                   }),customerVO.getDialogTitle(),customerVO.getAnonymousString());
                 }
             }
         });

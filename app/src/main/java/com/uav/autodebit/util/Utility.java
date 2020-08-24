@@ -537,11 +537,59 @@ public class Utility {
         return jsonArray;
     }
 
-    public static void showSingleButtonDialog(final Context var1, String title, String msg , final boolean activityfinish ,String... buttons){
+
+
+    public static void showSingleButtonDialog(final Context context, String title, String msg , boolean activityfinish ,String... buttons){
 
         String leftButton= (buttons.length==0 ?"OK":buttons[0]);//(leftButton ==null?"Modify": leftButton);
+        final Dialog var3 = new Dialog(context);
 
 
+        var3.requestWindowFeature(1);
+        var3.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        var3.setContentView(R.layout.singlebutton_bigcontent_dialog);
+        var3.setCanceledOnTouchOutside(false);
+        //   var3.setCancelable(false);
+
+        var3.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+
+        TextView title_text = (TextView)var3.findViewById(R.id.title);
+
+        if(title==null || title.equals("")){
+            title_text.setVisibility(View.GONE);
+        }else {
+            title_text.setText(title);
+            title_text.setVisibility(View.VISIBLE);
+        }
+        TextView msg_text = (TextView)var3.findViewById(R.id.message);
+        msg_text.setText(msg);
+        Button button = (Button)var3.findViewById(R.id.btn);
+        button.setText(leftButton);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View var) {
+                var3.dismiss();
+                Activity activity = (Activity) context;
+                if(activityfinish) activity.finish();
+            }
+        });
+
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(var3.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+
+        if(!var3.isShowing())  var3.show();
+        var3.getWindow().setAttributes(lp);
+    }
+
+
+
+
+
+
+    public static void showSingleButtonDialogOld(final Context var1, String title, String msg , final boolean activityfinish ,String... buttons){
+
+        String leftButton= (buttons.length==0 ?"OK":buttons[0]);//(leftButton ==null?"Modify": leftButton);
 
         final Dialog var3 = new Dialog(var1);
         var3.requestWindowFeature(1);
@@ -560,7 +608,6 @@ public class Utility {
         Button var5 = (Button)var3.findViewById(var1.getResources().getIdentifier("dialog_one_btn", "id", var1.getPackageName()));
         var5.setText(leftButton);
 
-
         var5.setOnClickListener(new View.OnClickListener() {
             public void onClick(View var) {
                 var3.dismiss();
@@ -569,7 +616,6 @@ public class Utility {
             }
         });
         if(!var3.isShowing())  var3.show();
-
     }
 
     public static Date convertString2Date(String dtValue, String format){
