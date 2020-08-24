@@ -21,6 +21,7 @@
         android:textSize="22dp"
         android:textColor="@color/appbar"
         android:layout_gravity="center"
+        android:textAlignment="center"
         />
 
     <TextView
@@ -29,11 +30,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:layout_gravity="left"
         android:text=""
-        android:gravity="center_horizontal"
+        android:gravity="left"
         android:textSize="17dp"
-        android:minHeight="100dp"/>
+        android:minHeight="100dp"
+        />
 
         <Button
             android:id="@+id/btn"
