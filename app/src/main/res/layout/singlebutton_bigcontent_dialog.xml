@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:text=""
-        android:gravity="left"
+        android:gravity="left|center"
         android:textSize="17dp"
         android:minHeight="100dp"
         />
