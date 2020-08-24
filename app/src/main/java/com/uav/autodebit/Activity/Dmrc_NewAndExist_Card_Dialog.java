@@ -40,7 +40,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Dmrc_NewAndExist_Card_Dialog extends AppCompatActivity implements View.OnClickListener {
+public class Dmrc_NewAndExist_Card_Dialog extends Base_Activity implements View.OnClickListener {
     Button newcard,existcard;
     TextView textview;
     Gson gson;
