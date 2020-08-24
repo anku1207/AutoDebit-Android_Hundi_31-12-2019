@@ -506,7 +506,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                         for(int i=0; i<error.size(); i++){
                             sb.append(error.get(i)).append("\n");
                         }
-                        Utility.showSingleButtonDialog(Dmrc_Card_Request.this,dmrc_customer_cardVO.getDialogTitle(),sb.toString(),false);
+                        Utility.showSingleButtonDialog(Dmrc_Card_Request.this,"Error !",sb.toString(),false);
                     }else {
                        /*Intent intent =new Intent(Dmrc_Card_Request.this,DMRC_Cards_List.class);
                         intent.putExtra("dmrccard",gson.toJson(dmrc_customer_cardVO));

@@ -563,6 +563,16 @@ public class Utility {
         }
         TextView msg_text = (TextView)var3.findViewById(R.id.message);
         msg_text.setText(msg);
+
+        msg_text.post(new Runnable() {
+            @Override
+            public void run() {
+                if(msg_text.getLineCount()>2){
+                    msg_text.setGravity(Gravity.CENTER | Gravity.LEFT);
+                }
+            }
+        });
+
         Button button = (Button)var3.findViewById(R.id.btn);
         button.setText(leftButton);
         button.setOnClickListener(new View.OnClickListener() {

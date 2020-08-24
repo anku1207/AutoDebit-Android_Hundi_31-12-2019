@@ -37,7 +37,7 @@ public class TermAndCondition_Webview extends Base_Activity implements View.OnCl
 
         back_activity_button=findViewById(R.id.back_activity_button);
         back_activity_button.setOnClickListener(this);
-        openWebView("http://autope.in/theme/eco/desktop/html/terms-and-conditions.html");
+        openWebView("https://www.autope.in/appHtml/terms-and-conditions.html");
     }
     @SuppressLint("SetJavaScriptEnabled")
     void openWebView(final String receiptUrl) {
