@@ -103,6 +103,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
 
+import com.uav.autodebit.Activity.Dmrc_Card_Request;
 import com.uav.autodebit.Activity.Listview_With_Image;
 import com.uav.autodebit.Activity.Login;
 import com.uav.autodebit.Activity.Mobile_Prepaid_Recharge_Service;
@@ -916,75 +917,72 @@ public class Utility {
          String leftButton= (buttons.length==0 ?"Modify":buttons[0]);//(leftButton ==null?"Modify": leftButton);
          String rightButton=(buttons.length<=1 ?"Next":buttons[1]);//(rightButton==null?"Next":rightButton);
          try{
-
-            final com.uav.autodebit.util.DialogInterface dialogInterface =mcxtinter;
-
-            final Dialog var3 = new Dialog(context);
-            var3.requestWindowFeature(1);
-            var3.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            var3.setContentView(R.layout.confirmation_dialog);
-            var3.setCanceledOnTouchOutside(false);
-            var3.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+                com.uav.autodebit.util.DialogInterface dialogInterface =mcxtinter;
+                Dialog var3 = new Dialog(context);
+                var3.requestWindowFeature(1);
+                var3.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                var3.setContentView(R.layout.confirmation_dialog);
+                var3.setCanceledOnTouchOutside(false);
+                var3.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
 
 
-            LinearLayout mainlayout =var3.findViewById(R.id.mainlayout);
-            TextView dialog_title=var3.findViewById(R.id.dialog_title);
-            Button modify=var3.findViewById(R.id.modify);
-            Button next=var3.findViewById(R.id.next);
-            ImageView canceldialog=var3.findViewById(R.id.canceldialog);
+                LinearLayout mainlayout =var3.findViewById(R.id.mainlayout);
+                TextView dialog_title=var3.findViewById(R.id.dialog_title);
+                Button modify=var3.findViewById(R.id.modify);
+                Button next=var3.findViewById(R.id.next);
+                ImageView canceldialog=var3.findViewById(R.id.canceldialog);
 
-            modify.setText(leftButton);
-            next.setText(rightButton);
+                modify.setText(leftButton);
+                next.setText(rightButton);
 
-            dialog_title.setText(title);
+                dialog_title.setText(title);
 
-             Typeface typeface = ResourcesCompat.getFont(context, R.font.poppinssemibold);
+                 Typeface typeface = ResourcesCompat.getFont(context, R.font.poppinssemibold);
 
+                 if(Msg==null){
+                    for(int i=0;i<jsonArray.length();i++){
 
-             if(Msg==null){
-                for(int i=0;i<jsonArray.length();i++){
+                        JSONObject jsonObject =jsonArray.getJSONObject(i);
+                        LinearLayout et = new LinearLayout(new ContextThemeWrapper(context,R.style.confirmation_dialog_layout));
 
-                    JSONObject jsonObject =jsonArray.getJSONObject(i);
-                    LinearLayout et = new LinearLayout(new ContextThemeWrapper(context,R.style.confirmation_dialog_layout));
+                        TextView text = new TextView(new ContextThemeWrapper(context, R.style.confirmation_dialog_filed));
+                        text.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float) 1));
+                        text.setText(jsonObject.getString("key"));
+                        text.setMaxLines(1);
+                        text.setEllipsize(TextUtils.TruncateAt.END);
+                        text.setTypeface(typeface);
 
-                    TextView text = new TextView(new ContextThemeWrapper(context, R.style.confirmation_dialog_filed));
-                    text.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float) 1));
-                    text.setText(jsonObject.getString("key"));
-                    text.setMaxLines(1);
-                    text.setEllipsize(TextUtils.TruncateAt.END);
-                    text.setTypeface(typeface);
-
-                    TextView text1 = new TextView(new ContextThemeWrapper(context, R.style.confirmation_dialog_filed));
-                    text1.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,0));
-                    text1.setText(" : ");
-                    text1.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+                        TextView text1 = new TextView(new ContextThemeWrapper(context, R.style.confirmation_dialog_filed));
+                        text1.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,0));
+                        text1.setText(" : ");
+                        text1.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
 
 
 
 
-                    TextView value = new TextView(new ContextThemeWrapper(context, R.style.confirmation_dialog_value));
-                    value.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,1));
-                    value.setText(jsonObject.getString("value"));
-                    value.setTypeface(typeface);
+                        TextView value = new TextView(new ContextThemeWrapper(context, R.style.confirmation_dialog_value));
+                        value.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,1));
+                        value.setText(jsonObject.getString("value"));
+                        value.setTypeface(typeface);
 
-                    et.addView(text);
-                    et.addView(text1);
-                    et.addView(value);
-                    mainlayout.addView(et);
-                }
+                        et.addView(text);
+                        et.addView(text1);
+                        et.addView(value);
+                        mainlayout.addView(et);
+                    }
             }else {
 
 
-                LinearLayout et = new LinearLayout(new ContextThemeWrapper(context,R.style.confirmation_dialog_layout));
+                    LinearLayout et = new LinearLayout(new ContextThemeWrapper(context,R.style.confirmation_dialog_layout));
 
-                TextView text = new TextView(new ContextThemeWrapper(context, R.style.confirmation_dialog_text_flied));
-                text.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT,1));
-                text.setText(Msg);
-                text.setTypeface(typeface);
+                    TextView text = new TextView(new ContextThemeWrapper(context, R.style.confirmation_dialog_text_flied));
+                    text.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT,1));
+                    text.setText(Msg);
+                    text.setTypeface(typeface);
 
 
-                et.addView(text);
-                mainlayout.addView(et);
+                    et.addView(text);
+                    mainlayout.addView(et);
             }
 
             WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
@@ -1017,9 +1015,119 @@ public class Utility {
             var3.getWindow().setAttributes(lp);
 
         }catch (Exception e){
-            Utility.exceptionAlertDialog(context,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+             ExceptionsNotification.ExceptionHandling(context , Utility.getStackTrace(e));
         }
     }
+
+
+
+
+    public static void confirmationChargesAmountDialog(com.uav.autodebit.util.DialogInterface mcxtinter, Context context , JSONArray jsonArray , String Msg , String title,  String... buttons){
+        String leftButton= (buttons.length==0 ?"Next":buttons[0]);//(leftButton ==null?"Modify": leftButton);
+        String rightButton=(buttons.length<=1 ?"Modify":buttons[1]);//(rightButton==null?"Next":rightButton);
+        try{
+            com.uav.autodebit.util.DialogInterface dialogInterface =mcxtinter;
+            Dialog var3 = new Dialog(context);
+            var3.requestWindowFeature(1);
+            var3.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            var3.setContentView(R.layout.confirmation_charges_amount_dialog);
+            var3.setCanceledOnTouchOutside(false);
+            var3.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+
+
+            LinearLayout mainlayout =var3.findViewById(R.id.mainlayout);
+            TextView dialog_title=var3.findViewById(R.id.dialog_title);
+            Button modify=var3.findViewById(R.id.modify);
+            Button next=var3.findViewById(R.id.next);
+
+            modify.setText(rightButton);
+            next.setText(leftButton);
+
+            if(buttons.length==0 || buttons.length==1){
+                modify.setVisibility(View.GONE);
+            }
+
+            if(title==null || title.equals("")){
+                dialog_title.setVisibility(View.GONE);
+            }else {
+                dialog_title.setVisibility(View.VISIBLE);
+                dialog_title.setText(title);
+            }
+
+            Typeface typeface = ResourcesCompat.getFont(context, R.font.poppinssemibold);
+
+            if(Msg==null){
+                for(int i=0;i<jsonArray.length();i++){
+
+                    JSONObject jsonObject =jsonArray.getJSONObject(i);
+                    LinearLayout et = new LinearLayout(new ContextThemeWrapper(context,R.style.confirmation_dialog_layout));
+
+                    TextView text = new TextView(new ContextThemeWrapper(context, R.style.confirmation_dialog_filed));
+                    text.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float) 1));
+                    text.setText(jsonObject.getString("key"));
+                    //text.setMaxLines(1);
+                    //text.setEllipsize(TextUtils.TruncateAt.END);
+                    text.setTypeface(typeface);
+                    text.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+                    text.setLineSpacing(0, 1.1f);
+
+                    TextView text1 = new TextView(new ContextThemeWrapper(context, R.style.confirmation_dialog_filed));
+                    text1.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,0));
+                    text1.setText(" : ");
+                    text1.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                    text1.setLineSpacing(0, 1.1f);
+
+                    TextView value = new TextView(new ContextThemeWrapper(context, R.style.confirmation_dialog_value));
+                    value.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,1));
+                    value.setText(jsonObject.getString("value"));
+                    value.setTypeface(typeface);
+                    value.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
+                    value.setLineSpacing(0, 1.1f);
+
+                    et.addView(text);
+                    et.addView(text1);
+                    et.addView(value);
+                    mainlayout.addView(et);
+                }
+            }else {
+                LinearLayout et = new LinearLayout(new ContextThemeWrapper(context,R.style.confirmation_dialog_layout));
+
+                TextView text = new TextView(new ContextThemeWrapper(context, R.style.confirmation_dialog_text_flied));
+                text.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT,1));
+                text.setText(Msg);
+                text.setTypeface(typeface);
+
+                et.addView(text);
+                mainlayout.addView(et);
+            }
+
+            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+            lp.copyFrom(var3.getWindow().getAttributes());
+            lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
+            lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+
+            modify.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialogInterface.modify(var3);
+                }
+            });
+            next.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialogInterface.confirm(var3);
+                }
+            });
+
+            if(!var3.isShowing())  var3.show();
+            var3.getWindow().setAttributes(lp);
+        }catch (Exception e){
+            ExceptionsNotification.ExceptionHandling(context , Utility.getStackTrace(e));
+        }
+    }
+
+
+
 
 
     public static void showDoubleButtonDialogConfirmation(com.uav.autodebit.util.DialogInterface mcxtinter, Context context , String Msg , String title,  String... buttons){

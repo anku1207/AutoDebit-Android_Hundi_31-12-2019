@@ -15,6 +15,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -38,6 +39,7 @@ import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.uav.autodebit.BO.MetroBO;
 import com.uav.autodebit.BO.SiBO;
@@ -183,7 +185,21 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
             card_Number.setText(dmrc_customer_cardVO.getCardNo());
             confirm_Card_Number.setText(dmrc_customer_cardVO.getCardNo());
             Picasso.with(this).load(dmrc_customer_cardVO.getImage()).fit()
-                    .into(addDmrcImage);
+                    .into(addDmrcImage, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            try {
+                                bmp=((BitmapDrawable)addDmrcImage.getDrawable()).getBitmap();
+                            }catch (Exception  e){
+                                ExceptionsNotification.ExceptionHandling(AddOldDmrcCardAutoPe.this , Utility.getStackTrace(e));
+                            }
+
+                        }
+                        @Override
+                        public void onError() {
+
+                        }
+                    });
             bottom_layout.setVisibility(View.VISIBLE);
             image_Read_Number.setText(dmrc_customer_cardVO.getCardNo());
             checkCardImageUpload=true;
@@ -191,6 +207,13 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
             //set input type text
             card_Number.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
             confirm_Card_Number.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+
+            card_Number.setEnabled(false);
+            confirm_Card_Number.setEnabled(false);
+
+
+
+
         }
 
     }
@@ -840,6 +863,9 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
                                 //set input type password
                                 card_Number.setTransformationMethod(PasswordTransformationMethod.getInstance());
                                 confirm_Card_Number.setTransformationMethod(PasswordTransformationMethod.getInstance());
+
+                                card_Number.setEnabled(true);
+                                confirm_Card_Number.setEnabled(true);
 
                                 checkCardImageUpload=false;
                             }

@@ -44,11 +44,7 @@ public class BaseVO {
     private String bankMandateHtml;
     private String upiMandateHtml;
     private Integer anonymousInteger1;
-
-
-
-
-
+    private String dmrcFeeCharges;
 
 
     public String getStatusCode() {
@@ -333,5 +329,13 @@ public class BaseVO {
 
     public void setAnonymousString1(String anonymousString1) {
         this.anonymousString1 = anonymousString1;
+    }
+
+    public String getDmrcFeeCharges() {
+        return dmrcFeeCharges;
+    }
+
+    public void setDmrcFeeCharges(String dmrcFeeCharges) {
+        this.dmrcFeeCharges = dmrcFeeCharges;
     }
 }

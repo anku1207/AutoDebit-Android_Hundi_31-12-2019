@@ -512,38 +512,53 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                         intent.putExtra("dmrccard",gson.toJson(dmrc_customer_cardVO));
                         startActivity(intent);
                         finish();*/
-                        if(dmrc_customer_cardVO.isEventIs()){
-                            Utility.showSelectPaymentTypeDialog(Dmrc_Card_Request.this, "Payment Type", dmrc_customer_cardVO.getPaymentTypeObject(), new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess) (position) -> {
-                                int selectPosition = Integer.parseInt(position);
-                                if (selectPosition == ApplicationConstant.BankMandatePayment){
-                                    // 07/05/2020
-                                    BillPayRequest.showBankMandateOrSiMandateInfo(Dmrc_Card_Request.this,dmrc_customer_cardVO.getBankMandateHtml(),new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
-                                        dmrc_customer_cardVO.setAnonymousInteger(AuthServiceProviderVO.ENACHIDFC);
-                                        setBankMandateOrRecharge(Dmrc_Card_Request.this,dmrc_customer_cardVO);
-                                    }));
+                       String [] btnNames={"Proceed"};
+
+                       JSONArray cardChargesJson = new JSONArray(dmrc_customer_cardVO.getDmrcFeeCharges());
+                       Utility.confirmationChargesAmountDialog(new com.uav.autodebit.util.DialogInterface() {
+                           @Override
+                           public void confirm(Dialog dialog) {
+                               try {
+                                   dialog.dismiss();
+                                   if(dmrc_customer_cardVO.isEventIs()){
+                                       Utility.showSelectPaymentTypeDialog(Dmrc_Card_Request.this, "Payment Type", dmrc_customer_cardVO.getPaymentTypeObject(), new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess) (position) -> {
+                                           int selectPosition = Integer.parseInt(position);
+                                           if (selectPosition == ApplicationConstant.BankMandatePayment){
+                                               // 07/05/2020
+                                               BillPayRequest.showBankMandateOrSiMandateInfo(Dmrc_Card_Request.this,dmrc_customer_cardVO.getBankMandateHtml(),new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                                                   dmrc_customer_cardVO.setAnonymousInteger(AuthServiceProviderVO.ENACHIDFC);
+                                                   setBankMandateOrRecharge(Dmrc_Card_Request.this,dmrc_customer_cardVO);
+                                               }));
 
 
-                                } else if(selectPosition == ApplicationConstant.SIMandatePayment) {
-                                    // recharge on SI mandate
-
-                                    BillPayRequest.showBankMandateOrSiMandateInfo(Dmrc_Card_Request.this,dmrc_customer_cardVO.getSiMandateHtml(),new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
-                                        dmrc_customer_cardVO.setAnonymousInteger(AuthServiceProviderVO.AUTOPE_PG);
-                                        setBankMandateOrRecharge(Dmrc_Card_Request.this,dmrc_customer_cardVO);
-                                    }));
-                                    // proceedToRecharge(oxigenValidateResponce.getTypeId().toString(),"AUTOPETXNID60", AuthServiceProviderVO.PAYU);
-                                }else if(selectPosition == ApplicationConstant.UPIMandatePayment) {
-                                    // recharge on SI mandate
-                                    BillPayRequest.showBankMandateOrSiMandateInfo(Dmrc_Card_Request.this,dmrc_customer_cardVO.getUpiMandateHtml(),new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
-                                        dmrc_customer_cardVO.setAnonymousInteger(AuthServiceProviderVO.AUTOPE_PG_UPI);
-                                        setBankMandateOrRecharge(Dmrc_Card_Request.this,dmrc_customer_cardVO);
-                                    }));
-                                    // proceedToRecharge(oxigenValidateResponce.getTypeId().toString(),"AUTOPETXNID60", AuthServiceProviderVO.PAYU);
-                                }
-                            }));
-
-                        }else {
-                            sIMandateDmrc(null,null);
-                        }
+                                           } else if(selectPosition == ApplicationConstant.SIMandatePayment) {
+                                               // recharge on SI mandate
+                                               BillPayRequest.showBankMandateOrSiMandateInfo(Dmrc_Card_Request.this,dmrc_customer_cardVO.getSiMandateHtml(),new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                                                   dmrc_customer_cardVO.setAnonymousInteger(AuthServiceProviderVO.AUTOPE_PG);
+                                                   setBankMandateOrRecharge(Dmrc_Card_Request.this,dmrc_customer_cardVO);
+                                               }));
+                                               // proceedToRecharge(oxigenValidateResponce.getTypeId().toString(),"AUTOPETXNID60", AuthServiceProviderVO.PAYU);
+                                           }else if(selectPosition == ApplicationConstant.UPIMandatePayment) {
+                                               // recharge on SI mandate
+                                               BillPayRequest.showBankMandateOrSiMandateInfo(Dmrc_Card_Request.this,dmrc_customer_cardVO.getUpiMandateHtml(),new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                                                   dmrc_customer_cardVO.setAnonymousInteger(AuthServiceProviderVO.AUTOPE_PG_UPI);
+                                                   setBankMandateOrRecharge(Dmrc_Card_Request.this,dmrc_customer_cardVO);
+                                               }));
+                                               // proceedToRecharge(oxigenValidateResponce.getTypeId().toString(),"AUTOPETXNID60", AuthServiceProviderVO.PAYU);
+                                           }
+                                       }));
+                                   }else {
+                                       sIMandateDmrc(null,null);
+                                   }
+                               }catch (Exception e){
+                                   ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this , Utility.getStackTrace(e));
+                               }
+                           }
+                           @Override
+                           public void modify(Dialog dialog) {
+                               dialog.dismiss();
+                           }
+                       },Dmrc_Card_Request.this,cardChargesJson,null,"Card Charges",btnNames);
                     }
                 }
             });
