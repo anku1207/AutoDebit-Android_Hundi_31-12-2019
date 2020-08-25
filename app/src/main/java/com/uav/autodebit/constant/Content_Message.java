@@ -21,4 +21,6 @@ public class Content_Message {
     //mandate message
     public static String mandate_Success_Message="Mandate Successfully Complete";
 
+    public static String CONTACT_CUSTOMER_CARE="Please contact to customer care";
+
 }

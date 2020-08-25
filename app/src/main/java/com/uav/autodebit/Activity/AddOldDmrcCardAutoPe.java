@@ -193,11 +193,9 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
                             }catch (Exception  e){
                                 ExceptionsNotification.ExceptionHandling(AddOldDmrcCardAutoPe.this , Utility.getStackTrace(e));
                             }
-
                         }
                         @Override
                         public void onError() {
-
                         }
                     });
             bottom_layout.setVisibility(View.VISIBLE);

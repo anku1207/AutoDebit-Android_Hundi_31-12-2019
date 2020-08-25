@@ -23,8 +23,11 @@ import com.squareup.picasso.Picasso;
 import com.uav.autodebit.Activity.Dmrc_Card_Request;
 import com.uav.autodebit.Activity.Track_Dmrc_Card;
 import com.uav.autodebit.R;
+import com.uav.autodebit.constant.Content_Message;
+import com.uav.autodebit.constant.ErrorMsg;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.DMRC_Customer_CardVO;
+import com.uav.autodebit.vo.DmrcCardStatusVO;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -89,7 +92,7 @@ public class CustomPagerAdapter extends PagerAdapter {
         DMRC_Customer_CardVO pro=models.get(position);
         name.setText("  "+pro.getCustomerName());
         fcardstatus.setText("Status : "+pro.getDmrccardStaus().getStatusName());
-        cardnumber.setText(""+pro.getCardNo());
+        cardnumber.setText(pro.getCardNo());
 
         if(pro.getIssueDate()!=null){
             Date date =new Date(pro.getIssueDate());
@@ -109,16 +112,22 @@ public class CustomPagerAdapter extends PagerAdapter {
         }
         clickViewpager.put(position,false);
 
-        if(pro.getDmrccardStaus().getStatusId()==7){
+
+        //if track is true then show track link in dmrc card
+        /*if(pro.isTrackCard()){
             track.setVisibility(View.VISIBLE);
         }else {
             track.setVisibility(View.GONE);
-        }
+        }*/
 
         track.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((Activity)context).startActivity(new Intent(context, Track_Dmrc_Card.class));
+                if(pro.getDmrcid()!=null){
+                    ((Activity)context).startActivity(new Intent(context, Track_Dmrc_Card.class).putExtra("cardId",pro.getDmrcid()+""));
+                }else {
+                    Utility.showSingleButtonDialogOld(context,"Alert", Content_Message.CONTACT_CUSTOMER_CARE,false);
+                }
             }
         });
 
