@@ -114,11 +114,11 @@ public class CustomPagerAdapter extends PagerAdapter {
 
 
         //if track is true then show track link in dmrc card
-        /*if(pro.isTrackCard()){
+        if(pro.isTrackCard()){
             track.setVisibility(View.VISIBLE);
         }else {
             track.setVisibility(View.GONE);
-        }*/
+        }
 
         track.setOnClickListener(new View.OnClickListener() {
             @Override

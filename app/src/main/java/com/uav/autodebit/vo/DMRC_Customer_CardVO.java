@@ -18,7 +18,7 @@ public class DMRC_Customer_CardVO extends BaseVO implements Serializable {
     private DmrcCardStatusVO dmrccardStaus;
     private String pincode;
     private List<DMRC_Customer_CardVO> dmrcCustomerList;
-  //  private boolean trackCard;
+    private boolean trackCard;
 
     private Long issueDate;
 
@@ -121,11 +121,11 @@ public class DMRC_Customer_CardVO extends BaseVO implements Serializable {
         this.issueDate = issueDate;
     }
 
- /*   public boolean isTrackCard() {
+    public boolean isTrackCard() {
         return trackCard;
     }
 
     public void setTrackCard(boolean trackCard) {
         this.trackCard = trackCard;
-    }*/
+    }
 }

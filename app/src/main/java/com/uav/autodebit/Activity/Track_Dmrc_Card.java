@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -13,6 +14,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.ConsoleMessage;
+import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -23,7 +25,10 @@ import android.webkit.WebViewClient;
 import android.widget.ImageView;
 
 import com.uav.autodebit.R;
+import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.util.Utility;
+
+import java.util.HashMap;
 
 public class Track_Dmrc_Card extends AppCompatActivity implements View.OnClickListener {
     ImageView back_activity_button;
@@ -39,7 +44,7 @@ public class Track_Dmrc_Card extends AppCompatActivity implements View.OnClickLi
         back_activity_button.setOnClickListener(this);
 
         String cardId=getIntent().getStringExtra("cardId");
-        openWebView("https://www.autope.in/appHtml/track.html?cardId="+cardId);
+        openWebView(ApplicationConstant.getTrackingUrl()+"?cardId="+cardId);
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -75,6 +80,18 @@ public class Track_Dmrc_Card extends AppCompatActivity implements View.OnClickLi
                 return true;
             }
         });
+
+        webView.addJavascriptInterface( new Object() {
+            @JavascriptInterface // For API 17+
+            public void performClick (String message) {
+               runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                         finish();
+                    }
+                });
+            }
+        },"cancel" );
         webView.setWebViewClient(new MyBrowser());
         webView.loadUrl(receiptUrl); //receiptUrl
     }

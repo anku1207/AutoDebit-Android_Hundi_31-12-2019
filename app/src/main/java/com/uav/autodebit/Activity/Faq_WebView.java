@@ -23,6 +23,7 @@ import android.webkit.WebViewClient;
 import android.widget.ImageView;
 
 import com.uav.autodebit.R;
+import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.util.Utility;
 
 public class Faq_WebView extends Base_Activity implements View.OnClickListener {
@@ -36,7 +37,7 @@ public class Faq_WebView extends Base_Activity implements View.OnClickListener {
 
         back_activity_button=findViewById(R.id.back_activity_button);
         back_activity_button.setOnClickListener(this);
-        openWebView("https://www.autope.in/appHtml/faq.html");
+        openWebView(ApplicationConstant.getFaqUrl());
     }
 
     @SuppressLint("SetJavaScriptEnabled")

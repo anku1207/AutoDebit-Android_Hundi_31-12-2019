@@ -72,8 +72,40 @@ public class ApplicationConstant {
             //return "http://164.52.192.45";
         }else{
             return  "http://205.147.103.18:8080/hundi/rest/stateless/" ;
-            //return  "http://192.168.1.25:8080/hundi/rest/stateless/" ;
+            //return  "http://192.168.1.29:8080/hundi/rest/stateless/" ;
         }
+    }
+
+
+
+    public static String getTrackingUrl(){
+        String url;
+        if(IS_PRODUCTION_ENVIRONMENT){
+            url ="https://www.autope.in/tracking.php";
+        }else {
+            url ="http://test.autodebit.in/tracking.php";
+        }
+        return url;
+    }
+
+    public static String getTermAndConditionUrl(){
+        String url;
+        if(IS_PRODUCTION_ENVIRONMENT){
+            url ="https://www.autope.in/appHtml/terms-and-conditions.html";
+        }else {
+            url ="http://test.autodebit.in/appHtml/terms-and-conditions.html";
+        }
+        return url;
+    }
+
+    public static String getFaqUrl(){
+        String url;
+        if(IS_PRODUCTION_ENVIRONMENT){
+            url ="https://www.autope.in/appHtml/faq.html";
+        }else {
+            url ="http://test.autodebit.in/appHtml/faq.html";
+        }
+        return url;
     }
 }
 
