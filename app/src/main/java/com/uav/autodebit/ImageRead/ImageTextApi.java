@@ -9,12 +9,27 @@ import android.widget.Toast;
 import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
+import com.google.gson.Gson;
+import com.uav.autodebit.Activity.AddOldDmrcCardAutoPe;
+import com.uav.autodebit.BO.MetroBO;
+import com.uav.autodebit.BO.TextReadBO;
+import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.exceptions.ExceptionsNotification;
+import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.Utility;
+import com.uav.autodebit.vo.ConnectionVO;
+import com.uav.autodebit.vo.CustomerVO;
+import com.uav.autodebit.vo.DMRC_Customer_CardVO;
+import com.uav.autodebit.volley.VolleyResponseListener;
+import com.uav.autodebit.volley.VolleyUtils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ImageTextApi {
@@ -32,12 +47,11 @@ public class ImageTextApi {
     }
 
 
-    public void getPincode(){
+    public void getImageReadTextAPI(){
 
         new Thread(new Runnable(){
             public void run() {
                 try {
-
                     // some calculation
                     TextRecognizer textRecognizer = new TextRecognizer.Builder(context).build();
                     Frame frame = new Frame.Builder().setBitmap(bitmap).build();
@@ -50,9 +64,7 @@ public class ImageTextApi {
                         stringBuilder.append("\n");
                     }
                     String value=stringBuilder.toString().replaceAll(" ", "");
-
-
-                    BufferedReader bufReader = new BufferedReader(new StringReader(value));
+                  /*  BufferedReader bufReader = new BufferedReader(new StringReader(value));
                     String line=null;
                     while( (line=bufReader.readLine()) != null ){
                         Log.w("readline",line);
@@ -60,43 +72,51 @@ public class ImageTextApi {
                                 ic.onResult(line);
                                 break;
                             }
-                    }
-                    ic.onResult(line);
-                  /*  String replaceString= value.replaceAll("\n", "/");
-
-                    int i=0;
-                    String nos = "";
-                    List<String> digitsArray = new ArrayList<String>();
-                    while(replaceString.length()>i){
-                        Character ch = replaceString.charAt(i);
-                        if(Character.isDigit(ch)){
-                            nos += ch;
-                            if(replaceString.length()==(i+1)){
-                                digitsArray.add(nos);
-                                nos ="";
-                            }
-                        }else if(nos!=""){
-                            digitsArray.add(nos);
-                            nos ="";
-                        }
-                        i++;
-                    }
-
-                    String pincode=null;
-                    for(String p : digitsArray){
-                        if(p.length()==8){
-                            pincode=p;
-                            break;
-                        }
-                    }
-                    ic.onResult(pincode);*/
+                    }*/
+                    ic.onResult(value);
                 }catch (Exception e){
                     ExceptionsNotification.ExceptionHandling(context , Utility.getStackTrace(e));
                 }
-
             }
         }).start();
 
+    }
+
+    public static void readDmrcCardNumberByImageText(Context context ,String imageText , String cardNumber, VolleyResponse volleyResponse ){
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        ConnectionVO connectionVO = TextReadBO.getDmrcCardNumberByImageText();
+        CustomerVO customerVO=new CustomerVO();
+        customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(context)));
+        customerVO.setAnonymousString(imageText);
+        customerVO.setAnonymousString1(cardNumber);
+        Gson gson =new Gson();
+        String json = gson.toJson(customerVO);
+        Log.w("request",json);
+        params.put("volley", json);
+        connectionVO.setParams(params);
+        VolleyUtils.makeJsonObjectRequest(context,connectionVO, new VolleyResponseListener() {
+            @Override
+            public void onError(String message) {
+            }
+            @Override
+            public void onResponse(Object resp) throws JSONException {
+                JSONObject response = (JSONObject) resp;
+                Gson gson = new Gson();
+                CustomerVO customerVOResp = gson.fromJson(response.toString(), CustomerVO.class);
+
+                if(customerVOResp.getStatusCode().equals("400")){
+                    ArrayList error = (ArrayList) customerVOResp.getErrorMsgs();
+                    StringBuilder sb = new StringBuilder();
+                    for(int i=0; i<error.size(); i++){
+                        sb.append(error.get(i)).append("\n");
+                    }
+                    Utility.showSingleButtonDialog(context,customerVOResp.getDialogTitle(),sb.toString(),false);
+                    volleyResponse.onError(sb.toString());
+                }else {
+                    volleyResponse.onSuccess(customerVOResp);
+                }
+            }
+        });
     }
 
 

@@ -208,7 +208,12 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
 
                         redirectUrl = respjson.getString("redirectUrl");
                         cancelUrl = respjson.getString("cancelUrl");
-                        String url = respjson.getString("url") + "?customerId=" + Session.getCustomerId(SI_First_Data.this) + "&entityTypeId=2" + "&versioncode="+ Utility.getVersioncode(SI_First_Data.this)+ "&Amount="+amount + "&serviceId="+serviceId + "&paymentType="+paymentType;
+                        String url;
+                        if(actionId!=0){
+                            url = respjson.getString("url") + "?customerId=" + Session.getCustomerId(SI_First_Data.this) + "&entityTransactionId="+actionId + "&versioncode="+ Utility.getVersioncode(SI_First_Data.this)+ "&Amount="+amount + "&serviceId="+serviceId + "&paymentType="+paymentType;
+                        }else {
+                            url = respjson.getString("url") + "?customerId=" + Session.getCustomerId(SI_First_Data.this) + "&versioncode="+ Utility.getVersioncode(SI_First_Data.this)+ "&Amount="+amount + "&serviceId="+serviceId + "&paymentType="+paymentType;
+                        }
                         openWebView(url);
                     }
 

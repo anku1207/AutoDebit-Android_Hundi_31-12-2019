@@ -3,6 +3,8 @@ package com.uav.autodebit.constant;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.uav.autodebit.util.Utility;
+
 import java.net.StandardProtocolFamily;
 import java.util.regex.Pattern;
 
@@ -68,11 +70,12 @@ public class ApplicationConstant {
     }
     private static String getServerAddress(){
         if(IS_PRODUCTION_ENVIRONMENT){
-            return "http://app.autope.in/hundi/rest/stateless/";
+            return "http://app.autope.in/hundi/rest/stateless";
             //return "http://164.52.192.45";
         }else{
-            return  "http://205.147.103.18:8080/hundi/rest/stateless/" ;
-            //return  "http://192.168.1.29:8080/hundi/rest/stateless/" ;
+           // return  "http://205.147.103.18:8080/hundi/rest/c/" ;
+            return  "http://192.168.1.54:8080/hundi/rest/stateless" ;
+            //return  "http://192.168.1.54:8080/hundi/rest/stateless_8/" ;
         }
     }
 

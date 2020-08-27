@@ -51,6 +51,7 @@ import com.uav.autodebit.Interface.AlertSelectDialogClick;
 import com.uav.autodebit.Interface.BigContentDialogIntetface;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.Interface.MandateAndRechargeInterface;
+import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.MessageFormater.CustomMessageFormat;
 import com.uav.autodebit.R;
 import com.uav.autodebit.adpater.CustomPagerAdapter;
@@ -838,12 +839,12 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
                     @Override
                     public void run() {
                         if(o!=null ){
-                            if(o.equals(card_Number.getText().toString().trim()) && o.equals(confirm_Card_Number.getText().toString().trim())){
+                            ImageTextApi.readDmrcCardNumberByImageText(AddOldDmrcCardAutoPe.this,o,card_Number.getText().toString().trim(),new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
+                               CustomerVO customerVO = (CustomerVO) success;
                                 card_Number.setEnabled(false);
                                 confirm_Card_Number.setEnabled(false);
                                 bottom_layout.setVisibility(View.VISIBLE);
-                                image_Read_Number.setText(o);
-
+                                image_Read_Number.setText(customerVO.getAnonymousString());
 
                                 //set input type text
                                 card_Number.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
@@ -852,8 +853,7 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
                                 addDmrcImage.setImageBitmap(bitmap);
 
                                 checkCardImageUpload=true;
-                            }else {
-                                Toast.makeText(AddOldDmrcCardAutoPe.this, "Card number " + o +" is mismatch", Toast.LENGTH_LONG).show();
+                            },(VolleyResponse.OnError)(error)->{
                                 bottom_layout.setVisibility(View.GONE);
                                 image_Read_Number.setText("");
 
@@ -866,7 +866,8 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
                                 confirm_Card_Number.setEnabled(true);
 
                                 checkCardImageUpload=false;
-                            }
+
+                            }));
                         }else {
                             Toast.makeText(AddOldDmrcCardAutoPe.this, "Card Number Con't be read ", Toast.LENGTH_SHORT).show();
                             bottom_layout.setVisibility(View.GONE);
@@ -886,9 +887,8 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
             }
         },AddOldDmrcCardAutoPe.this,bmp);
 
-        imageTextApi.getPincode();
+        imageTextApi.getImageReadTextAPI();
     }
-
 
     private void performCrop(Uri picUri){
         try {
@@ -932,7 +932,12 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
     @Override
     public void PermissionGranted(int request_code) {
         if(request_code==ApplicationConstant.REQ_CAMERA_PERMISSION){
-            openCamera(AddOldDmrcCardAutoPe.this);
+            if(!card_Number.getText().toString().trim().equals(confirm_Card_Number.getText().toString().trim())){
+                confirm_Card_Number.setError("confirm card number is mismatch");
+            }else {
+                openCamera(AddOldDmrcCardAutoPe.this);
+            }
+
         }
     }
 
