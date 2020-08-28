@@ -473,9 +473,6 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
 
 
 
-
-
-
     private void performCrop(Uri picUri){
         try {
             //call the standard crop action intent (the user device may not support it)

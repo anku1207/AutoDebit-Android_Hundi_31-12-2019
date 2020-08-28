@@ -1000,10 +1000,6 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                         matrix.postRotate(90);
                         bmp= Bitmap.createBitmap(bmp,0,0,bmp.getWidth(),bmp.getHeight(),matrix,true);
                     }
-                    int imagesizeinbyte=Utility.byteSizeOf(bmp);
-                    Log.w("image",imagesizeinbyte +"  ====   "+(imagesizeinbyte/1024) +"");
-                    imagesizeinbyte=Utility.byteSizeOf(bmp);
-                    Log.w("image",imagesizeinbyte +"  ====   "+(imagesizeinbyte/1024) +"");
 
                     addressimage.setImageBitmap(bmp);
                     performCrop(Utility.getVersionWiseUri(this,photofileurl));

@@ -18,6 +18,7 @@ import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapShader;
@@ -48,6 +49,7 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
+import android.provider.MediaStore;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
@@ -1943,41 +1945,94 @@ public class Utility {
         return true;
     }
 
+    public static Bitmap modifyImageRotate(Context context,File file,int width , int height){
+        Bitmap bmp = null;
+        try {
+            ExifInterface exif = new ExifInterface(file.getPath());
+            int orientation = exif.getAttributeInt(
+                    ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_NORMAL);
 
-    public static Bitmap modifyOrientation(Bitmap bitmap, String image_absolute_path) throws IOException {
-        ExifInterface ei = new ExifInterface(image_absolute_path);
-        int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+            int angle = 0;
 
-        switch (orientation) {
-            case ExifInterface.ORIENTATION_ROTATE_90:
-                return rotate(bitmap, 90);
+            if (orientation == ExifInterface.ORIENTATION_ROTATE_90) {
+                angle = 90;
+            } else if (orientation == ExifInterface.ORIENTATION_ROTATE_180) {
+                angle = 180;
+            } else if (orientation == ExifInterface.ORIENTATION_ROTATE_270) {
+                angle = 270;
+            }
 
-            case ExifInterface.ORIENTATION_ROTATE_180:
-                return rotate(bitmap, 180);
+            Matrix mat = new Matrix();
+            mat.postRotate(angle);
 
-            case ExifInterface.ORIENTATION_ROTATE_270:
-                return rotate(bitmap, 270);
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            int scale = 1;
+            while (options.outWidth / scale / 2 >= width
+                    && options.outHeight / scale / 2 >= height) {
+                scale *= 2;
+            }
+            options.inSampleSize = scale;
 
-            case ExifInterface.ORIENTATION_FLIP_HORIZONTAL:
-                return flip(bitmap, true, false);
+            bmp = BitmapFactory.decodeStream(new FileInputStream(file),
+                    null, options);
+            bmp = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(),
+                    bmp.getHeight(), mat, false);
 
-            case ExifInterface.ORIENTATION_FLIP_VERTICAL:
-                return flip(bitmap, false, true);
+            ByteArrayOutputStream outstudentstreamOutputStream = new ByteArrayOutputStream();
+            bmp.compress(Bitmap.CompressFormat.PNG, 100,
+                    outstudentstreamOutputStream);
 
-            default:
-                return bitmap;
+        } catch (IOException e) {
+            ExceptionsNotification.ExceptionHandling(context , "Error in setting image");
+            Log.w("TAG", "--");
+        } catch (OutOfMemoryError oom) {
+            ExceptionsNotification.ExceptionHandling(context , "OOM Error in setting image");
+            Log.w("TAG", "-- OOM Error in setting image");
         }
-    }
-    public static Bitmap rotate(Bitmap bitmap, float degrees) {
-        Matrix matrix = new Matrix();
-        matrix.postRotate(degrees);
-        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        return bmp;
+
     }
 
-    public static Bitmap flip(Bitmap bitmap, boolean horizontal, boolean vertical) {
-        Matrix matrix = new Matrix();
-        matrix.preScale(horizontal ? -1 : 1, vertical ? -1 : 1);
-        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+    public static String getPathByUri(Context context,Uri uri){
+        String[] projection = { MediaStore.Images.Media.DATA };
+        Cursor cursor = context.getContentResolver().query(uri, projection, null, null, null);
+        if (cursor == null) return null;
+        int column_index =             cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        String s=cursor.getString(column_index);
+        cursor.close();
+        return s;
     }
+
+    public static Matrix getImageMatrix(Context context,File file,int width , int height){
+        Bitmap bmp = null;
+        Matrix mat = null;
+        try {
+            ExifInterface exif = new ExifInterface(file.getPath());
+            int orientation = exif.getAttributeInt(
+                    ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_NORMAL);
+
+            int angle = 0;
+
+            if (orientation == ExifInterface.ORIENTATION_ROTATE_90) {
+                angle = 90;
+            } else if (orientation == ExifInterface.ORIENTATION_ROTATE_180) {
+                angle = 180;
+            } else if (orientation == ExifInterface.ORIENTATION_ROTATE_270) {
+                angle = 270;
+            }
+
+            mat = new Matrix();
+            mat.postRotate(angle);
+
+        }catch (Exception e){
+            ExceptionsNotification.ExceptionHandling(context ,  Utility.getStackTrace(e));
+        }
+        return mat;
+
+    }
+
 }
 
