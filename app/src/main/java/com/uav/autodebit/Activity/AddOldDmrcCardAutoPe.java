@@ -153,6 +153,8 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
         customerId = Session.getCustomerId(this);
         dmrc_customer_cardVO = gson.fromJson(getIntent().getStringExtra("dmrccard"), DMRC_Customer_CardVO.class);
 
+        card_Number.setInputType (InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
+        confirm_Card_Number.setInputType (InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
         setDetail(dmrc_customer_cardVO);
 
         addRequestDmrcCardBanner(dmrc_customer_cardVO);
@@ -838,7 +840,7 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if(o!=null ){
+                        if(o!=null && !o.equals("") ){
                             ImageTextApi.readDmrcCardNumberByImageText(AddOldDmrcCardAutoPe.this,o,card_Number.getText().toString().trim(),new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
                                CustomerVO customerVO = (CustomerVO) success;
                                 card_Number.setEnabled(false);

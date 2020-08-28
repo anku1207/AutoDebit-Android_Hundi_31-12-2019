@@ -7,9 +7,9 @@ import java.io.Serializable;
 public class TextReadBO implements Serializable {
 
 
-    public static ConnectionVO getDmrcCardNumberByImageText() {
+    public static ConnectionVO verifyExistingCardNumber() {
         ConnectionVO connectionVO = new ConnectionVO();
-        connectionVO.setMethodName("getDmrcCardNumberByImageText");
+        connectionVO.setMethodName("verifyExistingCardNumber");
         connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
         return connectionVO;
     }

@@ -63,7 +63,7 @@ public class ImageTextApi {
                         stringBuilder.append(item.getValue());
                         stringBuilder.append("\n");
                     }
-                    String value=stringBuilder.toString().replaceAll(" ", "");
+                  //  String value=stringBuilder.toString().replaceAll(" ", "");
                   /*  BufferedReader bufReader = new BufferedReader(new StringReader(value));
                     String line=null;
                     while( (line=bufReader.readLine()) != null ){
@@ -73,7 +73,7 @@ public class ImageTextApi {
                                 break;
                             }
                     }*/
-                    ic.onResult(value);
+                    ic.onResult(stringBuilder.toString());
                 }catch (Exception e){
                     ExceptionsNotification.ExceptionHandling(context , Utility.getStackTrace(e));
                 }
@@ -84,10 +84,14 @@ public class ImageTextApi {
 
     public static void readDmrcCardNumberByImageText(Context context ,String imageText , String cardNumber, VolleyResponse volleyResponse ){
         HashMap<String, Object> params = new HashMap<String, Object>();
-        ConnectionVO connectionVO = TextReadBO.getDmrcCardNumberByImageText();
+        ConnectionVO connectionVO = TextReadBO.verifyExistingCardNumber();
         CustomerVO customerVO=new CustomerVO();
         customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(context)));
+
+        //image read text
         customerVO.setAnonymousString(imageText);
+
+        //user type card number
         customerVO.setAnonymousString1(cardNumber);
         Gson gson =new Gson();
         String json = gson.toJson(customerVO);
