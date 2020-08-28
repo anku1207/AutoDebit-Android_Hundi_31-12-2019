@@ -186,7 +186,7 @@ public class Notifications extends Base_Activity implements View.OnClickListener
                     for(int i=0; i<error.size(); i++){
                         sb.append(error.get(i)).append("\n");
                     }
-                    Utility.showSingleButtonDialog(Notifications.this,"Error !",sb.toString(),true);
+                    Utility.showSingleButtonDialog(Notifications.this,responseVO.getDialogTitle(),sb.toString(),true);
                 }else {
                     //update customer cache
                     volleyResponse.onSuccess(responseVO);

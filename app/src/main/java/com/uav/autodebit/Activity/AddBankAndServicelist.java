@@ -185,7 +185,7 @@ public class AddBankAndServicelist extends Base_Activity implements View.OnClick
                     for(int i=0; i<error.size(); i++){
                         sb.append(error.get(i)).append("\n");
                     }
-                    Utility.showSingleButtonDialog(AddBankAndServicelist.this,"Alert",sb.toString(),true);
+                    Utility.showSingleButtonDialog(AddBankAndServicelist.this,customerVO.getDialogTitle(),sb.toString(),true);
                 }else {
 
                     JSONObject jsonObject =new JSONObject(customerVO.getAnonymousString());
@@ -331,7 +331,7 @@ public class AddBankAndServicelist extends Base_Activity implements View.OnClick
                    for(int i=0; i<error.size(); i++){
                        sb.append(error.get(i)).append("\n");
                    }
-                   Utility.showSingleButtonDialog(AddBankAndServicelist.this,"Alert",sb.toString(),false);
+                   Utility.showSingleButtonDialog(AddBankAndServicelist.this,customerVO.getDialogTitle(),sb.toString(),false);
                }else {
                    onSuccess.onSuccess(customerVO);
                }

@@ -419,7 +419,7 @@ public class Home_Menu extends Fragment {
                         }
                         pd.dismiss();
                         // Utility.alertDialog(PanVerification.this,"Alert",sb.toString(),"Ok");
-                        Utility.showSingleButtonDialog(getContext(),"Error !",sb.toString(),false);
+                        Utility.showSingleButtonDialog(getContext(),dmrc_customer_cardVO.getDialogTitle(),sb.toString(),false);
                     }else {
 
                         Session.set_Data_Sharedprefence(getContext(),Session.CACHE_DMRC_MIN_CARD_CHARGE,dmrc_customer_cardVO.getAnonymousString());

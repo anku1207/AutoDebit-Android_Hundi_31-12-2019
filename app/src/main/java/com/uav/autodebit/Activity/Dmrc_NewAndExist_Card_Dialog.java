@@ -151,7 +151,7 @@ public class Dmrc_NewAndExist_Card_Dialog extends Base_Activity implements View.
                             sb.append(error.get(i)).append("\n");
                         }
                         //pd.dismiss();
-                        Utility.showSingleButtonDialog(context,"Error !",sb.toString(),false);
+                        Utility.showSingleButtonDialog(context,dmrc_customer_cardVO.getDialogTitle(),sb.toString(),false);
                     }else {
                         volleyResponse.onSuccess(dmrc_customer_cardVO);
                     }

@@ -433,21 +433,27 @@ public class Utility {
 
 
 
-    public static void  alertDialog(Context context, String title , String msg , String buttonname){
-        AlertDialog alertDialog;
-        alertDialog = new AlertDialog.Builder(context).create();
-        alertDialog.setTitle(title);
-        alertDialog.setMessage(msg);
+    public static void  alertDialog(Context var1, String title , String msg , String buttonname){
+        Dialog var3 = new Dialog(var1);
+        var3.requestWindowFeature(1);
+        var3.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        var3.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        var3.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
 
-       alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, buttonname, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-
-
+        var3.setContentView(var1.getResources().getIdentifier("singlebuttondialog", "layout", var1.getPackageName()));
+        var3.setCanceledOnTouchOutside(false);
+        TextView var4 = (TextView)var3.findViewById(var1.getResources().getIdentifier("dialog_one_tv_title", "id", var1.getPackageName()));
+        var4.setText(title);
+        TextView var6 = (TextView)var3.findViewById(var1.getResources().getIdentifier("dialog_one_tv_text", "id", var1.getPackageName()));
+        var6.setText(msg);
+        Button var5 = (Button)var3.findViewById(var1.getResources().getIdentifier("dialog_one_btn", "id", var1.getPackageName()));
+        var5.setText(buttonname);
+        var5.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View var) {
+                var3.dismiss();
             }
         });
-        if(!alertDialog.isShowing())  alertDialog.show();
-
-
+        if(!var3.isShowing())  var3.show();
     }
 
     public static void  exceptionAlertDialog(Context context,String title ,String msg , String buttonname,String error){

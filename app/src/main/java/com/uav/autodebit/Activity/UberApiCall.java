@@ -53,7 +53,7 @@ public class UberApiCall {
                     for(int i=0; i<error.size(); i++){
                         sb.append(error.get(i)).append("\n");
                     }
-                    Utility.showSingleButtonDialog(context,"Alert",sb.toString(),false);
+                    Utility.showSingleButtonDialog(context,uberVoucherVO.getDialogTitle(),sb.toString(),false);
                 }else {
                     volleyResponse.onSuccess(uberVoucherVO);
                 }
@@ -94,7 +94,7 @@ public class UberApiCall {
                     for(int i=0; i<error.size(); i++){
                         sb.append(error.get(i)).append("\n");
                     }
-                    Utility.showSingleButtonDialog(context,"Alert",sb.toString(),false);
+                    Utility.showSingleButtonDialog(context,uberVoucherVO.getDialogTitle(),sb.toString(),false);
                 }else {
                     volleyResponse.onSuccess(uberVoucherVO);
                 }

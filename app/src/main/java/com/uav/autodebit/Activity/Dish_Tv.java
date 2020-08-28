@@ -134,7 +134,7 @@ public class Dish_Tv  extends Base_Activity implements View.OnClickListener  {
                         for(int i=0; i<error.size(); i++){
                             sb.append(error.get(i)).append("\n");
                         }
-                        Utility.showSingleButtonDialog(context,"Error !",sb.toString(),false);
+                        Utility.showSingleButtonDialog(context,response_DishTVVO.getDialogTitle(),sb.toString(),false);
                     }else{
                        // if(response_DishTVVO.getEnachMandateId()==null || response_DishTVVO.getEnachMandateId().equals("")){
                             Utility.removeEle(proceed);
@@ -291,7 +291,7 @@ public class Dish_Tv  extends Base_Activity implements View.OnClickListener  {
                         }
                         if(valid){
                             if(Double.parseDouble(monthlySubscriptionAmount) > Double.parseDouble(editText.getText().toString()) ){
-                                Utility.showSingleButtonDialog(context,"Error !","Mandate Amount Should Be Greater then or equal Rs." +Math.ceil(Double.parseDouble(monthlySubscriptionAmount)),false);
+                                Utility.showSingleButtonDialog(context,"Alert","Mandate Amount Should Be Greater then or equal Rs." +Math.ceil(Double.parseDouble(monthlySubscriptionAmount)),false);
                             }else {
                                 //  addBank(button,editText.getText().toString());
 
@@ -480,7 +480,7 @@ public class Dish_Tv  extends Base_Activity implements View.OnClickListener  {
                     for(int i=0; i<error.size(); i++){
                         sb.append(error.get(i)).append("\n");
                     }
-                    Utility.showSingleButtonDialog(context,"Alert",sb.toString(),false);
+                    Utility.showSingleButtonDialog(context,customerVO.getDialogTitle(),sb.toString(),false);
                 }else {
                     //set session customer or local cache
                     String json = new Gson().toJson(customerVO);
@@ -521,7 +521,7 @@ public class Dish_Tv  extends Base_Activity implements View.OnClickListener  {
                     for(int i=0; i<error.size(); i++){
                         sb.append(error.get(i)).append("\n");
                     }
-                    Utility.showSingleButtonDialog(context,"Alert",sb.toString(),false);
+                    Utility.showSingleButtonDialog(context,dishTvVO1.getDialogTitle(),sb.toString(),false);
                 }else {
                     //set session customer or local cache
 

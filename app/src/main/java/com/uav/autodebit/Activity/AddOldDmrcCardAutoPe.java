@@ -412,7 +412,7 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
                         for(int i=0; i<error.size(); i++){
                             sb.append(error.get(i)).append("\n");
                         }
-                        Utility.showSingleButtonDialog(AddOldDmrcCardAutoPe.this,"Error !",sb.toString(),false);
+                        Utility.showSingleButtonDialog(AddOldDmrcCardAutoPe.this,dmrc_customer_cardVO.getDialogTitle(),sb.toString(),false);
                     }else {
                        /*Intent intent =new Intent(Dmrc_Card_Request.this,DMRC_Cards_List.class);
                         intent.putExtra("dmrccard",gson.toJson(dmrc_customer_cardVO));
@@ -567,7 +567,7 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
                         for(int i=0; i<error.size(); i++){
                             sb.append(error.get(i)).append("\n");
                         }
-                        Utility.showSingleButtonDialog(AddOldDmrcCardAutoPe.this,"Error !",sb.toString(),false);
+                        Utility.showSingleButtonDialog(AddOldDmrcCardAutoPe.this,dmrc_customer_SI_cardVO.getDialogTitle(),sb.toString(),false);
                     }else {
                         if(dmrc_customer_SI_cardVO.getCustomer()!=null){
                             String json = new Gson().toJson(dmrc_customer_SI_cardVO.getCustomer());
@@ -667,7 +667,7 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
                     for(int i=0; i<error.size(); i++){
                         sb.append(error.get(i)).append("\n");
                     }
-                    Utility.showSingleButtonDialog(AddOldDmrcCardAutoPe.this,"Error !",sb.toString(),false);
+                    Utility.showSingleButtonDialog(AddOldDmrcCardAutoPe.this,dmrc_customer_cardVO.getDialogTitle(),sb.toString(),false);
                 }else {
                     allotDmrcCard(dmrcid,null);
                 }
@@ -709,7 +709,7 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
                     for(int i=0; i<error.size(); i++){
                         sb.append(error.get(i)).append("\n");
                     }
-                    Utility.showSingleButtonDialog(AddOldDmrcCardAutoPe.this,"Error !",sb.toString(),false);
+                    Utility.showSingleButtonDialog(AddOldDmrcCardAutoPe.this,dmrc_customer_cardVO.getDialogTitle(),sb.toString(),false);
                 }else {
                     //update customer cache
                  /*   if(dmrc_customer_cardVO.getCustomer()!=null){
@@ -817,7 +817,7 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
                         if(SIMandateId!=0){
                             sIMandateDmrc(null,null);
                         }else{
-                            Utility.showSingleButtonDialog(AddOldDmrcCardAutoPe.this,"Alert", Content_Message.error_message,false);
+                            Utility.showSingleButtonDialog(AddOldDmrcCardAutoPe.this,"Error !", Content_Message.error_message,false);
                         }
 
                     }

@@ -568,7 +568,7 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
                         sb.append(error.get(i)).append("\n");
                     }
                     //Utility.alertDialog(Enach_Mandate.this,"Alert",sb.toString(),"Ok");
-                    Utility.showSingleButtonDialog(Enach_Mandate.this,"Error !",sb.toString(),false);
+                    Utility.showSingleButtonDialog(Enach_Mandate.this,customerVO.getDialogTitle(),sb.toString(),false);
                 }else {
                     String json = gson.toJson(customerVO);
                     Session.set_Data_Sharedprefence(Enach_Mandate.this,Session.CACHE_CUSTOMER,json);

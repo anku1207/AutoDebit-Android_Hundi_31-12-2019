@@ -65,7 +65,7 @@ public class ChangePassword extends Base_Activity {
                 boolean valid=true;
 
                 if(newpassword.getText().toString().equals("") && repeatpassword.getText().toString().equals("")){
-                    Utility.showSingleButtonDialog(ChangePassword.this,"Error !","empty password not allow",false);
+                    Utility.showSingleButtonDialog(ChangePassword.this,"Alert !","empty password not allow",false);
                     valid=false;
                 }else {
                     if(newpassword.getText().toString().equals("")) {
@@ -82,12 +82,12 @@ public class ChangePassword extends Base_Activity {
 
                         Log.w("value", String.valueOf(newpassword.getText().toString().trim().length()));
 
-                        Utility.showSingleButtonDialog(ChangePassword.this,"Error !"," These passwords don't match",false);
+                        Utility.showSingleButtonDialog(ChangePassword.this,"Alert"," These passwords don't match",false);
                         valid=false;
                     }else if(newpassword.getText().toString().trim().length()<4){
 
 
-                        Utility.showSingleButtonDialog(ChangePassword.this,"Error !"," Password must be at least 6 characters",false);
+                        Utility.showSingleButtonDialog(ChangePassword.this,"Alert"," Password must be at least 6 characters",false);
                         valid=false;
 
                     }
@@ -230,7 +230,7 @@ public class ChangePassword extends Base_Activity {
                     for(int i=0; i<error.size(); i++){
                         sb.append(error.get(i)).append("\n");
                     }
-                    Utility.alertDialog(ChangePassword.this,"Alert",sb.toString(),"Ok");
+                    Utility.alertDialog(ChangePassword.this,customerVO.getDialogTitle(),sb.toString(),"Ok");
                 }else {
                     String json = gson.toJson(customerVO);
                     Session.set_Data_Sharedprefence(ChangePassword.this,Session.CACHE_CUSTOMER,json);

@@ -92,7 +92,7 @@ public class Confirm_Bank_Details extends Base_Activity implements View.OnClickL
                         for(int i=0; i<error.size(); i++){
                             sb.append(error.get(i)).append("\n");
                         }
-                        Utility.showSingleButtonDialog(Confirm_Bank_Details.this,"Alert",sb.toString(),false);
+                        Utility.showSingleButtonDialog(Confirm_Bank_Details.this,customerAuthServiceVO.getDialogTitle(),sb.toString(),false);
                     }else {
                         try {
                             crateBankDetailsLayout(customerAuthServiceVO);

@@ -258,10 +258,10 @@ public class PanVerification extends Base_Activity implements  PermissionUtils.P
 
 
                  if(numberofyear < 18){
-                     Utility.showSingleButtonDialog(PanVerification.this,"Error !","Age should be greater than 18 yrs.",false);
+                     Utility.showSingleButtonDialog(PanVerification.this,"Alert","Age should be greater than 18 yrs.",false);
                      return;
                  }else if(numberofyear > 100){
-                     Utility.showSingleButtonDialog(PanVerification.this,"Error !","Age not valid.",false);
+                     Utility.showSingleButtonDialog(PanVerification.this,"Alert","Age not valid.",false);
                      return;
                  }
 
@@ -352,7 +352,7 @@ public class PanVerification extends Base_Activity implements  PermissionUtils.P
                             sb.append(error.get(i)).append("\n");
                         }
                        // Utility.alertDialog(PanVerification.this,"Alert",sb.toString(),"Ok");
-                        Utility.showSingleButtonDialog(PanVerification.this,"Error !",sb.toString(),false);
+                        Utility.showSingleButtonDialog(PanVerification.this,customerVO.getDialogTitle(),sb.toString(),false);
                     }else {
                         String json = gson.toJson(customerVO);
                         Session.set_Data_Sharedprefence(PanVerification.this,Session.CACHE_CUSTOMER,json);
@@ -466,7 +466,7 @@ public class PanVerification extends Base_Activity implements  PermissionUtils.P
                         sb.append(error.get(i)).append("\n");
                     }
                     //Utility.alertDialog(PanVerification.this,"Alert",sb.toString(),"Ok");
-                    Utility.showSingleButtonDialog(PanVerification.this,"Error !",sb.toString(),false);
+                    Utility.showSingleButtonDialog(PanVerification.this,cityVO.getDialogTitle(),sb.toString(),false);
                     city.setText("");
                     state.setText("");
 

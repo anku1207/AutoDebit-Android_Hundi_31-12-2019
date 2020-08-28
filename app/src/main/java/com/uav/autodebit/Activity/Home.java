@@ -540,7 +540,7 @@ public class Home extends Base_Activity
                             sb.append(error.get(i)).append("\n");
                         }
                         //pd.dismiss();
-                        Utility.showSingleButtonDialog(Home.this,"Error !",sb.toString(),false);
+                        Utility.showSingleButtonDialog(Home.this,dmrc_customer_cardVO.getDialogTitle(),sb.toString(),false);
                     }else {
 
                         Session.set_Data_Sharedprefence(Home.this,Session.CACHE_DMRC_MIN_CARD_CHARGE,dmrc_customer_cardVO.getAnonymousString());
@@ -717,7 +717,7 @@ public class Home extends Base_Activity
                     for(int i=0; i<error.size(); i++){
                         sb.append(error.get(i)).append("\n");
                     }
-                    Utility.showSingleButtonDialog(Home.this,"Alert",sb.toString(),false);
+                    Utility.showSingleButtonDialog(Home.this,customerVO.getDialogTitle(),sb.toString(),false);
                     if(view!=null)Utility.enableDisableView(view,true);
 
                 }else {
@@ -936,7 +936,7 @@ public class Home extends Base_Activity
                     for(int i=0; i<error.size(); i++){
                         sb.append(error.get(i)).append("\n");
                     }
-                    Utility.showSingleButtonDialog(Home.this,"Alert",sb.toString(),false);
+                    Utility.showSingleButtonDialog(Home.this,customerVO.getDialogTitle(),sb.toString(),false);
                 }else {
                     startUserClickService(serviceId+"",null);
 

@@ -331,7 +331,7 @@ public class Login extends Base_Activity implements View.OnClickListener, View.O
                     for(int i=0; i<error.size(); i++){
                         sb.append(error.get(i)).append("\n");
                     }
-                    Utility.showSingleButtonDialog(Login.this,"Alert",sb.toString(),false);
+                    Utility.showSingleButtonDialog(Login.this,customerVO.getDialogTitle(),sb.toString(),false);
                 }else {
                     String json = response.toString();
                     Session.set_Data_Sharedprefence(Login.this,Session.CACHE_USER_LOGINID,userid.getText().toString());

@@ -124,7 +124,7 @@ public class NotificatinDesc extends Base_Activity implements View.OnClickListen
                      for(int i=0; i<error.size(); i++){
                          sb.append(error.get(i)).append("\n");
                      }
-                     Utility.showSingleButtonDialog(context,"Error !",sb.toString(),true);
+                     Utility.showSingleButtonDialog(context,responseVO.getDialogTitle(),sb.toString(),true);
                  }else {
                      //update customer cache
                      volleyResponse.onSuccess(responseVO);

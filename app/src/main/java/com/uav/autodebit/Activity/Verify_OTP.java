@@ -332,7 +332,7 @@ public class Verify_OTP extends Base_Activity implements  TextWatcher,View.OnFoc
                         for(int i=0; i<error.size(); i++){
                             sb.append(error.get(i)).append("\n");
                         }
-                        Utility.alertDialog(Verify_OTP.this,"Alert",sb.toString(),"Ok");
+                        Utility.alertDialog(Verify_OTP.this,customerVO.getDialogTitle(),sb.toString(),"Ok");
                     }else {
                         if(customerVO.getStatusCode().equals("440")){
                             resendotpbtn.setVisibility(View.VISIBLE);
@@ -341,7 +341,7 @@ public class Verify_OTP extends Base_Activity implements  TextWatcher,View.OnFoc
                             for(int i=0; i<error.size(); i++){
                                 sb.append(error.get(i)).append("\n");
                             }
-                            Utility.alertDialog(Verify_OTP.this,"Alert",sb.toString(),"Ok");
+                            Utility.alertDialog(Verify_OTP.this,customerVO.getDialogTitle(),sb.toString(),"Ok");
                         }else {
                             // update customer cache 04-04-2020
                             Session.set_Data_Sharedprefence(Verify_OTP.this,Session.CACHE_CUSTOMER,new Gson().toJson(customerVO));
@@ -360,7 +360,7 @@ public class Verify_OTP extends Base_Activity implements  TextWatcher,View.OnFoc
             });
 
         }catch (Exception e){
-            Utility.exceptionAlertDialog(Verify_OTP.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(Verify_OTP.this , Utility.getStackTrace(e));
         }
 
 
@@ -404,7 +404,7 @@ public class Verify_OTP extends Base_Activity implements  TextWatcher,View.OnFoc
                     for(int i=0; i<error.size(); i++){
                         sb.append(error.get(i)).append("\n");
                     }
-                    Utility.alertDialog(Verify_OTP.this,"Alert",sb.toString(),"Ok");
+                    Utility.alertDialog(Verify_OTP.this,customerVO.getDialogTitle(),sb.toString(),"Ok");
 
                 }else {
 

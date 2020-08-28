@@ -141,7 +141,7 @@ public class UPI_Mandate extends AppCompatActivity  implements MyJavaScriptInter
                 JSONObject response = (JSONObject) resp;
 
                 if (!response.getString("status").equals("200")) {
-                    Utility.alertDialog(context, "Alert", response.getString("errorMsg"), "Ok");
+                    Utility.alertDialog(context, "Error !", response.getString("errorMsg"), "Ok");
                 } else {
                     volleyResponse.onSuccess(response);
                 }

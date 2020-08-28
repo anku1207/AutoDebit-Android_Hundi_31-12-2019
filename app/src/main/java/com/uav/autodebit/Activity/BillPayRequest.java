@@ -98,7 +98,7 @@ public class BillPayRequest {
                         for(int i=0; i<error.size(); i++){
                             sb.append(error.get(i)).append("\n");
                         }
-                        Utility.showSingleButtonDialog(context,"Error !",sb.toString(),false);
+                        Utility.showSingleButtonDialog(context,oxigenTransactionVOresp.getDialogTitle(),sb.toString(),false);
                         volleyResponse.onError(null);
                     }else if(oxigenTransactionVOresp.getStatusCode().equals("01")){
                         String btn[]={"Cancel","Ok"};
@@ -186,7 +186,7 @@ public class BillPayRequest {
                         for(int i=0; i<error.size(); i++){
                             sb.append(error.get(i)).append("\n");
                         }
-                        Utility.showSingleButtonDialog(context,"Error !",sb.toString(),false);
+                        Utility.showSingleButtonDialog(context,oxigenTransactionVOresp.getDialogTitle(),sb.toString(),false);
                         volleyResponse.onError(null);
                     }else {
                        volleyResponse.onSuccess(oxigenTransactionVOresp);
@@ -635,7 +635,7 @@ public class BillPayRequest {
                     for(int i=0;i<oxigenValidateResponce.getErrorMsgs().size();i++){
                         stringBuffer.append(oxigenValidateResponce.getErrorMsgs().get(i));
                     }
-                    Utility.showSingleButtonDialog(context,"Error !",stringBuffer.toString(),false);
+                    Utility.showSingleButtonDialog(context,oxigenValidateResponce.getDialogTitle(),stringBuffer.toString(),false);
                 }else {
                     if(oxigenValidateResponce.getTypeId()==null){
                         Utility.showSingleButtonDialog(context,"Error !","Something went wrong, Please try again!",false);
@@ -871,7 +871,7 @@ public class BillPayRequest {
                 },(VolleyResponse.OnError)(e)->{
                 }));
             }else{
-                Utility.showSingleButtonDialog(context,"Alert", Content_Message.error_message,false);
+                Utility.showSingleButtonDialog(context,"Error !", Content_Message.error_message,false);
             }
         }else if(requestCode==ApplicationConstant.REQ_MANDATE_FOR_BILL_FETCH_ERROR){
             boolean enachMandateStatus=data.getBooleanExtra("mandate_status",false);
@@ -889,7 +889,7 @@ public class BillPayRequest {
             if(SIMandateId!=0 && actionId!=0){
                 updateMandateAgainstOpeator(context,SIMandateId,actionId,AuthServiceProviderVO.AUTOPE_PG,true);
             }else{
-                Utility.showSingleButtonDialog(context,"Alert", Content_Message.error_message,false);
+                Utility.showSingleButtonDialog(context,"Error !", Content_Message.error_message,false);
             }
         }else if(requestCode == ApplicationConstant.REQ_UPI_FOR_MANDATE){
 
@@ -908,7 +908,7 @@ public class BillPayRequest {
                 },(VolleyResponse.OnError)(e)->{
                 }));
             }else{
-                Utility.showSingleButtonDialog(context,"Alert", Content_Message.error_message,false);
+                Utility.showSingleButtonDialog(context,"Error !", Content_Message.error_message,false);
             }
         }
     }
@@ -949,7 +949,7 @@ public class BillPayRequest {
                         for(int i=0; i<error.size(); i++){
                             sb.append(error.get(i)).append("\n");
                         }
-                        Utility.showSingleButtonDialog(context,"Error !",sb.toString(),false);
+                        Utility.showSingleButtonDialog(context,oxigenTransactionVOresp.getDialogTitle(),sb.toString(),false);
                     }else {
                         Utility.showSingleButtonDialog(context,oxigenTransactionVOresp.getDialogTitle(),oxigenTransactionVOresp.getAnonymousString(),true);
                     }

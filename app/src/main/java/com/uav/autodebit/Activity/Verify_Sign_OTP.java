@@ -208,7 +208,7 @@ public class Verify_Sign_OTP extends Base_Activity implements View.OnClickListen
                     for(int i=0; i<error.size(); i++){
                         sb.append(error.get(i)).append("\n");
                     }
-                    Utility.alertDialog(Verify_Sign_OTP.this,"Alert",sb.toString(),"Ok");
+                    Utility.alertDialog(Verify_Sign_OTP.this,customerVO.getDialogTitle(),sb.toString(),"Ok");
 
                 }else {
                         if(type.equals("mobile")){
@@ -354,7 +354,7 @@ public class Verify_Sign_OTP extends Base_Activity implements View.OnClickListen
                     for(int i=0; i<error.size(); i++){
                         sb.append(error.get(i)).append("\n");
                     }
-                    Utility.alertDialog(Verify_Sign_OTP.this,"Alert",sb.toString(),"Ok");
+                    Utility.alertDialog(Verify_Sign_OTP.this,customerVO.getDialogTitle(),sb.toString(),"Ok");
                 }else {
 
 
@@ -367,7 +367,7 @@ public class Verify_Sign_OTP extends Base_Activity implements View.OnClickListen
                                 for(int i=0; i<error.size(); i++){
                                     sb.append(error.get(i)).append("\n");
                                 }
-                                 Utility.alertDialog(Verify_Sign_OTP.this,"Alert",sb.toString(),"Ok");
+                                 Utility.alertDialog(Verify_Sign_OTP.this,customerVO.getDialogTitle(),sb.toString(),"Ok");
                         }else if(type.equals("email")){
                             emailpinverifybtn.setTag("resend");
                             emailpinverifybtn.setText("Resend");
@@ -376,7 +376,7 @@ public class Verify_Sign_OTP extends Base_Activity implements View.OnClickListen
                                 for(int i=0; i<error.size(); i++){
                                     sb.append(error.get(i)).append("\n");
                                 }
-                                Utility.alertDialog(Verify_Sign_OTP.this,"Alert",sb.toString(),"Ok");
+                                Utility.alertDialog(Verify_Sign_OTP.this,customerVO.getDialogTitle(),sb.toString(),"Ok");
                         }
                         return;
                     }else if(customerVO.getStatus().getStatusId().equals(CustomerStatusVO.CUSTOMER_VERFIED)){

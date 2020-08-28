@@ -74,7 +74,7 @@ public class Password extends Base_Activity {
                 String patten = "123456789 987654321";
 
                 if(newpassword.getText().toString().equals("") && repeatpassword.getText().toString().equals("")){
-                    Utility.showSingleButtonDialog(Password.this,"Error !","empty password not allow",false);
+                    Utility.showSingleButtonDialog(Password.this,"Alert","empty password not allow",false);
                     valid=false;
                 }else {
                     if(newpassword.getText().toString().equals("")) {
@@ -88,13 +88,13 @@ public class Password extends Base_Activity {
 
                         Log.w("value", String.valueOf(newpassword.getText().toString().trim().length()));
 
-                        Utility.showSingleButtonDialog(Password.this,"Error !"," These passwords don't match",false);
+                        Utility.showSingleButtonDialog(Password.this,"Alert"," These passwords don't match",false);
                         valid=false;
                     }else if(newpassword.getText().toString().trim().length()<4){
-                        Utility.showSingleButtonDialog(Password.this,"Error !"," Password must be at least 4 characters",false);
+                        Utility.showSingleButtonDialog(Password.this,"Alert"," Password must be at least 4 characters",false);
                         valid=false;
                     }else if(patten.contains(newpassword.getText().toString().trim())) {
-                        Utility.showSingleButtonDialog(Password.this,"Error !","password is week",false);
+                        Utility.showSingleButtonDialog(Password.this,"Alert","password is week",false);
                         valid=false;
                     }
                 }
@@ -236,7 +236,7 @@ public class Password extends Base_Activity {
                     for(int i=0; i<error.size(); i++){
                         sb.append(error.get(i)).append("\n");
                     }
-                    Utility.alertDialog(Password.this,"Alert",sb.toString(),"Ok");
+                    Utility.alertDialog(Password.this,customerVO.getDialogTitle(),sb.toString(),"Ok");
                 }else {
                     String json = gson.toJson(customerVO);
                     Session.set_Data_Sharedprefence(Password.this,Session.CACHE_CUSTOMER,json);

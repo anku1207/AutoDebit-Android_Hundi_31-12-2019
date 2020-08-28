@@ -282,14 +282,14 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                 if(SIMandateId!=0){
                     proceedToRecharge(oxigenValidateResponce.getTypeId().toString(),String.valueOf(SIMandateId), AuthServiceProviderVO.AUTOPE_PG,true);
                 }else{
-                    Utility.showSingleButtonDialog(Mobile_Prepaid_Recharge_Service.this,"Alert", Content_Message.error_message,false);
+                    Utility.showSingleButtonDialog(Mobile_Prepaid_Recharge_Service.this,"Error !", Content_Message.error_message,false);
                 }
             }else if(requestCode==ApplicationConstant.REQ_UPI_FOR_MANDATE){
                 int upiMandateId=data.getIntExtra("mandateId",0);
                 if(upiMandateId!=0){
                     proceedToRecharge(oxigenValidateResponce.getTypeId().toString(),String.valueOf(upiMandateId), AuthServiceProviderVO.AUTOPE_PG_UPI,true);
                 }else{
-                    Utility.showSingleButtonDialog(Mobile_Prepaid_Recharge_Service.this,"Alert", Content_Message.error_message,false);
+                    Utility.showSingleButtonDialog(Mobile_Prepaid_Recharge_Service.this,"Error !", Content_Message.error_message,false);
                 }
             }
         }
@@ -339,7 +339,7 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                             for(int i=0;i<oxigenPlanVO.getErrorMsgs().size();i++){
                                 stringBuffer.append(oxigenPlanVO.getErrorMsgs().get(i));
                             }
-                            Utility.showSingleButtonDialog(Mobile_Prepaid_Recharge_Service.this,"Error !",stringBuffer.toString(),false);
+                            Utility.showSingleButtonDialog(Mobile_Prepaid_Recharge_Service.this,oxigenPlanVO.getDialogTitle(),stringBuffer.toString(),false);
                         }else {
                             String json = gson.toJson(oxigenPlanVO);
                             Session.set_Data_Sharedprefence(Mobile_Prepaid_Recharge_Service.this,Session.CACHE_BROWSE_DATA,json);
@@ -460,7 +460,7 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                     for(int i=0;i<oxigenValidateResponce.getErrorMsgs().size();i++){
                         stringBuffer.append(oxigenValidateResponce.getErrorMsgs().get(i));
                     }
-                    Utility.showSingleButtonDialog(Mobile_Prepaid_Recharge_Service.this,"Error !",stringBuffer.toString(),false);
+                    Utility.showSingleButtonDialog(Mobile_Prepaid_Recharge_Service.this,oxigenValidateResponce.getDialogTitle(),stringBuffer.toString(),false);
                 }else {
                     if (oxigenValidateResponce.getTypeId() == null) {
                         Utility.showSingleButtonDialog(Mobile_Prepaid_Recharge_Service.this, "Error !", "Something went wrong, Please try again!", false);
@@ -695,7 +695,7 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                     for(int i=0;i<oxigenTransactionVOresp.getErrorMsgs().size();i++){
                         stringBuffer.append(oxigenTransactionVOresp.getErrorMsgs().get(i));
                     }
-                    Utility.showSingleButtonDialog(Mobile_Prepaid_Recharge_Service.this,"Error !",stringBuffer.toString(),false);
+                    Utility.showSingleButtonDialog(Mobile_Prepaid_Recharge_Service.this,oxigenTransactionVOresp.getDialogTitle(),stringBuffer.toString(),false);
                 }else {
                     // replace oxigenValidateResponce object on success on recharge
                     oxigenValidateResponce=oxigenTransactionVOresp;

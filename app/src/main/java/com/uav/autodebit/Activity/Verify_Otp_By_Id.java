@@ -290,7 +290,7 @@ public class Verify_Otp_By_Id extends Base_Activity implements TextWatcher,View.
                     }
 
 
-                    Utility.alertDialog(Verify_Otp_By_Id.this,"Alert",sb.toString(),"Ok");
+                    Utility.alertDialog(Verify_Otp_By_Id.this,otpvo.getDialogTitle(),sb.toString(),"Ok");
                 }else {
                     if(otpvo.getStatusCode().equals("440")){
                         resendotpbtn.setVisibility(View.VISIBLE);
@@ -299,7 +299,7 @@ public class Verify_Otp_By_Id extends Base_Activity implements TextWatcher,View.
                         for(int i=0; i<error.size(); i++){
                             sb.append(error.get(i)).append("\n");
                         }
-                       Utility.alertDialog(Verify_Otp_By_Id.this,"Alert",sb.toString(),"Ok");
+                       Utility.alertDialog(Verify_Otp_By_Id.this,otpvo.getDialogTitle(),sb.toString(),"Ok");
                     }else {
                         Intent intent12 = new Intent();
                         intent12.putExtra("msg",otpvo.getAnonymousString());
@@ -349,7 +349,7 @@ public class Verify_Otp_By_Id extends Base_Activity implements TextWatcher,View.
                     for(int i=0; i<error.size(); i++){
                         sb.append(error.get(i)).append("\n");
                     }
-                    Utility.alertDialog(Verify_Otp_By_Id.this,"Alert",sb.toString(),"Ok");
+                    Utility.alertDialog(Verify_Otp_By_Id.this,customerVO.getDialogTitle(),sb.toString(),"Ok");
 
                 }else {
                     if(type.equals("mobile")){

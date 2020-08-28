@@ -83,7 +83,7 @@ public class CheckMandateAndShowDialog {
                     for (int i = 0; i < checkMandateResponse.getErrorMsgs().size(); i++) {
                         stringBuffer.append(checkMandateResponse.getErrorMsgs().get(i));
                     }
-                    Utility.showSingleButtonDialog(context, "Error !", stringBuffer.toString(), false);
+                    Utility.showSingleButtonDialog(context, checkMandateResponse.getDialogTitle(), stringBuffer.toString(), false);
                 } else {
                     volleyResponse.onSuccess(checkMandateResponse);
                 }
@@ -127,7 +127,7 @@ public class CheckMandateAndShowDialog {
                     for(int i=0; i<error.size(); i++){
                         sb.append(error.get(i)).append("\n");
                     }
-                    Utility.showSingleButtonDialog(context,"Alert",sb.toString(),false);
+                    Utility.showSingleButtonDialog(context,transactionVO.getDialogTitle(),sb.toString(),false);
                 }else {
                     volleyResponse.onSuccess(transactionVO);
                 }
@@ -169,7 +169,7 @@ public class CheckMandateAndShowDialog {
                     for(int i=0; i<error.size(); i++){
                         sb.append(error.get(i)).append("\n");
                     }
-                    Utility.showSingleButtonDialog(context,"Alert",sb.toString(),false);
+                    Utility.showSingleButtonDialog(context,customerVO.getDialogTitle(),sb.toString(),false);
                 }else {
                     volleyResponse.onSuccess(customerVO);
                 }
@@ -206,7 +206,7 @@ public class CheckMandateAndShowDialog {
                     for(int i=0; i<error.size(); i++){
                         sb.append(error.get(i)).append("\n");
                     }
-                    Utility.showSingleButtonDialog(context,"Alert",sb.toString(),false);
+                    Utility.showSingleButtonDialog(context,customerVO.getDialogTitle(),sb.toString(),false);
                 }else {
                     volleyResponse.onSuccess(customerVO);
                 }
@@ -243,7 +243,7 @@ public class CheckMandateAndShowDialog {
                     for(int i=0; i<error.size(); i++){
                         sb.append(error.get(i)).append("\n");
                     }
-                    Utility.showSingleButtonDialog(context,"Alert",sb.toString(),false);
+                    Utility.showSingleButtonDialog(context,customerVO.getDialogTitle(),sb.toString(),false);
                 }else {
                     //set session customer or local cache
                     String json = new Gson().toJson(customerVO);
@@ -310,7 +310,7 @@ public class CheckMandateAndShowDialog {
                     for(int i=0; i<error.size(); i++){
                         sb.append(error.get(i)).append("\n");
                     }
-                    Utility.showSingleButtonDialog(context,"Alert",sb.toString(),false);
+                    Utility.showSingleButtonDialog(context,customerVO.getDialogTitle(),sb.toString(),false);
                 }else {
                     volleyResponse.onSuccess(customerVO);
                 }

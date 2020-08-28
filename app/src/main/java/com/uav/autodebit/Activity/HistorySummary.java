@@ -160,7 +160,7 @@ public class HistorySummary extends Base_Activity implements View.OnClickListene
                         for(int i=0; i<error.size(); i++){
                             sb.append(error.get(i)).append("\n");
                         }
-                        Utility.showSingleButtonDialog(HistorySummary.this,"Error !",sb.toString(),false);
+                        Utility.showSingleButtonDialog(HistorySummary.this,customerVO.getDialogTitle(),sb.toString(),false);
                     }else {
                         volleyResponse.onSuccess(customerVO);
                     }

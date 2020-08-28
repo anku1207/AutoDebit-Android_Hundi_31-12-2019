@@ -143,7 +143,7 @@ public class D2H extends Base_Activity implements View.OnClickListener {
                         for(int i=0; i<error.size(); i++){
                             sb.append(error.get(i)).append("\n");
                         }
-                        Utility.showSingleButtonDialog(context,"Error !",sb.toString(),false);
+                        Utility.showSingleButtonDialog(context,response_D2HVO.getDialogTitle(),sb.toString(),false);
                     }else{
                         if(response_D2HVO.getEnachMandateId()==null || response_D2HVO.getEnachMandateId().equals("")){
                             Utility.removeEle(proceed);
@@ -501,7 +501,7 @@ public class D2H extends Base_Activity implements View.OnClickListener {
                     for(int i=0; i<error.size(); i++){
                         sb.append(error.get(i)).append("\n");
                     }
-                    Utility.showSingleButtonDialog(context,"Alert",sb.toString(),false);
+                    Utility.showSingleButtonDialog(context,customerVO.getDialogTitle(),sb.toString(),false);
                 }else {
                     //set session customer or local cache
                     String json = new Gson().toJson(customerVO);
@@ -544,7 +544,7 @@ public class D2H extends Base_Activity implements View.OnClickListener {
                     for(int i=0; i<error.size(); i++){
                         sb.append(error.get(i)).append("\n");
                     }
-                    Utility.showSingleButtonDialog(context,"Alert",sb.toString(),false);
+                    Utility.showSingleButtonDialog(context,d2HVO.getDialogTitle(),sb.toString(),false);
                 }else {
                     //set session customer or local cache
 

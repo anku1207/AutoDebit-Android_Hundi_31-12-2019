@@ -104,7 +104,7 @@ public class Credit_Score_Report extends Base_Activity implements FileDownloadIn
                         for(int i=0; i<error.size(); i++){
                             sb.append(error.get(i)).append("\n");
                         }
-                        Utility.alertDialog(context,"Alert",sb.toString(),"Ok");
+                        Utility.alertDialog(context,customerVO.getDialogTitle(),sb.toString(),"Ok");
 
                     }else if (customerVO.getStatusCode().equals("440")){
 

@@ -219,7 +219,7 @@ public class IRCTC extends Base_Activity {
                     for(int i=0; i<error.size(); i++){
                         sb.append(error.get(i)).append("\n");
                     }
-                    Utility.showSingleButtonDialog(IRCTC.this,"Alert",sb.toString(),false);
+                    Utility.showSingleButtonDialog(IRCTC.this,customerVO.getDialogTitle(),sb.toString(),false);
                 }else {
                     main_layout.removeAllViews();
                     getDetails();

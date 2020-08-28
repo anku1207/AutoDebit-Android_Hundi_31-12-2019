@@ -342,7 +342,7 @@ public class User_Registration extends Base_Activity {
                     for(int i=0; i<error.size(); i++){
                         sb.append(error.get(i)).append("\n");
                     }
-                    Utility.showSingleButtonDialog(User_Registration.this,"Alert",sb.toString(),false);
+                    Utility.showSingleButtonDialog(User_Registration.this,customerVO.getDialogTitle(),sb.toString(),false);
                 }else {
                     customerVO.setUserid(userphone.getText().toString().trim());
                     customerVO.setLoginType("mobile");

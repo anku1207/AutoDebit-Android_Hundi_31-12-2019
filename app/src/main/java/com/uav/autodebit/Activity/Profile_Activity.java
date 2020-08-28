@@ -314,7 +314,7 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
                     for(int i=0; i<error.size(); i++){
                         sb.append(error.get(i)).append("\n");
                     }
-                    Utility.showSingleButtonDialog(Profile_Activity.this,"Alert",sb.toString(),false);
+                    Utility.showSingleButtonDialog(Profile_Activity.this,customerVO.getDialogTitle(),sb.toString(),false);
                 }else {
                     imageView1.setImageBitmap(null);
                     //imageView1.setImageBitmap(Utility.drawableToBitmap(getDrawable(R.drawable.noprofileimage)));
@@ -394,7 +394,7 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
                     for(int i=0; i<error.size(); i++){
                         sb.append(error.get(i)).append("\n");
                     }
-                    Utility.alertDialog(Profile_Activity.this,"Alert",sb.toString(),"Ok");
+                    Utility.alertDialog(Profile_Activity.this,customerVO.getDialogTitle(),sb.toString(),"Ok");
 
                 }else {
                     customerVO.setUserid(value);
@@ -546,7 +546,7 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
                             for(int i=0; i<error.size(); i++){
                                 sb.append(error.get(i)).append("\n");
                             }
-                            Utility.alertDialog(Profile_Activity.this,"Alert",sb.toString(),"Ok");
+                            Utility.alertDialog(Profile_Activity.this,customerVO.getDialogTitle(),sb.toString(),"Ok");
                         }else {
 
                         }
@@ -587,7 +587,7 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
                     for(int i=0; i<error.size(); i++){
                         sb.append(error.get(i)).append("\n");
                     }
-                    Utility.showSingleButtonDialog(Profile_Activity.this,"Alert",sb.toString(),false);
+                    Utility.showSingleButtonDialog(Profile_Activity.this,customerVO.getDialogTitle(),sb.toString(),false);
                 }else {
                     scrollView.setVisibility(View.VISIBLE);
                     setServiceAndBankList(customerVO);

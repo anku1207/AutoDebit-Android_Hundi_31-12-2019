@@ -104,7 +104,7 @@ public class Help extends Base_Activity implements View.OnClickListener {
                     for(int i=0; i<error.size(); i++){
                         sb.append(error.get(i)).append("\n");
                     }
-                    Utility.showSingleButtonDialog(Help.this,"Alert",sb.toString(),false);
+                    Utility.showSingleButtonDialog(Help.this,customerVO.getDialogTitle(),sb.toString(),false);
                 }else {
                    MyDialog.showSingleButtonBigContentDialog(Help.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
                        ((Dialog)ok).dismiss();

@@ -153,7 +153,7 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
 
 
                 if (!response.getString("status").equals("200")) {
-                    Utility.alertDialog(SI_First_Data.this, "Alert", response.getString("errorMsg"), "Ok");
+                    Utility.alertDialog(SI_First_Data.this, "Error !", response.getString("errorMsg"), "Ok");
                 } else {
 
                     if (ApplicationConstant.SI_SERVICE.equals("hdfc")) {
