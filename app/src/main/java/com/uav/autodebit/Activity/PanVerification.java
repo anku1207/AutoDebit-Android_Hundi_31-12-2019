@@ -58,6 +58,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Objects;
 
 public class PanVerification extends Base_Activity implements  PermissionUtils.PermissionResultCallback , ActivityCompat.OnRequestPermissionsResultCallback{
     EditText pannumber,customername,pin,city,state,permanentaddress;
@@ -271,7 +272,7 @@ public class PanVerification extends Base_Activity implements  PermissionUtils.P
                     BackgroundAsyncService backgroundAsyncService = new BackgroundAsyncService(pd,true, new BackgroundServiceInterface() {
                         @Override
                         public void doInBackGround() {
-                            stringimg= Utility.BitMapToString(bmp);
+                            stringimg= Utility.BitMapToString(bmp,500,true);
                         }
                         @Override
                         public void doPostExecute() {
@@ -492,22 +493,33 @@ public class PanVerification extends Base_Activity implements  PermissionUtils.P
 
             try {
                 if (requestCode == REQ_IMAGE) {
-                    bmp =Utility.decodeImageFromFiles(mImageUri.getPath(),150,150);
-                    if(bmp.getWidth()>bmp.getHeight()){
-                        Matrix matrix =new Matrix();
-                        matrix.postRotate(90);
-                        bmp= Bitmap.createBitmap(bmp,0,0,bmp.getWidth(),bmp.getHeight(),matrix,true);
+                    try {
+                        bmp =Utility.decodeImageFromFiles(mImageUri.getPath(),500,500);
+                        if(bmp.getWidth()>bmp.getHeight()){
+                            bmp= Bitmap.createBitmap(bmp,0,0,bmp.getWidth(),bmp.getHeight(),Utility.getImageMatrix(PanVerification.this,new File(Objects.requireNonNull(mImageUri.getPath()))),true);
+                        }
+                        addressimage.setImageBitmap(bmp);
+
+                        View current = getCurrentFocus();
+                        if (current != null) current.clearFocus();
+                    }catch (Exception e){
+                        ExceptionsNotification.ExceptionHandling(PanVerification.this , Utility.getStackTrace(e));
                     }
 
-                    addressimage.setImageBitmap(bmp);
-
-                    View current = getCurrentFocus();
-                    if (current != null) current.clearFocus();
                 }
                if(requestCode==REQ_GALLERY){
-                      Uri contentURI = data.getData();
-                      bmp =Utility.grabImage(contentURI,PanVerification.this);
-                      addressimage.setImageBitmap(bmp);
+                   try {
+                       Uri contentURI = data.getData();
+                       bmp= Utility.decodeImageFromFiles(Utility.getPathByUri(PanVerification.this,contentURI) ,500,500);
+                       if(bmp.getWidth()>bmp.getHeight()){
+                           bmp= Bitmap.createBitmap(bmp,0,0,bmp.getWidth(),bmp.getHeight(),Utility.getImageMatrix(PanVerification.this,new File(Objects.requireNonNull(contentURI.getPath()))),true);
+                       }
+                       addressimage.setImageBitmap(bmp);
+                   }catch (Exception e){
+                       ExceptionsNotification.ExceptionHandling(PanVerification.this , Utility.getStackTrace(e));
+                   }
+
+
                }
             } catch (Exception e) {
                 ExceptionsNotification.ExceptionHandling(PanVerification.this , Utility.getStackTrace(e));

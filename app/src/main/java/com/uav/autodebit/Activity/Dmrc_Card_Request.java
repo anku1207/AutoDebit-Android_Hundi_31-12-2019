@@ -129,7 +129,6 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dmrc__card__request);
         getSupportActionBar().hide();
-
         pd=new UAVProgressDialog(this);
 
         mobilenumber=findViewById(R.id.mobilenumber);
@@ -378,7 +377,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                             BackgroundAsyncService backgroundAsyncService = new BackgroundAsyncService(pd,true, new BackgroundServiceInterface() {
                                 @Override
                                 public void doInBackGround() {
-                                    stringimg= Utility.BitMapToString(bmp);
+                                    stringimg= Utility.BitMapToString(bmp,500,true);
                                 }
                                 @Override
                                 public void doPostExecute() {
@@ -994,22 +993,31 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
 
             try {
                 if (requestCode == REQ_IMAGE) {
-                    bmp =Utility.decodeImageFromFiles(Uri.fromFile(photofileurl).getPath(),150,150);
-                    if(bmp.getWidth()>bmp.getHeight()){
-                        Matrix matrix =new Matrix();
-                        matrix.postRotate(90);
-                        bmp= Bitmap.createBitmap(bmp,0,0,bmp.getWidth(),bmp.getHeight(),matrix,true);
+                    try {
+                        bmp =Utility.decodeImageFromFiles(Uri.fromFile(photofileurl).getPath(),500,500);
+                        if(bmp.getWidth()>bmp.getHeight()){
+                            bmp= Bitmap.createBitmap(bmp,0,0,bmp.getWidth(),bmp.getHeight(),Utility.getImageMatrix(Dmrc_Card_Request.this,photofileurl),true);
+                        }
+                        addressimage.setImageBitmap(bmp);
+                        performCrop(Utility.getVersionWiseUri(this,photofileurl));
+                        View current = getCurrentFocus();
+                        if (current != null) current.clearFocus();
+                    }catch (Exception e){
+                        ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this , Utility.getStackTrace(e));
                     }
 
-                    addressimage.setImageBitmap(bmp);
-                    performCrop(Utility.getVersionWiseUri(this,photofileurl));
-                    View current = getCurrentFocus();
-                    if (current != null) current.clearFocus();
                 }else  if(requestCode==REQ_GALLERY){
-                    Uri contentURI = data.getData();
-                    bmp =Utility.grabImage(contentURI,Dmrc_Card_Request.this);
-                    addressimage.setImageBitmap(bmp);
-                    performCrop(contentURI);
+                    try {
+                        Uri contentURI = data.getData();
+                        bmp= Utility.decodeImageFromFiles(Utility.getPathByUri(Dmrc_Card_Request.this,contentURI) ,500,500);
+                        if(bmp.getWidth()>bmp.getHeight()){
+                            bmp= Bitmap.createBitmap(bmp,0,0,bmp.getWidth(),bmp.getHeight(),Utility.getImageMatrix(Dmrc_Card_Request.this,new File(Objects.requireNonNull(contentURI.getPath()))),true);
+                        }
+                        addressimage.setImageBitmap(bmp);
+                        performCrop(contentURI);
+                    }catch (Exception e){
+                        ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this , Utility.getStackTrace(e));
+                    }
                 }else  if(requestCode==PIC_CROP){
                     //get the returned data
                     Bundle extras = data.getExtras();

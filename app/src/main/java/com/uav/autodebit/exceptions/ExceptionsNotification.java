@@ -26,13 +26,14 @@ import java.util.HashMap;
 public class ExceptionsNotification {
 
 
-    public static void ExceptionHandling(Context context, String e){
+    public static void ExceptionHandling(Context context, String e ,String... dataArry){
 
         try {
             new Handler(Looper.getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(context, Content_Message.error_message, Toast.LENGTH_SHORT).show();
+                    String showToast= (dataArry.length==0 ?"1":"0");//(leftButton ==null?"Modify": leftButton);
+                    if(showToast.equals("1"))Toast.makeText(context, Content_Message.error_message, Toast.LENGTH_SHORT).show();
                     HashMap<String, Object> params = new HashMap<String, Object>();
                     ConnectionVO connectionVO = ExceptionsBO.sendErrorOnServer();
 

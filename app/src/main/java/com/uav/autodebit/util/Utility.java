@@ -242,11 +242,11 @@ public class Utility {
 
         realImage = Bitmap.createScaledBitmap(realImage, width,
                 height, filter);
-        if(realImage.getWidth()>realImage.getHeight()){
+       /* if(realImage.getWidth()>realImage.getHeight()){
             Matrix matrix =new Matrix();
             matrix.postRotate(90);
             realImage= Bitmap.createBitmap(realImage,0,0,realImage.getWidth(),realImage.getHeight(),matrix,true);
-        }
+        }*/
 
         realImage.compress(Bitmap.CompressFormat.PNG,100,outputStream);
         byte[] imageBytes =outputStream.toByteArray();
@@ -2005,15 +2005,13 @@ public class Utility {
         return s;
     }
 
-    public static Matrix getImageMatrix(Context context,File file,int width , int height){
-        Bitmap bmp = null;
+    public static Matrix getImageMatrix(Context context,File file){
         Matrix mat = null;
         try {
             ExifInterface exif = new ExifInterface(file.getPath());
             int orientation = exif.getAttributeInt(
                     ExifInterface.TAG_ORIENTATION,
                     ExifInterface.ORIENTATION_NORMAL);
-
             int angle = 0;
 
             if (orientation == ExifInterface.ORIENTATION_ROTATE_90) {
@@ -2023,12 +2021,11 @@ public class Utility {
             } else if (orientation == ExifInterface.ORIENTATION_ROTATE_270) {
                 angle = 270;
             }
-
             mat = new Matrix();
             mat.postRotate(angle);
 
         }catch (Exception e){
-            ExceptionsNotification.ExceptionHandling(context ,  Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(context ,  Utility.getStackTrace(e), "0");
         }
         return mat;
 

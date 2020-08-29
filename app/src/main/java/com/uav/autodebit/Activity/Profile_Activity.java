@@ -6,7 +6,12 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapShader;
+import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.Shader;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
@@ -15,6 +20,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -36,6 +43,7 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
 import com.uav.autodebit.BO.CustomerBO;
 import com.uav.autodebit.BO.SignUpBO;
 import com.uav.autodebit.R;
@@ -51,6 +59,7 @@ import com.uav.autodebit.permission.PermissionUtils;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.BackgroundAsyncService;
 import com.uav.autodebit.util.BackgroundServiceInterface;
+import com.uav.autodebit.util.CircleTransform;
 import com.uav.autodebit.util.DialogInterface;
 import com.uav.autodebit.util.DownloadTask;
 import com.uav.autodebit.util.FileDownloadInterface;
@@ -71,6 +80,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 public class Profile_Activity extends Base_Activity implements FileDownloadInterface , View.OnClickListener , PermissionUtils.PermissionResultCallback ,ActivityCompat.OnRequestPermissionsResultCallback{
 
@@ -426,22 +436,28 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
                 }else if(requestCode==REQ_ADD_MORE_SERVICE){
                         getProfileDate(Session.getCustomerId(Profile_Activity.this));
                 }else if (requestCode == REQ_IMAGE) {
-                    bmp =Utility.decodeImageFromFiles(Uri.fromFile(photofileurl).getPath(),150,150);
-                    if(bmp.getWidth()>bmp.getHeight()){
-                        Matrix matrix =new Matrix();
-                        matrix.postRotate(90);
-                        bmp= Bitmap.createBitmap(bmp,0,0,bmp.getWidth(),bmp.getHeight(),matrix,true);
+                    try {
+                        bmp =Utility.decodeImageFromFiles(Uri.fromFile(photofileurl).getPath(),500,500);
+                        if(bmp.getWidth()>bmp.getHeight()){
+                            bmp= Bitmap.createBitmap(bmp,0,0,bmp.getWidth(),bmp.getHeight(),Utility.getImageMatrix(Profile_Activity.this,photofileurl),true);
+                        }
+                        performCrop(Utility.getVersionWiseUri(Profile_Activity.this,photofileurl));
+                    }catch (Exception e){
+                        ExceptionsNotification.ExceptionHandling(Profile_Activity.this , Utility.getStackTrace(e));
                     }
-                   performCrop(Utility.getVersionWiseUri(Profile_Activity.this,photofileurl));
+
                 }else if(requestCode==REQ_GALLERY){
-                    Uri contentURI = data.getData();
-                    bmp =Utility.grabImage(contentURI,this);
-                    if(bmp.getWidth()>bmp.getHeight()){
-                        Matrix matrix =new Matrix();
-                        matrix.postRotate(90);
-                        bmp= Bitmap.createBitmap(bmp,0,0,bmp.getWidth(),bmp.getHeight(),matrix,true);
+                    try {
+                        Uri contentURI = data.getData();
+                        bmp= Utility.decodeImageFromFiles(Utility.getPathByUri(Profile_Activity.this,contentURI) ,500,500);
+                        if(bmp.getWidth()>bmp.getHeight()){
+                            bmp= Bitmap.createBitmap(bmp,0,0,bmp.getWidth(),bmp.getHeight(),Utility.getImageMatrix(Profile_Activity.this,new File(Objects.requireNonNull(contentURI.getPath()))),true);
+                        }
+                        imageView1.setImageBitmap(bmp);
+                        performCrop(contentURI);
+                    }catch (Exception e){
+                        ExceptionsNotification.ExceptionHandling(Profile_Activity.this , Utility.getStackTrace(e));
                     }
-                    performCrop(contentURI);
                 }else  if(requestCode==PIC_CROP){
                     //get the returned data
                     Bundle extras = data.getExtras();
@@ -543,7 +559,21 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
                             }
                             Utility.alertDialog(Profile_Activity.this,customerVO.getDialogTitle(),sb.toString(),"Ok");
                         }else {
+                            Picasso.with(Profile_Activity.this).load(customerVO.getImage())
+                                    .memoryPolicy(MemoryPolicy.NO_CACHE )
+                                    .networkPolicy(NetworkPolicy.NO_CACHE)
+                                    .error(R.drawable.autodebitlogo).transform(new CircleTransform())
+                                    .into(imageView1, new Callback() {
+                                        @Override
+                                        public void onSuccess() {
+                                            progressBar.setVisibility(View.GONE);
 
+                                        }
+                                        @Override
+                                        public void onError() {
+                                            progressBar.setVisibility(View.GONE);
+                                        }
+                                    });
                         }
                     }
                 });
@@ -551,6 +581,7 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
         });
         backgroundAsyncService.execute();
     }
+
 
     private void getProfileDate(String id){
         progressBar.setVisibility(View.VISIBLE);
@@ -605,7 +636,7 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
 
 
                     if(customerVO.getImage()!=null){
-                        Picasso.with(Profile_Activity.this).load(customerVO.getImage()).fit()
+                        Picasso.with(Profile_Activity.this).load(customerVO.getImage()).transform(new CircleTransform())
                                 .memoryPolicy(MemoryPolicy.NO_CACHE )
                                 .networkPolicy(NetworkPolicy.NO_CACHE)
                                 .error(R.drawable.autodebitlogo)
