@@ -559,10 +559,10 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
                             }
                             Utility.alertDialog(Profile_Activity.this,customerVO.getDialogTitle(),sb.toString(),"Ok");
                         }else {
-                            Picasso.with(Profile_Activity.this).load(customerVO.getImage())
+                            Picasso.with(Profile_Activity.this).load(customerVO.getImage()).transform(new CircleTransform())
                                     .memoryPolicy(MemoryPolicy.NO_CACHE )
                                     .networkPolicy(NetworkPolicy.NO_CACHE)
-                                    .error(R.drawable.autodebitlogo).transform(new CircleTransform())
+                                    .error(R.drawable.ava_user)
                                     .into(imageView1, new Callback() {
                                         @Override
                                         public void onSuccess() {
@@ -639,7 +639,7 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
                         Picasso.with(Profile_Activity.this).load(customerVO.getImage()).transform(new CircleTransform())
                                 .memoryPolicy(MemoryPolicy.NO_CACHE )
                                 .networkPolicy(NetworkPolicy.NO_CACHE)
-                                .error(R.drawable.autodebitlogo)
+                                .error(R.drawable.ava_user)
                                 .into(imageView1, new Callback() {
                                     @Override
                                     public void onSuccess() {
