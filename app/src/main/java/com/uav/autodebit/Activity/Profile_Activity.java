@@ -12,6 +12,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
@@ -49,6 +50,7 @@ import com.uav.autodebit.BO.SignUpBO;
 import com.uav.autodebit.R;
 import com.uav.autodebit.adpater.RecyclerViewAdapterMenu;
 import com.uav.autodebit.adpater.RecyclerViewProfileBankAdapterMenu;
+import com.uav.autodebit.androidFragment.Profile;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.Content_Message;
 import com.uav.autodebit.exceptions.ExceptionsNotification;
@@ -559,10 +561,11 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
                             }
                             Utility.alertDialog(Profile_Activity.this,customerVO.getDialogTitle(),sb.toString(),"Ok");
                         }else {
+                            Drawable drawable=Utility.getDrawableResources(Profile_Activity.this,R.drawable.ava_user);
                             Picasso.with(Profile_Activity.this).load(customerVO.getImage()).transform(new CircleTransform())
                                     .memoryPolicy(MemoryPolicy.NO_CACHE )
                                     .networkPolicy(NetworkPolicy.NO_CACHE)
-                                    .error(R.drawable.ava_user)
+                                    .error(R.drawable.autodebitlogo)
                                     .into(imageView1, new Callback() {
                                         @Override
                                         public void onSuccess() {
@@ -639,7 +642,7 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
                         Picasso.with(Profile_Activity.this).load(customerVO.getImage()).transform(new CircleTransform())
                                 .memoryPolicy(MemoryPolicy.NO_CACHE )
                                 .networkPolicy(NetworkPolicy.NO_CACHE)
-                                .error(R.drawable.ava_user)
+                                .error(R.drawable.autodebitlogo)
                                 .into(imageView1, new Callback() {
                                     @Override
                                     public void onSuccess() {
@@ -656,8 +659,6 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
                         imageView1.setBackgroundResource(R.drawable.ava_user);
 
                     }
-
-
 
 
                     if(customerVO.getMobileVerified()==null){

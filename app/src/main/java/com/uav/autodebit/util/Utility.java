@@ -111,6 +111,7 @@ import com.uav.autodebit.Activity.Listview_With_Image;
 import com.uav.autodebit.Activity.Login;
 import com.uav.autodebit.Activity.Mobile_Prepaid_Recharge_Service;
 import com.uav.autodebit.Activity.PanVerification;
+import com.uav.autodebit.Activity.Profile_Activity;
 import com.uav.autodebit.Activity.Splash_Screen;
 import com.uav.autodebit.Activity.Webview;
 import com.uav.autodebit.Interface.AlertSelectDialogClick;
@@ -1689,25 +1690,30 @@ public class Utility {
     }
 
 
-    public static Bitmap drawableToBitmap (Drawable drawable) {
+    public static Bitmap drawableToBitmap (Context context,Drawable drawable) {
         Bitmap bitmap = null;
-
-        if (drawable instanceof BitmapDrawable) {
-            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
-            if(bitmapDrawable.getBitmap() != null) {
-                return bitmapDrawable.getBitmap();
+        try {
+            if (drawable instanceof BitmapDrawable) {
+                BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
+                if(bitmapDrawable.getBitmap() != null) {
+                    return bitmapDrawable.getBitmap();
+                }
             }
+
+            if(drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
+                bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888); // Single color bitmap will be created of 1x1 pixel
+            } else {
+                bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+            }
+
+            Canvas canvas = new Canvas(bitmap);
+            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+            drawable.draw(canvas);
+        }catch (Exception e){
+            ExceptionsNotification.ExceptionHandling(context , Utility.getStackTrace(e));
         }
 
-        if(drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
-            bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888); // Single color bitmap will be created of 1x1 pixel
-        } else {
-            bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        }
 
-        Canvas canvas = new Canvas(bitmap);
-        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        drawable.draw(canvas);
         return bitmap;
     }
 
