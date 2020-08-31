@@ -497,12 +497,13 @@ public class Home extends Base_Activity
                     }else{
                         // 12/04/2020
                         MyDialog.showWebviewAlertDialog(Home.this, serviceTypeVO.getMessage(),true,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(d)->{
-                            d.dismiss();
+                            Utility.dismissDialog(Home.this, d);
+
                             Utility.enableDisableView(view,false);
                             startUserClickService(activitylayout.getTag().toString(),view);
 
                         },(ConfirmationDialogInterface.OnCancel)(cancelbtn)->{
-                            cancelbtn.dismiss();
+                            Utility.dismissDialog(Home.this, cancelbtn);
                         }));
                      }
                 }
@@ -641,7 +642,8 @@ public class Home extends Base_Activity
                     }while(i<showDialogServiceIds.length);{
                         if(showDialogValidate){
                             Utility.showSingleButtonDialogconfirmation(this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
-                                ok.dismiss();
+                                Utility.dismissDialog(Home.this, ok);
+
                                 startUserClickService(clickServiceId,null);
                             }),"Alert",data.getStringExtra("msg"));
                         }else {
@@ -738,22 +740,22 @@ public class Home extends Base_Activity
 
                     // 12/04/2020
                     MyDialog.showWebviewAlertDialog(Home.this, customerVO.getHtmlString(),true,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(d)->{
-                        d.dismiss();
+                        Utility.dismissDialog(Home.this, d);
                         startActivityForResult(new Intent(Home.this,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(serviceId))),ApplicationConstant.REQ_ENACH_MANDATE);
                     },(ConfirmationDialogInterface.OnCancel)(cancel)->{
-                        cancel.dismiss();
+                        Utility.dismissDialog(Home.this, cancel);
                     }));
 
                 }else if(customerVO.getStatusCode().equals("ap106") || customerVO.getStatusCode().equals("ap103") || customerVO.getStatusCode().equals("ap108")){
 
                     // 12/04/2020
                     MyDialog.showWebviewAlertDialog(Home.this, customerVO.getHtmlString(),true,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(d)->{
-                        d.dismiss();
+                        Utility.dismissDialog(Home.this, d);
                         String[] buttons = {"New Bank","Existing Bank"};
                         Utility.showDoubleButtonDialogConfirmation( new DialogInterface() {
                             @Override
                             public void confirm(Dialog dialog) {
-                                dialog.dismiss();
+                                Utility.dismissDialog(Home.this, dialog);
                                 try {
                                     JSONArray arryjson=new JSONArray(customerVO.getAnonymousString());
                                     ArrayList<CustomerAuthServiceVO> customerAuthServiceArry=new ArrayList<>();
@@ -790,19 +792,20 @@ public class Home extends Base_Activity
                             }
                             @Override
                             public void modify(Dialog dialog) {
-                                dialog.dismiss();
+                                Utility.dismissDialog(Home.this, dialog);
                                 startActivityForResult(new Intent(Home.this,Enach_Mandate.class).putExtra("forresutl",true).putExtra("selectservice",new ArrayList<Integer>( Arrays.asList(serviceId))),ApplicationConstant.REQ_ENACH_MANDATE);
                             }
                         },this,customerVO.getErrorMsgs().get(0),"Alert",buttons);
 
                     },(ConfirmationDialogInterface.OnCancel)(cancel)->{
-                        cancel.dismiss();
+                        Utility.dismissDialog(Home.this, cancel);
+
                     }));
 
                 }else if(customerVO.getStatusCode().equals("L_2") || customerVO.getStatusCode().equals("L_3")){
                         Utility.showSingleButtonDialogconfirmation(Home.this, new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                            Utility.dismissDialog(Home.this, ok);
                             try {
-                                ok.dismiss();
                                 switch (customerVO.getStatusCode()) {
                                     case "L_2":
                                         startActivity(new Intent(Home.this, activityhasmap.get("L_2")));
@@ -825,7 +828,7 @@ public class Home extends Base_Activity
 
                     // 12/04/2020
                     MyDialog.showWebviewAlertDialog(Home.this, customerVO.getHtmlString(),true,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(d)->{
-                        d.dismiss();
+                       Utility.dismissDialog(Home.this, d);
                         switch (customerVO.getStatusCode()) {
                             case "L_4":
                                 startActivityForResult(new Intent(Home.this, activityhasmap.get("L_5")).putExtra("forresutl", true).putExtra("selectservice", new ArrayList<Integer>(Arrays.asList(serviceId))), ApplicationConstant.REQ_ENACH_MANDATE);
@@ -844,7 +847,8 @@ public class Home extends Base_Activity
                                 break;
                         }
                     },(ConfirmationDialogInterface.OnCancel)(cancel)->{
-                        cancel.dismiss();
+                        Utility.dismissDialog(Home.this, cancel);
+
                     }));
                 }
 
@@ -966,13 +970,14 @@ public class Home extends Base_Activity
                 public String leftButton="Cancel";
                 @Override
                 public void confirm(Dialog dialog) {
-                    dialog.dismiss();
+                    Utility.dismissDialog(Home.this, dialog);
+
                     // ActivityCompat.finishAffinity( Home.this);
                     finishAffinity();
                 }
                 @Override
                 public void modify(Dialog dialog) {
-                    dialog.dismiss();
+                    Utility.dismissDialog(Home.this, dialog);
                 }
             },Home.this,null,"Do you want to exit","App Exit", buttons);
         }

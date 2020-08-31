@@ -1,6 +1,7 @@
 package com.uav.autodebit.Activity;
 
 import android.app.Dialog;
+import android.app.Notification;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -208,7 +209,7 @@ public class Notifications extends Base_Activity implements View.OnClickListener
                 @Override
                 public void confirm(Dialog dialog) {
                     notificationIsExist(false);
-                    dialog.dismiss();
+                    Utility.dismissDialog(Notifications.this,dialog);
                     customerNotificationVOS.clear(); // clear list
                     recyclerView.getAdapter().notifyDataSetChanged();  // let your adapter know about the changes and reload view
                     GetSqlLiteData.deleteNotificationData(Notifications.this,"notification");
@@ -216,7 +217,7 @@ public class Notifications extends Base_Activity implements View.OnClickListener
                 }
                 @Override
                 public void modify(Dialog dialog) {
-                    dialog.dismiss();
+                    Utility.dismissDialog(Notifications.this,dialog);
                     Utility.enableDisableView(view,true);
                 }
             }, Notifications.this,"Do you want to remove all notifications ?" ,null,btn);

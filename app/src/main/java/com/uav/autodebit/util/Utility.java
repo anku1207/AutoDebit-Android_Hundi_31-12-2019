@@ -437,24 +437,24 @@ public class Utility {
 
 
 
-    public static void  alertDialog(Context var1, String title , String msg , String buttonname){
-        Dialog var3 = new Dialog(var1);
+    public static void  alertDialog(Context context, String title , String msg , String buttonname){
+        Dialog var3 = new Dialog(context);
         var3.requestWindowFeature(1);
         var3.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         var3.getWindow().setBackgroundDrawable(new ColorDrawable(0));
         var3.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
 
-        var3.setContentView(var1.getResources().getIdentifier("singlebuttondialog", "layout", var1.getPackageName()));
+        var3.setContentView(context.getResources().getIdentifier("singlebuttondialog", "layout", context.getPackageName()));
         var3.setCanceledOnTouchOutside(false);
-        TextView var4 = (TextView)var3.findViewById(var1.getResources().getIdentifier("dialog_one_tv_title", "id", var1.getPackageName()));
+        TextView var4 = (TextView)var3.findViewById(context.getResources().getIdentifier("dialog_one_tv_title", "id", context.getPackageName()));
         var4.setText(title);
-        TextView var6 = (TextView)var3.findViewById(var1.getResources().getIdentifier("dialog_one_tv_text", "id", var1.getPackageName()));
+        TextView var6 = (TextView)var3.findViewById(context.getResources().getIdentifier("dialog_one_tv_text", "id", context.getPackageName()));
         var6.setText(msg);
-        Button var5 = (Button)var3.findViewById(var1.getResources().getIdentifier("dialog_one_btn", "id", var1.getPackageName()));
+        Button var5 = (Button)var3.findViewById(context.getResources().getIdentifier("dialog_one_btn", "id", context.getPackageName()));
         var5.setText(buttonname);
         var5.setOnClickListener(new View.OnClickListener() {
             public void onClick(View var) {
-                var3.dismiss();
+                Utility.dismissDialog(context,var3);
             }
         });
         if(!var3.isShowing())  var3.show();
@@ -588,8 +588,8 @@ public class Utility {
         button.setText(leftButton);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View var) {
-                var3.dismiss();
                 Activity activity = (Activity) context;
+                Utility.dismissDialog(context,var3);
                 if(activityfinish) activity.finish();
             }
         });
@@ -631,8 +631,8 @@ public class Utility {
 
         var5.setOnClickListener(new View.OnClickListener() {
             public void onClick(View var) {
-                var3.dismiss();
                 Activity activity = (Activity) var1;
+                Utility.dismissDialog(var1,var3);
                 if(activityfinish) activity.finish();
             }
         });
@@ -1447,7 +1447,7 @@ public class Utility {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                var3.dismiss();
+                Utility.dismissDialog(context,var3);
                 CustomerAuthServiceVO customerAuthServiceVO=dataArray.get(i);
                 alertSelectDialogClick.onSuccess(String.valueOf(customerAuthServiceVO.getCustomerAuthId()));
             }
@@ -1773,7 +1773,7 @@ public class Utility {
         proceed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dialog.dismiss();
+                Utility.dismissDialog(context,dialog);
                 alertSelectDialogClick.onSuccess(radiogroup.getCheckedRadioButtonId()+"");
             }
         });
@@ -2034,6 +2034,19 @@ public class Utility {
             ExceptionsNotification.ExceptionHandling(context ,  Utility.getStackTrace(e), "0");
         }
         return mat;
+    }
+
+
+    public static void dismissDialog(Context context , Dialog dialog){
+       try {
+           if (!((Activity)context).isFinishing() && dialog!=null &&  dialog.isShowing()) {
+               dialog.dismiss();
+           }else {
+               Log.w("dismissDialog_Error","ErrorDismissDialog");
+           }
+       }catch (Exception e){
+           ExceptionsNotification.ExceptionHandling(context ,  Utility.getStackTrace(e), "0");
+       }
 
     }
 

@@ -134,50 +134,25 @@ public class TermAndCondition_Webview extends Base_Activity implements View.OnCl
 
         @Override
         public void onPageFinished(WebView view, String url) {
-            if (progressBar!=null && progressBar.isShowing()) {
-                try {
-                    progressBar.dismiss();
-                }catch (Exception e){
-
-                }
-            }
+            Utility.dismissDialog(TermAndCondition_Webview.this,progressBar);
 
         }
 
         @SuppressWarnings("deprecation")
         public void onReceivedError(WebView view, int errorCode,
                                     String description, String failingUrl) {
-            if (progressBar!=null && progressBar.isShowing()) {
-                try {
-                    progressBar.dismiss();
-                }catch (Exception e){
-
-                }
-            }
+            Utility.dismissDialog(TermAndCondition_Webview.this,progressBar);
             showError(description);
         }
         @TargetApi(android.os.Build.VERSION_CODES.M)
         public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-            if (progressBar.isShowing()) {
-                try {
-                    progressBar.dismiss();
-                }catch (Exception e){
-
-                }
-            }
+            Utility.dismissDialog(TermAndCondition_Webview.this,progressBar);
             showError((String) error.getDescription());
         }
 
         @TargetApi(android.os.Build.VERSION_CODES.M)
         public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
-            if (progressBar!=null && progressBar.isShowing()) {
-                try {
-                    progressBar.dismiss();
-                }catch (Exception e){
-
-                }
-
-            }
+            Utility.dismissDialog(TermAndCondition_Webview.this,progressBar);
             showError(errorResponse.getReasonPhrase().toString());
         }
     }

@@ -309,12 +309,12 @@ public class D2H extends Base_Activity implements View.OnClickListener {
                                 Utility.confirmationDialog(new DialogInterface() {
                                     @Override
                                     public void confirm(Dialog dialog) {
-                                        dialog.dismiss();
+                                        Utility.dismissDialog(D2H.this,dialog);
                                         addBank(button,editText.getText().toString(),planDetailarr);
                                     }
                                     @Override
                                     public void modify(Dialog dialog) {
-                                        dialog.dismiss();
+                                        Utility.dismissDialog(D2H.this,dialog);
 
                                     }
                                 },D2H.this,planDetailarr,null,"Confirmation");

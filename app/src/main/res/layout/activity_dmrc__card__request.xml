@@ -336,7 +336,7 @@
                     android:id="@+id/attachaddress"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Personolise Your Card - Upload Photo"
+                    android:text="Personalise Your Card - Upload Photo"
                     android:layout_marginLeft="2dp"
                     android:fontFamily="@font/poppinsmedium"
                     android:textColor="@drawable/text_change_color_blue"

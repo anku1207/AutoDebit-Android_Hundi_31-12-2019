@@ -55,16 +55,15 @@ public class SendLog extends AppCompatActivity implements View.OnClickListener{
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Report", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 sendLogFile();
-                // finish();
+                finishAffinity();
             }
         });
         alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                alertDialog.dismiss();
-                finish();
+                Utility.dismissDialog(SendLog.this,alertDialog);
+                finishAffinity();
             }
         });
-
         alertDialog.show();
     }
 }

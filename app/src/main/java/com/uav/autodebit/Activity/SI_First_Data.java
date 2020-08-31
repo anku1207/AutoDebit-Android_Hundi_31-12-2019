@@ -15,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 
 import android.view.View;
@@ -264,11 +265,14 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
 
                 WebView newWebView = new WebView(SI_First_Data.this);
                 newWebView.getSettings().setJavaScriptEnabled(true);
-                newWebView.getSettings().setSupportZoom(true);
-                newWebView.getSettings().setBuiltInZoomControls(true);
-                newWebView.getSettings().setPluginState(WebSettings.PluginState.ON);
-              //  newWebView.getSettings().setSupportMultipleWindows(true);
-                view.addView(newWebView);
+                newWebView.setWebChromeClient(this);
+                newWebView.setWebViewClient(new WebViewClient());
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,  LinearLayout.LayoutParams.MATCH_PARENT);
+                params.gravity= Gravity.CENTER;
+                newWebView.setLayoutParams(params);
+
+                webview.addView(newWebView);
                 WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;
                 transport.setWebView(newWebView);
                 resultMsg.sendToTarget();
@@ -283,13 +287,11 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
                     public void onPageStarted(WebView view, String url, Bitmap favicon) {
                         super.onPageStarted(view, url, favicon);
                         Log.w("pagestart", url);
-
                     }
 
                     @Override
                     public void onPageFinished(WebView view, String url) {
                         Log.w("loadurlresp", url);
-
                     }
 
                     @SuppressWarnings("deprecation")
@@ -429,7 +431,7 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
         Button var5 = (Button) var3.findViewById(var1.getResources().getIdentifier("dialog_one_btn", "id", var1.getPackageName()));
         var5.setOnClickListener(new View.OnClickListener() {
             public void onClick(View var) {
-                var3.dismiss();
+                Utility.dismissDialog(SI_First_Data.this, var3);
                 if(!foractivity){
                     Intent newIntent = new Intent(SI_First_Data.this, Home.class);
                     newIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -480,14 +482,7 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
 
         @Override
         public void onPageFinished(WebView view, String url) {
-            if (!SI_First_Data.this.isFinishing() && progressBar!=null && progressBar.isShowing()) {
-                try {
-                    progressBar.dismiss();
-                }
-                catch (Exception e) {
-                    //use a log message
-                }
-            }
+            Utility.dismissDialog(SI_First_Data.this, progressBar);
             Log.w("loadurlresp", url);
             if (ApplicationConstant.SI_SERVICE.equals("icici")) {
                 if (url.equals("file:///android_asset/sifirst.html")) {
@@ -513,38 +508,19 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
         @SuppressWarnings("deprecation")
         public void onReceivedError(WebView view, int errorCode,
                                     String description, String failingUrl) {
-            if (!SI_First_Data.this.isFinishing() &&  progressBar!=null && progressBar.isShowing()) {
-                try {
-                    progressBar.dismiss();
-                }catch (Exception e){
-
-                }
-
-            }
+            Utility.dismissDialog(SI_First_Data.this, progressBar);
             showError(description);
         }
 
         @TargetApi(android.os.Build.VERSION_CODES.M)
         public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-            if (!SI_First_Data.this.isFinishing() && progressBar!=null && progressBar.isShowing()) {
-                try {
-                    progressBar.dismiss();
-                }catch (Exception e){
-
-                }
-            }
+            Utility.dismissDialog(SI_First_Data.this, progressBar);
             showError((String) error.getDescription());
         }
 
         @TargetApi(android.os.Build.VERSION_CODES.M)
         public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
-            if (!SI_First_Data.this.isFinishing() && progressBar!=null && progressBar.isShowing()) {
-                try {
-                    progressBar.dismiss();
-                }catch (Exception e){
-
-                }
-            }
+            Utility.dismissDialog(SI_First_Data.this, progressBar);
             showError(errorResponse.getReasonPhrase().toString());
         }
     }

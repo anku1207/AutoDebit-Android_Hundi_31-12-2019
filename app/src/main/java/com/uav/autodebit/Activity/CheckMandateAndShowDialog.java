@@ -273,7 +273,7 @@ public class CheckMandateAndShowDialog {
                 ExceptionsNotification.ExceptionHandling(context , Utility.getStackTrace(e));
             }
         },(ConfirmationGetObjet.OnCancel)(cancel)->{
-            ((Dialog)cancel).dismiss();
+            Utility.dismissDialog(context,((Dialog)cancel));
             volleyResponse.onSuccess(null);
 
         }));

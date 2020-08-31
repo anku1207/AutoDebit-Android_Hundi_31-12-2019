@@ -134,33 +134,27 @@ public class Track_Dmrc_Card extends AppCompatActivity implements View.OnClickLi
 
         @Override
         public void onPageFinished(WebView view, String url) {
-            if (!Track_Dmrc_Card.this.isFinishing() && progressBar!=null && progressBar.isShowing()) {
-                progressBar.dismiss();
-            }
-
+            Utility.dismissDialog(Track_Dmrc_Card.this, progressBar);
         }
 
         @SuppressWarnings("deprecation")
         public void onReceivedError(WebView view, int errorCode,
                                     String description, String failingUrl) {
-            if (!Track_Dmrc_Card.this.isFinishing() && progressBar!=null && progressBar.isShowing()) {
-                progressBar.dismiss();
-            }
+            Utility.dismissDialog(Track_Dmrc_Card.this, progressBar);
+
             showError(description);
         }
         @TargetApi(android.os.Build.VERSION_CODES.M)
         public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-            if (!Track_Dmrc_Card.this.isFinishing() && progressBar!=null && progressBar.isShowing()) {
-                progressBar.dismiss();
-            }
+            Utility.dismissDialog(Track_Dmrc_Card.this, progressBar);
+
             showError((String) error.getDescription());
         }
 
         @TargetApi(android.os.Build.VERSION_CODES.M)
         public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
-            if (!Track_Dmrc_Card.this.isFinishing() && progressBar!=null && progressBar.isShowing()) {
-                progressBar.dismiss();
-            }
+            Utility.dismissDialog(Track_Dmrc_Card.this, progressBar);
+
             showError(errorResponse.getReasonPhrase().toString());
         }
     }

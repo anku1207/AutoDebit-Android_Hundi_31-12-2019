@@ -58,7 +58,7 @@ public class Base_Activity extends AppCompatActivity {
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         //do things
-                        alert.dismiss();
+                        Utility.dismissDialog(Base_Activity.this,alert);
                     }
                 });
         alert = builder.create();

@@ -357,19 +357,19 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                 canceldialog.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        var3.dismiss();
+                        Utility.dismissDialog(Dmrc_Card_Request.this, var3);
                     }
                 });
                 modify.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        var3.dismiss();
+                        Utility.dismissDialog(Dmrc_Card_Request.this, var3);
                     }
                 });
                 next.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        var3.dismiss();
+                        Utility.dismissDialog(Dmrc_Card_Request.this, var3);
 
                         if(bmp==null){
                             saveDmrcCardInServer();
@@ -381,7 +381,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                                 }
                                 @Override
                                 public void doPostExecute() {
-                                    pd.dismiss();
+                                    Utility.dismissDialog(Dmrc_Card_Request.this, pd);
                                     saveDmrcCardInServer();
                                 }
                             });
@@ -519,8 +519,8 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                        Utility.confirmationChargesAmountDialog(new com.uav.autodebit.util.DialogInterface() {
                            @Override
                            public void confirm(Dialog dialog) {
+                               Utility.dismissDialog(Dmrc_Card_Request.this, dialog);
                                try {
-                                   dialog.dismiss();
                                    if(dmrc_customer_cardVO.isEventIs()){
                                        Utility.showSelectPaymentTypeDialog(Dmrc_Card_Request.this, "Payment Type", dmrc_customer_cardVO.getPaymentTypeObject(), new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess) (position) -> {
                                            int selectPosition = Integer.parseInt(position);
@@ -557,7 +557,8 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                            }
                            @Override
                            public void modify(Dialog dialog) {
-                               dialog.dismiss();
+                               Utility.dismissDialog(Dmrc_Card_Request.this, dialog);
+
                            }
                        },Dmrc_Card_Request.this,cardChargesJson,null,"Card Charges",btnNames);
                     }
@@ -685,7 +686,8 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                             String [] btnText= {object.getString("Button1"),object.getString("Button2")};
 
                             MyDialog.showDoubleButtonBigContentDialog(Dmrc_Card_Request.this,new BigContentDialogIntetface((BigContentDialogIntetface.Button1)(button1)->{
-                                button1.dismiss();
+                                Utility.dismissDialog(Dmrc_Card_Request.this, button1);
+
 
                                 BillPayRequest.showBankMandateOrSiMandateInfo(Dmrc_Card_Request.this,dmrc_customer_SI_cardVO.getSiMandateHtml(),new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
                                     OxigenTransactionVO oxigenTransactionVO = new OxigenTransactionVO();
@@ -706,10 +708,10 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                                     }));
                                 }));
                            },(BigContentDialogIntetface.Button2)(button2)->{
-                                button2.dismiss();
+                                Utility.dismissDialog(Dmrc_Card_Request.this, button2);
                                 String [] proceedBtn= {"Proceed"};
                                 MyDialog.showSingleButtonBigContentDialog(Dmrc_Card_Request.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
-                                    ok.dismiss();
+                                    Utility.dismissDialog(Dmrc_Card_Request.this, ok);
                                     dmrcCustomerCardSecurityDeposti(dmrc_customer_SI_cardVO.getDmrcid());
                                 }),"Add Security Deposit",dmrc_customer_SI_cardVO.getDialogMessage(),proceedBtn);
                             }),dmrc_customer_SI_cardVO.getDialogTitle(),dmrc_customer_SI_cardVO.getHtmlString(),btnText);

@@ -99,7 +99,7 @@ public class VolleyUtils {
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (connectionVO.getRequestType(), ApplicationConstant.getHttpURL(context) /*+"_"+Utility.getVersioncode(context)+"/"*/+connectionVO.getMethodName() , jsonParams, response -> {
-                    pDialog.dismiss();
+                    Utility.dismissDialog(mctx,pDialog);
                     try {
                         listener.onResponse(response);
 
@@ -108,7 +108,7 @@ public class VolleyUtils {
                     }
                 }, volleyError -> {
                    // Toast.makeText(context, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
-                    pDialog.dismiss();
+                    Utility.dismissDialog(mctx,pDialog);
                     boolean showerror=true;
 
                     if (volleyError instanceof NetworkError) {
@@ -148,7 +148,7 @@ public class VolleyUtils {
 
             @Override
             protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
-                pDialog.dismiss();
+                Utility.dismissDialog(mctx,pDialog);
                 try {
                     String jsonString = new String(response.data,
                             HttpHeaderParser.parseCharset(response.headers, PROTOCOL_CHARSET));
@@ -213,13 +213,14 @@ public class VolleyUtils {
         update.setText("Update");
         update.setOnClickListener(new View.OnClickListener() {
             public void onClick(View var) {
+                Utility.dismissDialog(mctx,var3);
                 ((Activity)mctx).startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse
                         ("market://details?id="+ mctx.getPackageName() )));
                 ((Activity) mctx).finish();
-                var3.dismiss();
+
             }
         });
-        var3.show();
+        if(!var3.isShowing())  var3.show();
     }
 
 }

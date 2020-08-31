@@ -198,13 +198,7 @@ public class Webview extends Base_Activity {
             }
 
             if( url.contains("enachResponse")) {
-                if (!Webview.this.isFinishing() && progressBar!=null && progressBar.isShowing()) {
-                    try {
-                        progressBar.dismiss();
-                    }catch (Exception e) {
-                        //use a log message
-                    }
-                }
+                Utility.dismissDialog(Webview.this,progressBar);
 
                 Log.w("responseUrl",Utility.getQueryarray(url).toString());
                 Intent intent12 = new Intent();
@@ -215,47 +209,26 @@ public class Webview extends Base_Activity {
         }
         @Override
         public void onPageFinished(WebView view, String url) {
-            if (!Webview.this.isFinishing() && progressBar!=null && progressBar.isShowing()) {
-                try {
-                    progressBar.dismiss();
-                }catch (Exception e) {
-                    //use a log message
-                }
-            }
+            Utility.dismissDialog(Webview.this,progressBar);
         }
         @SuppressWarnings("deprecation")
         public void onReceivedError(WebView view, int errorCode,
                                     String description, String failingUrl) {
-            if (!Webview.this.isFinishing() && progressBar!=null && progressBar.isShowing()) {
-                try {
-                    progressBar.dismiss();
-                }catch (Exception e) {
-                    //use a log message
-                }
-            }
+            Utility.dismissDialog(Webview.this,progressBar);
+
             showError(description);
         }
         @TargetApi(android.os.Build.VERSION_CODES.M)
         public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-            if (!Webview.this.isFinishing() && progressBar!=null && progressBar.isShowing()) {
-                try {
-                    progressBar.dismiss();
-                }catch (Exception e) {
-                    //use a log message
-                }
-            }
+            Utility.dismissDialog(Webview.this,progressBar);
+
             showError((String) error.getDescription());
         }
 
         @TargetApi(android.os.Build.VERSION_CODES.M)
         public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
-            if (!Webview.this.isFinishing() && progressBar!=null && progressBar.isShowing()) {
-                try {
-                    progressBar.dismiss();
-                }catch (Exception e) {
-                    //use a log message
-                }
-            }
+            Utility.dismissDialog(Webview.this,progressBar);
+
             showError(errorResponse.getReasonPhrase().toString());
         }
     }

@@ -397,7 +397,7 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                 Utility.confirmationDialog(new DialogInterface() {
                     @Override
                     public void confirm(Dialog dialog) {
-                        dialog.dismiss();
+                        Utility.dismissDialog(Mobile_Prepaid_Recharge_Service.this, dialog);
                         try {
                             oxiMobileRechargeValidation();
                             // proceedToRecharge();
@@ -408,7 +408,7 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                     }
                     @Override
                     public void modify(Dialog dialog) {
-                        dialog.dismiss();
+                        Utility.dismissDialog(Mobile_Prepaid_Recharge_Service.this, dialog);
                     }
                 },Mobile_Prepaid_Recharge_Service.this,jsonArray,null,"Confirmation",btn);
             }
@@ -475,13 +475,14 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                             BillPayRequest.showBankMandateOrSiMandateInfo(Mobile_Prepaid_Recharge_Service.this,oxigenValidateResponce.getBankMandateHtml(),new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
                                 MyDialog.showWebviewConditionalAlertDialog(Mobile_Prepaid_Recharge_Service.this, oxigenValidateResponce.getClinkingOnBankMandate(),true,new ConfirmationGetObjet((ConfirmationGetObjet.OnOk)(bankmandatedialog)->{
                                     HashMap<String,Object> objectHashMap = (HashMap<String, Object>) bankmandatedialog;
-                                    ((Dialog) Objects.requireNonNull(objectHashMap.get("dialog"))).dismiss();
+                                    Utility.dismissDialog(Mobile_Prepaid_Recharge_Service.this, ((Dialog) Objects.requireNonNull(objectHashMap.get("dialog"))));
+
                                     if(String.valueOf(objectHashMap.get("data")).equalsIgnoreCase("ok")){
                                         //on si or recharge and mandate
                                         startSIActivity(Mobile_Prepaid_Recharge_Service.this,oxigenValidateResponce,ApplicationConstant.PG_MANDATE_AND_RECHARGE);
                                     }
                                 },(ConfirmationGetObjet.OnCancel)(cancel)->{
-                                    ((Dialog)cancel).dismiss();
+                                    Utility.dismissDialog(Mobile_Prepaid_Recharge_Service.this, ((Dialog)cancel));
                                     //if mandate is exist proceed bill  direct
                                     //if mandate is not exist check bank bank mandate
                                     // check mandate and adopt bank for service
@@ -700,7 +701,7 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                     // replace oxigenValidateResponce object on success on recharge
                     oxigenValidateResponce=oxigenTransactionVOresp;
                     // remove all dialog
-                    dismissDialog();
+                    dismissDialogCurrentActivity();
 
                     //if mandate is not exits
                     showMandateSchedulerAfterRecharge(Mobile_Prepaid_Recharge_Service.this,oxigenTransactionVOresp.getHtmlString(),oxigenTransactionVOresp,false);
@@ -741,7 +742,8 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
                 ExceptionsNotification.ExceptionHandling(context , Utility.getStackTrace(e));
             }
         },(ConfirmationGetObjet.OnCancel)(cancel)->{
-            ((Dialog)cancel).dismiss();
+            Utility.dismissDialog(Mobile_Prepaid_Recharge_Service.this,   ((Dialog)cancel));
+
             afterRechargeMoveHistorySummaryActivity(Mobile_Prepaid_Recharge_Service.this,false,oxigenTransactionVOresp);
         }));
     }
@@ -783,12 +785,12 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
 
 
     public static void afterRechargeMoveHistorySummaryActivity(Context context , boolean getHistoryDetails , OxigenTransactionVO oxigenTransactionVO){
-        dismissDialog();
+        dismissDialogCurrentActivity();
         if(getHistoryDetails){
             CheckMandateAndShowDialog.afterRechargeGetRechargeDetails(context,oxigenTransactionVO.getCustoemrHistoryId(),oxigenTransactionVO.getAnonymousString(),new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
                 CustomerVO customerVO = (CustomerVO) success;
                 MyDialog.showSingleButtonBigContentDialog(context,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
-                    ok.dismiss();
+                    Utility.dismissDialog(context, ok);
                     if(customerVO.getCustoemrHistoryId()!=null){
                         ((Activity)context).startActivity(new Intent(context,HistorySummary.class).putExtra("historyId",customerVO.getCustoemrHistoryId().toString()));
                         ((Activity)context).finish();
@@ -813,10 +815,10 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        dismissDialog();
+        dismissDialogCurrentActivity();
     }
 
-    public static void dismissDialog(){
+    public static void dismissDialogCurrentActivity(){
         if(GlobalApplication.dialog_List.size()>0){
             for (Dialog dialog : GlobalApplication.dialog_List){
                 dialog.dismiss();

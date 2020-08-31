@@ -128,7 +128,14 @@ public class Splash_Screen extends AppCompatActivity implements BitmapInterface 
             alert.setCancelable(false);
             alert.show();
         }else {
-            Branch.sessionBuilder(this).withCallback(branchReferralInitListener).withData(getIntent() != null ? getIntent().getData() : null).init();
+            JSONObject branchSessionJson = (JSONObject) Branch.getInstance().getLatestReferringParams();
+            if(branchSessionJson.length()==0){
+                Log.w("branchSession","Create Branch Session");
+                Branch.sessionBuilder(this).withCallback(branchReferralInitListener).withData(getIntent() != null ? getIntent().getData() : null).init();
+            }else {
+                Log.w("branchSession","Existing Branch Session");
+                startDownloadCache();
+            }
         }
     }
     @Override
@@ -167,6 +174,7 @@ public class Splash_Screen extends AppCompatActivity implements BitmapInterface 
                 startDownloadCache();
             }else {
                 Log.i("BRANCH SDK", error.getMessage());
+                startDownloadCache();
             }
         }
     };

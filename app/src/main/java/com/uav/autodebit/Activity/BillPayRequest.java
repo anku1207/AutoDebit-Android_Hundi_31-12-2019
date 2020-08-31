@@ -705,7 +705,7 @@ public class BillPayRequest {
     }
     public static void handelRechargeSuccess(Context context,OxigenTransactionVO oxigenTransactionVOSuccess) {
         // ask to customer for bank mandate
-        dismissDialog();
+        dismissDialogCurrentActivity();
         //replace oxigenValidateResponce change on oxigenTransactionVOresp
         oxigenValidateResponce=oxigenTransactionVOSuccess;
         if(oxigenTransactionVOSuccess.isEventIs()){
@@ -773,7 +773,7 @@ public class BillPayRequest {
             }
         }));
     }*/
-    public static void dismissDialog(){
+    public static void dismissDialogCurrentActivity(){
         if(GlobalApplication.dialog_List.size()>0){
             for (Dialog dialog : GlobalApplication.dialog_List){
                 dialog.dismiss();
@@ -781,7 +781,7 @@ public class BillPayRequest {
         }
     }
     public static void afterRechargeMoveHistorySummaryActivity(Context context , boolean getHistoryDetails , OxigenTransactionVO oxigenTransactionVO){
-        dismissDialog();
+        dismissDialogCurrentActivity();
 
         try {
             if(getHistoryDetails){

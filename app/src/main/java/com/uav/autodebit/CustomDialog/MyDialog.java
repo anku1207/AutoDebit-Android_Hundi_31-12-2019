@@ -29,6 +29,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.uav.autodebit.Activity.D2H;
 import com.uav.autodebit.Interface.BigContentDialogIntetface;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.Interface.ConfirmationGetObjet;
@@ -200,16 +201,13 @@ public class MyDialog {
                 }
                 @Override
                 public void onPageFinished(WebView view, String url) {
-                    if (progressBar!=null && progressBar.isShowing()) {
-                        progressBar.dismiss();
-                    }
+                    Utility.dismissDialog(context,progressBar);
                     if(!cusdialog.isShowing())cusdialog.show();
                 }
                 @TargetApi(android.os.Build.VERSION_CODES.M)
                 public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
-                    if (progressBar!=null && progressBar.isShowing()) {
-                        progressBar.dismiss();
-                    }
+                    Utility.dismissDialog(context,progressBar);
+
                 }
             });
         }catch (Exception e){

@@ -298,12 +298,12 @@ public class Dish_Tv  extends Base_Activity implements View.OnClickListener  {
                                 Utility.confirmationDialog(new DialogInterface() {
                                     @Override
                                     public void confirm(Dialog dialog) {
-                                        dialog.dismiss();
+                                        Utility.dismissDialog(Dish_Tv.this,dialog);
                                         addBank(button,editText.getText().toString(),planDetailarr);
                                     }
                                     @Override
                                     public void modify(Dialog dialog) {
-                                        dialog.dismiss();
+                                        Utility.dismissDialog(Dish_Tv.this,dialog);
 
                                     }
                                 },Dish_Tv.this,planDetailarr,null,"Confirmation");

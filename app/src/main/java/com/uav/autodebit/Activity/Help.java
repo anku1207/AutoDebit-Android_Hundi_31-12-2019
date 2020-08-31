@@ -107,7 +107,7 @@ public class Help extends Base_Activity implements View.OnClickListener {
                     Utility.showSingleButtonDialog(Help.this,customerVO.getDialogTitle(),sb.toString(),false);
                 }else {
                    MyDialog.showSingleButtonBigContentDialog(Help.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
-                       ((Dialog)ok).dismiss();
+                       Utility.dismissDialog(Help.this, ((Dialog)ok));
                    }),customerVO.getDialogTitle(),customerVO.getAnonymousString());
                 }
             }

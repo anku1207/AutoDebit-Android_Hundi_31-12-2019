@@ -233,12 +233,12 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
                 Utility.confirmationDialog(new DialogInterface() {
                     @Override
                     public void confirm(Dialog dialog) {
-                        dialog.dismiss();
+                        Utility.dismissDialog(Profile_Activity.this,dialog);
                         resendotpfun("email",email.getText().toString());
                     }
                     @Override
                     public void modify(Dialog dialog) {
-                        dialog.dismiss();
+                        Utility.dismissDialog(Profile_Activity.this,dialog);
                     }
                 },this,null,"Would you like email verify ?"+email.getText().toString(),"Alert",buttons);
                 break;
@@ -253,7 +253,8 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
                 Utility.confirmationDialog(new DialogInterface() {
                     @Override
                     public void confirm(Dialog dialog) {
-                        dialog.dismiss();
+                        Utility.dismissDialog(Profile_Activity.this,dialog);
+
                         Intent intent =new Intent(Profile_Activity.this,ChangePassword.class);
                         intent.putExtra("customerid",Session.getCustomerId(Profile_Activity.this));
                         intent.putExtra("methodname","setCustomerChangePassword");
@@ -261,7 +262,7 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
                     }
                     @Override
                     public void modify(Dialog dialog) {
-                        dialog.dismiss();
+                        Utility.dismissDialog(Profile_Activity.this,dialog);
                     }
                 },this,null,"Would you like change pin ?","Alert",changePass);
                 break;
@@ -802,11 +803,11 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
             Utility.confirmationDialog(new DialogInterface() {
                 @Override
                 public void confirm(Dialog dialog) {
-                    dialog.dismiss();
+                    Utility.dismissDialog(Profile_Activity.this,dialog);
                 }
                 @Override
                 public void modify(Dialog dialog) {
-                    dialog.dismiss();
+                    Utility.dismissDialog(Profile_Activity.this,dialog);
                 }
             },Profile_Activity.this,jsonArray,null,"Bank Detail",changePass);
     }

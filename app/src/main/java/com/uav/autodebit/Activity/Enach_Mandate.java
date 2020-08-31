@@ -338,14 +338,13 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
             Utility.confirmationDialog(new DialogInterface() {
                 @Override
                 public void confirm(Dialog dialog) {
-                    dialog.dismiss();
-
+                    Utility.dismissDialog(Enach_Mandate.this,dialog);
                     mandatebank();
                 }
 
                 @Override
                 public void modify(Dialog dialog) {
-                    dialog.dismiss();
+                    Utility.dismissDialog(Enach_Mandate.this,dialog);
                 }
             },Enach_Mandate.this,jsonArray,null,"Please Confirm Detail");
 

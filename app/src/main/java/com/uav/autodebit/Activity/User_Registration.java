@@ -279,7 +279,8 @@ public class User_Registration extends Base_Activity {
             confirmationDialog(new DialogInterface() {
                 @Override
                 public void confirm(Dialog dialog) {
-                    dialog.dismiss();
+                    Utility.dismissDialog(User_Registration.this, dialog);
+
                     try {
                         signuser();
                     }catch (Exception e){
@@ -288,7 +289,7 @@ public class User_Registration extends Base_Activity {
                 }
                 @Override
                 public void modify(Dialog dialog) {
-                    dialog.dismiss();
+                    Utility.dismissDialog(User_Registration.this, dialog);
                 }
 
             },User_Registration.this,jsonArray,null,"Please Confirm Detail",textviewsize);
@@ -356,7 +357,7 @@ public class User_Registration extends Base_Activity {
                             sb.append(error.get(i)).append("\n");
                         }
                         Utility.showSingleButtonDialogconfirmation(User_Registration.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
-                            ok.dismiss();
+                            Utility.dismissDialog(User_Registration.this, ok);
 
                             Session.set_Data_Sharedprefence_BoolenvValue(User_Registration.this,Session.CACHE_IS_NEW_USER,true);
                             Intent intent =new Intent(User_Registration.this, Login.class);

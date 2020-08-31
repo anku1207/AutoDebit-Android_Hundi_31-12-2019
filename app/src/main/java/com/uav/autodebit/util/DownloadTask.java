@@ -11,6 +11,7 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.uav.autodebit.Activity.User_Registration;
 import com.uav.autodebit.R;
 import com.uav.autodebit.vo.BitmapVO;
 
@@ -112,7 +113,8 @@ public class DownloadTask {
         protected void onPostExecute(File result) {
             try {
                 if (result != null) {
-                    progressDialog.dismiss();
+                    Utility.dismissDialog(context, progressDialog);
+
 
                     fileDownloadInterface.downloadComplete(result);
                     //Toast.makeText(context, "Downloaded Successfully", Toast.LENGTH_SHORT).show();
@@ -211,7 +213,7 @@ public class DownloadTask {
                 is.close();
 
             } catch (Exception e) {
-                progressDialog.dismiss();
+                Utility.dismissDialog(context, progressDialog);
 
                 fileDownloadInterface.error(Utility.getStackTrace(e));
                 //Read exception if something went wrong

@@ -347,12 +347,12 @@ public class AddBankAndServicelist extends Base_Activity implements View.OnClick
                 if(data !=null){
                     Utility.showSingleButtonDialogconfirmation(this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
                         if(data.getBooleanExtra("mandate_status",false)){
-                            ok.dismiss();
+                            Utility.dismissDialog(AddBankAndServicelist.this,ok);
                             Intent intent =  new Intent();
                             setResult(RESULT_OK,intent);
                             finish();
                         }else {
-                            ok.dismiss();
+                            Utility.dismissDialog(AddBankAndServicelist.this,ok);
                         }
                     }),"", Content_Message.mandate_Success_Message);
                 }else {

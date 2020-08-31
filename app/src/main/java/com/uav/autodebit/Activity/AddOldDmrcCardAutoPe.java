@@ -364,7 +364,7 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
                 }
                 @Override
                 public void doPostExecute() {
-                    pd.dismiss();
+                    Utility.dismissDialog(AddOldDmrcCardAutoPe.this, pd);
                     if(stringimg!=null){
                         saveDmrcCardInServer();
                     }
@@ -580,7 +580,8 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
                             String [] btnText= {object.getString("Button1"),object.getString("Button2")};
 
                             MyDialog.showDoubleButtonBigContentDialog(AddOldDmrcCardAutoPe.this,new BigContentDialogIntetface((BigContentDialogIntetface.Button1)(button1)->{
-                                button1.dismiss();
+                                Utility.dismissDialog(AddOldDmrcCardAutoPe.this, button1);
+
 
                                 BillPayRequest.showBankMandateOrSiMandateInfo(AddOldDmrcCardAutoPe.this,dmrc_customer_SI_cardVO.getSiMandateHtml(),new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
                                     OxigenTransactionVO oxigenTransactionVO = new OxigenTransactionVO();
@@ -601,10 +602,11 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
                                     }));
                                 }));
                             },(BigContentDialogIntetface.Button2)(button2)->{
-                                button2.dismiss();
+                                Utility.dismissDialog(AddOldDmrcCardAutoPe.this, button2);
+
                                 String [] proceedBtn= {"Proceed"};
                                 MyDialog.showSingleButtonBigContentDialog(AddOldDmrcCardAutoPe.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
-                                    ok.dismiss();
+                                    Utility.dismissDialog(AddOldDmrcCardAutoPe.this, ok);
                                     dmrcCustomerCardSecurityDeposti(dmrc_customer_SI_cardVO.getDmrcid());
                                 }),"Add Security Deposit",dmrc_customer_SI_cardVO.getDialogMessage(),proceedBtn);
                             }),dmrc_customer_SI_cardVO.getDialogTitle(),dmrc_customer_SI_cardVO.getHtmlString(),btnText);

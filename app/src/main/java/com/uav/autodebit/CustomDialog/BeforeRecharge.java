@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
 
+import com.uav.autodebit.Activity.AddOldDmrcCardAutoPe;
 import com.uav.autodebit.Activity.CheckMandateAndShowDialog;
 import com.uav.autodebit.Activity.Enach_Mandate;
 import com.uav.autodebit.Activity.Mobile_Prepaid_Recharge_Service;
@@ -46,7 +47,8 @@ public class BeforeRecharge {
                     Utility.showDoubleButtonDialogConfirmation(new DialogInterface() {
                         @Override
                         public void confirm(Dialog dialog) {
-                            dialog.dismiss();
+                            Utility.dismissDialog(context, dialog);
+
                             createBankListInDialog(context,oxigenTransactionVOresp.getProvider().getProviderId(),oxigenTransactionVO,new CallBackInterface((CallBackInterface.OnSuccess)(onclick)->{
                                 String bankId = (String) onclick;
                                 if(!bankId.equals("0")){
@@ -65,7 +67,7 @@ public class BeforeRecharge {
                         }
                         @Override
                         public void modify(Dialog dialog) {
-                            dialog.dismiss();
+                            Utility.dismissDialog(context, dialog);
                             mandateAndRechargeInterface.onMandate(oxigenTransactionVO.getStatusCode());
                             /*if(oxigenTransactionVOresp.getProvider().getProviderId()== AuthServiceProviderVO.AUTOPE_PG){
                                 startSIActivity(context,oxigenTransactionVOresp,ApplicationConstant.PG_MANDATE_AND_RECHARGE);

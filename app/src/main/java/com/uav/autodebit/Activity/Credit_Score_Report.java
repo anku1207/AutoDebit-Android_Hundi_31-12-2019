@@ -183,9 +183,8 @@ public class Credit_Score_Report extends Base_Activity implements FileDownloadIn
 
         webView.setWebViewClient(new WebViewClient() {
             public void onPageFinished(WebView view, String url) {
-                if (progressBar.isShowing()) {
-                    progressBar.dismiss();
-                }
+                Utility.dismissDialog(Credit_Score_Report.this,progressBar);
+
                 if(!url.equalsIgnoreCase(receiptUrl)) {
                     showError("Not a valid URL");
                 }
@@ -194,24 +193,21 @@ public class Credit_Score_Report extends Base_Activity implements FileDownloadIn
             @SuppressWarnings("deprecation")
             public void onReceivedError(WebView view, int errorCode,
                                         String description, String failingUrl) {
-                if (progressBar.isShowing()) {
-                    progressBar.dismiss();
-                }
+                Utility.dismissDialog(Credit_Score_Report.this,progressBar);
+
                 showError(description);
             }
             @TargetApi(android.os.Build.VERSION_CODES.M)
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-                if (progressBar.isShowing()) {
-                    progressBar.dismiss();
-                }
+                Utility.dismissDialog(Credit_Score_Report.this,progressBar);
+
                 showError((String) error.getDescription());
             }
 
             @TargetApi(android.os.Build.VERSION_CODES.M)
             public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
-                if (progressBar.isShowing()) {
-                    progressBar.dismiss();
-                }
+                Utility.dismissDialog(Credit_Score_Report.this,progressBar);
+
                 showError(errorResponse.getReasonPhrase().toString());
             }
         });
