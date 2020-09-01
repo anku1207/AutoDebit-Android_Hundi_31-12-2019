@@ -196,13 +196,14 @@ public class Splash_Screen extends AppCompatActivity implements BitmapInterface 
             if(!Session.check_Exists_key(Splash_Screen.this,Session.CACHE_CUSTOMER) ){
 
                 Intent intent = new Intent(this, Login.class);
-                finish();
                 startActivity(intent);
+                finish();
             }else {
                 loadHomeActivity();
             }
         }else {
-            Intent intent = new Intent(this, User_Registration.class);
+           // Intent intent = new Intent(this, User_Registration.class);
+            Intent intent = new Intent(this, Login.class);
             startActivity(intent);
             finish();
         }
@@ -219,20 +220,13 @@ public class Splash_Screen extends AppCompatActivity implements BitmapInterface 
                 intent.putExtra(ApplicationConstant.NOTIFICATION_ACTION,getIntent().getStringExtra(ApplicationConstant.NOTIFICATION_ACTION));
                 startActivity(intent);
                 finish();
-
             }else {
                 Intent intent=new Intent(Splash_Screen.this,Login.class);
                 startActivity(intent);
                 finish();
             }
-
-
-
-
         }catch (Exception e){
-            e.printStackTrace();
-            Toast.makeText(this, ""+e.getMessage(), Toast.LENGTH_SHORT).show();
-
+            ExceptionsNotification.ExceptionHandling(Splash_Screen.this , Utility.getStackTrace(e));
         }
     }
 

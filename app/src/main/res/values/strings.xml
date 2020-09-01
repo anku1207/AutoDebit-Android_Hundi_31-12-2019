@@ -7,7 +7,7 @@
     <string name="email_pin_label_text">Email OTP</string>
     <string name="title_activity_webview">webview</string>
 
-    <string name="newuser_signuptext">"New User ? Please Sign up"</string>
+    <string name="newuser_signuptext">"New to AutoPe? Create an account"</string>
     <string name="title_activity_home">Home</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

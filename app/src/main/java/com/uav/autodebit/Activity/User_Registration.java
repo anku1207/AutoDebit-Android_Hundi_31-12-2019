@@ -143,7 +143,7 @@ public class User_Registration extends Base_Activity {
 
 
 
-    public static void confirmationDialog(com.uav.autodebit.util.DialogInterface mcxtinter, Context context , JSONArray jsonArray , String Msg , String title, int[] textviewsize, String... buttons){
+    public  void confirmationDialog(com.uav.autodebit.util.DialogInterface mcxtinter, Context context , JSONArray jsonArray , String Msg , String title, int[] textviewsize, String... buttons){
         String leftButton= (buttons.length==0 ?"Modify":buttons[0]);//(leftButton ==null?"Modify": leftButton);
         String rightButton=(buttons.length<=1 ?"Next":buttons[1]);//(rightButton==null?"Next":rightButton);
 
@@ -250,7 +250,7 @@ public class User_Registration extends Base_Activity {
             var3.getWindow().setAttributes(lp);
 
         }catch (Exception e){
-            Utility.exceptionAlertDialog(context,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(User_Registration.this , Utility.getStackTrace(e));
         }
     }
 
@@ -284,7 +284,7 @@ public class User_Registration extends Base_Activity {
                     try {
                         signuser();
                     }catch (Exception e){
-                        Utility.exceptionAlertDialog(User_Registration.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+                        ExceptionsNotification.ExceptionHandling(User_Registration.this , Utility.getStackTrace(e));
                     }
                 }
                 @Override
@@ -294,7 +294,7 @@ public class User_Registration extends Base_Activity {
 
             },User_Registration.this,jsonArray,null,"Please Confirm Detail",textviewsize);
         }catch (Exception e){
-            Utility.exceptionAlertDialog(User_Registration.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
+            ExceptionsNotification.ExceptionHandling(User_Registration.this , Utility.getStackTrace(e));
         }
     }
 

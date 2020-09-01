@@ -151,34 +151,30 @@
                             />
                     </LinearLayout>
 
-
+                    <LinearLayout
+                        android:id="@+id/LinearLayouts02"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:orientation="vertical"
+                        android:gravity="bottom|end"
+                        android:visibility="visible"
+                        android:layout_marginTop="20dp"
+                        >
+                        <TextView
+                            android:id="@+id/newuser"
+                            android:layout_height="match_parent"
+                            android:layout_width="match_parent"
+                            android:text="@string/newuser_signuptext"
+                            android:gravity="center"
+                            android:textColor="@drawable/text_color"
+                            android:textSize="16sp"
+                            android:background="@drawable/cornerbutton"
+                            android:fontFamily="@font/poppinslight"
+                            />
+                    </LinearLayout>
                 </LinearLayout>
 
 
-
-
-            <LinearLayout
-                android:id="@+id/LinearLayouts02"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:gravity="bottom|end"
-                android:visibility="gone"
-                >
-
-                <TextView
-                    android:id="@+id/newuser"
-                    android:layout_height="30dp"
-                    android:layout_width="match_parent"
-                    android:text="@string/newuser_signuptext"
-                    android:gravity="center"
-                    android:textColor="@drawable/text_color"
-                    android:textSize="16sp"
-                    android:background="@color/appbar"
-                    android:fontFamily="@font/poppinslight"
-                    />
-
-            </LinearLayout>
 
         </LinearLayout>
 </ScrollView>

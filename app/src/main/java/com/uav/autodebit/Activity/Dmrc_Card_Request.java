@@ -36,6 +36,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -123,6 +125,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
     TabLayout tabLayout;
     PermissionUtils permissionUtils;
     File photofileurl;
+    CheckBox checkAddress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,6 +147,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
         cardcharges=findViewById(R.id.cardcharges);
         addcardlistlayout=findViewById(R.id.addcardlistlayout);
         scrollView=findViewById(R.id.scrollView);
+        checkAddress=findViewById(R.id.checkAddress);
 
         tabLayout =findViewById(R.id.indicator);
 
@@ -164,7 +168,23 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
         dmrc_customer_cardVO = gson.fromJson(getIntent().getStringExtra("dmrccard"), DMRC_Customer_CardVO.class);
         addRequestDmrcCardBanner(dmrc_customer_cardVO);
 
-        setCustomerDetail(dmrc_customer_cardVO);
+        //01/09/2020  change dmrc flow
+        //setCustomerDetail(dmrc_customer_cardVO);
+        checkAddress.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
+                if (isChecked){
+                    if(dmrc_customer_cardVO.getDmrcCustomerList()!=null && dmrc_customer_cardVO.getDmrcCustomerList().size()>0){
+                        ArrayList<DMRC_Customer_CardVO> listforcard= (ArrayList<DMRC_Customer_CardVO>) dmrc_customer_cardVO.getDmrcCustomerList();
+                        DMRC_Customer_CardVO dmrcCardStatusVO = listforcard.get(listforcard.size() - 1);
+                        setCustomerDetail(dmrcCardStatusVO);
+                        checkAddress.setVisibility(View.GONE);
+                    }
+                }
+            }
+        });
+
+
 
         back_activity_button1.setOnClickListener(this);
 
@@ -213,9 +233,12 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
         if(dmrc_customer_cardVO.getDmrcCustomerList()!=null && dmrc_customer_cardVO.getDmrcCustomerList().size()>0){
 
             //Show Addcard btn
-            if(dmrc_customer_cardVO.getDmrcid()==null){
+           /* if(dmrc_customer_cardVO.getDmrcid()==null){
                 showAddCardBtn();
-            }
+            }*/
+
+           //01-09-2020///
+            showAddCardBtn();
           /*ArrayList<DMRC_Customer_CardVO> listforcard= (ArrayList<DMRC_Customer_CardVO>) dmrc_customer_cardVO.getDmrcCustomerList();
             recyclerView =Utility.getRecyclerView(Dmrc_Card_Request.this);
             recyclerView.setNestedScrollingEnabled(true);
@@ -396,8 +419,6 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
         }
     }
 
-
-
     public void startCamera(){
         AlertDialog.Builder pictureDialog = new AlertDialog.Builder(Dmrc_Card_Request.this);
         pictureDialog.setTitle("Select Action");
@@ -424,7 +445,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
     public void showAddCardBtn(){
 
         LinearLayout linearLayout =findViewById(R.id.layoutmainBanner);
-        TextView textView = Utility.getTextView(Dmrc_Card_Request.this,"Add on Card");
+        TextView textView = Utility.getTextView(Dmrc_Card_Request.this,"Apply for Additional Card");
         textView.setPaintFlags(textView.getPaintFlags() |   Paint.UNDERLINE_TEXT_FLAG);
         textView.setTextColor(getApplication().getResources().getColorStateList(R.drawable.text_change_color_blue));
         textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 17);
@@ -439,8 +460,8 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                dmrc_customer_cardVO=new DMRC_Customer_CardVO();
+                // 01-09-2020
+                checkAddress.setVisibility(View.VISIBLE);
 
                 mobilenumber.setText(null);
                 customername.setText(null);
@@ -471,6 +492,8 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
 
     public void saveDmrcCardInServer(){
         try {
+            checkAddress.setVisibility(View.GONE);
+
             HashMap<String, Object> params = new HashMap<String, Object>();
             ConnectionVO connectionVO = MetroBO.saveDmarcCards();
             DMRC_Customer_CardVO request_dmrc_customer_cardVO=new DMRC_Customer_CardVO();
@@ -809,7 +832,11 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
             public void onResponse(Object resp) throws JSONException {
                 JSONObject response = (JSONObject) resp;
                 Gson gson = new Gson();
-                DMRC_Customer_CardVO dmrc_customer_cardVO = gson.fromJson(response.toString(), DMRC_Customer_CardVO.class);
+
+                //01-09-2020
+                //DMRC_Customer_CardVO dmrc_customer_cardVO = gson.fromJson(response.toString(), DMRC_Customer_CardVO.class);
+                dmrc_customer_cardVO = gson.fromJson(response.toString(), DMRC_Customer_CardVO.class);
+
 
                 if(dmrc_customer_cardVO.getStatusCode().equals("400")){
                     ArrayList error = (ArrayList) dmrc_customer_cardVO.getErrorMsgs();

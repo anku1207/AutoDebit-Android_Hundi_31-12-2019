@@ -2041,8 +2041,6 @@ public class Utility {
        try {
            if (!((Activity)context).isFinishing() && dialog!=null &&  dialog.isShowing()) {
                dialog.dismiss();
-           }else {
-               Log.w("dismissDialog_Error","ErrorDismissDialog");
            }
        }catch (Exception e){
            ExceptionsNotification.ExceptionHandling(context ,  Utility.getStackTrace(e), "0");

@@ -7,10 +7,10 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
@@ -19,6 +19,7 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.webkit.ConsoleMessage;
 import android.webkit.JavascriptInterface;
@@ -51,6 +52,7 @@ import com.uav.autodebit.constant.Content_Message;
 import com.uav.autodebit.constant.ErrorMsg;
 import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.permission.Session;
+import com.uav.autodebit.util.DialogInterface;
 import com.uav.autodebit.util.Utility;
 
 import com.uav.autodebit.vo.ConnectionVO;
@@ -68,7 +70,7 @@ import java.util.HashMap;
 
 
 public class SI_First_Data extends Base_Activity implements MyJavaScriptInterface.javascriptinterface {
-    WebView webview;
+    WebView webview ,newWebView;
     JSONObject respjson;
 
     String redirectUrl, cancelUrl,paymentType,serviceId;
@@ -80,6 +82,7 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
     int actionId;
     double amount;
     CustomerVO htmlRequestResp;
+    ProgressDialog progressBar;
 
     @SuppressLint("WrongViewCast")
     @Override
@@ -90,13 +93,13 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
         webview = findViewById(R.id.webview);
 
         htmlRequestResp=new CustomerVO();
+        progressBar = ProgressDialog.show(SI_First_Data.this, null, " Please wait...", false, false);
 
         ImageView rof_backbutton = findViewById(R.id.back_activity_button);
-
         rof_backbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                    finish();
+                cancelTransaction();
             }
         });
 
@@ -140,6 +143,21 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
         });
 
 
+    }
+
+    private void cancelTransaction() {
+        String[] buttons = {"No","Yes"};
+        Utility.showDoubleButtonDialogConfirmation(new DialogInterface() {
+            @Override
+            public void confirm(Dialog dialog) {
+                Utility.dismissDialog(SI_First_Data.this, dialog);
+                finish();
+            }
+            @Override
+            public void modify(Dialog dialog) {
+                Utility.dismissDialog(SI_First_Data.this, dialog);
+            }
+        },SI_First_Data.this,"Do you want to cancel the transaction","Cancel Transaction",buttons);
     }
 
     public void sifirstdata() {
@@ -235,7 +253,7 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
 
        // webview.getSettings().setLoadsImagesAutomatically(true);
 
-        webview.getSettings().setBuiltInZoomControls(true);
+        webview.getSettings().setBuiltInZoomControls(false);
         webview.setInitialScale(1);
         webview.getSettings().setUseWideViewPort(true);
         webview.getSettings().setSupportMultipleWindows(true);
@@ -263,9 +281,24 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
             @Override
             public boolean onCreateWindow(WebView view, boolean isDialog, boolean isUserGesture, Message resultMsg) {
 
-                WebView newWebView = new WebView(SI_First_Data.this);
+                newWebView = new WebView(SI_First_Data.this);
                 newWebView.getSettings().setJavaScriptEnabled(true);
-                newWebView.setWebChromeClient(this);
+                newWebView.getSettings().setBuiltInZoomControls(true);
+                newWebView.setInitialScale(1);
+                newWebView.getSettings().setUseWideViewPort(true);
+                newWebView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+                newWebView.setWebChromeClient(new WebChromeClient(){
+                    @Override
+                    public void onCloseWindow(WebView window) {
+                        super.onCloseWindow(window);
+                        if (newWebView !=null){
+                            try {
+                                webview.removeView(newWebView);
+                            } catch (Exception e) {
+                            }
+                        }
+                    }
+                });
                 newWebView.setWebViewClient(new WebViewClient());
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,  LinearLayout.LayoutParams.MATCH_PARENT);
@@ -278,48 +311,66 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
                 resultMsg.sendToTarget();
 
                 newWebView.setWebViewClient(new WebViewClient() {
-                    @Override
+                     @Override
                     public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                        view.loadUrl(url);
-                        return true;
-                    }
+                         try {
+                             view.loadUrl(url);
+                             return true;
+                         } catch (Exception e) {
+                             return true;
+                         }
+                     }
                     @Override
                     public void onPageStarted(WebView view, String url, Bitmap favicon) {
                         super.onPageStarted(view, url, favicon);
                         Log.w("pagestart", url);
+                        if(!SI_First_Data.this.isFinishing() &&  progressBar!=null && !progressBar.isShowing()){
+                            try {
+                                progressBar.show();
+                            }catch (Exception e){
+                            }
+                        }
                     }
-
                     @Override
                     public void onPageFinished(WebView view, String url) {
-                        Log.w("loadurlresp", url);
+                        Log.w("newWebcie", url);
+                        Utility.dismissDialog(SI_First_Data.this, progressBar);
                     }
-
                     @SuppressWarnings("deprecation")
                     public void onReceivedError(WebView view, int errorCode,
                                                 String description, String failingUrl) {
-                        showError(description);
+                        showError(description,progressBar);
                     }
 
                     @TargetApi(android.os.Build.VERSION_CODES.M)
                     public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-                        showError((String) error.getDescription());
+                        showError((String) error.getDescription(),progressBar);
                     }
 
                     @TargetApi(android.os.Build.VERSION_CODES.M)
                     public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
-                        showError(errorResponse.getReasonPhrase().toString());
+                        showError(errorResponse.getReasonPhrase().toString(),progressBar);
                     }
 
                 });
-
                 return true;
+            }
+            @Override
+            public void onCloseWindow(WebView window) {
+                super.onCloseWindow(window);
+                try {
+                    newWebView.destroy();
+                } catch (Exception e) {
+                }
+                Utility.dismissDialog(SI_First_Data.this, progressBar);
             }
         });
         webview.addJavascriptInterface(new MyJavaScriptInterface(this), "HTMLOUT");
         webview.loadUrl(receiptUrl); //receiptUrl
     }
 
-    private void showError(String description) {
+    private void showError(String description,Dialog progressBar) {
+        Utility.dismissDialog(SI_First_Data.this, progressBar);
         Log.e("weverrir", description);
     }
 
@@ -404,10 +455,7 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
                                 intent.putExtra("mandateId",htmlRequestResp.getAnonymousInteger());
                                 finish();
                             }
-
                         }
-
-
                     }
                 }
             });
@@ -447,8 +495,6 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
 
 
     private class MyBrowser extends WebViewClient {
-        final ProgressDialog progressBar = ProgressDialog.show(SI_First_Data.this, null, " Please wait...", false, false);
-
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             Log.w("URL", url);
@@ -471,13 +517,13 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
                     webview.setVisibility(View.GONE);
                 }
             }
-            if(!SI_First_Data.this.isFinishing() &&  progressBar!=null && !progressBar.isShowing())
+            if(!SI_First_Data.this.isFinishing() &&  progressBar!=null && !progressBar.isShowing()){
                 try {
                     progressBar.show();
                 }catch (Exception e){
 
                 }
-
+            }
         }
 
         @Override
@@ -508,20 +554,17 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
         @SuppressWarnings("deprecation")
         public void onReceivedError(WebView view, int errorCode,
                                     String description, String failingUrl) {
-            Utility.dismissDialog(SI_First_Data.this, progressBar);
-            showError(description);
+            showError(description,progressBar);
         }
 
         @TargetApi(android.os.Build.VERSION_CODES.M)
         public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-            Utility.dismissDialog(SI_First_Data.this, progressBar);
-            showError((String) error.getDescription());
+            showError((String) error.getDescription(),progressBar);
         }
 
         @TargetApi(android.os.Build.VERSION_CODES.M)
         public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
-            Utility.dismissDialog(SI_First_Data.this, progressBar);
-            showError(errorResponse.getReasonPhrase().toString());
+            showError(errorResponse.getReasonPhrase().toString(),progressBar);
         }
     }
 
@@ -530,9 +573,8 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
             switch (keyCode) {
                 case KeyEvent.KEYCODE_BACK:
-
-                        finish();
-                    return true;
+                    cancelTransaction();
+                     return true;
             }
 
         }
