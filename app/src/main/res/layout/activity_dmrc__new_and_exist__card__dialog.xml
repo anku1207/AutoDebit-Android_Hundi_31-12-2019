@@ -5,57 +5,66 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@drawable/paynimo_view_rounded_corner"
-    android:gravity="center"
-    android:layout_gravity="center"
     android:visibility="gone"
     android:id="@+id/main_layout"
-    android:layout_margin="20dp"
+    android:layout_marginTop="?attr/actionBarSize"
+    android:layout_marginBottom="?attr/actionBarSize"
+    android:paddingRight="10dp"
+    android:paddingLeft="10dp"
+    android:paddingTop="0dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
     >
     <TextView
-        android:id="@+id/textview"
+        android:id="@+id/dialog_title"
         style="@style/TextViewPaynimo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:gravity="center"
-        android:text="Add DMRC Card"
-        android:textSize="20dp"
-        android:minHeight="80dp"
-        android:textAlignment="center"
-        android:textColor="@color/appbar"/>
-
-    <LinearLayout
+        android:gravity="left|center"
+        android:text=""
+        android:textSize="16dp"
+        android:minHeight="50dp"
+        android:textColor="@color/appbar"
+        android:background="@drawable/bottomlineborder"
+       />
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <RadioGroup
+                android:id="@+id/radiogroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:theme="@style/MyCheckBox">
+            </RadioGroup>
 
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:id="@+id/newcard"
-            android:text="New Card"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/cornerbutton"
-            android:textColor="@color/white"
-            android:layout_margin="10dp"
-            android:textAllCaps="false"
-            />
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:id="@+id/existcard"
-            android:text="Existing Card"
-            android:layout_marginBottom="30dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/cornerbutton"
-            android:textColor="@color/white"
-            android:layout_margin="10dp"
-            android:textAllCaps="false"
-            />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="visible"
+                android:gravity="center">
 
-    </LinearLayout>
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/proceed"
+                    android:text="Proceed"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/cornerbutton"
+                    android:textColor="@color/white"
+                    android:layout_margin="10dp"
+                    android:textAllCaps="false"
+                    />
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
 
 </LinearLayout>

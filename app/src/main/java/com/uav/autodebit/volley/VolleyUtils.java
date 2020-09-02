@@ -98,7 +98,7 @@ public class VolleyUtils {
         }
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (connectionVO.getRequestType(), ApplicationConstant.getHttpURL(context) /*+"_"+Utility.getVersioncode(context)+"/"*/+connectionVO.getMethodName() , jsonParams, response -> {
+                (connectionVO.getRequestType(), ApplicationConstant.getHttpURL(context) +"_"+Utility.getVersioncode(context)+"/"+connectionVO.getMethodName() , jsonParams, response -> {
                     Utility.dismissDialog(mctx,pDialog);
                     try {
                         listener.onResponse(response);

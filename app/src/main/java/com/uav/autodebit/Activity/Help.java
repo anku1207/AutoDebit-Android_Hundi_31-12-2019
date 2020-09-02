@@ -5,9 +5,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
 import com.uav.autodebit.BO.ContactUsBO;
@@ -44,6 +49,7 @@ public class Help extends Base_Activity implements View.OnClickListener {
         back_activity_button = findViewById(R.id.back_activity_button);
         back_activity_button.setOnClickListener(this);
         contact_request.setOnClickListener(this);
+        email.setOnClickListener(this);
     }
 
 
@@ -65,16 +71,32 @@ public class Help extends Base_Activity implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
+        Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.imageviewclickeffect);
         switch (view.getId()){
             case R.id.back_activity_button:
                 backbuttonfun();
                 break;
             case R.id.contact_request:
+                contact_request.startAnimation(animation);
                 sendUserDetail();
+                break;
+            case R.id.email:
+                email.startAnimation(animation);
+                sendMail();
                 break;
 
         }
     }
+
+    private void sendMail(){
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("plain/text");
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"support@autope.in"});
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Query");
+        intent.putExtra(Intent.EXTRA_TEXT, ""); // do this so some email clients don't complain about empty body.
+        startActivity(intent);
+    }
+
 
     private void sendUserDetail() {
 

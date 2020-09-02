@@ -167,7 +167,6 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
 
         dmrc_customer_cardVO = gson.fromJson(getIntent().getStringExtra("dmrccard"), DMRC_Customer_CardVO.class);
         addRequestDmrcCardBanner(dmrc_customer_cardVO);
-
         //01/09/2020  change dmrc flow
         //setCustomerDetail(dmrc_customer_cardVO);
         checkAddress.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -237,8 +236,9 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                 showAddCardBtn();
             }*/
 
-           //01-09-2020///
+           //02-09-2020
             showAddCardBtn();
+
           /*ArrayList<DMRC_Customer_CardVO> listforcard= (ArrayList<DMRC_Customer_CardVO>) dmrc_customer_cardVO.getDmrcCustomerList();
             recyclerView =Utility.getRecyclerView(Dmrc_Card_Request.this);
             recyclerView.setNestedScrollingEnabled(true);
@@ -251,6 +251,10 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
             viewPager.setOverScrollMode(View.OVER_SCROLL_NEVER);*/
             getdata(listforcard);
         }else{
+            //02-09-2020
+            setCustomerDetail(dmrc_customer_cardVO);
+
+
             CardView cardView =Utility.getCardViewStyle(Dmrc_Card_Request.this);
             ImageView imageView =Utility.getImageView(Dmrc_Card_Request.this);
             imageView.setScaleType(ImageView.ScaleType.FIT_XY);
@@ -460,19 +464,22 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // 01-09-2020
-                checkAddress.setVisibility(View.VISIBLE);
-
-                mobilenumber.setText(null);
-                customername.setText(null);
-                pin.setText(null);
-                city.setText(null);
-                state.setText(null);
-                permanentaddress.setText(null);
-                addressimage.setImageBitmap(null);
-                bmp=null;
-                scrollviewAnimationAndVisibility();
                 Utility.removeEle(textView);
+                if(dmrc_customer_cardVO.getDmrcid()==null){
+                    // 01-09-2020
+                    checkAddress.setVisibility(View.VISIBLE);
+                    mobilenumber.setText(null);
+                    customername.setText(null);
+                    pin.setText(null);
+                    city.setText(null);
+                    state.setText(null);
+                    permanentaddress.setText(null);
+                    addressimage.setImageBitmap(null);
+                    bmp=null;
+                    scrollviewAnimationAndVisibility();
+                }else {
+                    setCustomerDetail(dmrc_customer_cardVO);
+                }
             }
         });
     }
@@ -1056,26 +1063,34 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                     addressimage.setImageBitmap(bmp);
                 }else if(requestCode==ApplicationConstant.REQ_DMRC_MANDATE_SI_BUCKET){
                     int actionId=data.getIntExtra("actionId",0);
-                    if(actionId!=0){
-                        allotDmrcCard(actionId,null);
+                    int SIMandateId=data.getIntExtra("mandateId",0);
+                    if(actionId!=0 && SIMandateId!=0){
+                        allotDmrcCard(actionId,SIMandateId);
                     }else {
                         Utility.showSingleButtonDialog(Dmrc_Card_Request.this,"Error !", "Something went wrong",false);
                     }
                 }else if(requestCode==ApplicationConstant.REQ_ENACH_MANDATE){
                     boolean enachMandateStatus=data.getBooleanExtra("mandate_status",false);
                     if(enachMandateStatus){
-                        sIMandateDmrc(null,null);
+                        sIMandateDmrc(data.getIntExtra("mandateId",0),AuthServiceProviderVO.ENACHIDFC);
                     }else{
                         Utility.showSingleButtonDialog(Dmrc_Card_Request.this,"Alert",data.getStringExtra("msg"),false);
                     }
-                }else if(requestCode == ApplicationConstant.REQ_UPI_FOR_MANDATE || requestCode == ApplicationConstant.REQ_SI_MANDATE){
+                }else if(requestCode == ApplicationConstant.REQ_UPI_FOR_MANDATE){
                     int SIMandateId=data.getIntExtra("mandateId",0);
                     if(SIMandateId!=0){
-                        sIMandateDmrc(null,null);
+                        sIMandateDmrc(SIMandateId,AuthServiceProviderVO.AUTOPE_PG_UPI);
                     }else{
                         Utility.showSingleButtonDialog(Dmrc_Card_Request.this,"Error !", Content_Message.error_message,false);
                     }
 
+                }else if(requestCode == ApplicationConstant.REQ_SI_MANDATE){
+                    int SIMandateId=data.getIntExtra("mandateId",0);
+                    if(SIMandateId!=0){
+                        sIMandateDmrc(SIMandateId,AuthServiceProviderVO.AUTOPE_PG);
+                    }else{
+                        Utility.showSingleButtonDialog(Dmrc_Card_Request.this,"Error !", Content_Message.error_message,false);
+                    }
                 }
             } catch (Exception e) {
                 ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this , Utility.getStackTrace(e));

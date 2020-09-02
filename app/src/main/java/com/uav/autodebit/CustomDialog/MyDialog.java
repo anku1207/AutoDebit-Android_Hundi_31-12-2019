@@ -109,7 +109,7 @@ public class MyDialog {
         lp.width = (WindowManager.LayoutParams.MATCH_PARENT);
         lp.height = (WindowManager.LayoutParams.WRAP_CONTENT);
 
-        if(!cusdialog.isShowing())cusdialog.show();
+        if(!((Activity)context).isFinishing() && !cusdialog.isShowing())cusdialog.show();
         cusdialog.getWindow().setAttributes(lp);
     }
 
@@ -402,7 +402,7 @@ public class MyDialog {
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
 
-        if(!var3.isShowing())  var3.show();
+        if(!((Activity)context).isFinishing() && !var3.isShowing())  var3.show();
         var3.getWindow().setAttributes(lp);
     }
 
@@ -456,7 +456,7 @@ public class MyDialog {
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
 
-        if(!var3.isShowing())  var3.show();
+        if(!((Activity)context).isFinishing() && !var3.isShowing())  var3.show();
         var3.getWindow().setAttributes(lp);
 
 

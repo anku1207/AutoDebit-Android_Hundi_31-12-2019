@@ -335,6 +335,14 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
                     public void onPageFinished(WebView view, String url) {
                         Log.w("newWebcie", url);
                         Utility.dismissDialog(SI_First_Data.this, progressBar);
+                        try {
+                            if(webview!=null){
+                                webview.scrollTo(0,0);
+                            }
+                        }catch (Exception e){
+                            ExceptionsNotification.ExceptionHandling(SI_First_Data.this , Utility.getStackTrace(e),"0");
+                        }
+
                     }
                     @SuppressWarnings("deprecation")
                     public void onReceivedError(WebView view, int errorCode,
@@ -361,6 +369,7 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
                 try {
                     newWebView.destroy();
                 } catch (Exception e) {
+                    ExceptionsNotification.ExceptionHandling(SI_First_Data.this , Utility.getStackTrace(e),"0");
                 }
                 Utility.dismissDialog(SI_First_Data.this, progressBar);
             }
@@ -371,6 +380,13 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
 
     private void showError(String description,Dialog progressBar) {
         Utility.dismissDialog(SI_First_Data.this, progressBar);
+        try {
+            if(webview!=null){
+                webview.scrollTo(0,0);
+            }
+        }catch (Exception e){
+            ExceptionsNotification.ExceptionHandling(SI_First_Data.this , Utility.getStackTrace(e),"0");
+        }
         Log.e("weverrir", description);
     }
 
@@ -465,7 +481,7 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
     }
 
 
-    public void showSingleButtonDialog(final Context var1, String error, String var2) {
+    public void showSingleButtonDialog(Context var1, String error, String var2) {
         final Dialog var3 = new Dialog(var1);
         var3.requestWindowFeature(1);
         var3.getWindow().setBackgroundDrawable(new ColorDrawable(0));
@@ -490,7 +506,7 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
                 }
             }
         });
-        var3.show();
+        if(!((Activity)var1).isFinishing() && !var3.isShowing())  var3.show();
     }
 
 
@@ -499,6 +515,7 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             Log.w("URL", url);
             view.loadUrl(url);
+
             return true;
         }
 
@@ -507,6 +524,7 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
             Log.w("pagestart", url);
+
 
             if (ApplicationConstant.SI_SERVICE.equals("avenue")) {
                 if (url.equals(redirectUrl + "app") || url.equals(cancelUrl + "app")) {

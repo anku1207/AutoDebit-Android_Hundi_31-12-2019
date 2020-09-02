@@ -122,11 +122,11 @@ public class Base_Activity extends AppCompatActivity {
             boolean isConnected = Utility.isNetworkAvailable(Base_Activity.this);
             if(actionOfIntent.equals(CONNECTIVITY_ACTION)){
                 if(isConnected){
-                    if(alert!=null && alert.isShowing()){
+                    if(!Base_Activity.this.isFinishing() && alert!=null && alert.isShowing()){
                         alert.dismiss();
                     }
                 }else{
-                    if(alert!=null && !alert.isShowing()){
+                    if(!Base_Activity.this.isFinishing() && alert!=null && !alert.isShowing()){
                         alert.show();
                     }
 

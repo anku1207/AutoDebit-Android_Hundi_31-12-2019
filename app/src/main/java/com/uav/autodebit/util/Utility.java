@@ -457,7 +457,7 @@ public class Utility {
                 Utility.dismissDialog(context,var3);
             }
         });
-        if(!var3.isShowing())  var3.show();
+        if(!((Activity)context).isFinishing() && !var3.isShowing())  var3.show();
     }
 
     public static void  exceptionAlertDialog(Context context,String title ,String msg , String buttonname,String error){
@@ -477,7 +477,7 @@ public class Utility {
 
             }
         });
-        if(!alertDialog.isShowing())  alertDialog.show();
+        if(!((Activity)context).isFinishing() && !alertDialog.isShowing())  alertDialog.show();
 
 
     }
@@ -491,7 +491,7 @@ public class Utility {
     }
 
 
-    public static void  activityAlertDialog(final Context context, String title, String msg, String buttonname){
+    public static void  activityAlertDialog(Context context, String title, String msg, String buttonname){
 
         AlertDialog alertDialog;
         alertDialog = new AlertDialog.Builder(context).create();
@@ -504,7 +504,7 @@ public class Utility {
                 context.startActivities(new Intent[]{intent});
             }
         });
-        if(!alertDialog.isShowing())  alertDialog.show();
+        if(!((Activity)context).isFinishing() && !alertDialog.isShowing())  alertDialog.show();
 
 
     }
@@ -550,7 +550,7 @@ public class Utility {
 
 
 
-    public static void showSingleButtonDialog(final Context context, String title, String msg , boolean activityfinish ,String... buttons){
+    public static void showSingleButtonDialog(Context context, String title, String msg , boolean activityfinish ,String... buttons){
 
         String leftButton= (buttons.length==0 ?"OK":buttons[0]);//(leftButton ==null?"Modify": leftButton);
         final Dialog var3 = new Dialog(context);
@@ -599,7 +599,7 @@ public class Utility {
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
 
-        if(!var3.isShowing())  var3.show();
+        if(!((Activity)context).isFinishing() && !var3.isShowing())  var3.show();
         var3.getWindow().setAttributes(lp);
     }
 
@@ -636,7 +636,7 @@ public class Utility {
                 if(activityfinish) activity.finish();
             }
         });
-        if(!var3.isShowing())  var3.show();
+        if(!((Activity)var1).isFinishing() && !var3.isShowing())  var3.show();
     }
 
     public static Date convertString2Date(String dtValue, String format){
@@ -1021,7 +1021,7 @@ public class Utility {
                 }
             });
 
-             if(!var3.isShowing())  var3.show();
+             if(!((Activity)context).isFinishing() && !var3.isShowing())  var3.show();
             var3.getWindow().setAttributes(lp);
 
         }catch (Exception e){
@@ -1129,7 +1129,7 @@ public class Utility {
                 }
             });
 
-            if(!var3.isShowing())  var3.show();
+            if(!((Activity)context).isFinishing() && !var3.isShowing())  var3.show();
             var3.getWindow().setAttributes(lp);
         }catch (Exception e){
             ExceptionsNotification.ExceptionHandling(context , Utility.getStackTrace(e));
@@ -1189,7 +1189,7 @@ public class Utility {
                 }
             });
 
-            if(!var3.isShowing())  var3.show();
+            if(!((Activity)context).isFinishing() && !var3.isShowing())  var3.show();
 
         }catch (Exception e){
             Utility.exceptionAlertDialog(context,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
@@ -1264,7 +1264,7 @@ public class Utility {
         lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
 
-        if(!var3.isShowing())  var3.show();
+        if(!((Activity)context).isFinishing() && !var3.isShowing())  var3.show();
         var3.getWindow().setAttributes(lp);
 
 
@@ -1458,7 +1458,7 @@ public class Utility {
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
 
-        if(!var3.isShowing())  var3.show();
+        if(!((Activity)context).isFinishing() && !var3.isShowing())  var3.show();
 
         var3.getWindow().setAttributes(lp);
     }
@@ -1783,7 +1783,7 @@ public class Utility {
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
 
-        if(!dialog.isShowing())  dialog.show();
+        if(!((Activity)context).isFinishing() &&  !dialog.isShowing())  dialog.show();
 
         dialog.getWindow().setAttributes(lp);
     }
