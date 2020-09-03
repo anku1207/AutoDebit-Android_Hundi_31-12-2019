@@ -25,6 +25,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.uav.autodebit.BO.SignUpBO;
@@ -32,6 +33,7 @@ import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.Content_Message;
+import com.uav.autodebit.constant.ErrorMsg;
 import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.DialogInterface;
@@ -48,6 +50,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import io.branch.referral.util.BRANCH_STANDARD_EVENT;
+import io.branch.referral.util.BranchEvent;
 
 public class User_Registration extends Base_Activity {
     Button otpgeneratebtn;
@@ -392,6 +397,17 @@ public class User_Registration extends Base_Activity {
                 if(data!=null){
                     Session.set_Data_Sharedprefence_BoolenvValue(User_Registration.this,Session.CACHE_IS_NEW_USER,true);
                     if( Integer.parseInt(data.getStringExtra("key"))==(CustomerStatusVO.SIGNUP_MOBILE_OTP_VERIFIED)){
+                        try {
+                            new BranchEvent(BRANCH_STANDARD_EVENT.COMPLETE_REGISTRATION)
+                                    .setCustomerEventAlias("Customer Registration")
+                                    .setTransactionID(Session.getCustomerIdOnExceptionTime(this)+"|"+(ApplicationConstant.IS_PRODUCTION_ENVIRONMENT?"PRD":"UAT"))
+                                    .setDescription("User created an account")
+                                    .logEvent(this);
+                        }catch (Exception e){
+                            ExceptionsNotification.ExceptionHandling(User_Registration.this ,  Utility.getStackTrace(e), "0");
+                        }
+
+
                         Intent intent =new Intent(User_Registration.this,Password.class);
                         intent.putExtra("customerid",data.getStringExtra("value"));
                         intent.putExtra("methodname","setCustomerPassword");

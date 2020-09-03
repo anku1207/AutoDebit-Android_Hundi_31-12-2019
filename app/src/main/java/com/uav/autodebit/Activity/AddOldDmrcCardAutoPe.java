@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -836,9 +837,12 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
     }
 
     private void getTextByImage(Bitmap bitmap){
+        ProgressDialog progressBar = ProgressDialog.show(this, null, " Please wait...", false, false);
+
         ImageTextApi imageTextApi = new ImageTextApi(new ImageTextViewInterface() {
             @Override
             public void onResult(String o) {
+                Utility.dismissDialog(AddOldDmrcCardAutoPe.this,progressBar);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -892,6 +896,7 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
         },AddOldDmrcCardAutoPe.this,bmp);
 
         imageTextApi.getImageReadTextAPI();
+        if(!AddOldDmrcCardAutoPe.this.isFinishing() &&  !progressBar.isShowing())  progressBar.show();
     }
 
     private void performCrop(Uri picUri){

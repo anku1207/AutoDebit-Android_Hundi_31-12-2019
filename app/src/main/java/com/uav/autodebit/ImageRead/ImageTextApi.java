@@ -63,6 +63,7 @@ public class ImageTextApi {
                         stringBuilder.append(item.getValue());
                         stringBuilder.append("\n");
                     }
+                    Log.w("imageReadText",stringBuilder.toString());
                   //  String value=stringBuilder.toString().replaceAll(" ", "");
                   /*  BufferedReader bufReader = new BufferedReader(new StringReader(value));
                     String line=null;

@@ -176,7 +176,7 @@ public class Webview extends Base_Activity {
 
 
     private class MyBrowser extends WebViewClient {
-        final ProgressDialog progressBar = ProgressDialog.show(Webview.this, null, " Please wait...", false, false);
+        ProgressDialog progressBar = ProgressDialog.show(Webview.this, null, " Please wait...", false, false);
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {

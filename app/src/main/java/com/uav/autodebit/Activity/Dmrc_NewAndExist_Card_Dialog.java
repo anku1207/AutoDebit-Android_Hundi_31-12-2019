@@ -133,29 +133,52 @@ public class Dmrc_NewAndExist_Card_Dialog extends Base_Activity implements View.
         params.gravity = Gravity.CENTER_VERTICAL;
         getWindow().setAttributes(params);
 
-
-
-
         proceed.setOnClickListener(this);
     }
     @Override
     public void onClick(View v) {
-        Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.imageviewclickeffect);
-        switch (v.getId()){
-            case R.id.proceed:
-                proceed.startAnimation(animation);
-               /* getDmrcCardListByCardType(Dmrc_NewAndExist_Card_Dialog.this , new VolleyResponse((VolleyResponse.OnSuccess)(newCardSuccess)->{
-                    DMRC_Customer_CardVO dmrc_customer_cardVO = (DMRC_Customer_CardVO) newCardSuccess;
-                    finish();
-                    Session.set_Data_Sharedprefence(this,Session.CACHE_DMRC_MIN_CARD_CHARGE,dmrc_customer_cardVO.getAnonymousString());
-                    Intent intent =new Intent(this,Dmrc_Card_Request.class);
-                    intent.putExtra("onetimecharges",dmrc_customer_cardVO.getAnonymousString());
-                    intent.putExtra("isdisable",false);
-                    intent.putExtra("dmrccard",gson.toJson(dmrc_customer_cardVO));
-                    startActivity(intent);
-                }),true);*/
-                break;
+        try {
+            Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.imageviewclickeffect);
+            switch (v.getId()){
+                case R.id.proceed:
+                    proceed.startAnimation(animation);
+                    switch (radiogroup.getCheckedRadioButtonId()){
+                        case 1:
+                        case 2:
+                            getDmrcCardListByCardType(Dmrc_NewAndExist_Card_Dialog.this , new VolleyResponse((VolleyResponse.OnSuccess)(newCardSuccess)->{
+                                DMRC_Customer_CardVO dmrc_customer_cardVO = (DMRC_Customer_CardVO) newCardSuccess;
+                                finish();
+                                Session.set_Data_Sharedprefence(this,Session.CACHE_DMRC_MIN_CARD_CHARGE,dmrc_customer_cardVO.getAnonymousString());
+                                Intent intent =new Intent(this,Dmrc_Card_Request.class);
+                                intent.putExtra("onetimecharges",dmrc_customer_cardVO.getAnonymousString());
+                                intent.putExtra("isdisable",false);
+                                intent.putExtra("dmrccard",gson.toJson(dmrc_customer_cardVO));
+                                startActivity(intent);
+                            }),true);
+                            break;
+                        case 3:
+                            getDmrcCardListByCardType(Dmrc_NewAndExist_Card_Dialog.this , new VolleyResponse((VolleyResponse.OnSuccess)(newCardSuccess)->{
+                                DMRC_Customer_CardVO dmrc_customer_cardVO = (DMRC_Customer_CardVO) newCardSuccess;
+                                finish();
+                                Session.set_Data_Sharedprefence(this,Session.CACHE_DMRC_MIN_CARD_CHARGE,dmrc_customer_cardVO.getAnonymousString());
+                                Intent intent =new Intent(this,AddOldDmrcCardAutoPe.class);
+                                intent.putExtra("onetimecharges",dmrc_customer_cardVO.getAnonymousString());
+                                intent.putExtra("isdisable",false);
+                                intent.putExtra("dmrccard",gson.toJson(dmrc_customer_cardVO));
+                                startActivity(intent);
+                            }),false);
+                            break;
+                        case -1:
+                            Toast.makeText(this, "select Dmrc Card Type", Toast.LENGTH_SHORT).show();
+                            break;
+                    }
+                    break;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            ExceptionsNotification.ExceptionHandling(this , Utility.getStackTrace(e));
         }
+
     }
 
 

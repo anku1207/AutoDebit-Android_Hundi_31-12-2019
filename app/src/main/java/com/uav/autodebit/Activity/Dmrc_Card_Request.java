@@ -96,6 +96,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
+import io.branch.referral.util.BRANCH_STANDARD_EVENT;
+import io.branch.referral.util.BranchEvent;
+
 public class Dmrc_Card_Request extends Base_Activity implements View.OnClickListener ,PermissionUtils.PermissionResultCallback , ActivityCompat.OnRequestPermissionsResultCallback{
 
     EditText customername,pin,city,state,permanentaddress,mobilenumber;
@@ -705,11 +708,11 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                         }
                         Utility.showSingleButtonDialog(Dmrc_Card_Request.this,dmrc_customer_SI_cardVO.getDialogTitle(),sb.toString(),false);
                     }else {
-                        if(dmrc_customer_SI_cardVO.getCustomer()!=null){
+                       /* if(dmrc_customer_SI_cardVO.getCustomer()!=null){
                             String json = new Gson().toJson(dmrc_customer_SI_cardVO.getCustomer());
                             Session.set_Data_Sharedprefence(Dmrc_Card_Request.this,Session.CACHE_CUSTOMER,json);
                             Session.set_Data_Sharedprefence(Dmrc_Card_Request.this, Session.LOCAL_CACHE,dmrc_customer_SI_cardVO.getCustomer().getLocalCache());
-                        }
+                        }*/
 
                         if(dmrc_customer_SI_cardVO.getShowDialog()){
                             JSONObject object = new JSONObject(dmrc_customer_SI_cardVO.getAnonymousString());
@@ -859,6 +862,16 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                         Session.set_Data_Sharedprefence(Dmrc_Card_Request.this,Session.CACHE_CUSTOMER,json);
                         Session.set_Data_Sharedprefence(Dmrc_Card_Request.this, Session.LOCAL_CACHE,dmrc_customer_cardVO.getCustomer().getLocalCache());
                     }*/
+
+                    try {
+                        new BranchEvent(BRANCH_STANDARD_EVENT.PURCHASE)
+                                .setCustomerEventAlias("DMRC Card")
+                                .setTransactionID(Session.getCustomerIdOnExceptionTime(Dmrc_Card_Request.this)+"|"+(ApplicationConstant.IS_PRODUCTION_ENVIRONMENT?"PRD":"UAT"))
+                                .setDescription("DMRC Card applied")
+                                .logEvent(Dmrc_Card_Request.this);
+                    }catch (Exception e){
+                        ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this ,  Utility.getStackTrace(e), "0");
+                    }
 
                     addRequestDmrcCardBanner(dmrc_customer_cardVO);
                 }
@@ -1071,8 +1084,9 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                     }
                 }else if(requestCode==ApplicationConstant.REQ_ENACH_MANDATE){
                     boolean enachMandateStatus=data.getBooleanExtra("mandate_status",false);
-                    if(enachMandateStatus){
-                        sIMandateDmrc(data.getIntExtra("mandateId",0),AuthServiceProviderVO.ENACHIDFC);
+                    String bankMandateId=data.getStringExtra("bankMandateId");
+                    if(enachMandateStatus && bankMandateId!=null && !bankMandateId.equals("")){
+                        sIMandateDmrc(Integer.valueOf(bankMandateId),AuthServiceProviderVO.ENACHIDFC);
                     }else{
                         Utility.showSingleButtonDialog(Dmrc_Card_Request.this,"Alert",data.getStringExtra("msg"),false);
                     }
