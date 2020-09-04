@@ -55,8 +55,6 @@ public class Dmrc_NewAndExist_Card_Dialog extends Base_Activity implements View.
     Gson gson;
     LinearLayout main_layout;
     RadioGroup radiogroup ;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +65,7 @@ public class Dmrc_NewAndExist_Card_Dialog extends Base_Activity implements View.
         proceed=findViewById(R.id.proceed);
         dialog_title=findViewById(R.id.dialog_title);
         radiogroup =findViewById(R.id.radiogroup);
+
 
         gson = new Gson();
 
@@ -85,30 +84,61 @@ public class Dmrc_NewAndExist_Card_Dialog extends Base_Activity implements View.
         }else {
             getDmrcCardTypes(Dmrc_NewAndExist_Card_Dialog.this,new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
                 try {
-                    main_layout.setVisibility(View.VISIBLE);
                     CustomerVO customerVO = (CustomerVO) success;
-                    proceed.setText(customerVO.getAnonymousString1());
-                    dialog_title.setText(customerVO.getDialogTitle());
-                    JSONArray jsonArray = new JSONArray(customerVO.getAnonymousString());
 
-                    for(int i=0;i<jsonArray.length();i++){
-                        JSONObject object = jsonArray.getJSONObject(i);
-                        RadioButton rdbtn = new RadioButton(this);
-                        rdbtn.setId(object.getInt("id"));
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                            rdbtn.setText(Html.fromHtml(object.getString("message"), Html.FROM_HTML_MODE_COMPACT));
-                        } else {
-                            rdbtn.setText(Html.fromHtml(object.getString("message")));
+                    if(customerVO.getShowDialog()){
+                        main_layout.setVisibility(View.VISIBLE);
+                        proceed.setText(customerVO.getAnonymousString1());
+                        dialog_title.setText(customerVO.getDialogTitle());
+                        JSONArray jsonArray = new JSONArray(customerVO.getAnonymousString());
+
+                        for(int i=0;i<jsonArray.length();i++){
+                            JSONObject object = jsonArray.getJSONObject(i);
+                            RadioButton rdbtn = new RadioButton(this);
+                            rdbtn.setId(object.getInt("id"));
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                rdbtn.setText(Html.fromHtml(object.getString("message"), Html.FROM_HTML_MODE_COMPACT));
+                            } else {
+                                rdbtn.setText(Html.fromHtml(object.getString("message")));
+                            }
+                            rdbtn.setChecked(false);
+                            rdbtn.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.colorPrimary)));
+                            RadioGroup.LayoutParams params = new RadioGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                            params.setMargins(15, 15, 15, 15);
+                            rdbtn.setLayoutParams(params);
+                            rdbtn.setPadding(10,0,0,0);
+                            rdbtn.setGravity(Gravity.TOP);
+                            radiogroup.addView(rdbtn);
                         }
-                        rdbtn.setChecked(false);
-                        rdbtn.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.colorPrimary)));
-                        RadioGroup.LayoutParams params = new RadioGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                        params.setMargins(15, 15, 15, 15);
-                        rdbtn.setLayoutParams(params);
-                        rdbtn.setPadding(10,0,0,0);
-                        rdbtn.setGravity(Gravity.TOP);
-                        radiogroup.addView(rdbtn);
+                        ((RadioButton)radiogroup.getChildAt(0)).setChecked(true);
+
+                    }else {
+                      if(customerVO.getActionname().equalsIgnoreCase("Autope")){
+                          getDmrcCardListByCardType(Dmrc_NewAndExist_Card_Dialog.this , new VolleyResponse((VolleyResponse.OnSuccess)(newCardSuccess)->{
+                              DMRC_Customer_CardVO dmrc_customer_cardVO = (DMRC_Customer_CardVO) newCardSuccess;
+                              finish();
+                              Session.set_Data_Sharedprefence(this,Session.CACHE_DMRC_MIN_CARD_CHARGE,dmrc_customer_cardVO.getAnonymousString());
+                              Intent intent =new Intent(this,Dmrc_Card_Request.class);
+                              intent.putExtra("onetimecharges",dmrc_customer_cardVO.getAnonymousString());
+                              intent.putExtra("isdisable",false);
+                              intent.putExtra("dmrccard",gson.toJson(dmrc_customer_cardVO));
+                              startActivity(intent);
+                          }),true);
+                      }else {
+                          getDmrcCardListByCardType(Dmrc_NewAndExist_Card_Dialog.this , new VolleyResponse((VolleyResponse.OnSuccess)(newCardSuccess)->{
+                              DMRC_Customer_CardVO dmrc_customer_cardVO = (DMRC_Customer_CardVO) newCardSuccess;
+                              finish();
+                              Session.set_Data_Sharedprefence(this,Session.CACHE_DMRC_MIN_CARD_CHARGE,dmrc_customer_cardVO.getAnonymousString());
+                              Intent intent =new Intent(this,AddOldDmrcCardAutoPe.class);
+                              intent.putExtra("onetimecharges",dmrc_customer_cardVO.getAnonymousString());
+                              intent.putExtra("isdisable",false);
+                              intent.putExtra("dmrccard",gson.toJson(dmrc_customer_cardVO));
+                              startActivity(intent);
+                          }),false);
+                      }
                     }
+
+
 
                 }catch ( Exception e){
                     ExceptionsNotification.ExceptionHandling(this , Utility.getStackTrace(e));

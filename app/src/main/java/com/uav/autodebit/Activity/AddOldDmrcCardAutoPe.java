@@ -87,6 +87,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnClickListener ,PermissionUtils.PermissionResultCallback , ActivityCompat.OnRequestPermissionsResultCallback{
@@ -573,7 +574,15 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
                     }else {
                         if(dmrc_customer_SI_cardVO.getShowDialog()){
                             JSONObject object = new JSONObject(dmrc_customer_SI_cardVO.getAnonymousString());
-                            String [] btnText= {object.getString("Button1"),object.getString("Button2")};
+                            String [] btnText= new String[object.length()];
+
+                            Iterator<String> keys = object.keys();
+                            int count=0;
+                            while(keys.hasNext()) {
+                                String key = keys.next();
+                                btnText[count]=object.getString(key);
+                                count++;
+                            }
 
                             MyDialog.showDoubleButtonBigContentDialog(AddOldDmrcCardAutoPe.this,new BigContentDialogIntetface((BigContentDialogIntetface.Button1)(button1)->{
                                 Utility.dismissDialog(AddOldDmrcCardAutoPe.this, button1);

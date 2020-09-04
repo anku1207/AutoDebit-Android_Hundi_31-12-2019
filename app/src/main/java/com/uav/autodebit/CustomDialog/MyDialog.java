@@ -413,7 +413,7 @@ public class MyDialog {
 
         String leftButton= (buttons.length==0 ?"Modify":buttons[0]);//(leftButton ==null?"Modify": leftButton);
         String rightButton=(buttons.length<=1 ?"Next":buttons[1]);//(rightButton==null?"Next":rightButton);
-        final Dialog var3 = new Dialog(context);
+        Dialog var3 = new Dialog(context);
 
 
         var3.requestWindowFeature(1);
@@ -443,6 +443,7 @@ public class MyDialog {
         });
 
 
+
         Button button2 = (Button)var3.findViewById(R.id.button2);
         button2.setText(rightButton);
         button2.setOnClickListener(new View.OnClickListener() {
@@ -450,6 +451,9 @@ public class MyDialog {
                 bigContentDialogIntetface.button2(var3);
             }
         });
+        if(buttons.length==1){
+            button2.setVisibility(View.GONE);
+        }
 
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
         lp.copyFrom(var3.getWindow().getAttributes());

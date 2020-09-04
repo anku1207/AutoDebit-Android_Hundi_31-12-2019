@@ -958,8 +958,8 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                     state.setText("");
                  }else {
 
-                    state.setText(cityVO.getCityName());
-                    city.setText(cityVO.getStateRegion().getStateRegionName());
+                    city.setText(cityVO.getCityName());
+                    state.setText(cityVO.getStateRegion().getStateRegionName());
                     city.setError(null);
                     state.setError(null);
                 }
