@@ -571,12 +571,6 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
                         }
                         Utility.showSingleButtonDialog(AddOldDmrcCardAutoPe.this,dmrc_customer_SI_cardVO.getDialogTitle(),sb.toString(),false);
                     }else {
-                        if(dmrc_customer_SI_cardVO.getCustomer()!=null){
-                            String json = new Gson().toJson(dmrc_customer_SI_cardVO.getCustomer());
-                            Session.set_Data_Sharedprefence(AddOldDmrcCardAutoPe.this,Session.CACHE_CUSTOMER,json);
-                            Session.set_Data_Sharedprefence(AddOldDmrcCardAutoPe.this, Session.LOCAL_CACHE,dmrc_customer_SI_cardVO.getCustomer().getLocalCache());
-                        }
-
                         if(dmrc_customer_SI_cardVO.getShowDialog()){
                             JSONObject object = new JSONObject(dmrc_customer_SI_cardVO.getAnonymousString());
                             String [] btnText= {object.getString("Button1"),object.getString("Button2")};
