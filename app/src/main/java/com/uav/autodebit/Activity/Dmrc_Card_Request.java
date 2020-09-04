@@ -181,6 +181,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                         DMRC_Customer_CardVO dmrcCardStatusVO = listforcard.get(listforcard.size() - 1);
                         setCustomerDetail(dmrcCardStatusVO);
                         checkAddress.setVisibility(View.GONE);
+                        checkAddress.setChecked(false);
                     }
                 }
             }
@@ -582,7 +583,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                                            }
                                        }));
                                    }else {
-                                       sIMandateDmrc(null,null);
+                                       sIMandateDmrc(null,null,false);
                                    }
                                }catch (Exception e){
                                    ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this , Utility.getStackTrace(e));
@@ -612,7 +613,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
         oxigenTransactionVO.setProvider(authServiceProviderVO);
 
         BeforeRecharge.beforeRechargeAddMandate(context,oxigenTransactionVO,new MandateAndRechargeInterface((MandateAndRechargeInterface.OnRecharge)(recharge)->{
-            sIMandateDmrc(Integer.parseInt((String) recharge),dmrc_customer_cardVO.getAnonymousInteger());
+            sIMandateDmrc(Integer.parseInt((String) recharge),dmrc_customer_cardVO.getAnonymousInteger(),false);
         }, (MandateAndRechargeInterface.OnMandate)(mandate)->{
             if(oxigenTransactionVO.getProvider().getProviderId()== AuthServiceProviderVO.AUTOPE_PG){
                 startSIActivity(context,dmrc_customer_cardVO,ApplicationConstant.PG_MANDATE);
@@ -667,7 +668,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
         }
     }
 
-    public void sIMandateDmrc(Integer bankId , Integer providerId){
+    public void sIMandateDmrc(Integer bankId , Integer providerId ,boolean existingMandateType){
         HashMap<String, Object> params = new HashMap<String, Object>();
         ConnectionVO connectionVO = SiBO.sIMandateDmrc();
         DMRC_Customer_CardVO request_dmrc_customer_cardVO=new DMRC_Customer_CardVO();
@@ -675,6 +676,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
         customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(Dmrc_Card_Request.this)));
         request_dmrc_customer_cardVO.setCustomer(customerVO);
         request_dmrc_customer_cardVO.setDmrcid(dmrc_customer_cardVO.getDmrcid());
+        request_dmrc_customer_cardVO.setEventIs(existingMandateType);
 
         //set provider id  anonymousInteger
         request_dmrc_customer_cardVO.setAnonymousInteger1(providerId);
@@ -732,7 +734,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
 
                                     BeforeRecharge.beforeRechargeAddMandate(Dmrc_Card_Request.this,oxigenTransactionVO,new MandateAndRechargeInterface((MandateAndRechargeInterface.OnRecharge)(recharge)->{
                                         try {
-                                            allotDmrcCard(dmrc_customer_SI_cardVO.getDmrcid(),Integer.parseInt((String) recharge));
+                                            allotDmrcCard(dmrc_customer_SI_cardVO.getDmrcid(),Integer.parseInt((String) recharge),false);
                                         }catch (Exception e){
                                             ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this , Utility.getStackTrace(e));
                                         }
@@ -749,7 +751,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                                 }),"Add Security Deposit",dmrc_customer_SI_cardVO.getDialogMessage(),proceedBtn);
                             }),dmrc_customer_SI_cardVO.getDialogTitle(),dmrc_customer_SI_cardVO.getHtmlString(),btnText);
                         }else{
-                            allotDmrcCard(dmrc_customer_SI_cardVO.getDmrcid(),null);
+                            allotDmrcCard(dmrc_customer_SI_cardVO.getDmrcid(),null,false);
                         }
                     }
                 }catch (Exception e){
@@ -810,13 +812,13 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                     }
                     Utility.showSingleButtonDialog(Dmrc_Card_Request.this,dmrc_customer_cardVO.getDialogTitle(),sb.toString(),false);
                 }else {
-                    allotDmrcCard(dmrcid,null);
+                    allotDmrcCard(dmrcid,null,false);
                 }
             }
         });
     }
 
-    public void allotDmrcCard(Integer cardId , Integer sIMandateId){
+    public void allotDmrcCard(Integer cardId , Integer sIMandateId ,boolean existingMandateType){
         HashMap<String, Object> params = new HashMap<String, Object>();
         ConnectionVO connectionVO = MetroBO.allotDmrcCard();
         DMRC_Customer_CardVO request_dmrc_customer_cardVO=new DMRC_Customer_CardVO();
@@ -824,6 +826,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
         customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(Dmrc_Card_Request.this)));
         request_dmrc_customer_cardVO.setCustomer(customerVO);
         request_dmrc_customer_cardVO.setDmrcid(cardId);
+        request_dmrc_customer_cardVO.setEventIs(existingMandateType);
 
         //set customer auth si id select by SI Mandate list mandate
         request_dmrc_customer_cardVO.setAnonymousInteger(sIMandateId);
@@ -846,8 +849,6 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                 //01-09-2020
                 //DMRC_Customer_CardVO dmrc_customer_cardVO = gson.fromJson(response.toString(), DMRC_Customer_CardVO.class);
                 dmrc_customer_cardVO = gson.fromJson(response.toString(), DMRC_Customer_CardVO.class);
-
-
                 if(dmrc_customer_cardVO.getStatusCode().equals("400")){
                     ArrayList error = (ArrayList) dmrc_customer_cardVO.getErrorMsgs();
                     StringBuilder sb = new StringBuilder();
@@ -866,7 +867,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                     try {
                         new BranchEvent(BRANCH_STANDARD_EVENT.PURCHASE)
                                 .setCustomerEventAlias("DMRC Card")
-                                .setTransactionID(Session.getCustomerIdOnExceptionTime(Dmrc_Card_Request.this)+"|"+(ApplicationConstant.IS_PRODUCTION_ENVIRONMENT?"PRD":"UAT"))
+                                .setTransactionID(Session.getCustomerId(Dmrc_Card_Request.this)+"|"+(ApplicationConstant.IS_PRODUCTION_ENVIRONMENT?"PRD":"UAT"))
                                 .setDescription("DMRC Card applied")
                                 .logEvent(Dmrc_Card_Request.this);
                     }catch (Exception e){
@@ -1069,16 +1070,21 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                     }
                 }else  if(requestCode==PIC_CROP){
                     //get the returned data
-                    Bundle extras = data.getExtras();
-                    //get the cropped bitmap
-                    bmp = (Bitmap) extras.get("data");
-                    //display the returned cropped image
-                    addressimage.setImageBitmap(bmp);
+                    try {
+                        Bundle extras = data.getExtras();
+                        //get the cropped bitmap
+                        bmp = (Bitmap) extras.get("data");
+                        //display the returned cropped image
+                        addressimage.setImageBitmap(bmp);
+                    }catch (Exception e){
+                        ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this , Utility.getStackTrace(e));
+                    }
+
                 }else if(requestCode==ApplicationConstant.REQ_DMRC_MANDATE_SI_BUCKET){
                     int actionId=data.getIntExtra("actionId",0);
                     int SIMandateId=data.getIntExtra("mandateId",0);
                     if(actionId!=0 && SIMandateId!=0){
-                        allotDmrcCard(actionId,SIMandateId);
+                        allotDmrcCard(actionId,SIMandateId,true);
                     }else {
                         Utility.showSingleButtonDialog(Dmrc_Card_Request.this,"Error !", "Something went wrong",false);
                     }
@@ -1086,14 +1092,14 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                     boolean enachMandateStatus=data.getBooleanExtra("mandate_status",false);
                     String bankMandateId=data.getStringExtra("bankMandateId");
                     if(enachMandateStatus && bankMandateId!=null && !bankMandateId.equals("")){
-                        sIMandateDmrc(Integer.valueOf(bankMandateId),AuthServiceProviderVO.ENACHIDFC);
+                        sIMandateDmrc(Integer.valueOf(bankMandateId),AuthServiceProviderVO.ENACHIDFC,true);
                     }else{
                         Utility.showSingleButtonDialog(Dmrc_Card_Request.this,"Alert",data.getStringExtra("msg"),false);
                     }
                 }else if(requestCode == ApplicationConstant.REQ_UPI_FOR_MANDATE){
                     int SIMandateId=data.getIntExtra("mandateId",0);
                     if(SIMandateId!=0){
-                        sIMandateDmrc(SIMandateId,AuthServiceProviderVO.AUTOPE_PG_UPI);
+                        sIMandateDmrc(SIMandateId,AuthServiceProviderVO.AUTOPE_PG_UPI,true);
                     }else{
                         Utility.showSingleButtonDialog(Dmrc_Card_Request.this,"Error !", Content_Message.error_message,false);
                     }
@@ -1101,7 +1107,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                 }else if(requestCode == ApplicationConstant.REQ_SI_MANDATE){
                     int SIMandateId=data.getIntExtra("mandateId",0);
                     if(SIMandateId!=0){
-                        sIMandateDmrc(SIMandateId,AuthServiceProviderVO.AUTOPE_PG);
+                        sIMandateDmrc(SIMandateId,AuthServiceProviderVO.AUTOPE_PG,true);
                     }else{
                         Utility.showSingleButtonDialog(Dmrc_Card_Request.this,"Error !", Content_Message.error_message,false);
                     }

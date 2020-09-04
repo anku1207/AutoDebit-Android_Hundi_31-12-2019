@@ -220,7 +220,7 @@ public class VolleyUtils {
 
             }
         });
-        if(!var3.isShowing())  var3.show();
+        if(!((Activity)mctx).isFinishing() && !var3.isShowing())  var3.show();
     }
 
 }

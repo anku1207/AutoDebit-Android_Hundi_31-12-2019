@@ -444,6 +444,7 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
                         if(bmp.getWidth()>bmp.getHeight()){
                             bmp= Bitmap.createBitmap(bmp,0,0,bmp.getWidth(),bmp.getHeight(),Utility.getImageMatrix(Profile_Activity.this,photofileurl),true);
                         }
+                        imageView1.setImageBitmap(bmp);
                         performCrop(Utility.getVersionWiseUri(Profile_Activity.this,photofileurl));
                     }catch (Exception e){
                         ExceptionsNotification.ExceptionHandling(Profile_Activity.this , Utility.getStackTrace(e));
@@ -463,16 +464,18 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
                     }
                 }else  if(requestCode==PIC_CROP){
                     //get the returned data
-                    Bundle extras = data.getExtras();
-                    //get the cropped bitmap
-                    bmp = (Bitmap) extras.get("data");
-                    //display the returned cropped image
-                    imageView1.setImageBitmap(bmp);
-                    setCustomerProfileImage();
-
-
+                    try {
+                        Bundle extras = data.getExtras();
+                        //get the cropped bitmap
+                        bmp = (Bitmap) extras.get("data");
+                        //display the returned cropped image
+                        imageView1.setImageBitmap(bmp);
+                        setCustomerProfileImage();
+                    }catch (Exception e){
+                        ExceptionsNotification.ExceptionHandling(Profile_Activity.this , Utility.getStackTrace(e));
+                    }
                 }else if(requestCode==REQ_CHANGE_PASS){
-                    Utility.showSingleButtonDialog(Profile_Activity.this,"","Success fully update ",false);
+                    Utility.showSingleButtonDialog(Profile_Activity.this,"Alert","Pin Successfully Updated ",false);
                 }else if(requestCode==REQ_ADDBANK_ANDSERVICE){
                     getProfileDate(Session.getCustomerId(Profile_Activity.this));
                 }
@@ -513,7 +516,7 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
         }
         catch(ActivityNotFoundException anfe){
             //display an error message
-           /*String errorMessage = "Whoops - your device doesn't support the crop action!";
+           /* String errorMessage = "Whoops - your device doesn't support the crop action!";
             Toast toast = Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT);
             toast.show();*/
             imageView1.setImageBitmap(bmp);

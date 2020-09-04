@@ -83,9 +83,9 @@ public class Dmrc_NewAndExist_Card_Dialog extends Base_Activity implements View.
                 startActivity(intent);
             }),true);
         }else {
-            main_layout.setVisibility(View.VISIBLE);
             getDmrcCardTypes(Dmrc_NewAndExist_Card_Dialog.this,new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
                 try {
+                    main_layout.setVisibility(View.VISIBLE);
                     CustomerVO customerVO = (CustomerVO) success;
                     proceed.setText(customerVO.getAnonymousString1());
                     dialog_title.setText(customerVO.getDialogTitle());
@@ -169,7 +169,7 @@ public class Dmrc_NewAndExist_Card_Dialog extends Base_Activity implements View.
                             }),false);
                             break;
                         case -1:
-                            Toast.makeText(this, "select Dmrc Card Type", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, "Please pick the type of card you want to buy ", Toast.LENGTH_SHORT).show();
                             break;
                     }
                     break;

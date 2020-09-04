@@ -134,10 +134,13 @@
                 android:id="@+id/checkAddress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Shipping same as previous card "
+                android:text="Shipping Address is same as the delivery address for previous card"
                 android:checked="false"
                 android:layout_margin="10dp"
                 android:visibility="gone"
+                android:gravity="top"
+
+
                 />
 
 
