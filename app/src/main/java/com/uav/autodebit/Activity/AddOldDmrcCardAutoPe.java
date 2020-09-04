@@ -449,7 +449,7 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
                             }));
 
                         }else {
-                            sIMandateDmrc(null,null);
+                            sIMandateDmrc(null,null,false);
                         }
                     }
                 }
@@ -470,7 +470,7 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
         oxigenTransactionVO.setProvider(authServiceProviderVO);
 
         BeforeRecharge.beforeRechargeAddMandate(context,oxigenTransactionVO,new MandateAndRechargeInterface((MandateAndRechargeInterface.OnRecharge)(recharge)->{
-            sIMandateDmrc(Integer.parseInt((String) recharge),dmrc_customer_cardVO.getAnonymousInteger());
+            sIMandateDmrc(Integer.parseInt((String) recharge),dmrc_customer_cardVO.getAnonymousInteger(),false);
         }, (MandateAndRechargeInterface.OnMandate)(mandate)->{
             if(oxigenTransactionVO.getProvider().getProviderId()== AuthServiceProviderVO.AUTOPE_PG){
                 startSIActivity(context,dmrc_customer_cardVO,ApplicationConstant.PG_MANDATE);
@@ -529,7 +529,7 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
 
 
 
-    public void sIMandateDmrc(Integer bankId , Integer providerId){
+    public void sIMandateDmrc(Integer bankId , Integer providerId ,boolean existingMandateType){
         HashMap<String, Object> params = new HashMap<String, Object>();
         ConnectionVO connectionVO = SiBO.sIMandateDmrc();
         DMRC_Customer_CardVO request_dmrc_customer_cardVO=new DMRC_Customer_CardVO();
@@ -537,6 +537,7 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
         customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(AddOldDmrcCardAutoPe.this)));
         request_dmrc_customer_cardVO.setCustomer(customerVO);
         request_dmrc_customer_cardVO.setDmrcid(dmrc_customer_cardVO.getDmrcid());
+        request_dmrc_customer_cardVO.setEventIs(existingMandateType);
 
         //set provider id  anonymousInteger
         request_dmrc_customer_cardVO.setAnonymousInteger1(providerId);
@@ -594,7 +595,7 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
 
                                     BeforeRecharge.beforeRechargeAddMandate(AddOldDmrcCardAutoPe.this,oxigenTransactionVO,new MandateAndRechargeInterface((MandateAndRechargeInterface.OnRecharge)(recharge)->{
                                         try {
-                                            allotDmrcCard(dmrc_customer_SI_cardVO.getDmrcid(),Integer.parseInt((String) recharge));
+                                            allotDmrcCard(dmrc_customer_SI_cardVO.getDmrcid(),Integer.parseInt((String) recharge),false);
                                         }catch (Exception e){
                                             ExceptionsNotification.ExceptionHandling(AddOldDmrcCardAutoPe.this , Utility.getStackTrace(e));
                                         }
@@ -612,7 +613,7 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
                                 }),"Add Security Deposit",dmrc_customer_SI_cardVO.getDialogMessage(),proceedBtn);
                             }),dmrc_customer_SI_cardVO.getDialogTitle(),dmrc_customer_SI_cardVO.getHtmlString(),btnText);
                         }else{
-                            allotDmrcCard(dmrc_customer_SI_cardVO.getDmrcid(),null);
+                            allotDmrcCard(dmrc_customer_SI_cardVO.getDmrcid(),null,false);
                         }
                     }
                 }catch (Exception e){
@@ -672,13 +673,13 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
                     }
                     Utility.showSingleButtonDialog(AddOldDmrcCardAutoPe.this,dmrc_customer_cardVO.getDialogTitle(),sb.toString(),false);
                 }else {
-                    allotDmrcCard(dmrcid,null);
+                    allotDmrcCard(dmrcid,null,false);
                 }
             }
         });
     }
 
-    public void allotDmrcCard(Integer cardId , Integer sIMandateId){
+    public void allotDmrcCard(Integer cardId , Integer sIMandateId ,boolean existingMandateType){
         HashMap<String, Object> params = new HashMap<String, Object>();
         ConnectionVO connectionVO = MetroBO.allotDmrcCard();
         DMRC_Customer_CardVO request_dmrc_customer_cardVO=new DMRC_Customer_CardVO();
@@ -686,6 +687,7 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
         customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(AddOldDmrcCardAutoPe.this)));
         request_dmrc_customer_cardVO.setCustomer(customerVO);
         request_dmrc_customer_cardVO.setDmrcid(cardId);
+        request_dmrc_customer_cardVO.setEventIs(existingMandateType);
 
         //set customer auth si id select by SI Mandate list mandate
         request_dmrc_customer_cardVO.setAnonymousInteger(sIMandateId);
@@ -785,11 +787,8 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
 
                         bmp =Utility.decodeImageFromFiles(Uri.fromFile(photofileurl).getPath(),150,150);
                         if(bmp.getWidth()>bmp.getHeight()){
-                            Matrix matrix =new Matrix();
-                            matrix.postRotate(90);
-                            bmp= Bitmap.createBitmap(bmp,0,0,bmp.getWidth(),bmp.getHeight(),matrix,true);
+                            bmp= Bitmap.createBitmap(bmp,0,0,bmp.getWidth(),bmp.getHeight(),Utility.getImageMatrix(AddOldDmrcCardAutoPe.this,photofileurl),true);
                         }
-
                         performCrop(Utility.getVersionWiseUri(this,photofileurl));
                         View current = getCurrentFocus();
                         if (current != null) current.clearFocus();
@@ -803,26 +802,35 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
                         getTextByImage(bmp);
                     }else if(requestCode==ApplicationConstant.REQ_DMRC_MANDATE_SI_BUCKET){
                         int actionId=data.getIntExtra("actionId",0);
-                        if(actionId!=0){
-                            allotDmrcCard(actionId,null);
+                        int SIMandateId=data.getIntExtra("mandateId",0);
+                        if(actionId!=0 && SIMandateId!=0){
+                            allotDmrcCard(actionId,SIMandateId,true);
                         }else {
                             Utility.showSingleButtonDialog(AddOldDmrcCardAutoPe.this,"Error !", "Something went wrong",false);
                         }
                     }else if(requestCode==ApplicationConstant.REQ_ENACH_MANDATE){
                         boolean enachMandateStatus=data.getBooleanExtra("mandate_status",false);
-                        if(enachMandateStatus){
-                            sIMandateDmrc(null,null);
+                        String bankMandateId=data.getStringExtra("bankMandateId");
+                        if(enachMandateStatus && bankMandateId!=null && !bankMandateId.equals("")){
+                            sIMandateDmrc(Integer.valueOf(bankMandateId),AuthServiceProviderVO.ENACHIDFC,true);
                         }else{
                             Utility.showSingleButtonDialog(AddOldDmrcCardAutoPe.this,"Alert",data.getStringExtra("msg"),false);
                         }
-                    }else if(requestCode == ApplicationConstant.REQ_UPI_FOR_MANDATE || requestCode == ApplicationConstant.REQ_SI_MANDATE){
+                    }else if(requestCode == ApplicationConstant.REQ_UPI_FOR_MANDATE){
                         int SIMandateId=data.getIntExtra("mandateId",0);
                         if(SIMandateId!=0){
-                            sIMandateDmrc(null,null);
+                            sIMandateDmrc(SIMandateId,AuthServiceProviderVO.AUTOPE_PG_UPI,true);
                         }else{
                             Utility.showSingleButtonDialog(AddOldDmrcCardAutoPe.this,"Error !", Content_Message.error_message,false);
                         }
 
+                    }else if(requestCode == ApplicationConstant.REQ_SI_MANDATE){
+                        int SIMandateId=data.getIntExtra("mandateId",0);
+                        if(SIMandateId!=0){
+                            sIMandateDmrc(SIMandateId,AuthServiceProviderVO.AUTOPE_PG,true);
+                        }else{
+                            Utility.showSingleButtonDialog(AddOldDmrcCardAutoPe.this,"Error !", Content_Message.error_message,false);
+                        }
                     }
 
 
