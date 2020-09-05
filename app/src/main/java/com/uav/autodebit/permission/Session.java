@@ -48,6 +48,9 @@ public class Session {
 
     public final static String CACHE_ASK_PERMISSION = "ASKPERMISSION";
 
+    public final static String CACHE_IS_DMRC_CARD_ALLOT= "ALLOT_DMRC_CATD";
+
+
 
     public static String getCustomerId(Context context){
        SharedPreferences sharedPreferences = context.getSharedPreferences(ApplicationConstant.SHAREDPREFENCE, Context.MODE_PRIVATE);

@@ -90,6 +90,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import io.branch.referral.util.BRANCH_STANDARD_EVENT;
+import io.branch.referral.util.BranchEvent;
+
 public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnClickListener ,PermissionUtils.PermissionResultCallback , ActivityCompat.OnRequestPermissionsResultCallback{
 
     Button addCard;
@@ -726,6 +729,18 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
                         Session.set_Data_Sharedprefence(AddOldDmrcCardAutoPe.this, Session.LOCAL_CACHE,dmrc_customer_cardVO.getCustomer().getLocalCache());
                     }
 */
+
+                    try {
+                        new BranchEvent(BRANCH_STANDARD_EVENT.PURCHASE)
+                                .setCustomerEventAlias("Existing DMRC Card")
+                                .setTransactionID(Session.getCustomerId(AddOldDmrcCardAutoPe.this)+"|"+(ApplicationConstant.IS_PRODUCTION_ENVIRONMENT?"PRD":"UAT"))
+                                .setDescription("Existing DMRC Card applied")
+                                .logEvent(AddOldDmrcCardAutoPe.this);
+                    }catch (Exception e){
+                        ExceptionsNotification.ExceptionHandling(AddOldDmrcCardAutoPe.this ,  Utility.getStackTrace(e), "0");
+                    }
+
+                    Session.set_Data_Sharedprefence_BoolenvValue(AddOldDmrcCardAutoPe.this,Session.CACHE_IS_DMRC_CARD_ALLOT,true);
                     addRequestDmrcCardBanner(dmrc_customer_cardVO);
                 }
             }
@@ -784,15 +799,16 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
         super.onActivityResult(requestCode, resultCode, data);
         try {
             if (resultCode == RESULT_OK) {
-
-
                     if (requestCode == REQ_IMAGE) {
-
-                        bmp =Utility.decodeImageFromFiles(Uri.fromFile(photofileurl).getPath(),150,150);
-                        if(bmp.getWidth()>bmp.getHeight()){
-                            bmp= Bitmap.createBitmap(bmp,0,0,bmp.getWidth(),bmp.getHeight(),Utility.getImageMatrix(AddOldDmrcCardAutoPe.this,photofileurl),true);
+                        try {
+                            bmp =Utility.decodeImageFromFiles(Uri.fromFile(photofileurl).getPath(),500,500);
+                            if(bmp.getWidth()>bmp.getHeight()){
+                                bmp= Bitmap.createBitmap(bmp,0,0,bmp.getWidth(),bmp.getHeight(),Utility.getImageMatrix(AddOldDmrcCardAutoPe.this,photofileurl),true);
+                            }
+                            performCrop(Utility.getVersionWiseUri(AddOldDmrcCardAutoPe.this,photofileurl));
+                        }catch (Exception e){
+                            ExceptionsNotification.ExceptionHandling(AddOldDmrcCardAutoPe.this , Utility.getStackTrace(e));
                         }
-                        performCrop(Utility.getVersionWiseUri(this,photofileurl));
                         View current = getCurrentFocus();
                         if (current != null) current.clearFocus();
 

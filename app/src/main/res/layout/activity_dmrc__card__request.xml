@@ -196,6 +196,7 @@
                     android:text=""
                     android:maxLines="1"
                     android:digits="@string/NumberDigits"
+                    android:inputType="number"
 
                     />
             </androidx.cardview.widget.CardView>

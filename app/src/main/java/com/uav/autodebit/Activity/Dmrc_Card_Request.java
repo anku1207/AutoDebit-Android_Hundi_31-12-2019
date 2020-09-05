@@ -873,7 +873,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                     }catch (Exception e){
                         ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this ,  Utility.getStackTrace(e), "0");
                     }
-
+                    Session.set_Data_Sharedprefence_BoolenvValue(Dmrc_Card_Request.this,Session.CACHE_IS_DMRC_CARD_ALLOT,true);
                     addRequestDmrcCardBanner(dmrc_customer_cardVO);
                 }
             }

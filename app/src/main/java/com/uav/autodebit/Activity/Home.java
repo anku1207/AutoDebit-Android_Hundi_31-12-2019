@@ -506,6 +506,24 @@ public class Home extends Base_Activity
                             Utility.dismissDialog(Home.this, cancelbtn);
                         }));
                      }
+
+                 /*  if(serviceTypeVO.getServiceTypeId()==ApplicationConstant.Dmrc && Session.getSessionByKey_BoolenValue(Home.this,Session.CACHE_IS_DMRC_CARD_ALLOT)){
+                       Utility.enableDisableView(view,false);
+                       startUserClickService(activitylayout.getTag().toString(),view);
+                   }else{
+                       // 12/04/2020
+                       MyDialog.showWebviewAlertDialog(Home.this, serviceTypeVO.getMessage(),true,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(d)->{
+                           Utility.dismissDialog(Home.this, d);
+
+                           Utility.enableDisableView(view,false);
+                           startUserClickService(activitylayout.getTag().toString(),view);
+
+                       },(ConfirmationDialogInterface.OnCancel)(cancelbtn)->{
+                           Utility.dismissDialog(Home.this, cancelbtn);
+                       }));
+                   }*/
+
+
                 }
             });
         }
