@@ -630,6 +630,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
             Intent intent = new Intent(context,Enach_Mandate.class);
             intent.putExtra("forresutl",true);
             intent.putExtra("selectservice",new ArrayList<Integer>(Arrays.asList(dmrc_customer_cardVO.getServiceId())));
+            intent.putExtra("id",dmrc_customer_cardVO.getDmrcid());
             ((Activity) context).startActivityForResult(intent,ApplicationConstant.REQ_ENACH_MANDATE);
         }catch (Exception e){
             e.printStackTrace();

@@ -428,7 +428,7 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
         ServiceChargesVO serviceChargesVO=new ServiceChargesVO();
         serviceChargesVO.setAnonymousInteger(Integer.valueOf(Session.getCustomerId(this)));
         serviceChargesVO.setAnonymousString(selectServiceIds!=null?selectServiceIds.toString():null);
-
+        serviceChargesVO.setAnonymousInteger1(actionId);
 
         Gson gson =new Gson();
         String json = gson.toJson(serviceChargesVO);
