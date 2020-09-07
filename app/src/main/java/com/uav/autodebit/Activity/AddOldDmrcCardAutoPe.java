@@ -35,6 +35,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -125,6 +126,7 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
     File photofileurl;
 
     TextView add_Card_Link;
+    ProgressBar imageProgressBar;
 
 
 
@@ -155,6 +157,7 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
         card_Number=findViewById(R.id.card_Number);
         confirm_Card_Number=findViewById(R.id.confirm_Card_Number);
         image_Read_Number=findViewById(R.id.image_Read_Number);
+        imageProgressBar=findViewById(R.id.imageProgressBar);
 
         addcardlistlayout.removeAllViews();
 
@@ -195,11 +198,14 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
         if(dmrc_customer_cardVO.getDmrcid()!=null){
             card_Number.setText(dmrc_customer_cardVO.getCardNo());
             confirm_Card_Number.setText(dmrc_customer_cardVO.getCardNo());
-            Picasso.with(this).load(dmrc_customer_cardVO.getImage()).fit()
+            imageProgressBar.setVisibility(View.VISIBLE);
+            Picasso.with(this).load(dmrc_customer_cardVO.getImage()+"222").fit()
+                    .error(R.drawable.error_image)
                     .into(addDmrcImage, new Callback() {
                         @Override
                         public void onSuccess() {
                             try {
+                                imageProgressBar.setVisibility(View.GONE);
                                 bmp=((BitmapDrawable)addDmrcImage.getDrawable()).getBitmap();
                             }catch (Exception  e){
                                 ExceptionsNotification.ExceptionHandling(AddOldDmrcCardAutoPe.this , Utility.getStackTrace(e));
@@ -207,6 +213,8 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
                         }
                         @Override
                         public void onError() {
+                            onErrorChangeUI();
+                            imageProgressBar.setVisibility(View.GONE);
                         }
                     });
             bottom_layout.setVisibility(View.VISIBLE);
@@ -219,9 +227,6 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
 
             card_Number.setEnabled(false);
             confirm_Card_Number.setEnabled(false);
-
-
-
 
         }
 
@@ -914,33 +919,12 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
 
                                 checkCardImageUpload=true;
                             },(VolleyResponse.OnError)(error)->{
-                                bottom_layout.setVisibility(View.GONE);
-                                image_Read_Number.setText("");
-
-
-                                //set input type password
-                                card_Number.setTransformationMethod(PasswordTransformationMethod.getInstance());
-                                confirm_Card_Number.setTransformationMethod(PasswordTransformationMethod.getInstance());
-
-                                card_Number.setEnabled(true);
-                                confirm_Card_Number.setEnabled(true);
-
-                                checkCardImageUpload=false;
+                                onErrorChangeUI();
 
                             }));
                         }else {
                             Toast.makeText(AddOldDmrcCardAutoPe.this, "Card Number Con't be read ", Toast.LENGTH_SHORT).show();
-                            bottom_layout.setVisibility(View.GONE);
-                            image_Read_Number.setText("");
-                            card_Number.setEnabled(true);
-                            confirm_Card_Number.setEnabled(true);
-
-
-                            //set input type password
-                            card_Number.setTransformationMethod(PasswordTransformationMethod.getInstance());
-                            confirm_Card_Number.setTransformationMethod(PasswordTransformationMethod.getInstance());
-
-                            checkCardImageUpload=false;
+                            onErrorChangeUI();
                         }
                     }
                 });
@@ -949,6 +933,20 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
 
         imageTextApi.getImageReadTextAPI();
         if(!AddOldDmrcCardAutoPe.this.isFinishing() &&  !progressBar.isShowing())  progressBar.show();
+    }
+
+    private void onErrorChangeUI(){
+
+        bottom_layout.setVisibility(View.GONE);
+        image_Read_Number.setText("");
+        card_Number.setEnabled(true);
+        confirm_Card_Number.setEnabled(true);
+
+        //set input type password
+        card_Number.setTransformationMethod(PasswordTransformationMethod.getInstance());
+        confirm_Card_Number.setTransformationMethod(PasswordTransformationMethod.getInstance());
+
+        checkCardImageUpload=false;
     }
 
     private void performCrop(Uri picUri){
