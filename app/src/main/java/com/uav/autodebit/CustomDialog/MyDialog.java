@@ -47,6 +47,7 @@ import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.CityVO;
 import com.uav.autodebit.vo.DMRC_Customer_CardVO;
+import com.uav.autodebit.vo.DataAdapterVO;
 
 import org.json.JSONObject;
 
@@ -520,7 +521,6 @@ public class MyDialog {
             verify.setText(btnName);
             customername.setText(dmrc_customer_cardVO.getCustomerName());
             mobilenumber.setText(dmrc_customer_cardVO.getMobileNumber());
-            pin.setText(dmrc_customer_cardVO.getPincode());
             permanentaddress.setText(dmrc_customer_cardVO.getAddress());
 
             pin.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -568,6 +568,7 @@ public class MyDialog {
                 public void afterTextChanged(Editable editable) {
                 }
             });
+            pin.setText(dmrc_customer_cardVO.getPincode());
 
 
             verify.setOnClickListener(new View.OnClickListener() {

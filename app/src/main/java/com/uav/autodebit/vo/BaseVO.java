@@ -338,4 +338,6 @@ public class BaseVO {
     public void setDmrcFeeCharges(String dmrcFeeCharges) {
         this.dmrcFeeCharges = dmrcFeeCharges;
     }
+
+
 }

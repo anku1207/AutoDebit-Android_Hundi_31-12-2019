@@ -40,7 +40,9 @@
                 android:textSize="19dp"
                 android:fontFamily="@font/poppinslight"
                 android:layout_marginLeft="30dp"
-                android:layout_marginRight="30dp"/>
+                android:layout_marginRight="30dp"
+                android:textColor="@color/appbar"
+                />
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"

@@ -76,7 +76,7 @@ public class Mobile_Dialog {
             textView.setLayoutParams(layoutparams);
             textView.setGravity(Gravity.CENTER);
             textView.setTextColor(Utility.getColorWrapper(context,R.color.defaultTextColor));
-            textView.setTextSize(Utility.dpToPx(context,9));
+           // textView.setTextSize(Utility.dpToPx(context,7));
             textView.setText(serviceTypeVO.getTitle());
             textView.setPadding(5,5,5,5);
 

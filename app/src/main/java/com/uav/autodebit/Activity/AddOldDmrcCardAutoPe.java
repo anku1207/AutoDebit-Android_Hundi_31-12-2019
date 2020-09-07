@@ -377,7 +377,7 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
                         MyDialog.showCustomerAddressDialog(AddOldDmrcCardAutoPe.this,request_dmrc_customer_cardVO,new CallBackInterface((CallBackInterface.OnSuccess)(ok)->{
                             DMRC_Customer_CardVO dmrc_customer_cardVO = (DMRC_Customer_CardVO) ok;
                             saveDmrcCardInServer(dmrc_customer_cardVO);
-                        }),"title");
+                        }),"Sticker will be delivered");
                     }
 
                 }
