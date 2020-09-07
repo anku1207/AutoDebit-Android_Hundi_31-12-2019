@@ -744,6 +744,19 @@ public class Utility {
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
+    public static void hideKeyBoardByView(Context context , View view){
+        try {
+            if (view != null) {
+                InputMethodManager imm = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
+        }catch (Exception e){
+
+        }
+
+    }
+
+
 
     public static String toJson(Object jsonObject) {
         return new Gson().toJson(jsonObject);

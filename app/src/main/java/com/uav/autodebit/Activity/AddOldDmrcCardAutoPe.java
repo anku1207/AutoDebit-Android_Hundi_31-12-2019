@@ -52,6 +52,7 @@ import com.uav.autodebit.ImageRead.ImageTextApi;
 import com.uav.autodebit.ImageRead.ImageTextViewInterface;
 import com.uav.autodebit.Interface.AlertSelectDialogClick;
 import com.uav.autodebit.Interface.BigContentDialogIntetface;
+import com.uav.autodebit.Interface.CallBackInterface;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.Interface.MandateAndRechargeInterface;
 import com.uav.autodebit.Interface.VolleyResponse;
@@ -199,7 +200,7 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
             card_Number.setText(dmrc_customer_cardVO.getCardNo());
             confirm_Card_Number.setText(dmrc_customer_cardVO.getCardNo());
             imageProgressBar.setVisibility(View.VISIBLE);
-            Picasso.with(this).load(dmrc_customer_cardVO.getImage()+"222").fit()
+            Picasso.with(this).load(dmrc_customer_cardVO.getImage()).fit()
                     .error(R.drawable.error_image)
                     .into(addDmrcImage, new Callback() {
                         @Override
@@ -313,29 +314,8 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
                 Utility.disable_Tab(tabLayout);
                 addcardlistlayout.addView(viewPager);
 
-                // add animation on viewpager
-               /* DepthTransformation depthTransformation = new DepthTransformation();
-                viewPager.setPageTransformer(true, depthTransformation);*/
-
                 View current = getCurrentFocus();
                 if (current != null) current.clearFocus();
-
-
-
-              /*  DmrcCardPagerAdapter models =new DmrcCardPagerAdapter(AddOldDmrcCardAutoPe.this,list);
-
-                viewPager=Utility.getViewPager(AddOldDmrcCardAutoPe.this);
-                viewPager.setOverScrollMode(View.OVER_SCROLL_NEVER);
-                viewPager.setAdapter(models);
-                viewPager.setPadding(0,0,0,0);
-                tabLayout.setupWithViewPager(viewPager, false);
-                Utility.disable_Tab(tabLayout);
-                addcardlistlayout.addView(viewPager);
-                // add animation on viewpager
-               *//* DepthTransformation depthTransformation = new DepthTransformation();
-                viewPager.setPageTransformer(true, depthTransformation);*//*
-                View current = getCurrentFocus();
-                if (current != null) current.clearFocus();*/
             }
         });
         backgroundAsyncServiceGetList.execute();
@@ -379,7 +359,25 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
                 public void doPostExecute() {
                     Utility.dismissDialog(AddOldDmrcCardAutoPe.this, pd);
                     if(stringimg!=null){
-                        saveDmrcCardInServer();
+
+                        DMRC_Customer_CardVO request_dmrc_customer_cardVO=new DMRC_Customer_CardVO();
+                        CustomerVO customerVO=new CustomerVO();
+                        customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(AddOldDmrcCardAutoPe.this)));
+                        request_dmrc_customer_cardVO.setCustomer(customerVO);
+                        request_dmrc_customer_cardVO.setCardNo(image_Read_Number.getText().toString().trim());
+                        request_dmrc_customer_cardVO.setImage(stringimg);
+
+                        // exist dmrc card id
+                        request_dmrc_customer_cardVO.setDmrcid(dmrc_customer_cardVO.getDmrcid());
+                        request_dmrc_customer_cardVO.setAddress(dmrc_customer_cardVO.getAddress());
+                        request_dmrc_customer_cardVO.setMobileNumber(dmrc_customer_cardVO.getMobileNumber());
+                        request_dmrc_customer_cardVO.setCustomerName(dmrc_customer_cardVO.getCustomerName());
+                        request_dmrc_customer_cardVO.setPincode(dmrc_customer_cardVO.getPincode());
+
+                        MyDialog.showCustomerAddressDialog(AddOldDmrcCardAutoPe.this,request_dmrc_customer_cardVO,new CallBackInterface((CallBackInterface.OnSuccess)(ok)->{
+                            DMRC_Customer_CardVO dmrc_customer_cardVO = (DMRC_Customer_CardVO) ok;
+                            saveDmrcCardInServer(dmrc_customer_cardVO);
+                        }),"title");
                     }
 
                 }
@@ -389,22 +387,12 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
     }
 
 
-    public void saveDmrcCardInServer(){
+    public void saveDmrcCardInServer(DMRC_Customer_CardVO dmrc_customer_cardVORequest){
         try {
             HashMap<String, Object> params = new HashMap<String, Object>();
             ConnectionVO connectionVO = MetroBO.saveDmarcExitingCards();
-            DMRC_Customer_CardVO request_dmrc_customer_cardVO=new DMRC_Customer_CardVO();
-            CustomerVO customerVO=new CustomerVO();
-            customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(AddOldDmrcCardAutoPe.this)));
-            request_dmrc_customer_cardVO.setCustomer(customerVO);
-            request_dmrc_customer_cardVO.setCardNo(image_Read_Number.getText().toString().trim());
-            request_dmrc_customer_cardVO.setImage(stringimg);
-
-            // exist dmrc card id
-            request_dmrc_customer_cardVO.setDmrcid(dmrc_customer_cardVO.getDmrcid());
-
             Gson gson =new Gson();
-            String json = gson.toJson(request_dmrc_customer_cardVO);
+            String json = gson.toJson(dmrc_customer_cardVORequest);
             params.put("volley", json);
             Log.w("saveDmrcCardInServer",json);
             connectionVO.setParams(params);
@@ -427,11 +415,6 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
                         }
                         Utility.showSingleButtonDialog(AddOldDmrcCardAutoPe.this,dmrc_customer_cardVO.getDialogTitle(),sb.toString(),false);
                     }else {
-                       /*Intent intent =new Intent(Dmrc_Card_Request.this,DMRC_Cards_List.class);
-                        intent.putExtra("dmrccard",gson.toJson(dmrc_customer_cardVO));
-                        startActivity(intent);
-                        finish();*/
-
                         String [] btnNames={"Proceed"};
 
                         JSONArray cardChargesJson = new JSONArray(dmrc_customer_cardVO.getDmrcFeeCharges());
