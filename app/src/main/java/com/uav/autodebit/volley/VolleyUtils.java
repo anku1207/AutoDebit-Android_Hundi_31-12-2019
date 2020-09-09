@@ -206,7 +206,7 @@ public class VolleyUtils {
         var3.setCancelable(false);
         var3.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
         TextView title = (TextView)var3.findViewById(R.id.dialog_one_tv_title);
-        title.setText("");
+        title.setText("Alert");
         TextView msg = (TextView)var3.findViewById(R.id.dialog_one_tv_text);
         msg.setText(GlobalApplication.updateMsg);
         Button update = (Button)var3.findViewById(R.id.dialog_one_btn);

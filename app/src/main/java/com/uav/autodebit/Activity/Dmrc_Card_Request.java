@@ -53,6 +53,7 @@ import com.uav.autodebit.BO.PinCodeBO;
 import com.uav.autodebit.BO.SiBO;
 import com.uav.autodebit.CustomDialog.BeforeRecharge;
 import com.uav.autodebit.CustomDialog.MyDialog;
+import com.uav.autodebit.DMRC.DMRCApi;
 import com.uav.autodebit.Interface.AlertSelectDialogClick;
 import com.uav.autodebit.Interface.BigContentDialogIntetface;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
@@ -937,35 +938,19 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
 
 
     public void pincodebycity(String pincode){
-        VolleyUtils.makeJsonObjectRequest(this, PinCodeBO.getCityByPincode(pincode), new VolleyResponseListener() {
-            @Override
-            public void onError(String message) {
-            }
-            @Override
-            public void onResponse(Object resp) throws JSONException {
-                JSONObject response = (JSONObject) resp;
-                Gson gson = new Gson();
-                CityVO cityVO = gson.fromJson(response.toString(), CityVO.class);
-                Log.w("responsesignup",response.toString());
-                if(cityVO.getStatusCode().equals("400")){
-                    //VolleyUtils.furnishErrorMsg(  "Fail" ,response, MainActivity.this);
-                    ArrayList error = (ArrayList) cityVO.getErrorMsgs();
-                    StringBuilder sb = new StringBuilder();
-                    for(int i=0; i<error.size(); i++){
-                        sb.append(error.get(i)).append("\n");
-                    }
-                    Utility.showSingleButtonDialog(Dmrc_Card_Request.this,cityVO.getDialogTitle(),sb.toString(),false);
-                    city.setText("");
-                    state.setText("");
-                 }else {
-
-                    city.setText(cityVO.getCityName());
-                    state.setText(cityVO.getStateRegion().getStateRegionName());
-                    city.setError(null);
-                    state.setError(null);
-                }
-            }
-        });
+        DMRCApi.getCityByPincodeForDMRC(this,pincode,new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
+            CityVO cityVO = (CityVO) success;
+            city.setText(cityVO.getCityName());
+            state.setText(cityVO.getStateRegion().getStateRegionName());
+            city.setError(null);
+            state.setError(null);
+            pin.setError(null);
+            Utility.hideKeyboard(this);
+        },(VolleyResponse.OnError)(error)->{
+            city.setText("");
+            state.setText("");
+            pin.setError(error);
+        }));
     }
 
     public void galleryimage(){

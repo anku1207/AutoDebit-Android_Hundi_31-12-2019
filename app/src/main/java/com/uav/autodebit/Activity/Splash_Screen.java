@@ -192,21 +192,7 @@ public class Splash_Screen extends AppCompatActivity implements BitmapInterface 
     private  void startNextActivity(){
 
         Log.e("isuse",Session.getSessionByKey_BoolenValue(Splash_Screen.this,Session.CACHE_IS_NEW_USER).toString());
-        if(Session.getSessionByKey_BoolenValue(Splash_Screen.this,Session.CACHE_IS_NEW_USER)){
-            if(!Session.check_Exists_key(Splash_Screen.this,Session.CACHE_CUSTOMER) ){
-
-                Intent intent = new Intent(this, Login.class);
-                startActivity(intent);
-                finish();
-            }else {
-                loadHomeActivity();
-            }
-        }else {
-           // Intent intent = new Intent(this, User_Registration.class);
-            Intent intent = new Intent(this, Login.class);
-            startActivity(intent);
-            finish();
-        }
+        loadHomeActivity();
     }
 
 

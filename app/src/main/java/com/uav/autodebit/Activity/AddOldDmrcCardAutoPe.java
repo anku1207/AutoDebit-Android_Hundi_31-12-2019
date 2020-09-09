@@ -377,7 +377,7 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
                         MyDialog.showCustomerAddressDialog(AddOldDmrcCardAutoPe.this,request_dmrc_customer_cardVO,new CallBackInterface((CallBackInterface.OnSuccess)(ok)->{
                             DMRC_Customer_CardVO dmrc_customer_cardVO = (DMRC_Customer_CardVO) ok;
                             saveDmrcCardInServer(dmrc_customer_cardVO);
-                        }),"Sticker will be delivered");
+                        }),"AutoPe Sticker will be delivered to :");
                     }
 
                 }
@@ -711,7 +711,6 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
         //set customer auth si id select by SI Mandate list mandate
         request_dmrc_customer_cardVO.setAnonymousInteger(sIMandateId);
 
-
         Gson gson =new Gson();
         String json = gson.toJson(request_dmrc_customer_cardVO);
         Log.w("request",json);
@@ -725,7 +724,7 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
             public void onResponse(Object resp) throws JSONException {
                 JSONObject response = (JSONObject) resp;
                 Gson gson = new Gson();
-                DMRC_Customer_CardVO dmrc_customer_cardVO = gson.fromJson(response.toString(), DMRC_Customer_CardVO.class);
+                dmrc_customer_cardVO = gson.fromJson(response.toString(), DMRC_Customer_CardVO.class);
 
                 if(dmrc_customer_cardVO.getStatusCode().equals("400")){
                     ArrayList error = (ArrayList) dmrc_customer_cardVO.getErrorMsgs();
@@ -735,13 +734,6 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
                     }
                     Utility.showSingleButtonDialog(AddOldDmrcCardAutoPe.this,dmrc_customer_cardVO.getDialogTitle(),sb.toString(),false);
                 }else {
-                    //update customer cache
-                 /*   if(dmrc_customer_cardVO.getCustomer()!=null){
-                        String json = new Gson().toJson(dmrc_customer_cardVO.getCustomer());
-                        Session.set_Data_Sharedprefence(AddOldDmrcCardAutoPe.this,Session.CACHE_CUSTOMER,json);
-                        Session.set_Data_Sharedprefence(AddOldDmrcCardAutoPe.this, Session.LOCAL_CACHE,dmrc_customer_cardVO.getCustomer().getLocalCache());
-                    }
-*/
 
                     try {
                         new BranchEvent(BRANCH_STANDARD_EVENT.PURCHASE)

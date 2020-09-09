@@ -20,6 +20,19 @@ public class PinCodeBO implements Serializable {
         return connectionVO;
     }
 
+    public static ConnectionVO getCityByPincodeForDMRC(String pincode) {
+
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        params.put("pincode", pincode);
+        ConnectionVO connectionVO = new ConnectionVO();
+        connectionVO.setMethodName("getCityByPincodeForDMRC");
+        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
+        connectionVO.setParams(params);
+
+        return connectionVO;
+    }
+
+
 
 
 }

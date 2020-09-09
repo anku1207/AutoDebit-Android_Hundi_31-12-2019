@@ -374,6 +374,8 @@ public class Enach_Mandate extends Base_Activity implements View.OnClickListener
         params.put("returnURL",localCacheVO.geteNachReturnURL());
         params.put("customerid",customerId);
         params.put("accountType",accountTypeValue);
+        params.put("serviceTypeIds",selectServiceIds!=null?selectServiceIds.toString():null);
+        params.put("actionId",actionId);
         connectionVO.setParams(params);
 
         Log.w("sendrequest",params.toString());

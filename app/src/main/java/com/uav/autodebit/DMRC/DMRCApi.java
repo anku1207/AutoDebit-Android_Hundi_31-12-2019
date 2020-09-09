@@ -20,7 +20,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class DMRCApi {
-    public static void pincodebycity(Context context, String pincode, VolleyResponse volleyResponse){
+    public static void pinCodebycity(Context context, String pincode, VolleyResponse volleyResponse){
         VolleyUtils.makeJsonObjectRequest(context, PinCodeBO.getCityByPincode(pincode), new VolleyResponseListener() {
             @Override
             public void onError(String message) {
@@ -43,5 +43,31 @@ public class DMRCApi {
                 }
             }
         });
+    }
+
+    public static void getCityByPincodeForDMRC(Context context, String pincode, VolleyResponse volleyResponse){
+        VolleyUtils.makeJsonObjectRequest(context, PinCodeBO.getCityByPincodeForDMRC(pincode), new VolleyResponseListener() {
+            @Override
+            public void onError(String message) {
+            }
+            @Override
+            public void onResponse(Object resp) throws JSONException {
+                JSONObject response = (JSONObject) resp;
+                Gson gson = new Gson();
+                CityVO cityVO = gson.fromJson(response.toString(), CityVO.class);
+                if(cityVO.getStatusCode().equals("400")){
+                    ArrayList error = (ArrayList) cityVO.getErrorMsgs();
+                    StringBuilder sb = new StringBuilder();
+                    for(int i=0; i<error.size(); i++){
+                        sb.append(error.get(i)).append("\n");
+                    }
+                    volleyResponse.onError(sb.toString());
+                }else {
+
+                    volleyResponse.onSuccess(cityVO);
+                }
+            }
+        });
+
     }
 }

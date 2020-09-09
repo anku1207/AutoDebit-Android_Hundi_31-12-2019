@@ -42,6 +42,7 @@ import com.uav.autodebit.Interface.ConfirmationGetObjet;
 import com.uav.autodebit.Interface.DateInterface;
 import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
+import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.ErrorMsg;
 import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.util.Utility;
@@ -494,6 +495,18 @@ public class MyDialog {
             // var3.setCancelable(false);
             customDialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
 
+            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+            lp.copyFrom(customDialog.getWindow().getAttributes());
+            lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+            lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+            lp.gravity= Gravity.CENTER;
+            customDialog.getWindow().setAttributes(lp);
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+                customDialog.getWindow().getDecorView().setImportantForAutofill(View.IMPORTANT_FOR_AUTOFILL_NO_EXCLUDE_DESCENDANTS);
+            }
+            if(!((Activity)context).isFinishing() && !customDialog.isShowing())  customDialog.show();
+
+
             TextView title_text = (TextView)customDialog.findViewById(R.id.title_text);
 
             EditText customername=customDialog.findViewById(R.id.customername);
@@ -547,7 +560,7 @@ public class MyDialog {
                 @Override
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                     if (pin.length() == 6) {
-                        DMRCApi.pincodebycity(context,pin.getText().toString().trim(),new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
+                        DMRCApi.getCityByPincodeForDMRC(context,pin.getText().toString().trim(),new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
                             CityVO cityVO = (CityVO) success;
                             city.setText(cityVO.getCityName());
                             state.setText(cityVO.getStateRegion().getStateRegionName());
@@ -556,7 +569,6 @@ public class MyDialog {
                             pin.setError(null);
 
                             Utility.hideKeyBoardByView(context,customDialog.getCurrentFocus());
-
                         },(VolleyResponse.OnError)(error)->{
                             city.setText("");
                             state.setText("");
@@ -570,12 +582,19 @@ public class MyDialog {
             });
             pin.setText(dmrc_customer_cardVO.getPincode());
 
-
             verify.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     EditText[] editTexts= {customername,mobilenumber,pin,city,state,permanentaddress};
                     if(Utility.setErrorOnEdittext(editTexts)){
+                        if(Utility.validatePattern(mobilenumber.getText().toString().trim(), ApplicationConstant.MOBILENO_VALIDATION)!=null){
+                            mobilenumber.setError(Utility.validatePattern(mobilenumber.getText().toString().trim(),ApplicationConstant.MOBILENO_VALIDATION));
+                            return;
+                        }
+                        if(pin.getText().toString().trim().length()<6){
+                            pin.setError("Pincode is Wrong");
+                            return;
+                        }
                         Utility.dismissDialog(context,customDialog);
 
                         dmrc_customer_cardVO.setAddress(permanentaddress.getText().toString().trim());
@@ -583,19 +602,10 @@ public class MyDialog {
                         dmrc_customer_cardVO.setCustomerName(customername.getText().toString().trim());
                         dmrc_customer_cardVO.setPincode(pin.getText().toString().trim());
                         callBackInterface.onSuccess(dmrc_customer_cardVO);
+
                     }
                 }
             });
-
-            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-            lp.copyFrom(customDialog.getWindow().getAttributes());
-            lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-            lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-            lp.gravity= Gravity.CENTER;
-            if(!((Activity)context).isFinishing() && !customDialog.isShowing())  customDialog.show();
-            customDialog.getWindow().setAttributes(lp);
-
-
         }catch (Exception e){
             ExceptionsNotification.ExceptionHandling(context , Utility.getStackTrace(e));
         }

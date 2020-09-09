@@ -32,16 +32,18 @@
 
             <TextView
                 android:id="@+id/title_text"
+                style="@style/TextViewPaynimo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text=""
                 android:layout_gravity="center"
                 android:textAlignment="center"
-                android:textSize="19dp"
+                android:textSize="16dp"
                 android:fontFamily="@font/poppinslight"
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp"
                 android:textColor="@color/appbar"
+                android:paddingTop="10dp"
                 />
 
             <androidx.cardview.widget.CardView
@@ -67,7 +69,6 @@
                     android:text=""
                     android:maxLines="1"
                     android:digits="@string/NameDigits"
-
                     />
             </androidx.cardview.widget.CardView>
 
