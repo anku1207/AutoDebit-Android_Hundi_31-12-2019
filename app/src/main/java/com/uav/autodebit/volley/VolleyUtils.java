@@ -4,23 +4,18 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Environment;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 import androidx.annotation.RequiresApi;
@@ -34,31 +29,22 @@ import com.android.volley.ParseError;
 import com.android.volley.Response;
 import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.uav.autodebit.Activity.Mobile_Prepaid_Recharge_Service;
-import com.uav.autodebit.Activity.PaymentGateWay;
+import com.uav.autodebit.CustomDialog.MyDialog;
+import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.GlobalApplication;
 import com.uav.autodebit.exceptions.ExceptionsNotification;
-import com.uav.autodebit.permission.PermissionHandler;
-import com.uav.autodebit.permission.PermissionUtils;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.ConnectionVO;
 
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -198,29 +184,13 @@ public class VolleyUtils {
 
 
     public static void showForceUpdateDialog(){
-        final Dialog var3 = new Dialog(mctx);
-        var3.requestWindowFeature(1);
-        var3.getWindow().setBackgroundDrawable(new ColorDrawable(0));
-        var3.setContentView(R.layout.singlebuttondialog);
-        var3.setCanceledOnTouchOutside(false);
-        var3.setCancelable(false);
-        var3.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
-        TextView title = (TextView)var3.findViewById(R.id.dialog_one_tv_title);
-        title.setText("Alert");
-        TextView msg = (TextView)var3.findViewById(R.id.dialog_one_tv_text);
-        msg.setText(GlobalApplication.updateMsg);
-        Button update = (Button)var3.findViewById(R.id.dialog_one_btn);
-        update.setText("Update");
-        update.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View var) {
-                Utility.dismissDialog(mctx,var3);
-                ((Activity)mctx).startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse
-                        ("market://details?id="+ mctx.getPackageName() )));
-                ((Activity) mctx).finish();
+        MyDialog.showImageSingleButtonDialog(mctx,"Alert",GlobalApplication.updateMsg,R.drawable.error_image_yellow,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+            Utility.dismissDialog(mctx,ok);
+            ((Activity)mctx).startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse
+                    ("market://details?id="+ mctx.getPackageName() )));
+            ((Activity) mctx).finish();
 
-            }
-        });
-        if(!((Activity)mctx).isFinishing() && !var3.isShowing())  var3.show();
+        }),"Update");
     }
 
 }

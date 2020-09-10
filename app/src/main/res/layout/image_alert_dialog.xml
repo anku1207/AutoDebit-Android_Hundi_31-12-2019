@@ -9,27 +9,40 @@
     android:background="@drawable/paynimo_view_rounded_corner"
     android:orientation="vertical"
     >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_margin="10dp"
+        android:background="@drawable/round_border_with_blueline_bg_white"
+        android:padding="5dp">
+
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:id="@+id/dialog_image">
+
+    </ImageView>
 
     <TextView
         android:id="@+id/title"
         style="@style/TextViewPaynimo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="5dp"
         android:text=""
         android:textSize="22dp"
         android:textColor="@color/appbar"
         android:layout_gravity="center"
         android:textAlignment="center"
+        android:padding="0dp"
         android:fontFamily="@font/poppinsmedium"
         />
 
-    <androidx.core.widget.NestedScrollView
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true"
-        >
+        android:fillViewport="true">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -44,8 +57,8 @@
                 android:text=""
                 android:gravity="center"
                 android:textSize="17dp"
-                android:minHeight="100dp"
-            />
+                android:minHeight="50dp"
+                />
 
             <Button
                 android:id="@+id/btn"
@@ -60,6 +73,9 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_margin="5dp"
                 />
-            </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+        </LinearLayout>
+    </ScrollView>
+
+    </LinearLayout>
+
 </LinearLayout>

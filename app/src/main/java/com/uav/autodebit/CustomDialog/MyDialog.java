@@ -18,7 +18,6 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.webkit.ConsoleMessage;
 import android.webkit.JavascriptInterface;
 import android.webkit.JsResult;
@@ -30,10 +29,10 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.uav.autodebit.Activity.D2H;
 import com.uav.autodebit.DMRC.DMRCApi;
 import com.uav.autodebit.Interface.BigContentDialogIntetface;
 import com.uav.autodebit.Interface.CallBackInterface;
@@ -48,7 +47,6 @@ import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.CityVO;
 import com.uav.autodebit.vo.DMRC_Customer_CardVO;
-import com.uav.autodebit.vo.DataAdapterVO;
 
 import org.json.JSONObject;
 
@@ -609,6 +607,41 @@ public class MyDialog {
         }catch (Exception e){
             ExceptionsNotification.ExceptionHandling(context , Utility.getStackTrace(e));
         }
+    }
+
+
+
+    public static void showImageSingleButtonDialog(Context context, String title, String msg , int drawableImage,ConfirmationDialogInterface confirmationDialogInterface , String... buttons){
+
+        String btnName= (buttons.length==0 ?"OK":buttons[0]);//(leftButton ==null?"Modify": leftButton);
+
+        Dialog customDialog = new Dialog(context);
+        customDialog.requestWindowFeature(1);
+        customDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        customDialog.setContentView(R.layout.image_alert_dialog);
+        customDialog.setCanceledOnTouchOutside(false);
+        customDialog.setCancelable(false);
+        customDialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        TextView dialog_title = (TextView)customDialog.findViewById(R.id.title);
+        ImageView dialog_imageView = customDialog.findViewById(R.id.dialog_image);
+        TextView dialog_msg = (TextView)customDialog.findViewById(R.id.message);
+        Button dialog_btn = (Button)customDialog.findViewById(R.id.btn);
+
+        dialog_title.setText(title);
+        dialog_msg.setText(msg);
+        dialog_btn.setText(btnName);
+        dialog_imageView.setImageDrawable(Utility.getDrawableResources(context,drawableImage));
+        dialog_btn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View var) {
+                confirmationDialogInterface.onOk(customDialog);
+            }
+        });
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(customDialog.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        customDialog.getWindow().setAttributes(lp);
+        if(!((Activity)context).isFinishing() && !customDialog.isShowing())  customDialog.show();
     }
 
 

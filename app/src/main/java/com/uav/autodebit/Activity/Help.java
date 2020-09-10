@@ -92,7 +92,7 @@ public class Help extends Base_Activity implements View.OnClickListener {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("plain/text");
         intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"support@autope.in"});
-        intent.putExtra(Intent.EXTRA_SUBJECT, "Query");
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Query Id : "+Session.getCustomerId(Help.this));
         intent.putExtra(Intent.EXTRA_TEXT, ""); // do this so some email clients don't complain about empty body.
         startActivity(intent);
     }
