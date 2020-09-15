@@ -76,6 +76,7 @@ import com.uav.autodebit.util.BackgroundServiceInterface;
 import com.uav.autodebit.util.DialogInterface;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.AuthServiceProviderVO;
+import com.uav.autodebit.vo.CardTypeVO;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerVO;
 import com.uav.autodebit.vo.DMRC_Customer_CardVO;
@@ -129,7 +130,7 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
     TextView add_Card_Link;
     ProgressBar imageProgressBar;
 
-
+    CardTypeVO intent_cardTypeVO;
 
 
 
@@ -164,6 +165,8 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
 
         customerId = Session.getCustomerId(this);
         dmrc_customer_cardVO = gson.fromJson(getIntent().getStringExtra("dmrccard"), DMRC_Customer_CardVO.class);
+        intent_cardTypeVO = (CardTypeVO) getIntent().getSerializableExtra("cardTypeVO");
+
 
         card_Number.setInputType (InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
         confirm_Card_Number.setInputType (InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
@@ -376,6 +379,9 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
 
                         MyDialog.showCustomerAddressDialog(AddOldDmrcCardAutoPe.this,request_dmrc_customer_cardVO,new CallBackInterface((CallBackInterface.OnSuccess)(ok)->{
                             DMRC_Customer_CardVO dmrc_customer_cardVO = (DMRC_Customer_CardVO) ok;
+                            CardTypeVO cardTypeVO =new CardTypeVO();
+                            cardTypeVO.setCardTypeId(intent_cardTypeVO.getCardTypeId());
+                            dmrc_customer_cardVO.setCardTypeVO(cardTypeVO);
                             saveDmrcCardInServer(dmrc_customer_cardVO);
                         }),"AutoPe Sticker will be delivered to :");
                     }
@@ -484,6 +490,7 @@ public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnCl
         AuthServiceProviderVO authServiceProviderVO = new AuthServiceProviderVO();
         authServiceProviderVO.setProviderId(dmrc_customer_cardVO.getAnonymousInteger());
         oxigenTransactionVO.setProvider(authServiceProviderVO);
+        oxigenTransactionVO.setAnonymousInteger(dmrc_customer_cardVO.getDmrcid());
 
         BeforeRecharge.beforeRechargeAddMandate(context,oxigenTransactionVO,new MandateAndRechargeInterface((MandateAndRechargeInterface.OnRecharge)(recharge)->{
             sIMandateDmrc(Integer.parseInt((String) recharge),dmrc_customer_cardVO.getAnonymousInteger(),false);

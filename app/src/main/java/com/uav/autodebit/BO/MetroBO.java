@@ -49,4 +49,13 @@ public class MetroBO implements Serializable {
         connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
         return connectionVO;
     }
+
+    public static ConnectionVO getCardTypeList(){
+        ConnectionVO connectionVO = new ConnectionVO();
+        connectionVO.setMethodName("getCardTypeList");
+        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
+        return connectionVO;
+    }
+
+
 }

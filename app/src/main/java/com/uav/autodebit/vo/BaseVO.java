@@ -2,9 +2,10 @@ package com.uav.autodebit.vo;
 
 import org.json.JSONArray;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class BaseVO {
+public class BaseVO implements Serializable {
 
     private String statusCode;
     private List<String> errorMsgs;

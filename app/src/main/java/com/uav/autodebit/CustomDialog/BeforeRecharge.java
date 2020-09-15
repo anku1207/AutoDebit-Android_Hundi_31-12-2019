@@ -31,7 +31,7 @@ import java.util.Arrays;
 public class BeforeRecharge {
 
     public static void beforeRechargeAddMandate(Context context , OxigenTransactionVO oxigenTransactionVOresp , MandateAndRechargeInterface mandateAndRechargeInterface){
-        CheckMandateAndShowDialog.oxiServiceMandateCheck(context,oxigenTransactionVOresp.getServiceId(),oxigenTransactionVOresp.getProvider().getProviderId(),new VolleyResponse((VolleyResponse.OnSuccess)(mandatecheckresp)->{
+        CheckMandateAndShowDialog.oxiServiceMandateCheck(context,oxigenTransactionVOresp.getServiceId(),oxigenTransactionVOresp.getProvider().getProviderId(),oxigenTransactionVOresp.getAnonymousInteger(),new VolleyResponse((VolleyResponse.OnSuccess)(mandatecheckresp)->{
             OxigenTransactionVO oxigenTransactionVO = (OxigenTransactionVO) mandatecheckresp;
             if(oxigenTransactionVO!=null){
                 if(oxigenTransactionVO.getStatusCode().equals("ap102")) {

@@ -5,6 +5,7 @@ import android.util.Log;
 import java.io.Serializable;
 import java.util.Date;
 
+
 public class CustomerVO extends BaseVO implements Serializable {
 
         private static final long serialVersionUID = 1L;

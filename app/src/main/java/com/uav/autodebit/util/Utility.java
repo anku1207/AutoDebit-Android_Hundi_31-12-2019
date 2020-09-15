@@ -102,6 +102,7 @@ import android.widget.Toast;
 import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.text.TextBlock;
 import com.google.android.gms.vision.text.TextRecognizer;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
@@ -2059,6 +2060,12 @@ public class Utility {
            ExceptionsNotification.ExceptionHandling(context ,  Utility.getStackTrace(e), "0");
        }
 
+    }
+
+    public static void getSnackbar(Context context,String message){
+        Snackbar snackbar = Snackbar
+                .make(((Activity)context).getWindow().getDecorView().findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG);
+        snackbar.show();
     }
 
 }

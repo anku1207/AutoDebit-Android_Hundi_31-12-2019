@@ -43,7 +43,7 @@ import java.util.Objects;
 
 public class CheckMandateAndShowDialog {
 
-    public static void oxiServiceMandateCheck(Context context,Integer serivceId ,int providerId ,VolleyResponse volleyResponse) {
+    public static void oxiServiceMandateCheck(Context context,Integer serivceId ,int providerId ,Integer actionId,VolleyResponse volleyResponse) {
         // isrecharge is true is before recharge  and fleas alter recharge
         HashMap<String, Object> params = new HashMap<String, Object>();
         ConnectionVO connectionVO = OxigenPlanBO.oxiServiceMandateCheck();
@@ -59,12 +59,13 @@ public class CheckMandateAndShowDialog {
         AuthServiceProviderVO authServiceProviderVO =new AuthServiceProviderVO();
         authServiceProviderVO.setProviderId(providerId);
         oxigenTransactionVO.setProvider(authServiceProviderVO);
+        oxigenTransactionVO.setAnonymousInteger(actionId);
 
         Gson gson=new Gson();
         String json = gson.toJson(oxigenTransactionVO);
         params.put("volley", json);
         connectionVO.setParams(params);
-        Log.w("request",params.toString());
+        Log.w("oxiServiceMandateCheck",params.toString());
 
         VolleyUtils.makeJsonObjectRequest(context, connectionVO, new VolleyResponseListener() {
             @Override

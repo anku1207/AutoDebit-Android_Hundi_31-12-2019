@@ -45,6 +45,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
@@ -76,6 +77,7 @@ import com.uav.autodebit.util.BackgroundAsyncServiceGetListInterface;
 import com.uav.autodebit.util.BackgroundServiceInterface;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.AuthServiceProviderVO;
+import com.uav.autodebit.vo.CardTypeVO;
 import com.uav.autodebit.vo.CityVO;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerAuthServiceVO;
@@ -117,8 +119,10 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
     UAVProgressDialog pd;
     String stringimg=null;
 
-    LinearLayout addcardlistlayout;
+    LinearLayout addcardlistlayout,attachaddress_layout;
     DMRC_Customer_CardVO dmrc_customer_cardVO;
+    CardTypeVO intent_cardTypeVO;
+    boolean isPersonalise;;
 
 
     RecyclerView recyclerView;
@@ -152,6 +156,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
         addcardlistlayout=findViewById(R.id.addcardlistlayout);
         scrollView=findViewById(R.id.scrollView);
         checkAddress=findViewById(R.id.checkAddress);
+        attachaddress_layout=findViewById(R.id.attachaddress_layout);
 
         tabLayout =findViewById(R.id.indicator);
 
@@ -165,11 +170,24 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
         addcardlistlayout.removeAllViews();
 
         isdisable = getIntent().getBooleanExtra("isdisable",true);
-        String onetimeamt = Session.getSessionByKey(Dmrc_Card_Request.this,Session.CACHE_DMRC_MIN_CARD_CHARGE);
-        cardcharges.setText("* INR "+onetimeamt +" Annual Charges");
         customerId = Session.getCustomerId(Dmrc_Card_Request.this);
-
         dmrc_customer_cardVO = gson.fromJson(getIntent().getStringExtra("dmrccard"), DMRC_Customer_CardVO.class);
+
+        intent_cardTypeVO = (CardTypeVO) getIntent().getSerializableExtra("cardTypeVO");
+
+
+        if(intent_cardTypeVO!=null && intent_cardTypeVO.getPersonalization()!=null){
+            isPersonalise= intent_cardTypeVO.getPersonalization() == 1;
+        }else {
+            isPersonalise=false;
+        }
+        cardcharges.setText(intent_cardTypeVO != null ? intent_cardTypeVO.getCardFees() : null);
+        if (isPersonalise) {
+            attachaddress_layout.setVisibility(View.VISIBLE);
+        } else {
+            attachaddress_layout.setVisibility(View.GONE);
+        }
+
         addRequestDmrcCardBanner(dmrc_customer_cardVO);
         //01/09/2020  change dmrc flow
         //setCustomerDetail(dmrc_customer_cardVO);
@@ -403,6 +421,10 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                     public void onClick(View view) {
                         Utility.dismissDialog(Dmrc_Card_Request.this, var3);
 
+                        if(isPersonalise && bmp==null){
+                            Utility.showSingleButtonDialogOld(Dmrc_Card_Request.this,"Alert"," As you have opted for personalised card, please upload a passport size photograph.",false);
+                            return;
+                        }
                         if(bmp==null){
                             saveDmrcCardInServer();
                         }else {
@@ -517,6 +539,11 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
             request_dmrc_customer_cardVO.setMobileNumber(mobilenumber.getText().toString());
             request_dmrc_customer_cardVO.setAddress(permanentaddress.getText().toString());
             request_dmrc_customer_cardVO.setPincode(pin.getText().toString());
+
+            CardTypeVO cardTypeVO =new CardTypeVO();
+            cardTypeVO.setCardTypeId(intent_cardTypeVO.getCardTypeId());
+            request_dmrc_customer_cardVO.setCardTypeVO(cardTypeVO);
+
             if(bmp!=null){
                 request_dmrc_customer_cardVO.setImage(stringimg);
             }
@@ -557,11 +584,11 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                                Utility.dismissDialog(Dmrc_Card_Request.this, dialog);
                                try {
                                    if(dmrc_customer_cardVO.isEventIs()){
-                                       Utility.showSelectPaymentTypeDialog(Dmrc_Card_Request.this, "Payment Type", dmrc_customer_cardVO.getPaymentTypeObject(), new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess) (position) -> {
+                                       Utility.showSelectPaymentTypeDialog(Dmrc_Card_Request.this, "Payment Type", dmrc_customer_cardVO.getPaymentTypeObject(), new AlertSelectDialogClick((position) -> {
                                            int selectPosition = Integer.parseInt(position);
                                            if (selectPosition == ApplicationConstant.BankMandatePayment){
                                                // 07/05/2020
-                                               BillPayRequest.showBankMandateOrSiMandateInfo(Dmrc_Card_Request.this,dmrc_customer_cardVO.getBankMandateHtml(),new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                                               BillPayRequest.showBankMandateOrSiMandateInfo(Dmrc_Card_Request.this,dmrc_customer_cardVO.getBankMandateHtml(),new ConfirmationDialogInterface((ok)->{
                                                    dmrc_customer_cardVO.setAnonymousInteger(AuthServiceProviderVO.ENACHIDFC);
                                                    setBankMandateOrRecharge(Dmrc_Card_Request.this,dmrc_customer_cardVO);
                                                }));
@@ -569,14 +596,14 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
 
                                            } else if(selectPosition == ApplicationConstant.SIMandatePayment) {
                                                // recharge on SI mandate
-                                               BillPayRequest.showBankMandateOrSiMandateInfo(Dmrc_Card_Request.this,dmrc_customer_cardVO.getSiMandateHtml(),new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                                               BillPayRequest.showBankMandateOrSiMandateInfo(Dmrc_Card_Request.this,dmrc_customer_cardVO.getSiMandateHtml(),new ConfirmationDialogInterface((ok)->{
                                                    dmrc_customer_cardVO.setAnonymousInteger(AuthServiceProviderVO.AUTOPE_PG);
                                                    setBankMandateOrRecharge(Dmrc_Card_Request.this,dmrc_customer_cardVO);
                                                }));
                                                // proceedToRecharge(oxigenValidateResponce.getTypeId().toString(),"AUTOPETXNID60", AuthServiceProviderVO.PAYU);
                                            }else if(selectPosition == ApplicationConstant.UPIMandatePayment) {
                                                // recharge on SI mandate
-                                               BillPayRequest.showBankMandateOrSiMandateInfo(Dmrc_Card_Request.this,dmrc_customer_cardVO.getUpiMandateHtml(),new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                                               BillPayRequest.showBankMandateOrSiMandateInfo(Dmrc_Card_Request.this,dmrc_customer_cardVO.getUpiMandateHtml(),new ConfirmationDialogInterface((ok)->{
                                                    dmrc_customer_cardVO.setAnonymousInteger(AuthServiceProviderVO.AUTOPE_PG_UPI);
                                                    setBankMandateOrRecharge(Dmrc_Card_Request.this,dmrc_customer_cardVO);
                                                }));
@@ -612,10 +639,11 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
         AuthServiceProviderVO authServiceProviderVO = new AuthServiceProviderVO();
         authServiceProviderVO.setProviderId(dmrc_customer_cardVO.getAnonymousInteger());
         oxigenTransactionVO.setProvider(authServiceProviderVO);
+        oxigenTransactionVO.setAnonymousInteger(dmrc_customer_cardVO.getDmrcid());
 
-        BeforeRecharge.beforeRechargeAddMandate(context,oxigenTransactionVO,new MandateAndRechargeInterface((MandateAndRechargeInterface.OnRecharge)(recharge)->{
+        BeforeRecharge.beforeRechargeAddMandate(context,oxigenTransactionVO,new MandateAndRechargeInterface((recharge)->{
             sIMandateDmrc(Integer.parseInt((String) recharge),dmrc_customer_cardVO.getAnonymousInteger(),false);
-        }, (MandateAndRechargeInterface.OnMandate)(mandate)->{
+        }, (mandate)->{
             if(oxigenTransactionVO.getProvider().getProviderId()== AuthServiceProviderVO.AUTOPE_PG){
                 startSIActivity(context,dmrc_customer_cardVO,ApplicationConstant.PG_MANDATE);
             }else if(oxigenTransactionVO.getProvider().getProviderId()== AuthServiceProviderVO.ENACHIDFC){
@@ -722,11 +750,11 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                             JSONObject object = new JSONObject(dmrc_customer_SI_cardVO.getAnonymousString());
                             String [] btnText= {object.getString("Button1"),object.getString("Button2")};
 
-                            MyDialog.showDoubleButtonBigContentDialog(Dmrc_Card_Request.this,new BigContentDialogIntetface((BigContentDialogIntetface.Button1)(button1)->{
+                            MyDialog.showDoubleButtonBigContentDialog(Dmrc_Card_Request.this,new BigContentDialogIntetface((button1)->{
                                 Utility.dismissDialog(Dmrc_Card_Request.this, button1);
 
 
-                                BillPayRequest.showBankMandateOrSiMandateInfo(Dmrc_Card_Request.this,dmrc_customer_SI_cardVO.getSiMandateHtml(),new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                                BillPayRequest.showBankMandateOrSiMandateInfo(Dmrc_Card_Request.this,dmrc_customer_SI_cardVO.getSiMandateHtml(),new ConfirmationDialogInterface((ok)->{
                                     OxigenTransactionVO oxigenTransactionVO = new OxigenTransactionVO();
                                     oxigenTransactionVO.setServiceId(dmrc_customer_SI_cardVO.getServiceId());
 
@@ -734,20 +762,20 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                                     authServiceProviderVO.setProviderId(AuthServiceProviderVO.AUTOPE_PG);
                                     oxigenTransactionVO.setProvider(authServiceProviderVO);
 
-                                    BeforeRecharge.beforeRechargeAddMandate(Dmrc_Card_Request.this,oxigenTransactionVO,new MandateAndRechargeInterface((MandateAndRechargeInterface.OnRecharge)(recharge)->{
+                                    BeforeRecharge.beforeRechargeAddMandate(Dmrc_Card_Request.this,oxigenTransactionVO,new MandateAndRechargeInterface((recharge)->{
                                         try {
                                             allotDmrcCard(dmrc_customer_SI_cardVO.getDmrcid(),Integer.parseInt((String) recharge),false);
                                         }catch (Exception e){
                                             ExceptionsNotification.ExceptionHandling(Dmrc_Card_Request.this , Utility.getStackTrace(e));
                                         }
-                                    }, (MandateAndRechargeInterface.OnMandate)(mandate)->{
+                                    }, (mandate)->{
                                         startSIActivity(Dmrc_Card_Request.this,dmrc_customer_SI_cardVO.getDmrcid(),dmrc_customer_SI_cardVO.getAnonymousAmount(),dmrc_customer_SI_cardVO.getServiceId(),ApplicationConstant.PG_MANDATE);
                                     }));
                                 }));
-                           },(BigContentDialogIntetface.Button2)(button2)->{
+                           }, (button2)->{
                                 Utility.dismissDialog(Dmrc_Card_Request.this, button2);
                                 String [] proceedBtn= {"Proceed"};
-                                MyDialog.showSingleButtonBigContentDialog(Dmrc_Card_Request.this,new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                                MyDialog.showSingleButtonBigContentDialog(Dmrc_Card_Request.this,new ConfirmationDialogInterface((ok)->{
                                     Utility.dismissDialog(Dmrc_Card_Request.this, ok);
                                     dmrcCustomerCardSecurityDeposti(dmrc_customer_SI_cardVO.getDmrcid());
                                 }),"Add Security Deposit",dmrc_customer_SI_cardVO.getDialogMessage(),proceedBtn);
@@ -938,7 +966,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
 
 
     public void pincodebycity(String pincode){
-        DMRCApi.getCityByPincodeForDMRC(this,pincode,new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
+        DMRCApi.getCityByPincodeForDMRC(this,pincode,new VolleyResponse((success)->{
             CityVO cityVO = (CityVO) success;
             city.setText(cityVO.getCityName());
             state.setText(cityVO.getStateRegion().getStateRegionName());
@@ -946,7 +974,7 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
             state.setError(null);
             pin.setError(null);
             Utility.hideKeyboard(this);
-        },(VolleyResponse.OnError)(error)->{
+        }, (error)->{
             city.setText("");
             state.setText("");
             pin.setError(error);
