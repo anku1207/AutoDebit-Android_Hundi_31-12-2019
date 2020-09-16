@@ -420,11 +420,6 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                     @Override
                     public void onClick(View view) {
                         Utility.dismissDialog(Dmrc_Card_Request.this, var3);
-
-                        if(isPersonalise && bmp==null){
-                            Utility.showSingleButtonDialogOld(Dmrc_Card_Request.this,"Alert"," As you have opted for personalised card, please upload a passport size photograph.",false);
-                            return;
-                        }
                         if(bmp==null){
                             saveDmrcCardInServer();
                         }else {
@@ -943,6 +938,11 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
         }
         if(permanentaddress.getText().toString().trim().equals("")){
             permanentaddress.setError("This filed is required");
+            filed=false;
+        }
+
+        if(filed &&  isPersonalise && bmp==null){
+            Utility.showSingleButtonDialogOld(Dmrc_Card_Request.this,"Alert"," As you have opted for personalised card, please upload a passport size photograph.",false);
             filed=false;
         }
 

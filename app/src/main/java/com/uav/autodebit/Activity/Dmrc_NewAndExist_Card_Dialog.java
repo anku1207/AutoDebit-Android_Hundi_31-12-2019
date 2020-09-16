@@ -102,7 +102,7 @@ public class Dmrc_NewAndExist_Card_Dialog extends Base_Activity implements View.
                     rdbtn.setTag(cardTypeVO1);
                     radiogroup.addView(rdbtn);
                 }
-               // ((RadioButton)radiogroup.getChildAt(0)).setChecked(true);
+                ((RadioButton)radiogroup.getChildAt(0)).setChecked(true);
             }catch ( Exception e){
                 ExceptionsNotification.ExceptionHandling(this , Utility.getStackTrace(e));
             }
