@@ -268,6 +268,21 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
         settings.setDomStorageEnabled(true);
 
         webview.setWebChromeClient(new WebChromeClient() {
+
+            @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                super.onProgressChanged(view, newProgress);
+                if(!SI_First_Data.this.isFinishing() &&  progressBar!=null && !progressBar.isShowing()){
+                    try {
+                        progressBar.show();
+                    }catch (Exception e){
+                    }
+                }
+                if(newProgress==100){
+                    Utility.dismissDialog(SI_First_Data.this, progressBar);
+                }
+            }
+
             @Override
             public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
                 return super.onJsAlert(view, url, message, result);
@@ -511,6 +526,8 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
 
 
     private class MyBrowser extends WebViewClient {
+
+
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             Log.w("URL", url);

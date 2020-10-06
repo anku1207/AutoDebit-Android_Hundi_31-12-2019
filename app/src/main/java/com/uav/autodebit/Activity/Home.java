@@ -364,8 +364,8 @@ public class Home extends Base_Activity
                             actionUberServiceOnclick(banners.get(pager.getCurrentItem()).getServiceType().getServiceTypeId());
                         } else{
                             Intent intent;
-                            intent =new Intent(Home.this, activityhasmap.get(banners.get(pager.getCurrentItem()).getServiceType().getServiceTypeId()));
-                            intent.putExtra("serviceid",banners.get(pager.getCurrentItem()).getServiceType().getServiceTypeId()+"");
+                            intent =new Intent(Home.this, activityhasmap.get(banners.get(pager.getCurrentItem()).getServiceType().getServiceTypeId().toString()));
+                            intent.putExtra("serviceid",banners.get(pager.getCurrentItem()).getServiceType().getServiceTypeId().toString());
                             startActivity(intent);
                         }
                     }
