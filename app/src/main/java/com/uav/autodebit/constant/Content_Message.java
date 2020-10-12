@@ -11,7 +11,8 @@ public class Content_Message {
     public static String DOWNLOAD_PERMISSION="Need this  permission for download ";
     public static String CAMERA_PERMISSION="Need Camera permission";
     public static String SMS_PERMISSION="Need Sms permission for read otp ";
-    public static String CONTACT_PERMISSION="Need this permission for read contact ";
+    public static String CONTACT_PERMISSION="Need this permission to read contact ";
+    public static String MAKE_CALL_PERMISSION="Need Make call permission";
 
     //catch message
     public  static String error_message="Something went wrong, Please try again";

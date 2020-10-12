@@ -55,6 +55,7 @@ import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.InputType;
+import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -62,6 +63,7 @@ import android.text.format.Formatter;
 import android.text.method.DigitsKeyListener;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.UnderlineSpan;
 import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -2066,6 +2068,11 @@ public class Utility {
         Snackbar snackbar = Snackbar
                 .make(((Activity)context).getWindow().getDecorView().findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG);
         snackbar.show();
+    }
+    public static SpannableString underlineTextViewtext(String textData){
+        SpannableString content = new SpannableString(textData);
+        content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
+        return content;
     }
 
 }

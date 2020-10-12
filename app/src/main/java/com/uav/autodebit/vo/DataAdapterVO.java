@@ -49,6 +49,7 @@ public class DataAdapterVO  implements Serializable {
     private String txnDate;
     private String serviceCharge;
     private Integer custmerPassBookId;
+    private String link;
 
     private String isbillFetch;
     private Integer minTxnAmount;
@@ -343,5 +344,13 @@ public class DataAdapterVO  implements Serializable {
 
     public void setMinTxnAmount(Integer minTxnAmount) {
         this.minTxnAmount = minTxnAmount;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
     }
 }

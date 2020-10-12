@@ -687,9 +687,8 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
                         creditscore.setText("---" );
                     }else {
                         creditscore.setText("Credit Score : "+customerVO.getCreditScore() );
-                        cir_report=response.getString("cirPdfPath");
-                        if(!cir_report.equals("null")) downloadreport.setVisibility(View.VISIBLE);
-                        Log.w("cirreportpath",cir_report);
+                        cir_report=customerVO.getCirPdfPath();
+                        if(cir_report!=null) downloadreport.setVisibility(View.VISIBLE);
                     }
                 }
             }

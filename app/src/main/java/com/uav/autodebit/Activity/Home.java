@@ -29,6 +29,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -36,6 +37,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
+import com.uav.autodebit.BO.BannerBO;
 import com.uav.autodebit.BO.MetroBO;
 import com.uav.autodebit.BO.ServiceBO;
 import com.uav.autodebit.CustomDialog.MyDialog;
@@ -357,19 +359,29 @@ public class Home extends Base_Activity
         viewPager.setOnViewPagerClickListener(new ClickableViewPager.OnClickListener() {
             @Override
             public void onViewPagerClick(ViewPager pager) {
-
                 try {
-                    if(banners.get(pager.getCurrentItem()).getServiceType()!=null && banners.get(pager.getCurrentItem()).getServiceType().getServiceTypeId()!=null){
-                        if(banners.get(pager.getCurrentItem()).getServiceType().getServiceTypeId()==ApplicationConstant.Uber){
-                            actionUberServiceOnclick(banners.get(pager.getCurrentItem()).getServiceType().getServiceTypeId());
-                        } else{
-                            Intent intent;
-                            intent =new Intent(Home.this, activityhasmap.get(banners.get(pager.getCurrentItem()).getServiceType().getServiceTypeId().toString()));
-                            intent.putExtra("serviceid",banners.get(pager.getCurrentItem()).getServiceType().getServiceTypeId().toString());
-                            startActivity(intent);
-                        }
+                    BannerVO bannerVO = banners.get(pager.getCurrentItem());
+                    if(bannerVO.getExecutive()==1){
+                        getBannerClickDetails(Home.this,bannerVO.getBannerId(),new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
+                                BannerVO bannerVO1 = (BannerVO) s;
+                                if(bannerVO1.isEventIs()){
+                                    startActivity(new Intent(Home.this,BannerWebview.class).putExtra("webviewdata",bannerVO1.getWebview()));
+                                }else {
+                                    if(bannerVO1.getServiceType()!=null &&  bannerVO1.getServiceType().getServiceTypeId()!=null){
+                                        if(bannerVO1.getServiceType().getServiceTypeId()==ApplicationConstant.Uber){
+                                            actionUberServiceOnclick(bannerVO1.getServiceType().getServiceTypeId());
+                                        } else{
+                                            Intent intent;
+                                            intent =new Intent(Home.this, activityhasmap.get(bannerVO1.getServiceType().getServiceTypeId().toString()));
+                                            intent.putExtra("serviceid",bannerVO1.getServiceType().getServiceTypeId().toString());
+                                            startActivity(intent);
+                                        }
+                                    }
+                                }
+                        }));
                     }
-                }catch (Exception e){
+               }catch (Exception e){
+                    e.printStackTrace();
                     ExceptionsNotification.ExceptionHandling(Home.this , Utility.getStackTrace(e));
                 }
 
@@ -528,6 +540,48 @@ public class Home extends Base_Activity
             });
         }
     }
+
+
+    public void getBannerClickDetails(Context context,int bannerId,VolleyResponse volleyResponse){
+        try {
+            HashMap<String, Object> params = new HashMap<String, Object>();
+            ConnectionVO connectionVO = BannerBO.getBannerExecutiveDetail();
+            BannerVO bannerVO =new BannerVO();
+            bannerVO.setBannerId(bannerId);
+            bannerVO.setAnonymousInteger(Integer.parseInt(Session.getCustomerId(context)));
+            Gson gson =new Gson();
+            String json = gson.toJson(bannerVO);
+            params.put("volley", json);
+            Log.w("getBannerClickDetails",json);
+            connectionVO.setParams(params);
+
+            VolleyUtils.makeJsonObjectRequest(Home.this,connectionVO, new VolleyResponseListener() {
+                @Override
+                public void onError(String message) {
+                }
+                @Override
+                public void onResponse(Object resp) throws JSONException {
+                    JSONObject response = (JSONObject) resp;
+                    BannerVO bannerVOresp = gson.fromJson(response.toString(), BannerVO.class);
+                    if(bannerVOresp.getStatusCode().equals("400")){
+                        ArrayList error = (ArrayList) bannerVOresp.getErrorMsgs();
+                        StringBuilder sb = new StringBuilder();
+                        for(int i=0; i<error.size(); i++){
+                            sb.append(error.get(i)).append("\n");
+                        }
+                        //pd.dismiss();
+                        Utility.showSingleButtonDialog(Home.this,bannerVOresp.getDialogTitle(),sb.toString(),false);
+                    }else {
+                        volleyResponse.onSuccess(bannerVOresp);
+                    }
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            ExceptionsNotification.ExceptionHandling(Home.this , Utility.getStackTrace(e));
+        }
+    }
+
 
 
     public void dmrcCardRequest(){
@@ -896,7 +950,7 @@ public class Home extends Base_Activity
     }
 
 
-    public void actionUberServiceOnclick(int serviceId) throws Exception{
+    public void actionUberServiceOnclick(int serviceId){
         UberApiCall.CheckUberVaucherByCustomerId(this,new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
             UberVoucherVO uberVoucherVO = (UberVoucherVO) success;
             if(uberVoucherVO.isEventIs()){

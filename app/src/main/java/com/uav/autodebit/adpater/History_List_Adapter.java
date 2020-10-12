@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.uav.autodebit.Activity.HistorySummary;
 import com.uav.autodebit.R;
+import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.DataAdapterVO;
 
 import org.json.JSONArray;
@@ -57,15 +58,15 @@ public class History_List_Adapter  extends RecyclerView.Adapter<History_List_Ada
 
         try{
 
-            final DataAdapterVO pro=historyList.get(position);
+            DataAdapterVO pro=historyList.get(position);
             holder.cardno.setText(pro.getNumber());
             holder.service_name.setText(pro.getServiceName());
-            holder.status.setText("Debit Success : "+pro.getStatus());
+            holder.status.setText(pro.getStatus());
             holder.mainlayout.setTag(pro.getCustmerPassBookId());
+            holder.bottom_left_status.setText(Utility.underlineTextViewtext(pro.getLink()));
 
 
             JSONArray jsonArray =new JSONArray(pro.getQuestionsData());
-
 
             if(holder.chargeslayout.getChildCount()>0) holder.chargeslayout.removeAllViews();
             for(int i=0;i<jsonArray.length();i++){
@@ -73,16 +74,14 @@ public class History_List_Adapter  extends RecyclerView.Adapter<History_List_Ada
                 createChargesLayout(holder.chargeslayout,jsonObject.getString("key"),jsonObject.getString("value"));
             }
 
-
-
-
-
             holder.mainlayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                /*index=position;
-                notifyDataSetChanged();*/
-                    mctx.startActivity(new Intent(mctx, HistorySummary.class).putExtra("historyId",pro.getCustmerPassBookId().toString()));
+                    /*index=position;
+                    notifyDataSetChanged();*/
+                    if(pro.getLink()!=null && !pro.getLink().equals("")){
+                        mctx.startActivity(new Intent(mctx, HistorySummary.class).putExtra("historyId",pro.getCustmerPassBookId().toString()));
+                    }
                 }
             });
 
@@ -106,17 +105,17 @@ public class History_List_Adapter  extends RecyclerView.Adapter<History_List_Ada
     }
     public class ProdectViewHolder extends RecyclerView.ViewHolder {
         LinearLayout mainlayout,chargeslayout;
-        TextView cardno,service_name,txn_id,date,amount,service_charge,netamt,debitdate,status;
+        TextView cardno,service_name,txn_id,date,amount,service_charge,netamt,debitdate,status,bottom_left_status;
+
 
         public ProdectViewHolder(View itemView) {
             super(itemView);
             mainlayout=itemView.findViewById(R.id.mainlayout);
             cardno=itemView.findViewById(R.id.cardno);
             service_name=itemView.findViewById(R.id.service_name);
-            status=itemView.findViewById(R.id.status);
+            status=itemView.findViewById(R.id.bottom_right_status);
             chargeslayout=itemView.findViewById(R.id.chargeslayout);
-
-
+            bottom_left_status=itemView.findViewById(R.id.bottom_left_status);
         }
     }
 

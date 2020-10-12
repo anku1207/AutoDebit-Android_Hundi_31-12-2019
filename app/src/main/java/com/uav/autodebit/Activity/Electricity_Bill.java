@@ -111,7 +111,8 @@ public class Electricity_Bill extends Base_Activity  implements View.OnClickList
                 if(MotionEvent.ACTION_UP == motionEvent.getAction()) {
                     operator.setEnabled(false);
                     //startActivity(new Intent(Mobile_Prepaid_Recharge_Service.this,Listview_With_Image.class));
-                    BackgroundAsyncService backgroundAsyncService = new BackgroundAsyncService(pd,true, new BackgroundServiceInterface() {
+                    BackgroundAsyncService backgroundAsyncService = new BackgroundAsyncService(pd,
+                            true, new BackgroundServiceInterface() {
                         @Override
                         public void doInBackGround() {
                             operatorListDate = gson.toJson(getDataList());
@@ -140,6 +141,8 @@ public class Electricity_Bill extends Base_Activity  implements View.OnClickList
             JSONArray jsonArray =new JSONArray(operator);
 
             Log.w("dataoperator",jsonArray.toString());
+
+
             for(int i=0;i<jsonArray.length();i++){
                 DataAdapterVO dataAdapterVO = new DataAdapterVO();
                 JSONObject object =jsonArray.getJSONObject(i);
@@ -357,7 +360,8 @@ public class Electricity_Bill extends Base_Activity  implements View.OnClickList
             if(isFetchBill){
                 BillPayRequest.proceedRecharge(this,isFetchBill,oxigenTransactionVOresp);
             }else {
-                BillPayRequest.confirmationDialogBillPay(this, operator, netAmount ,dataarray , new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
+                BillPayRequest.confirmationDialogBillPay(this, operator, netAmount ,dataarray ,
+                        new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
                     OxigenTransactionVO oxigenTransactionVO =new OxigenTransactionVO();
                     oxigenTransactionVO.setOperateName(operatorcode);
                     oxigenTransactionVO.setAmount(Double.valueOf(netAmount.getText().toString()));

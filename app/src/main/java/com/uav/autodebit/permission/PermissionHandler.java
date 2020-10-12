@@ -109,4 +109,11 @@ public class PermissionHandler {
         return permissions;
 
     }
+
+    public static ArrayList<String> makeCallPermissionArrayList(Context context) {
+        ArrayList<String> permissions=new ArrayList<>();
+        permissions.add(Manifest.permission.CALL_PHONE);
+        return permissions;
+
+    }
 }

@@ -2,28 +2,39 @@ package com.uav.autodebit.Activity;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 import com.uav.autodebit.BO.ContactUsBO;
 import com.uav.autodebit.CustomDialog.MyDialog;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.R;
+import com.uav.autodebit.constant.ApplicationConstant;
+import com.uav.autodebit.constant.Content_Message;
+import com.uav.autodebit.permission.PermissionHandler;
+import com.uav.autodebit.permission.PermissionUtils;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.ExceptionHandler;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerVO;
+import com.uav.autodebit.vo.LocalCacheVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
 import com.uav.autodebit.volley.VolleyUtils;
 
@@ -33,10 +44,13 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Help extends Base_Activity implements View.OnClickListener {
+public class Help extends Base_Activity implements View.OnClickListener ,PermissionUtils.PermissionResultCallback{
 
-    ImageView back_activity_button,email,contact_request;
-
+    ImageView back_activity_button;
+    //email,contact_request;
+    PermissionUtils permissionUtils;
+    //FloatingActionButton fabCall;
+    ImageButton email,contact_request,fabCall;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,12 +58,16 @@ public class Help extends Base_Activity implements View.OnClickListener {
 
         getSupportActionBar().hide();
 
+        permissionUtils =new PermissionUtils(Help.this);
         contact_request=findViewById(R.id.contact_request);
+        fabCall =findViewById(R.id.fabCall);
         email=findViewById(R.id.email);
+
         back_activity_button = findViewById(R.id.back_activity_button);
         back_activity_button.setOnClickListener(this);
         contact_request.setOnClickListener(this);
         email.setOnClickListener(this);
+        fabCall.setOnClickListener(this);
     }
 
 
@@ -84,8 +102,22 @@ public class Help extends Base_Activity implements View.OnClickListener {
                 email.startAnimation(animation);
                 sendMail();
                 break;
+            case R.id.fabCall:
+                permissionUtils.check_permission(PermissionHandler.makeCallPermissionArrayList(Help.this),
+                        Content_Message.MAKE_CALL_PERMISSION, ApplicationConstant.REQ_MAKE_CALL_PERMISSION);
+                break;
 
         }
+    }
+
+    private void makeCallToSupport() {
+        Gson gson = new Gson();
+        LocalCacheVO localCacheVO = gson.fromJson( Session.getSessionByKey(this, Session.LOCAL_CACHE), LocalCacheVO.class);
+        String phNo =localCacheVO.getCustomerSupportNumber();
+        startActivity(new Intent(Intent.ACTION_CALL, Uri.parse(phNo)));
+
+        Log.e("cc_no",phNo+"");
+
     }
 
     private void sendMail(){
@@ -134,6 +166,34 @@ public class Help extends Base_Activity implements View.OnClickListener {
                 }
             }
         });
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        permissionUtils.onRequestPermissionsResult(requestCode,permissions,grantResults);
+
+    }
+
+    @Override
+    public void PermissionGranted(int request_code) {
+        if(request_code==ApplicationConstant.REQ_MAKE_CALL_PERMISSION)
+            makeCallToSupport();
+    }
+
+    @Override
+    public void PartialPermissionGranted(int request_code, ArrayList<String> granted_permissions) {
+
+
+    }
+
+    @Override
+    public void PermissionDenied(int request_code) {
+    }
+
+    @Override
+    public void NeverAskAgain(int request_code) {
 
     }
 }

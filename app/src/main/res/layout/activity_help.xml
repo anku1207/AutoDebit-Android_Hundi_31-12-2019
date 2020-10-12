@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Activity.Help"
-    android:orientation="vertical"
-
-
-    >
+    android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/my_awesome_toolbar"
@@ -65,58 +63,235 @@
             />
     </androidx.appcompat.widget.Toolbar>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".activity.ContactUs"
-        android:orientation="vertical"
-        android:background="@color/white"
         android:layout_gravity="center|fill_vertical"
-        android:gravity="center">
+        android:background="@color/white"
+        android:gravity="center"
+        android:orientation="vertical"
+        tools:context=".activity.ContactUs">
+
         <ImageView
             android:layout_width="200dp"
             android:layout_height="200dp"
-            android:src="@drawable/autodebitlogo"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            android:src="@drawable/autodebitlogo" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="We are happy to help you! \nOur service hours are 10am to 6pm"
-            android:textAlignment="center"
             android:textColor="@color/defaultTextColor"
-            android:textStyle="bold"
-            android:textSize="17dp"/>
-
-
+            android:textSize="17dp"
+            android:gravity="center_horizontal"
+            android:textStyle="bold" />
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="30dp">
+            android:layout_marginVertical="64dp"
+            android:weightSum="3">
 
 
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_margin="24dp"
+                android:layout_weight="1"
                 android:orientation="vertical"
                 >
+
+                    <ImageButton
+                        android:id="@+id/contact_request"
+                        android:layout_margin="4dp"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:background="@drawable/buttonshape_round_with_icon"
+                        android:padding="2dp"
+                        android:src="@drawable/phone"
+                        android:tint="@color/white"
+                        android:layout_gravity="center"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:layout_gravity="bottom"
+                        android:text="Request Callback"
+                        android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="24dp"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                >
+
+                    <ImageButton
+                        android:layout_margin="4dp"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:background="@drawable/buttonshaped_icon_red"
+                        android:padding="2dp"
+                        android:id="@+id/email"
+                        android:src="@drawable/email"
+                        android:tint="@color/white"
+                        android:layout_gravity="center"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:layout_gravity="bottom|center"
+                        android:text="Email"
+                        android:textStyle="bold" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="24dp"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                >
+
                 <ImageButton
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
-                    android:background="@drawable/buttonshape_round_with_icon"
+                    android:layout_margin="4dp"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:background="@drawable/buttonshaped_icon_green"
+                    android:padding="2dp"
                     android:src="@drawable/phone"
                     android:tint="@color/white"
-                    android:textAlignment="center"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:textColor="#fff"
+                    android:id="@+id/fabCall"
+                    android:layout_gravity="center"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:layout_gravity="bottom"
+                    android:text="Call Support"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+   <!--     <LinearLayout
+            android:layout_margin="@dimen/activity_horizontal_margin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@color/errorColor"
+            android:weightSum="1"
+
+            >
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_weight="0.15"
+                android:layout_margin="@dimen/activity_horizontal_margin"
+                android:layout_height="wrap_content"
+                android:id="@+id/image_icon"
+                android:src="@drawable/phone"
+                android:background="@drawable/buttonshape_round_with_icon"
+                android:tint="@color/white"
+                />
+
+            <TextView
+                android:layout_weight="0.85"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/text"
+                android:text="Request a Callback"
+                android:textStyle="bold"
+                android:layout_gravity="center_vertical"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_margin="@dimen/activity_horizontal_margin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@color/errorColor"
+            android:weightSum="1"
+
+            >
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_weight="0.1"
+                android:layout_margin="@dimen/activity_horizontal_margin"
+                android:layout_height="wrap_content"
+                android:src="@drawable/email"
+                android:background="@drawable/buttonshaped_icon_red"
+                android:tint="@color/white"
+                android:padding="4dp"
+                />
+
+            <TextView
+                android:layout_weight="0.85"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Email"
+                android:textStyle="bold"
+                android:layout_gravity="center_vertical"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_margin="@dimen/activity_horizontal_margin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@color/errorColor"
+            android:weightSum="1"
+
+            >
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_weight="0.1"
+                android:layout_margin="@dimen/activity_horizontal_margin"
+                android:layout_height="wrap_content"
+                android:src="@drawable/phone"
+                android:background="@drawable/buttonshaped_icon_green"
+                android:tint="@color/white"
+                />
+
+            <TextView
+                android:layout_weight="0.85"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Call Support"
+                android:textStyle="bold"
+                android:layout_gravity="center_vertical"
+                />
+        </LinearLayout>
+--><!--
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <ImageButton
                     android:id="@+id/contact_request"
-                    />
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/buttonshape_round_with_icon"
+                    android:gravity="center"
+                    android:src="@drawable/phone"
+                    android:textAlignment="center"
+                    android:textColor="#fff"
+                    android:tint="@color/white" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -126,51 +301,49 @@
                     android:textAlignment="center"
                     android:textColor="@color/defaultTextColor"
                     android:textSize="12dp"
-                    android:textStyle="bold"
-                   />
+                    android:textStyle="bold" />
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="0dp"
-                android:layout_weight="1"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:orientation="vertical">
+
                 <ImageButton
+                    android:id="@+id/email"
                     android:layout_width="70dp"
                     android:layout_height="70dp"
+                    android:layout_gravity="center"
                     android:background="@drawable/buttonshape_round_with_icon"
+                    android:gravity="center"
                     android:src="@android:drawable/ic_dialog_email"
                     android:textAlignment="center"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:textColor="#fff"
-                    android:id="@+id/email"/>
+                    android:textColor="#fff" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:text="Email"
                     android:textAlignment="center"
-                    android:layout_gravity="center"
                     android:textColor="@color/defaultTextColor"
                     android:textSize="12dp"
-                    android:textStyle="bold"
-                   />
+                    android:textStyle="bold" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 
-    <!--<android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabCall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|left"
-        android:layout_marginBottom="20dp"
-
-        app:srcCompat="@drawable/rof_backbutton"
-        android:tint="#ffff"
-        app:backgroundTint="@color/colorPrimary"
-        android:layout_marginLeft="10dp"
-        />-->
+        android:layout_gravity="bottom|end"
+        android:layout_margin="48dp"
+        android:backgroundTint="@android:color/holo_green_light"
+        android:baselineAligned="false"
+        android:foregroundGravity="center"
+        android:src="@drawable/phone"
+        android:tint="@android:color/white" />-->
 </LinearLayout>

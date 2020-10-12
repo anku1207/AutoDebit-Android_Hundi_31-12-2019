@@ -18,7 +18,7 @@ public class ApplicationConstant {
 
     public final static String AUTHKEY= "G4s4cCMx2aM7lky1";
 
-    public final static  boolean IS_PRODUCTION_ENVIRONMENT= false;
+    public final static  boolean IS_PRODUCTION_ENVIRONMENT= true;
 
     public static int MobilePrepaid=5,MobilePostpaid=14,D2h=17,Dmrc=2,Electricity=10,Landline=7,Water=12,Broadband=8,PNG=6,Gas=11,DTH=13,DISHTV=18,INSURANCE_RENEWAL=19,LOAN_REPAYMENT=20,FASTAG=21,CABLE_TV=22 ,Uber=16,IRCTC=1
     ,PreAndPost=23,GasDual=24;
@@ -26,6 +26,7 @@ public class ApplicationConstant {
     public static int  REQ_ENACH_MANDATE=1003,REQ_ALLSERVICE=1004,REQ_SI_MANDATE=1005,REQ_MANDATE_FOR_FIRSTTIME_RECHARGE=1006,REQ_POPAPACTIVITYRESULT=1007,REQ_MANDATE_FOR_BILL_FETCH_ERROR=1008,REQ_SI_FOR_BILL_FETCH_ERROR=1009,REQ_UPI_FOR_MANDATE=1010,REQ_DMRC_MANDATE_SI_BUCKET=1011;
     public static int  REQ_CAMERA_PERMISSION=2001, REQ_DOWNLOAD_PERMISSION=2002,REQ_READ_SMS_PERMISSION=2003,REQ_READ_CONTACT_PERMISSION=2004;
     public static int  REQ_Code_D2H=3001;
+    public static int  REQ_MAKE_CALL_PERMISSION=2005;
 
     public static String PG_MANDATE="mandate";
     public static String PG_PAYMENT="payment";
@@ -74,7 +75,7 @@ public class ApplicationConstant {
             //return "http://164.52.192.45";
         }else{
             return  "http://205.147.103.18:8080/hundi/rest/stateless" ;
-            //return  "http://192.168.1.103:8080/hundi/rest/stateless" ;
+        //    return  "http://192.168.1.25:8080/hundi/rest/stateless" ;
           //return  "http://192.168.1.29:8080/hundi/rest/stateless" ;
             //return  "http://192.168.43.170:8080/hundi/rest/stateless" ;
         }

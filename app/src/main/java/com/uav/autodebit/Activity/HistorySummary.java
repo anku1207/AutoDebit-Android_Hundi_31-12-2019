@@ -39,7 +39,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class HistorySummary extends Base_Activity implements View.OnClickListener {
-    LinearLayout main,payment_detail_Layout;
+    LinearLayout main,payment_detail_Layout,payment_amt_date;
     TextView service_name,number,order_id,status;
     ImageView service_Icon,back_activity_button;
 
@@ -54,6 +54,7 @@ public class HistorySummary extends Base_Activity implements View.OnClickListene
         number=findViewById(R.id.number);
         order_id=findViewById(R.id.order_id);
         service_Icon=findViewById(R.id.service_Icon);
+        payment_amt_date=findViewById(R.id.payment_amt_date);
         payment_detail_Layout=findViewById(R.id.payment_detail_Layout);
         back_activity_button=findViewById(R.id.back_activity_button);
         status=findViewById(R.id.status);
@@ -70,23 +71,75 @@ public class HistorySummary extends Base_Activity implements View.OnClickListene
 
                 Picasso.with(this).load(customerVO.getImage()).into(service_Icon);
 
-
                 JSONObject respjsonObject  =new JSONObject(customerVO.getAnonymousString());
 
                 service_name.setText(respjsonObject.getJSONObject("data").getString("serviceName"));
                 number.setText(respjsonObject.getJSONObject("data").getString("no"));
                 order_id.setText(respjsonObject.getJSONObject("data").getString("txnId"));
 
+
                 status.setText(respjsonObject.getJSONObject("data").getString("statusName"));
                 status.setTextColor(Color.parseColor(respjsonObject.getJSONObject("data").getString("statusColor")));
 
+                //dynamic view for paymentAmountAndDate
+                if(respjsonObject.has("header")&& respjsonObject.getJSONArray("header").length()>0) {
+                    JSONArray jsonArrayAD = respjsonObject.getJSONArray("header");
+
+
+                    Typeface typeface = ResourcesCompat.getFont(this, R.font.poppinssemibold);
+
+
+                    LinearLayout.LayoutParams layoutparams;
+                    int marginInDp = (int) TypedValue.applyDimension(
+                            TypedValue.COMPLEX_UNIT_DIP, 5, this.getResources()
+                                    .getDisplayMetrics());
+
+                    for (int i = 0; i < jsonArrayAD.length(); i++) {
+                        JSONObject jsonObject = jsonArrayAD.getJSONObject(i);
+
+                        LinearLayout et = new LinearLayout(new ContextThemeWrapper(HistorySummary.this, R.style.confirmation_dialog_layout));
+
+                        TextView text = new TextView(new ContextThemeWrapper(this, R.style.confirmation_dialog_filed));
+
+                        layoutparams = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float) 1);
+
+                        layoutparams.setMargins(0, marginInDp, 0, marginInDp);
+
+                        text.setLayoutParams(layoutparams);
+                        text.setText(jsonObject.getString("key"));
+                        text.setMaxLines(1);
+                        text.setEllipsize(TextUtils.TruncateAt.END);
+                        text.setTypeface(typeface);
+                        text.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+
+
+                        TextView value = new TextView(new ContextThemeWrapper(this, R.style.confirmation_dialog_value));
+
+                        layoutparams = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float) .5);
+                        layoutparams.setMargins(0, marginInDp, 0, marginInDp);
+
+                        value.setLayoutParams(layoutparams);
+                        value.setText(jsonObject.getString("value"));
+                        value.setTypeface(typeface);
+                        value.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
+
+                        et.addView(text);
+                        et.addView(value);
+                        payment_amt_date.addView(et);
+                    }
+                }
+                else{
+                    payment_amt_date.setVisibility(View.GONE);
+                    findViewById(R.id.tvPS).setVisibility(View.GONE);
+                }
+                //dynamic view for paymentDetails
                 JSONArray jsonArray =respjsonObject.getJSONArray("chargesarray");
 
-                Typeface typeface = ResourcesCompat.getFont(this, R.font.poppinssemibold);
+                Typeface tf = ResourcesCompat.getFont(this, R.font.poppinssemibold);
 
 
-                LinearLayout.LayoutParams layoutparams ;
-                int marginInDp = (int) TypedValue.applyDimension(
+                LinearLayout.LayoutParams lp ;
+                int margin = (int) TypedValue.applyDimension(
                         TypedValue.COMPLEX_UNIT_DIP, 5, this.getResources()
                                 .getDisplayMetrics());
 
@@ -97,26 +150,25 @@ public class HistorySummary extends Base_Activity implements View.OnClickListene
 
                     TextView text = new TextView(new ContextThemeWrapper(this, R.style.confirmation_dialog_filed));
 
-                    layoutparams = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float)1 );
+                    lp = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float)1 );
 
-                    layoutparams.setMargins(0,marginInDp,0,marginInDp);
+                    lp.setMargins(0,margin,0,margin);
 
-                    text.setLayoutParams(layoutparams);
+                    text.setLayoutParams(lp);
                     text.setText(jsonObject.getString("key"));
                     text.setMaxLines(1);
                     text.setEllipsize(TextUtils.TruncateAt.END);
-                    text.setTypeface(typeface);
+                    text.setTypeface(tf);
                     text.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-
 
                     TextView value = new TextView(new ContextThemeWrapper(this, R.style.confirmation_dialog_value));
 
-                    layoutparams = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float).5);
-                    layoutparams.setMargins(0,marginInDp,0,marginInDp);
+                    lp = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float).5);
+                    lp.setMargins(0,margin,0,margin);
 
-                    value.setLayoutParams(layoutparams);
+                    value.setLayoutParams(lp);
                     value.setText(jsonObject.getString("value"));
-                    value.setTypeface(typeface);
+                    value.setTypeface(tf);
                     value.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
 
                     et.addView(text);

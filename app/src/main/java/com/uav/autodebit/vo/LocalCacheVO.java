@@ -33,6 +33,7 @@ public class LocalCacheVO implements Serializable {
     private String eNachReturnURL;
 
     private boolean dmrcExistingCard;
+    private String  customerSupportNumber;
 
 
     public LocalCacheVO(){
@@ -223,5 +224,13 @@ public class LocalCacheVO implements Serializable {
 
     public void setDmrcExistingCard(boolean dmrcExistingCard) {
         this.dmrcExistingCard = dmrcExistingCard;
+    }
+
+    public String getCustomerSupportNumber() {
+        return customerSupportNumber;
+    }
+
+    public void setCustomerSupportNumber(String customerSupportNumber) {
+        this.customerSupportNumber = customerSupportNumber;
     }
 }

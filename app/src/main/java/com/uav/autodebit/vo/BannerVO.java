@@ -13,6 +13,9 @@ public class BannerVO extends BaseVO implements Serializable {
     private Long updateAt;
     private String description;
     private ServiceTypeVO serviceType;
+    private Integer count;
+    private String    webview;
+    private Integer executive;
 
     public BannerVO (){
 
@@ -77,5 +80,29 @@ public class BannerVO extends BaseVO implements Serializable {
 
     public void setServiceType(ServiceTypeVO serviceType) {
         this.serviceType = serviceType;
+    }
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
+    }
+
+    public String getWebview() {
+        return webview;
+    }
+
+    public void setWebview(String webview) {
+        this.webview = webview;
+    }
+
+    public Integer getExecutive() {
+        return executive;
+    }
+
+    public void setExecutive(Integer executive) {
+        this.executive = executive;
     }
 }

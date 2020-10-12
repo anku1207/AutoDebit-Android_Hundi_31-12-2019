@@ -394,7 +394,8 @@ public class BillPayRequest {
     }
 
     public static void setBankMandateOrRecharge(Context context , OxigenTransactionVO oxigenTransactionVO){
-        BeforeRecharge.beforeRechargeAddMandate(context,oxigenTransactionVO,new MandateAndRechargeInterface((MandateAndRechargeInterface.OnRecharge)(recharge)->{
+        BeforeRecharge.beforeRechargeAddMandate(context,oxigenTransactionVO,new MandateAndRechargeInterface
+                ((MandateAndRechargeInterface.OnRecharge)(recharge)->{
             oxigenTransactionVO.setAnonymousInteger(Integer.parseInt((String) recharge));
             proceedRechargeOnMandate(context,oxigenTransactionVO);
         }, (MandateAndRechargeInterface.OnMandate)(mandate)->{
@@ -866,7 +867,8 @@ public class BillPayRequest {
                 responseOxigenTransactionVO.setEventIs(true);
 
                 //recharge for after enach mandate
-                BillPayRequest.proceedBillPayment(responseOxigenTransactionVO,context,new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
+                BillPayRequest.proceedBillPayment(responseOxigenTransactionVO,context,
+                        new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
                     handelRechargeSuccess(context,(OxigenTransactionVO)s);
                 },(VolleyResponse.OnError)(e)->{
                 }));

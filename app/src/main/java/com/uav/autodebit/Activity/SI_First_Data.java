@@ -221,7 +221,8 @@ public class SI_First_Data extends Base_Activity implements MyJavaScriptInterfac
                         respjson = response;
                         Log.w("resp", respjson.toString());
                         openWebView("file:///android_asset/sifirst.html");
-                    } else if (ApplicationConstant.SI_SERVICE.equals("avenue")   || ApplicationConstant.SI_SERVICE.equals("autopepg")) {
+                    } else if (ApplicationConstant.SI_SERVICE.equals("avenue")   ||
+                            ApplicationConstant.SI_SERVICE.equals("autopepg")) {
                         respjson = response;
                         Log.w("resp", respjson.toString());
 

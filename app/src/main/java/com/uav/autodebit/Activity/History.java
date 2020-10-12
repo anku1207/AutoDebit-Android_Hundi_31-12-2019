@@ -113,11 +113,14 @@ public class History extends Base_Activity implements View.OnClickListener {
                               JSONObject jsonObject =jsonArray.getJSONObject(i);
                               DataAdapterVO dataAdapterVO =new DataAdapterVO();
 
-                              dataAdapterVO.setServiceName(jsonObject.getJSONObject("data").getString("ServiceName"));
-                              dataAdapterVO.setNumber(jsonObject.getJSONObject("data").getString("no"));
-                              dataAdapterVO.setStatus(jsonObject.getJSONObject("data").getString("status"));
-                              dataAdapterVO.setCustmerPassBookId(jsonObject.getJSONObject("data").getInt("customerPassBookId"));
-                              dataAdapterVO.setQuestionsData(jsonObject.getJSONArray("chargesarray").toString());
+                              JSONObject dataJson=jsonObject.getJSONObject("data");
+
+                              dataAdapterVO.setServiceName(dataJson.has("ServiceName")? dataJson.getString("ServiceName"):"");
+                              dataAdapterVO.setNumber(dataJson.has("no")?dataJson.getString("no"):"");
+                              dataAdapterVO.setStatus(dataJson.has("status")?dataJson.getString("status"):"");
+                              dataAdapterVO.setCustmerPassBookId(dataJson.has("customerPassBookId")?dataJson.getInt("customerPassBookId"):null);
+                              dataAdapterVO.setQuestionsData(jsonObject.has("chargesarray")? jsonObject.getJSONArray("chargesarray").toString():null);
+                              dataAdapterVO.setLink(dataJson.has("link")?dataJson.getString("link"):"");
                               dataAdapterVOS.add(dataAdapterVO);
                           }
                         serviceClick.onSuccess(dataAdapterVOS);

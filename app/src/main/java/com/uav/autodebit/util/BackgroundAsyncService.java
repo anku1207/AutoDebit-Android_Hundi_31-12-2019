@@ -27,7 +27,9 @@ public class BackgroundAsyncService extends AsyncTask<Void, Void, Void> {
     BackgroundServiceInterface backgroundServiceInterface;
     boolean isShowLoader;
 
-    public BackgroundAsyncService(UAVProgressDialog pd , boolean isShowLoader, BackgroundServiceInterface backgroundServiceInterface){
+    public BackgroundAsyncService(UAVProgressDialog pd , boolean isShowLoader,
+
+                                  BackgroundServiceInterface backgroundServiceInterface){
        this.pd= pd;
        this.backgroundServiceInterface = backgroundServiceInterface;
        this.isShowLoader=isShowLoader;

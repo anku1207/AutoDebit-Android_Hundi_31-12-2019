@@ -25,6 +25,19 @@ public class BannerBO implements Serializable {
         return connectionVO;
     }
 
+    public static ConnectionVO getBannerExecutiveDetail() {
+        ConnectionVO connectionVO = new ConnectionVO();
+        connectionVO.setMethodName("getBannerExecutiveDetail");
+        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
+        return connectionVO;
+    }
+    public static ConnectionVO setAddCampaignResponse() {
+        ConnectionVO connectionVO = new ConnectionVO();
+        connectionVO.setMethodName("setAddCampaignResponse");
+        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
+        return connectionVO;
+    }
+
 
 
 

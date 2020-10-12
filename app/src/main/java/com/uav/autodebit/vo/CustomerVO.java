@@ -39,6 +39,8 @@ public class CustomerVO extends BaseVO implements Serializable {
         private String tokenId;
         private Double highestMandateAmount;
         private String installApps;
+        private String cirPdfPath;
+
 
 
 
@@ -270,5 +272,13 @@ public class CustomerVO extends BaseVO implements Serializable {
 
         public void setInstallApps(String installApps) {
                 this.installApps = installApps;
+        }
+
+        public String getCirPdfPath() {
+                return cirPdfPath;
+        }
+
+        public void setCirPdfPath(String cirPdfPath) {
+                this.cirPdfPath = cirPdfPath;
         }
 }
