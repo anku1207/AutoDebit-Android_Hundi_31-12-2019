@@ -1,7 +1,6 @@
 package com.uav.autodebit.Activity;
 
 import android.app.Dialog;
-import android.app.Notification;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;

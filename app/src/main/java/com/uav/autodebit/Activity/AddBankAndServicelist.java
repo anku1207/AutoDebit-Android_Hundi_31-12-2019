@@ -23,7 +23,6 @@ import android.widget.Toast;
 
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -36,7 +35,6 @@ import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.Content_Message;
 import com.uav.autodebit.override.ExpandableHeightListView;
 import com.uav.autodebit.permission.Session;
-import com.uav.autodebit.util.ExceptionHandler;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerVO;
@@ -51,7 +49,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class AddBankAndServicelist extends Base_Activity implements View.OnClickListener {
     LinearLayout mainlayout;

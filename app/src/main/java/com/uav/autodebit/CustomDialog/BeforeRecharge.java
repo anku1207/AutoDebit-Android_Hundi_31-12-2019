@@ -1,24 +1,16 @@
 package com.uav.autodebit.CustomDialog;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
-import android.widget.Toast;
 
-import com.uav.autodebit.Activity.AddOldDmrcCardAutoPe;
 import com.uav.autodebit.Activity.CheckMandateAndShowDialog;
-import com.uav.autodebit.Activity.Enach_Mandate;
-import com.uav.autodebit.Activity.Mobile_Prepaid_Recharge_Service;
 import com.uav.autodebit.Interface.AlertSelectDialogClick;
 import com.uav.autodebit.Interface.CallBackInterface;
 import com.uav.autodebit.Interface.MandateAndRechargeInterface;
 import com.uav.autodebit.Interface.VolleyResponse;
-import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.util.DialogInterface;
 import com.uav.autodebit.util.Utility;
-import com.uav.autodebit.vo.AuthServiceProviderVO;
 import com.uav.autodebit.vo.CustomerAuthServiceVO;
 import com.uav.autodebit.vo.OxigenTransactionVO;
 
@@ -26,7 +18,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class BeforeRecharge {
 

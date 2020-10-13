@@ -6,10 +6,8 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,7 +15,6 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
-import com.paynimo.android.payment.CardFragment;
 import com.paynimo.android.payment.PaymentActivity;
 import com.paynimo.android.payment.PaymentModesActivity;
 import com.paynimo.android.payment.model.Checkout;

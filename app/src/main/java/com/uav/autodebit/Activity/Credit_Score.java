@@ -2,26 +2,20 @@ package com.uav.autodebit.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.uav.autodebit.BO.PanCardBO;
-import com.uav.autodebit.BO.SignUpBO;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.permission.Session;
-import com.uav.autodebit.util.ExceptionHandler;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.ConnectionVO;
-import com.uav.autodebit.vo.CustomerStatusVO;
 import com.uav.autodebit.vo.CustomerVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
 import com.uav.autodebit.volley.VolleyUtils;
@@ -30,14 +24,9 @@ import com.uav.autodebit.volley.VolleyUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.sql.Array;
-import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 
 public class Credit_Score extends Base_Activity {
 

@@ -4,13 +4,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
-import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -26,7 +22,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.reflect.TypeToken;
 import com.uav.autodebit.BO.BannerBO;
 
-import com.uav.autodebit.OTP.helper.AppSignatureHelper;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.exceptions.ExceptionsNotification;
@@ -48,10 +43,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.branch.indexing.BranchUniversalObject;
 import io.branch.referral.Branch;
 import io.branch.referral.BranchError;
-import io.branch.referral.util.LinkProperties;
 
 
 public class Splash_Screen extends AppCompatActivity implements BitmapInterface {

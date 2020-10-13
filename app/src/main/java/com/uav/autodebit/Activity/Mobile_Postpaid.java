@@ -1,11 +1,8 @@
 package com.uav.autodebit.Activity;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.provider.ContactsContract;
 
 import androidx.annotation.NonNull;
@@ -13,7 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.res.ResourcesCompat;
-import androidx.core.graphics.drawable.DrawableCompat;
+
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -30,20 +27,16 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.Interface.VolleyResponse;
-import com.uav.autodebit.OTP.helper.AppSignatureHelper;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.Content_Message;
 import com.uav.autodebit.exceptions.ExceptionsNotification;
-import com.uav.autodebit.override.DrawableClickListener;
 import com.uav.autodebit.override.UAVEditText;
 import com.uav.autodebit.override.UAVProgressDialog;
-import com.uav.autodebit.permission.PermissionHandler;
 import com.uav.autodebit.permission.PermissionUtils;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.BackgroundAsyncService;

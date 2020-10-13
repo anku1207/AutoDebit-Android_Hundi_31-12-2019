@@ -16,7 +16,6 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.uav.autodebit.BO.MandateBO;
-import com.uav.autodebit.BO.OxigenPlanBO;
 import com.uav.autodebit.CustomDialog.MyDialog;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.Interface.VolleyResponse;
@@ -28,8 +27,6 @@ import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerVO;
-import com.uav.autodebit.vo.OxigenBillerAutoPaymentVO;
-import com.uav.autodebit.vo.OxigenTransactionVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
 import com.uav.autodebit.volley.VolleyUtils;
 

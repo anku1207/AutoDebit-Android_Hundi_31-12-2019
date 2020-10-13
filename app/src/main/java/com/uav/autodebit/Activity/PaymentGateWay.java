@@ -2,7 +2,6 @@ package com.uav.autodebit.Activity;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -21,47 +20,23 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
-import com.paynimo.android.payment.PaymentActivity;
-import com.paynimo.android.payment.PaymentModesActivity;
-import com.paynimo.android.payment.model.Checkout;
-import com.paynimo.android.payment.util.Constant;
-import com.uav.autodebit.BO.OxigenPlanBO;
 import com.uav.autodebit.BO.PaymentGateWayBO;
-import com.uav.autodebit.BO.SiBO;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
-import com.uav.autodebit.Interface.PaymentGatewayResponse;
 import com.uav.autodebit.R;
-import com.uav.autodebit.constant.ApplicationConstant;
-import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.DialogInterface;
 import com.uav.autodebit.util.Utility;
-import com.uav.autodebit.vo.BaseVO;
 import com.uav.autodebit.vo.ConnectionVO;
-import com.uav.autodebit.vo.CustomerVO;
-import com.uav.autodebit.vo.OxigenTransactionVO;
 import com.uav.autodebit.vo.PayUVO;
-import com.uav.autodebit.vo.PaymentGatewayVO;
-import com.uav.autodebit.vo.ServiceTypeVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
 import com.uav.autodebit.volley.VolleyUtils;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedWriter;
-import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.HashMap;
 
 public class PaymentGateWay extends AppCompatActivity implements MyJavaScriptInterface.javascriptinterface {

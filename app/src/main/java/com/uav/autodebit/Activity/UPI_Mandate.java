@@ -4,19 +4,16 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.webkit.ConsoleMessage;
 import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
@@ -32,11 +29,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.paynimo.android.payment.PaymentActivity;
-import com.paynimo.android.payment.PaymentModesActivity;
-import com.paynimo.android.payment.model.Checkout;
-import com.paynimo.android.payment.util.Constant;
-import com.uav.autodebit.BO.SiBO;
 import com.uav.autodebit.BO.UPIBO;
 import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
@@ -51,7 +43,6 @@ import com.uav.autodebit.vo.CustomerVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
 import com.uav.autodebit.volley.VolleyUtils;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 

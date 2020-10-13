@@ -4,20 +4,9 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.text.Html;
 import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.core.text.HtmlCompat;
 
 import com.google.gson.Gson;
 import com.uav.autodebit.BO.Electricity_BillBO;
@@ -25,7 +14,6 @@ import com.uav.autodebit.BO.OxigenPlanBO;
 import com.uav.autodebit.CustomDialog.BeforeRecharge;
 import com.uav.autodebit.CustomDialog.MyDialog;
 import com.uav.autodebit.Interface.AlertSelectDialogClick;
-import com.uav.autodebit.Interface.CallBackInterface;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.Interface.ConfirmationGetObjet;
 import com.uav.autodebit.Interface.MandateAndRechargeInterface;
@@ -36,18 +24,14 @@ import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.Content_Message;
 import com.uav.autodebit.constant.GlobalApplication;
 import com.uav.autodebit.exceptions.ExceptionsNotification;
-import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.DialogInterface;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.AuthServiceProviderVO;
 import com.uav.autodebit.vo.CCTransactionStatusVO;
 import com.uav.autodebit.vo.ConnectionVO;
-import com.uav.autodebit.vo.CustomerAuthServiceVO;
 import com.uav.autodebit.vo.CustomerVO;
-import com.uav.autodebit.vo.DataAdapterVO;
 import com.uav.autodebit.vo.OxigenQuestionsVO;
 import com.uav.autodebit.vo.OxigenTransactionVO;
-import com.uav.autodebit.vo.ServiceTypeVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
 import com.uav.autodebit.volley.VolleyUtils;
 
@@ -55,15 +39,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.security.AuthProvider;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-
-import static com.uav.autodebit.util.Utility.showDoubleButtonDialogConfirmation;
 
 public class BillPayRequest {
 
@@ -128,7 +109,7 @@ public class BillPayRequest {
                                 try {
                                     Utility.showSelectPaymentTypeDialog(context,"Payment Type",oxigenTransactionVOresp.getPaymentTypeObject(),new AlertSelectDialogClick((AlertSelectDialogClick.OnSuccess)(position)->{
                                         int selectPosition=Integer.parseInt(position);
-                                        if(selectPosition==ApplicationConstant.BankMandatePayment ){
+                                        if(selectPosition== ApplicationConstant.BankMandatePayment ){
                                             //bank
                                             showBankMandateOrSiMandateInfo(context,oxigenTransactionVOresp.getBankMandateHtml(),new ConfirmationDialogInterface((ConfirmationDialogInterface.OnOk)(ok)->{
                                                 oxigenTransactionVOresp.setProvider(getAuthServiceProvider(AuthServiceProviderVO.ENACHIDFC));

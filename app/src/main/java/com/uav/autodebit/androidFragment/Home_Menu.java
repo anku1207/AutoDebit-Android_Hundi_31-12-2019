@@ -291,7 +291,6 @@ public class Home_Menu extends Fragment {
                                 }
                             }
 
-
                         }
 
                         @Override

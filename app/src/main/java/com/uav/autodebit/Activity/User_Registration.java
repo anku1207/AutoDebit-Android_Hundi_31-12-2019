@@ -25,7 +25,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.uav.autodebit.BO.SignUpBO;
@@ -33,7 +32,6 @@ import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.Content_Message;
-import com.uav.autodebit.constant.ErrorMsg;
 import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.DialogInterface;
@@ -187,6 +185,7 @@ public class User_Registration extends Base_Activity {
 
                     TextView text = new TextView(new ContextThemeWrapper(context, R.style.confirmation_dialog_filed));
                     text.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float) titleTextView));
+                    text.setTextColor(User_Registration.this.getResources().getColor(R.color.defaultTextColor));
                     text.setText(jsonObject.getString("key"));
                     text.setMaxLines(1);
                     text.setEllipsize(TextUtils.TruncateAt.END);
@@ -195,6 +194,7 @@ public class User_Registration extends Base_Activity {
 
                     TextView text1 = new TextView(new ContextThemeWrapper(context, R.style.confirmation_dialog_filed));
                     text1.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,0));
+                    text1.setTextColor(User_Registration.this.getResources().getColor(R.color.defaultTextColor));
                     text1.setText(" : ");
                     text1.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
 
@@ -202,6 +202,7 @@ public class User_Registration extends Base_Activity {
 
                     TextView value = new TextView(new ContextThemeWrapper(context, R.style.confirmation_dialog_value));
                     value.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,(float) valueTextView));
+                    value.setTextColor(User_Registration.this.getResources().getColor(R.color.defaultTextColor));
                     value.setText(jsonObject.getString("value"));
                     value.setTypeface(typeface);
 

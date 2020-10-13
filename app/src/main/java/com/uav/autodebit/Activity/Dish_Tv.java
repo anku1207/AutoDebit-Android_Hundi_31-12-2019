@@ -21,12 +21,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.uav.autodebit.BO.D2HBO;
 import com.uav.autodebit.BO.DishTVBO;
 import com.uav.autodebit.BO.ServiceBO;
-import com.uav.autodebit.CustomDialog.MyDialog;
-import com.uav.autodebit.Interface.AlertSelectDialogClick;
-import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.Content_Message;
@@ -35,7 +31,6 @@ import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.DialogInterface;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.ConnectionVO;
-import com.uav.autodebit.vo.CustomerAuthServiceVO;
 import com.uav.autodebit.vo.CustomerVO;
 import com.uav.autodebit.vo.D2HVO;
 import com.uav.autodebit.vo.DishTvVO;
@@ -49,7 +44,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 

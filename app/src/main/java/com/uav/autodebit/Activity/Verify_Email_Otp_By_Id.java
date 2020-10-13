@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.CountDownTimer;
 
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.os.Bundle;
@@ -20,16 +18,13 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.uav.autodebit.BO.SignUpBO;
+import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
-import com.uav.autodebit.constant.ApplicationConstant;
-import com.uav.autodebit.constant.Content_Message;
 import com.uav.autodebit.exceptions.ExceptionsNotification;
-import com.uav.autodebit.permission.PermissionHandler;
-import com.uav.autodebit.permission.PermissionUtils;
+import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerVO;
@@ -43,7 +38,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Verify_Otp_By_Id extends Base_Activity implements TextWatcher,View.OnFocusChangeListener {
+public class Verify_Email_Otp_By_Id extends Base_Activity implements TextWatcher,View.OnFocusChangeListener {
 
     TextView resendotpbtn,otp_send;
     ImageView back_activity_button;
@@ -53,11 +48,10 @@ public class Verify_Otp_By_Id extends Base_Activity implements TextWatcher,View.
     CountDownTimer emailtime = null;
     private EditText phone_pin_first_edittext,phone_pin_second_edittext,phone_pin_third_edittext,phone_pin_forth_edittext;
 
-    String useridtype;
+    String userEmail,useridtype,tokenId;
     boolean resendotp=false;
 
     String methodname;
-    Integer userid;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,24 +79,25 @@ public class Verify_Otp_By_Id extends Base_Activity implements TextWatcher,View.
 
         try {
             Intent intent = getIntent();
-
-            useridtype=intent.getStringExtra("type");
-            userid=Integer.parseInt(intent.getStringExtra("id"));
-            methodname=intent.getStringExtra("action");
-
+            String object=intent.getStringExtra("resp");
+            Gson gson = new Gson();
+            CustomerVO customerVO = gson.fromJson(object, CustomerVO.class);
+            useridtype=customerVO.getLoginType();
+            userEmail=customerVO.getUserid();
+            methodname=customerVO.getActionname();
 
             if(useridtype.equals("mobile")){
-                otp_send.setText("OTP has sent on  "+ Utility.maskString(intent.getStringExtra("otp_display"),3,7,'*'));
-                startTimer(Long.parseLong(intent.getStringExtra("time")),"mobileotp");
+                otp_send.setText("OTP has been sent to "+Utility.maskString(customerVO.getMobileNumber(),3,7,'*'));
+                startTimer(Long.parseLong(customerVO.getAnonymousString()),"mobileotp");
             }else if(useridtype.equals("email")){
-                otp_send.setText("OTP has sent on  "+Utility.maskString(intent.getStringExtra("otp_display"),0,0,'*'));
-                startTimer(Long.parseLong(intent.getStringExtra("time")),"emailotp");
+                otp_send.setText("OTP has been sent to "+Utility.maskString(customerVO.getEmailId(),0,0,'*'));
+                startTimer(Long.parseLong(customerVO.getAnonymousString()),"emailotp");
             }
         }catch (Exception e) {
-            ExceptionsNotification.ExceptionHandling(Verify_Otp_By_Id.this , Utility.getStackTrace(e));
-           // Utility.exceptionAlertDialog(Verify_Otp_By_Id.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
-
+            ExceptionsNotification.ExceptionHandling(Verify_Email_Otp_By_Id.this , Utility.getStackTrace(e));
+            //Utility.exceptionAlertDialog(Verify_OTP.this,"Alert!","Something went wrong, Please try again!","Report",Utility.getStackTrace(e));
         }
+
 
 
 
@@ -111,7 +106,7 @@ public class Verify_Otp_By_Id extends Base_Activity implements TextWatcher,View.
             @Override
             public void onClick(View view) {
                 resendotpbtn.setVisibility(View.GONE);
-                resendotpfun(useridtype,userid+"");
+                resendotpfun(useridtype,userEmail+"");
             }
         });
 
@@ -126,10 +121,10 @@ public class Verify_Otp_By_Id extends Base_Activity implements TextWatcher,View.
             @Override
             public void onClick(View view) {
                 if(!mobileotpfiledcheck()) {
-                    Utility.alertDialog(Verify_Otp_By_Id.this,"Alert"," OTP is Empty","Ok");
+                    Utility.alertDialog(Verify_Email_Otp_By_Id.this,"Alert"," OTP is Empty","Ok");
 
                 }else {
-                    otpverify(useridtype,userid);
+                    otpverify(useridtype,userEmail);
                 }
             }
         });
@@ -172,7 +167,7 @@ public class Verify_Otp_By_Id extends Base_Activity implements TextWatcher,View.
         }else if(phone_pin_forth_edittext.getText().hashCode() == s.hashCode()){
             if(!phone_pin_forth_edittext.getText().toString().equals("")){
                 if(mobileotpfiledcheck()){
-                    otpverify(useridtype,userid);
+                    otpverify(useridtype,userEmail);
                 }
             }else {
                 phone_pin_third_edittext.requestFocus();
@@ -246,7 +241,7 @@ public class Verify_Otp_By_Id extends Base_Activity implements TextWatcher,View.
                 phone_pin_forth_edittext.getText().toString();
     }
 
-    public void otpverify(final String type,final Integer userid){
+    public void otpverify(String type,String email){
 
 
 
@@ -257,7 +252,8 @@ public class Verify_Otp_By_Id extends Base_Activity implements TextWatcher,View.
 
         OTPVO otpvo =new OTPVO();
         otpvo.setOtp(getmobileotp());
-        otpvo.setAnonymousInteger(userid);
+        otpvo.setAnonymousInteger(Integer.parseInt(Session.getCustomerId(Verify_Email_Otp_By_Id.this)));
+        otpvo.setEmailId(email);
 
         String json = new Gson().toJson(otpvo);
         params.put("volley", json);
@@ -290,7 +286,7 @@ public class Verify_Otp_By_Id extends Base_Activity implements TextWatcher,View.
                     }
 
 
-                    Utility.alertDialog(Verify_Otp_By_Id.this,otpvo.getDialogTitle(),sb.toString(),"Ok");
+                    Utility.alertDialog(Verify_Email_Otp_By_Id.this,otpvo.getDialogTitle(),sb.toString(),"Ok");
                 }else {
                     if(otpvo.getStatusCode().equals("440")){
                         resendotpbtn.setVisibility(View.VISIBLE);
@@ -299,7 +295,7 @@ public class Verify_Otp_By_Id extends Base_Activity implements TextWatcher,View.
                         for(int i=0; i<error.size(); i++){
                             sb.append(error.get(i)).append("\n");
                         }
-                       Utility.alertDialog(Verify_Otp_By_Id.this,otpvo.getDialogTitle(),sb.toString(),"Ok");
+                       Utility.alertDialog(Verify_Email_Otp_By_Id.this,otpvo.getDialogTitle(),sb.toString(),"Ok");
                     }else {
                         Intent intent12 = new Intent();
                         intent12.putExtra("msg",otpvo.getAnonymousString());
@@ -312,58 +308,14 @@ public class Verify_Otp_By_Id extends Base_Activity implements TextWatcher,View.
     }
 
     public void resendotpfun(final String type,String value){
-
-        HashMap<String, Object> params = new HashMap<String, Object>();
-        final ConnectionVO connectionVO = SignUpBO.resendOTP();
-
-        OTPVO otpvo=new OTPVO();
-        if(type.equals("mobile")){
-            otpvo.setMobileNo(value);
-        }else if(type.equals("email")){
-            otpvo.setEmailId(value);
-        }
-        Gson gson = new Gson();
-        String json = gson.toJson(otpvo);
-        params.put("volley", json);
-        connectionVO.setParams(params);
-
-        connectionVO.setParams(params);
-
-
-        VolleyUtils.makeJsonObjectRequest(this,connectionVO , new VolleyResponseListener() {
-            @Override
-            public void onError(String message) {
+        OTPApi.sendOtpToEmailVerification(Verify_Email_Otp_By_Id.this,value,new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
+            CustomerVO customerVO = (CustomerVO) s;
+            if(type.equals("mobile")){
+                startTimer(Long.parseLong(customerVO.getAnonymousString()),"mobileotp");
+            }else if(type.equals("email")){
+                startTimer(Long.parseLong(customerVO.getAnonymousString()),"emailotp");
             }
-            @Override
-            public void onResponse(Object resp) throws JSONException {
-                JSONObject response = (JSONObject) resp;
-
-                Gson gson = new Gson();
-                CustomerVO customerVO = gson.fromJson(response.toString(), CustomerVO.class);
-
-                if(customerVO.getStatusCode().equals("400")){
-                    //VolleyUtils.furnishErrorMsg(  "Fail" ,response, MainActivity.this);
-
-                    ArrayList error = (ArrayList) customerVO.getErrorMsgs();
-                    StringBuilder sb = new StringBuilder();
-                    for(int i=0; i<error.size(); i++){
-                        sb.append(error.get(i)).append("\n");
-                    }
-                    Utility.alertDialog(Verify_Otp_By_Id.this,customerVO.getDialogTitle(),sb.toString(),"Ok");
-
-                }else {
-                    if(type.equals("mobile")){
-                        startTimer(Long.parseLong(customerVO.getAnonymousString()),"mobileotp");
-
-                    }else if(type.equals("email")){
-                        startTimer(Long.parseLong(customerVO.getAnonymousString()),"emailotp");
-                    }
-
-
-
-                }
-            }
-        });
+        }));
     }
 
 

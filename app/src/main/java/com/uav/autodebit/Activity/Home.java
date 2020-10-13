@@ -29,7 +29,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -744,7 +743,8 @@ public class Home extends Base_Activity
                 @Override
                 public void doPostExecute() {
                     serviceClick(Integer.parseInt(serviceId),new ServiceClick((ServiceClick.OnSuccess)(s)->{
-                        startActivityServiceClick(Integer.parseInt(serviceId),activityhasmap.get(serviceId),s,selectServiceType.getMandateAmount(),view);
+                        startActivityServiceClick(Integer.parseInt(serviceId),activityhasmap.get(serviceId),s,
+                                selectServiceType.getMandateAmount(),view);
                     },(ServiceClick.OnError)(e)->{
                     }),view);
                 }

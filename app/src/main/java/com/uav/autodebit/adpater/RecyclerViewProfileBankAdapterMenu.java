@@ -69,8 +69,6 @@ public class RecyclerViewProfileBankAdapterMenu extends RecyclerView.Adapter<Rec
             }
         });
 
-
-
     }
 
     @Override

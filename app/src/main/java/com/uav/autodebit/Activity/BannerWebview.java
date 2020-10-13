@@ -33,16 +33,11 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.uav.autodebit.BO.BannerBO;
-import com.uav.autodebit.BO.MetroBO;
-import com.uav.autodebit.BO.PinCodeBO;
 import com.uav.autodebit.R;
-import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.Utility;
-import com.uav.autodebit.vo.BannerVO;
 import com.uav.autodebit.vo.BaseVO;
-import com.uav.autodebit.vo.CityVO;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerVO;
 import com.uav.autodebit.volley.VolleyResponseListener;

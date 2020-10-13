@@ -1,7 +1,6 @@
 package com.uav.autodebit.Activity;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Dialog;
 import android.content.Intent;

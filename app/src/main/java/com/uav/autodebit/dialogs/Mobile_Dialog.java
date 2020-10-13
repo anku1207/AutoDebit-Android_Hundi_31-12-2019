@@ -2,8 +2,6 @@ package com.uav.autodebit.dialogs;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
-import android.content.res.TypedArray;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,22 +9,13 @@ import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.uav.autodebit.Activity.Home;
-import com.uav.autodebit.Activity.Mobile_Activity_Dialog;
-import com.uav.autodebit.Activity.Mobile_Postpaid;
-import com.uav.autodebit.Activity.Mobile_Prepaid_Recharge_Service;
 import com.uav.autodebit.R;
-import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.util.Utility;
-import com.uav.autodebit.vo.BannerVO;
-import com.uav.autodebit.vo.ServiceChargesVO;
 import com.uav.autodebit.vo.ServiceTypeVO;
 
 import java.util.List;
-
-import okhttp3.internal.Util;
 
 public class Mobile_Dialog {
 

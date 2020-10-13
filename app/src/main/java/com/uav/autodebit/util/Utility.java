@@ -1,13 +1,11 @@
 package com.uav.autodebit.util;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -53,12 +51,10 @@ import android.provider.MediaStore;
 import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
-import android.text.Editable;
 import android.text.InputType;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.text.format.Formatter;
 import android.text.method.DigitsKeyListener;
 import android.text.style.BackgroundColorSpan;
@@ -79,16 +75,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.view.inputmethod.InputMethodManager;
-import android.webkit.ConsoleMessage;
-import android.webkit.JavascriptInterface;
-import android.webkit.JsResult;
-import android.webkit.WebChromeClient;
-import android.webkit.WebResourceError;
-import android.webkit.WebResourceRequest;
-import android.webkit.WebResourceResponse;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -109,37 +95,25 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
 
-import com.uav.autodebit.Activity.Dmrc_Card_Request;
-import com.uav.autodebit.Activity.Listview_With_Image;
 import com.uav.autodebit.Activity.Login;
-import com.uav.autodebit.Activity.Mobile_Prepaid_Recharge_Service;
-import com.uav.autodebit.Activity.PanVerification;
-import com.uav.autodebit.Activity.Profile_Activity;
 import com.uav.autodebit.Activity.Splash_Screen;
-import com.uav.autodebit.Activity.Webview;
 import com.uav.autodebit.Interface.AlertSelectDialogClick;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
-import com.uav.autodebit.Interface.ConfirmationGetObjet;
 import com.uav.autodebit.Interface.DateInterface;
-import com.uav.autodebit.Interface.ServiceClick;
 import com.uav.autodebit.Notification.NotificationUtils;
 import com.uav.autodebit.R;
 import com.uav.autodebit.adpater.ListViewAlertSelectListBaseAdapter;
 import com.uav.autodebit.constant.ApplicationConstant;
-import com.uav.autodebit.constant.ErrorMsg;
 import com.uav.autodebit.exceptions.ExceptionsNotification;
-import com.uav.autodebit.override.ExpandableHeightListView;
 import com.uav.autodebit.override.UAVEditText;
 import com.uav.autodebit.vo.AuthServiceProviderVO;
 import com.uav.autodebit.vo.CustomerAuthServiceVO;
-import com.uav.autodebit.vo.DataAdapterVO;
 import com.uav.autodebit.volley.VolleyUtils;
 
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -163,7 +137,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -608,9 +581,6 @@ public class Utility {
 
 
 
-
-
-
     public static void showSingleButtonDialogOld(final Context var1, String title, String msg , final boolean activityfinish ,String... buttons){
 
         String leftButton= (buttons.length==0 ?"OK":buttons[0]);//(leftButton ==null?"Modify": leftButton);
@@ -973,6 +943,7 @@ public class Utility {
 
                         TextView text = new TextView(new ContextThemeWrapper(context, R.style.confirmation_dialog_filed));
                         text.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float) 1));
+                        text.setTextColor(context.getResources().getColor(R.color.defaultTextColor));
                         text.setText(jsonObject.getString("key"));
                         text.setMaxLines(1);
                         text.setEllipsize(TextUtils.TruncateAt.END);
@@ -980,6 +951,7 @@ public class Utility {
 
                         TextView text1 = new TextView(new ContextThemeWrapper(context, R.style.confirmation_dialog_filed));
                         text1.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,0));
+                        text1.setTextColor(context.getResources().getColor(R.color.defaultTextColor));
                         text1.setText(" : ");
                         text1.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
 
@@ -988,6 +960,7 @@ public class Utility {
 
                         TextView value = new TextView(new ContextThemeWrapper(context, R.style.confirmation_dialog_value));
                         value.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,1));
+                        value.setTextColor(context.getResources().getColor(R.color.defaultTextColor));
                         value.setText(jsonObject.getString("value"));
                         value.setTypeface(typeface);
 
@@ -1003,6 +976,7 @@ public class Utility {
 
                     TextView text = new TextView(new ContextThemeWrapper(context, R.style.confirmation_dialog_text_flied));
                     text.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT,1));
+                    text.setTextColor(context.getResources().getColor(R.color.defaultTextColor));
                     text.setText(Msg);
                     text.setTypeface(typeface);
 
@@ -1090,6 +1064,7 @@ public class Utility {
 
                     TextView text = new TextView(new ContextThemeWrapper(context, R.style.confirmation_dialog_filed));
                     text.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, (float) 1));
+                    text.setTextColor(context.getResources().getColor(R.color.defaultTextColor));
                     text.setText(jsonObject.getString("key"));
                     //text.setMaxLines(1);
                     //text.setEllipsize(TextUtils.TruncateAt.END);
@@ -1099,12 +1074,14 @@ public class Utility {
 
                     TextView text1 = new TextView(new ContextThemeWrapper(context, R.style.confirmation_dialog_filed));
                     text1.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,0));
+                    text1.setTextColor(context.getResources().getColor(R.color.defaultTextColor));
                     text1.setText(" : ");
                     text1.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
                     text1.setLineSpacing(0, 1.1f);
 
                     TextView value = new TextView(new ContextThemeWrapper(context, R.style.confirmation_dialog_value));
                     value.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT,1));
+                    value.setTextColor(context.getResources().getColor(R.color.defaultTextColor));
                     value.setText(jsonObject.getString("value"));
                     value.setTypeface(typeface);
                     value.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
@@ -1120,6 +1097,7 @@ public class Utility {
 
                 TextView text = new TextView(new ContextThemeWrapper(context, R.style.confirmation_dialog_text_flied));
                 text.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT,1));
+                text.setTextColor(context.getResources().getColor(R.color.defaultTextColor));
                 text.setText(Msg);
                 text.setTypeface(typeface);
 

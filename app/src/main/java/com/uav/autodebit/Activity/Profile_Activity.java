@@ -6,12 +6,6 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapShader;
-import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.Shader;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -21,8 +15,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
-import androidx.core.graphics.drawable.RoundedBitmapDrawable;
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -35,7 +27,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
@@ -44,13 +35,11 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Transformation;
 import com.uav.autodebit.BO.CustomerBO;
-import com.uav.autodebit.BO.SignUpBO;
+import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
 import com.uav.autodebit.adpater.RecyclerViewAdapterMenu;
 import com.uav.autodebit.adpater.RecyclerViewProfileBankAdapterMenu;
-import com.uav.autodebit.androidFragment.Profile;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.Content_Message;
 import com.uav.autodebit.exceptions.ExceptionsNotification;
@@ -69,7 +58,6 @@ import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerAuthServiceVO;
 import com.uav.autodebit.vo.CustomerVO;
-import com.uav.autodebit.vo.OTPVO;
 import com.uav.autodebit.vo.ServiceTypeVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
 import com.uav.autodebit.volley.VolleyUtils;
@@ -234,13 +222,13 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
                     @Override
                     public void confirm(Dialog dialog) {
                         Utility.dismissDialog(Profile_Activity.this,dialog);
-                        resendotpfun("email",email.getText().toString());
+                        sendOtpToEmailVerify("email",email.getText().toString());
                     }
                     @Override
                     public void modify(Dialog dialog) {
                         Utility.dismissDialog(Profile_Activity.this,dialog);
                     }
-                },this,null,"Would you like email verify ?"+email.getText().toString(),"Alert",buttons);
+                },this,null,"Would you like to verify the email ?\n"+email.getText().toString(),"Alert",buttons);
                 break;
             case R.id.more_service:
                 startActivityForResult(new Intent(Profile_Activity.this,AdditionalService.class),REQ_ADD_MORE_SERVICE);
@@ -375,55 +363,18 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
 
 
 
-    public void resendotpfun(final String type, final String value){
-        HashMap<String, Object> params = new HashMap<String, Object>();
-        ConnectionVO connectionVO = SignUpBO.resendOTP();
+    public void sendOtpToEmailVerify(String type,String emailId){
+      OTPApi.sendOtpToEmailVerification(Profile_Activity.this,emailId,new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
+          CustomerVO customerVO = (CustomerVO) s;
+          customerVO.setUserid(emailId);
+          customerVO.setLoginType(type);
 
-        OTPVO otpvo=new OTPVO();
-        if(type.equals("mobile")){
-            otpvo.setMobileNo(value);
-        }else if(type.equals("email")){
-            otpvo.setEmailId(value);
-        }
-        Gson gson = new Gson();
-        String json = gson.toJson(otpvo);
-        params.put("volley", json);
-        connectionVO.setParams(params);
-
-        VolleyUtils.makeJsonObjectRequest(this,connectionVO , new VolleyResponseListener() {
-            @Override
-            public void onError(String message) {
-            }
-            @Override
-            public void onResponse(Object resp) throws JSONException {
-                JSONObject response = (JSONObject) resp;
-                Gson gson = new Gson();
-                CustomerVO customerVO = gson.fromJson(response.toString(), CustomerVO.class);
-
-
-                if(customerVO.getStatusCode().equals("400")){
-                    ArrayList error = (ArrayList) customerVO.getErrorMsgs();
-                    StringBuilder sb = new StringBuilder();
-                    for(int i=0; i<error.size(); i++){
-                        sb.append(error.get(i)).append("\n");
-                    }
-                    Utility.alertDialog(Profile_Activity.this,customerVO.getDialogTitle(),sb.toString(),"Ok");
-
-                }else {
-                    customerVO.setUserid(value);
-                    customerVO.setLoginType(type);
-
-                    Intent intent=new Intent(Profile_Activity.this,Verify_OTP.class);
-                    customerVO.setActionname("verifySignUp");
-                    // customerVO.setAnonymousString(customerVO.getOtpExpiredMobile().toString());
-                    String json = gson.toJson(customerVO); // myObject - instance of MyObject
-                    intent.putExtra("resp",json);
-                    startActivityForResult(intent,REQ_EMAIL_VERIFY);
-
-
-                }
-            }
-        });
+          Intent intent=new Intent(Profile_Activity.this,Verify_Email_Otp_By_Id.class);
+          customerVO.setActionname("emailOTPVerification");
+          String json = new Gson().toJson(customerVO); // myObject - instance of MyObject
+          intent.putExtra("resp",json);
+          startActivityForResult(intent,REQ_EMAIL_VERIFY);
+      }));
     }
     
 

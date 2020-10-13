@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Matrix;
 import android.net.Uri;
 import android.provider.MediaStore;
 
@@ -21,7 +20,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.uav.autodebit.BO.PanCardBO;
@@ -196,7 +194,7 @@ public class PanVerification extends Base_Activity implements  PermissionUtils.P
         attachaddress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                permissionUtils.check_permission(PermissionHandler.imagePermissionArrayList(PanVerification.this), Content_Message.CAMERA_PERMISSION,ApplicationConstant.REQ_CAMERA_PERMISSION);
+                permissionUtils.check_permission(PermissionHandler.imagePermissionArrayList(PanVerification.this), Content_Message.CAMERA_PERMISSION, ApplicationConstant.REQ_CAMERA_PERMISSION);
             }
         });
         pin.setOnFocusChangeListener(new View.OnFocusChangeListener() {

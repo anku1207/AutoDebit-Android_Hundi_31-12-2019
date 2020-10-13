@@ -107,7 +107,7 @@ public class HistorySummary extends Base_Activity implements View.OnClickListene
 
                         text.setLayoutParams(layoutparams);
                         text.setText(jsonObject.getString("key"));
-                        text.setMaxLines(1);
+                        text.setMaxLines(2);
                         text.setEllipsize(TextUtils.TruncateAt.END);
                         text.setTypeface(typeface);
                         text.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
@@ -156,7 +156,6 @@ public class HistorySummary extends Base_Activity implements View.OnClickListene
 
                     text.setLayoutParams(lp);
                     text.setText(jsonObject.getString("key"));
-                    text.setMaxLines(1);
                     text.setEllipsize(TextUtils.TruncateAt.END);
                     text.setTypeface(tf);
                     text.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);

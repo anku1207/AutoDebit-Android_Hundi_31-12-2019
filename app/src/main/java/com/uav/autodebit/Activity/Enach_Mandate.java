@@ -3,13 +3,9 @@ package com.uav.autodebit.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.os.Build;
 import android.os.Bundle;
-import android.text.Html;
 import android.text.Layout;
-import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -18,7 +14,6 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -28,21 +23,15 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.uav.autodebit.BO.MandateBO;
 import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
-import com.uav.autodebit.constant.Content_Message;
-import com.uav.autodebit.constant.ErrorMsg;
 import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.override.DrawableClickListener;
 import com.uav.autodebit.override.UAVEditText;
 import com.uav.autodebit.permission.Session;
-import com.uav.autodebit.util.BackgroundAsyncService;
-import com.uav.autodebit.util.BackgroundServiceInterface;
 import com.uav.autodebit.util.DialogInterface;
-import com.uav.autodebit.util.ExceptionHandler;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerAuthServiceVO;
@@ -59,7 +48,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class Enach_Mandate extends Base_Activity implements View.OnClickListener {
 

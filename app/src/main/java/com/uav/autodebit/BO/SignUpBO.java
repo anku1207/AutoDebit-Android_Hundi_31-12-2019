@@ -91,4 +91,18 @@ public class SignUpBO implements Serializable {
         connectionVO.setParams(params);
         return connectionVO;
     }
+    public static ConnectionVO sendOTPforEmailVerification() {
+        ConnectionVO connectionVO = new ConnectionVO();
+        connectionVO.setMethodName("sendOTPforEmailVerification");
+        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
+        return connectionVO;
+    }
+    public static ConnectionVO sendemailOTPVerification() {
+        ConnectionVO connectionVO = new ConnectionVO();
+        connectionVO.setMethodName("emailOTPVerification");
+        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
+        return connectionVO;
+    }
+
+
 }

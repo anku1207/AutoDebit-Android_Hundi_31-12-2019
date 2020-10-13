@@ -62,7 +62,7 @@
             android:id="@+id/modify"
             android:fontFamily="@font/poppinssemibold"
 
-            android:background="@drawable/cornerbtn_bg_grey"
+            android:background="@drawable/paynimo_button_background"
             android:layout_marginRight="10dp"
             />
         <Button
@@ -75,7 +75,7 @@
             android:fontFamily="@font/poppinssemibold"
 
             android:layout_marginLeft="10dp"
-            android:background="@drawable/cornerbtn_bg_grey"
+            android:background="@drawable/paynimo_button_background"
 
 
             />

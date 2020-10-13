@@ -1,11 +1,9 @@
 package com.uav.autodebit.Activity;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -33,7 +31,6 @@ import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.exceptions.ExceptionsNotification;
-import com.uav.autodebit.override.ClickableViewPager;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.BaseVO;
@@ -41,8 +38,6 @@ import com.uav.autodebit.vo.CardTypeVO;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerVO;
 import com.uav.autodebit.vo.DMRC_Customer_CardVO;
-import com.uav.autodebit.vo.DmrcCardStatusVO;
-import com.uav.autodebit.vo.LocalCacheVO;
 import com.uav.autodebit.vo.ServiceTypeVO;
 import com.uav.autodebit.vo.StatusVO;
 import com.uav.autodebit.volley.VolleyResponseListener;

@@ -245,7 +245,7 @@ public class Credit_Score_Report extends Base_Activity implements FileDownloadIn
 
                 if(fileurl.equals("")) return;
                 creditScoreFileUrl=fileurl;
-                permissionUtils.check_permission(PermissionHandler.fileDownloadAndReadPermissionArrayList(Credit_Score_Report.this), Content_Message.DOWNLOAD_PERMISSION,ApplicationConstant.REQ_DOWNLOAD_PERMISSION);
+                permissionUtils.check_permission(PermissionHandler.fileDownloadAndReadPermissionArrayList(Credit_Score_Report.this), Content_Message.DOWNLOAD_PERMISSION, ApplicationConstant.REQ_DOWNLOAD_PERMISSION);
             }
         });
         back_activity_button1.setOnClickListener(new View.OnClickListener() {

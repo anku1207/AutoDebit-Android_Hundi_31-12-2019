@@ -4,9 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
@@ -27,8 +25,6 @@ import android.widget.ImageView;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.util.Utility;
-
-import java.util.HashMap;
 
 public class Track_Dmrc_Card extends AppCompatActivity implements View.OnClickListener {
     ImageView back_activity_button;

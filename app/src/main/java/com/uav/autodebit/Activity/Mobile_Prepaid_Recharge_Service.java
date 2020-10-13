@@ -1,6 +1,5 @@
 package com.uav.autodebit.Activity;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -8,48 +7,34 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.provider.ContactsContract;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 import com.uav.autodebit.BO.OxigenPlanBO;
 import com.uav.autodebit.CustomDialog.BeforeRecharge;
 import com.uav.autodebit.CustomDialog.MyDialog;
 import com.uav.autodebit.Interface.AlertSelectDialogClick;
-import com.uav.autodebit.Interface.CallBackInterface;
 import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.Interface.ConfirmationGetObjet;
 import com.uav.autodebit.Interface.MandateAndRechargeInterface;
 import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
-import com.uav.autodebit.adpater.BrowsePlanAdapter;
-import com.uav.autodebit.androidFragment.Offers_recent_Fragment;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.Content_Message;
 import com.uav.autodebit.constant.GlobalApplication;
@@ -63,9 +48,7 @@ import com.uav.autodebit.util.CustomTextWatcherLengthAction;
 import com.uav.autodebit.util.DialogInterface;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.AuthServiceProviderVO;
-import com.uav.autodebit.vo.CCTransactionStatusVO;
 import com.uav.autodebit.vo.ConnectionVO;
-import com.uav.autodebit.vo.CustomerAuthServiceVO;
 import com.uav.autodebit.vo.CustomerVO;
 import com.uav.autodebit.vo.DataAdapterVO;
 import com.uav.autodebit.vo.OxigenPlanVO;
@@ -81,7 +64,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Objects;
 
 public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements View.OnClickListener , PermissionUtils.PermissionResultCallback , ActivityCompat.OnRequestPermissionsResultCallback{

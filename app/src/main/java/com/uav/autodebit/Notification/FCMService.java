@@ -5,7 +5,6 @@ import android.content.Intent;
 
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -13,25 +12,14 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.uav.autodebit.Activity.HistorySummary;
-import com.uav.autodebit.Activity.LandlineBill;
-import com.uav.autodebit.Activity.Login;
 import com.uav.autodebit.SQlLite.InsertDateOnSqlLite;
 import com.uav.autodebit.constant.ApplicationConstant;
-import com.uav.autodebit.constant.Content_Message;
 import com.uav.autodebit.constant.GlobalApplication;
 import com.uav.autodebit.exceptions.ExceptionsNotification;
-import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.CustomerNotificationVO;
-import com.uav.autodebit.vo.DMRC_Customer_CardVO;
 
-import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**

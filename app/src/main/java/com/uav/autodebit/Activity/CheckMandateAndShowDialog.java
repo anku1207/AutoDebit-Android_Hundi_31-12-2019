@@ -1,43 +1,31 @@
 package com.uav.autodebit.Activity;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.uav.autodebit.BO.MetroBO;
 import com.uav.autodebit.BO.OxigenPlanBO;
 import com.uav.autodebit.BO.ServiceBO;
 import com.uav.autodebit.CustomDialog.MyDialog;
-import com.uav.autodebit.Interface.AlertSelectDialogClick;
-import com.uav.autodebit.Interface.CallBackInterface;
-import com.uav.autodebit.Interface.ConfirmationDialogInterface;
 import com.uav.autodebit.Interface.ConfirmationGetObjet;
 import com.uav.autodebit.Interface.VolleyResponse;
-import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.GlobalApplication;
 import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.permission.Session;
-import com.uav.autodebit.util.DialogInterface;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.AuthServiceProviderVO;
 import com.uav.autodebit.vo.ConnectionVO;
-import com.uav.autodebit.vo.CustomerAuthServiceVO;
 import com.uav.autodebit.vo.CustomerVO;
-import com.uav.autodebit.vo.DMRC_Customer_CardVO;
 import com.uav.autodebit.vo.OxigenTransactionVO;
 import com.uav.autodebit.vo.ServiceTypeVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
 import com.uav.autodebit.volley.VolleyUtils;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -283,7 +271,8 @@ public class CheckMandateAndShowDialog {
 
 
 
-    public static void afterRechargeGetRechargeDetails(Context context  ,Integer historyId , String customerServiceOperator,VolleyResponse volleyResponse ){
+    public static void afterRechargeGetRechargeDetails(Context context  ,Integer historyId , String customerServiceOperator,
+                                                       VolleyResponse volleyResponse ){
         HashMap<String, Object> params = new HashMap<String, Object>();
         ConnectionVO connectionVO = ServiceBO.afterRechargeGetRechargeDetails();
         CustomerVO customerVO=new CustomerVO();

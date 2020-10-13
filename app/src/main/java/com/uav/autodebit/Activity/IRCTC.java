@@ -1,20 +1,15 @@
 package com.uav.autodebit.Activity;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -23,31 +18,24 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.squareup.picasso.Picasso;
 import com.uav.autodebit.BO.IRCTCBO;
-import com.uav.autodebit.BO.OxigenPlanBO;
 import com.uav.autodebit.BO.ServiceBO;
 import com.uav.autodebit.CustomDialog.BeforeRecharge;
-import com.uav.autodebit.Interface.CallBackInterface;
 import com.uav.autodebit.Interface.MandateAndRechargeInterface;
 import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.permission.Session;
-import com.uav.autodebit.util.DialogInterface;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.AuthServiceProviderVO;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerVO;
-import com.uav.autodebit.vo.DataAdapterVO;
-import com.uav.autodebit.vo.OxigenQuestionsVO;
 import com.uav.autodebit.vo.OxigenTransactionVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
 import com.uav.autodebit.volley.VolleyUtils;
@@ -157,7 +145,7 @@ public class IRCTC extends Base_Activity {
                         public void onClick(View view) {
                             switch (radiogroup.getCheckedRadioButtonId()){
                                 case 1:
-                                    BankMandate(IRCTC.this,ApplicationConstant.IRCTC);
+                                    BankMandate(IRCTC.this, ApplicationConstant.IRCTC);
                                     break;
                                 case 2:
                                     startSIActivity(IRCTC.this,1.00,ApplicationConstant.IRCTC,ApplicationConstant.PG_MANDATE);

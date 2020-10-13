@@ -27,7 +27,6 @@ import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.Content_Message;
 import com.uav.autodebit.fingerprint.Fingerprint_Authentication;
 import com.uav.autodebit.fingerprint.IFingerPrint;
-import com.uav.autodebit.override.UAVProgressDialog;
 import com.uav.autodebit.permission.PermissionHandler;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.Utility;
@@ -43,7 +42,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Objects;
 
 public class Login extends Base_Activity implements View.OnClickListener, View.OnTouchListener {
     EditText password,userid;
@@ -284,7 +282,7 @@ public class Login extends Base_Activity implements View.OnClickListener, View.O
             break;
             case  R.id.  loginviaotpbtn:
                 if(userid.getText().toString().equals("")){
-                    Utility.showSingleButtonDialog(Login.this,"Alert", Content_Message.login_User_empty,false);
+                    Utility.showSingleButtonDialog(Login.this,"Alert", Content_Message.login_User_empty, false);
                     return;
                 }else {
                     String type=null;

@@ -7,19 +7,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 import com.uav.autodebit.BO.ContactUsBO;
 import com.uav.autodebit.CustomDialog.MyDialog;
@@ -30,7 +25,6 @@ import com.uav.autodebit.constant.Content_Message;
 import com.uav.autodebit.permission.PermissionHandler;
 import com.uav.autodebit.permission.PermissionUtils;
 import com.uav.autodebit.permission.Session;
-import com.uav.autodebit.util.ExceptionHandler;
 import com.uav.autodebit.util.Utility;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerVO;
@@ -103,6 +97,7 @@ public class Help extends Base_Activity implements View.OnClickListener ,Permiss
                 sendMail();
                 break;
             case R.id.fabCall:
+                fabCall.startAnimation(animation);
                 permissionUtils.check_permission(PermissionHandler.makeCallPermissionArrayList(Help.this),
                         Content_Message.MAKE_CALL_PERMISSION, ApplicationConstant.REQ_MAKE_CALL_PERMISSION);
                 break;
@@ -112,12 +107,17 @@ public class Help extends Base_Activity implements View.OnClickListener ,Permiss
 
     private void makeCallToSupport() {
         Gson gson = new Gson();
-        LocalCacheVO localCacheVO = gson.fromJson( Session.getSessionByKey(this, Session.LOCAL_CACHE), LocalCacheVO.class);
-        String phNo =localCacheVO.getCustomerSupportNumber();
-        startActivity(new Intent(Intent.ACTION_CALL, Uri.parse(phNo)));
+        LocalCacheVO localCacheVO = gson.fromJson( Session.getSessionByKey(this, Session.LOCAL_CACHE),
+                LocalCacheVO.class);
+        if (!localCacheVO.getCustomerSupportNumber().isEmpty()) {
+            String phNo = localCacheVO.getCustomerSupportNumber();
+            startActivity(new Intent(Intent.ACTION_CALL, Uri.parse(phNo)));
 
-        Log.e("cc_no",phNo+"");
-
+            Log.e("cc_no", phNo + "");
+        }
+        else{
+            Toast.makeText(Help.this,Content_Message.error_message,Toast.LENGTH_LONG).show();
+        }
     }
 
     private void sendMail(){

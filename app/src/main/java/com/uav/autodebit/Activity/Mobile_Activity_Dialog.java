@@ -5,38 +5,15 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.gson.Gson;
-import com.uav.autodebit.BO.MandateBO;
-import com.uav.autodebit.CustomDialog.MyDialog;
-import com.uav.autodebit.Interface.ConfirmationDialogInterface;
-import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
-import com.uav.autodebit.constant.ApplicationConstant;
-import com.uav.autodebit.constant.Content_Message;
-import com.uav.autodebit.exceptions.ExceptionsNotification;
-import com.uav.autodebit.permission.Session;
-import com.uav.autodebit.util.Utility;
-import com.uav.autodebit.vo.ConnectionVO;
-import com.uav.autodebit.vo.CustomerVO;
-import com.uav.autodebit.volley.VolleyResponseListener;
-import com.uav.autodebit.volley.VolleyUtils;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Mobile_Activity_Dialog extends AppCompatActivity {
 
