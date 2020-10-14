@@ -227,8 +227,6 @@ public class Verify_Email_Otp_By_Id extends Base_Activity implements TextWatcher
                 if (hasFocus) {
                     phone_pin_forth_edittext.setSelection(phone_pin_forth_edittext.getText().length());
 
-
-
                 }
                 break;
             default:

@@ -368,8 +368,8 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
           CustomerVO customerVO = (CustomerVO) s;
           customerVO.setUserid(emailId);
           customerVO.setLoginType(type);
-
           Intent intent=new Intent(Profile_Activity.this,Verify_Email_Otp_By_Id.class);
+
           customerVO.setActionname("emailOTPVerification");
           String json = new Gson().toJson(customerVO); // myObject - instance of MyObject
           intent.putExtra("resp",json);
