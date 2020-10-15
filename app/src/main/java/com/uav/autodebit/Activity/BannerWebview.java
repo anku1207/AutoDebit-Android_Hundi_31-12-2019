@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -34,6 +35,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.uav.autodebit.BO.BannerBO;
 import com.uav.autodebit.R;
+import com.uav.autodebit.constant.Content_Message;
 import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.Utility;
@@ -115,6 +117,7 @@ public class BannerWebview extends AppCompatActivity implements View.OnClickList
                     try {
                         progressBar.show();
                     } catch (Exception e) {
+
                     }
                 }
                 if (newProgress == 100) {
@@ -138,7 +141,12 @@ public class BannerWebview extends AppCompatActivity implements View.OnClickList
                 newWebView.setInitialScale(1);
                 newWebView.getSettings().setUseWideViewPort(true);
                 newWebView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+                //for download PDF files
+                newWebView.setDownloadListener(new MyDownLoadListener());
+
+
                 newWebView.setWebChromeClient(new WebChromeClient() {
+
                     @Override
                     public void onCloseWindow(WebView window) {
                         super.onCloseWindow(window);
@@ -162,10 +170,27 @@ public class BannerWebview extends AppCompatActivity implements View.OnClickList
                 resultMsg.sendToTarget();
 
                 newWebView.setWebViewClient(new WebViewClient() {
+
                     @Override
                     public boolean shouldOverrideUrlLoading(WebView view, String url) {
                         try {
-                            view.loadUrl(url);
+                            if (url.contains(".pdf")) {
+                                Intent intent = new Intent(Intent.ACTION_VIEW);
+                                intent.setDataAndType(Uri.parse(url), "application/pdf");
+                                try {
+                                    if (newWebView != null) {
+                                        try {
+                                            webView.removeView(newWebView);
+                                        } catch (Exception e) {
+                                        }
+                                    }
+                                    view.getContext().startActivity(intent);
+                                } catch (ActivityNotFoundException e) {
+                                    //user does not have a pdf viewer installed
+                                }
+                            } else {
+                                view.loadUrl(url);
+                            }
                             return true;
                         } catch (Exception e) {
                             return true;
@@ -227,10 +252,11 @@ public class BannerWebview extends AppCompatActivity implements View.OnClickList
                 Utility.dismissDialog(BannerWebview.this, progressBar);
             }
         });
-        webView.setWebViewClient(new BannerWebview.MyBrowser());
-        webView.addJavascriptInterface(new MyJavaScriptInterface(this), "HTMLOUT");
         //for download PDF files
         webView.setDownloadListener(new MyDownLoadListener());
+
+        webView.setWebViewClient(new BannerWebview.MyBrowser());
+        webView.addJavascriptInterface(new MyJavaScriptInterface(this), "HTMLOUT");
         webView.loadUrl(receiptUrl); //receiptUrl
 
     }
@@ -293,7 +319,24 @@ public class BannerWebview extends AppCompatActivity implements View.OnClickList
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             Log.w("URL", url);
-            view.loadUrl(url);
+
+            if (url.contains(".pdf")) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setDataAndType(Uri.parse(url), "application/pdf");
+                try {
+                    if (newWebView != null) {
+                        try {
+                            webView.removeView(newWebView);
+                        } catch (Exception e) {
+                        }
+                    }
+                    view.getContext().startActivity(intent);
+                } catch (ActivityNotFoundException e) {
+                    //user does not have a pdf viewer installed
+                }
+            } else {
+                view.loadUrl(url);
+            }
             return true;
         }
 
@@ -304,7 +347,7 @@ public class BannerWebview extends AppCompatActivity implements View.OnClickList
                 try {
                     progressBar.show();
                 } catch (Exception e) {
-                    Toast.makeText(BannerWebview.this, "sdfsdf", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(BannerWebview.this, Content_Message.error_message, Toast.LENGTH_SHORT).show();
                 }
             }
         }
@@ -384,6 +427,13 @@ public class BannerWebview extends AppCompatActivity implements View.OnClickList
         public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
 
             if (url != null) {
+                if (newWebView != null) {
+                    try {
+                        webView.removeView(newWebView);
+                    } catch (Exception e) {
+                    }
+                }
+
                 Intent i = new Intent(Intent.ACTION_VIEW);
                 i.setData(Uri.parse(url));
                 startActivity(i);

@@ -19,15 +19,22 @@ import java.util.List;
 
 public class Mobile_Dialog {
 
-    public static void showdialog(Context context, List<ServiceTypeVO> serviceChargesVOS, View view ){
+    public static void showdialog(Context context, List<ServiceTypeVO> serviceChargesVOS, View view ,String title){
 
         final Dialog dialog = new Dialog(context);
         // Include dialog.xml file
         Window window = dialog.getWindow();
         window.setBackgroundDrawableResource(android.R.color.transparent);
         dialog.setContentView(R.layout.showmobileconfirmation);
-        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        TextView tv = dialog.findViewById(R.id.heading);
 
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        if(title==null){
+            tv.setVisibility(View.GONE);
+        }else{
+           tv.setVisibility(View.VISIBLE);
+           tv.setText(title);
+        }
         LinearLayout mainlayout = dialog.findViewById(R.id.mainlayout);
         for(ServiceTypeVO serviceTypeVO : serviceChargesVOS){
             LinearLayout parent = new LinearLayout(context);
