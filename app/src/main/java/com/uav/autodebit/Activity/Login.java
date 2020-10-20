@@ -20,6 +20,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.uav.autodebit.BO.SignUpBO;
 import com.uav.autodebit.OTP.helper.AppSignatureHelper;
 import com.uav.autodebit.R;
@@ -30,9 +31,11 @@ import com.uav.autodebit.fingerprint.IFingerPrint;
 import com.uav.autodebit.permission.PermissionHandler;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.Utility;
+import com.uav.autodebit.vo.BannerVO;
 import com.uav.autodebit.vo.ConnectionVO;
 import com.uav.autodebit.vo.CustomerStatusVO;
 import com.uav.autodebit.vo.CustomerVO;
+import com.uav.autodebit.vo.LocalCacheVO;
 import com.uav.autodebit.vo.OTPVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
 import com.uav.autodebit.volley.VolleyUtils;
@@ -42,6 +45,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class Login extends Base_Activity implements View.OnClickListener, View.OnTouchListener {
     EditText password,userid;
@@ -194,8 +198,8 @@ public class Login extends Base_Activity implements View.OnClickListener, View.O
                         }
                         Utility.showSingleButtonDialog(Login.this,"Alert",sb.toString(),false);
                     }else {
-                        String json =response.toString();
-                        Session.set_Data_Sharedprefence(Login.this,Session.CACHE_CUSTOMER,json);
+                        //override Local Cache
+                        CustomerCacheUpdate.updateCustomerCache(Login.this,customerVO);
                         startActivity();
                     }
                 }
@@ -331,13 +335,10 @@ public class Login extends Base_Activity implements View.OnClickListener, View.O
                     }
                     Utility.showSingleButtonDialog(Login.this,customerVO.getDialogTitle(),sb.toString(),false);
                 }else {
-                    String json = response.toString();
                     Session.set_Data_Sharedprefence(Login.this,Session.CACHE_USER_LOGINID,userid.getText().toString());
-                    Session.set_Data_Sharedprefence(Login.this,Session.CACHE_CUSTOMER,json);
-                   /* startActivity(new Intent(Login.this,Home.class));
-                    finish();*/
+                    //override Local Cache
+                    CustomerCacheUpdate.updateCustomerCache(Login.this,customerVO);
                     startActivity();
-
                 }
             }
         });

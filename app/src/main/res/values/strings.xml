@@ -47,5 +47,7 @@
 
     <string name="user_registration_condition_msg">I agree to allow AutoPe to check my credit information with RBI approved credit bureaus.</string>
     <string name="agreeAndContinue"><![CDATA[Agree & Continue]]></string>
+    <string name="mandates">Mandates</string>
+    <string name="modify">Modify</string>
 
 </resources>

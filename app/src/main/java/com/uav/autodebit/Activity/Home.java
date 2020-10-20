@@ -196,7 +196,6 @@ public class Home extends Base_Activity
             }
         }
         //check customer level and start activity
-
         try {
             Gson gson =new Gson();
             CustomerVO customerVO = gson.fromJson(Session.getSessionByKey(Home.this,Session.CACHE_CUSTOMER), CustomerVO.class);
@@ -361,10 +360,10 @@ public class Home extends Base_Activity
                 try {
                     BannerVO bannerVO = banners.get(pager.getCurrentItem());
                     if(bannerVO.getExecutive()==1){
-                        getBannerClickDetails(Home.this,bannerVO.getBannerId(),new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
+                        BannerWebviewAPI.getBannerClickDetails(Home.this,bannerVO.getBannerId(),new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
                                 BannerVO bannerVO1 = (BannerVO) s;
                                 if(bannerVO1.isEventIs()){
-                                    startActivity(new Intent(Home.this,BannerWebview.class).putExtra("webviewdata",bannerVO1.getWebview()));
+                                    startActivity(new Intent(Home.this,BannerWebview.class).putExtra("webviewdata",bannerVO1.getWebview()).putExtra("bannerId",bannerVO1.getBannerId()));
                                 }else {
                                     if(bannerVO1.getServiceType()!=null &&  bannerVO1.getServiceType().getServiceTypeId()!=null){
                                         if(bannerVO1.getServiceType().getServiceTypeId()==ApplicationConstant.Uber){
@@ -386,7 +385,7 @@ public class Home extends Base_Activity
 
             }
         });
-       // viewPager.onclic
+       // viewPager.onclick
 
         List<ServiceTypeVO> utilityServices = localCacheVO.getUtilityBills();
         List<ServiceTypeVO> addservice =new ArrayList<>();
@@ -396,10 +395,9 @@ public class Home extends Base_Activity
 
         for (String s : utilServiceArr) {
             for (ServiceTypeVO utility : utilityServices) {
-                Log.w("Id", s);
                 if (s.equals(utility.getServiceTypeId().toString())) {
                     addservice.add(utility);
-                    Log.w("serviceTypeId", s);
+                    break;
                 }
             }
         }
@@ -407,9 +405,21 @@ public class Home extends Base_Activity
         UitilityAdapter utility=new UitilityAdapter(this,addservice ,R.layout.two_tailes, pd);
         recyclerView.setAdapter(utility);
 
-        List<ServiceTypeVO> mImgIds;
-        mImgIds=localCacheVO.getSerives();
-        setHorizontalScrollView(mImgIds,R.id.id_servicegallery ,R.layout.services_gallery);
+        List<ServiceTypeVO>  mImgIds=localCacheVO.getSerives();
+        List<ServiceTypeVO> homeServiceList = new ArrayList<>();
+
+        String serviceListArrayString =localCacheVO.getServiceHomePage();
+        String[] ServiceListArray =  serviceListArrayString.split(",");
+
+        for (String s : ServiceListArray) {
+            for (ServiceTypeVO serviceTypeVO : mImgIds) {
+                if (s.equals(serviceTypeVO.getServiceTypeId().toString())) {
+                    homeServiceList.add(serviceTypeVO);
+                    break;
+                }
+            }
+        }
+        setHorizontalScrollView(homeServiceList,R.id.id_servicegallery ,R.layout.services_gallery);
     }
 
     public void startmobiledialog(String serviceid,View v) {
@@ -540,46 +550,6 @@ public class Home extends Base_Activity
         }
     }
 
-
-    public void getBannerClickDetails(Context context,int bannerId,VolleyResponse volleyResponse){
-        try {
-            HashMap<String, Object> params = new HashMap<String, Object>();
-            ConnectionVO connectionVO = BannerBO.getBannerExecutiveDetail();
-            BannerVO bannerVO =new BannerVO();
-            bannerVO.setBannerId(bannerId);
-            bannerVO.setAnonymousInteger(Integer.parseInt(Session.getCustomerId(context)));
-            Gson gson =new Gson();
-            String json = gson.toJson(bannerVO);
-            params.put("volley", json);
-            Log.w("getBannerClickDetails",json);
-            connectionVO.setParams(params);
-
-            VolleyUtils.makeJsonObjectRequest(Home.this,connectionVO, new VolleyResponseListener() {
-                @Override
-                public void onError(String message) {
-                }
-                @Override
-                public void onResponse(Object resp) throws JSONException {
-                    JSONObject response = (JSONObject) resp;
-                    BannerVO bannerVOresp = gson.fromJson(response.toString(), BannerVO.class);
-                    if(bannerVOresp.getStatusCode().equals("400")){
-                        ArrayList error = (ArrayList) bannerVOresp.getErrorMsgs();
-                        StringBuilder sb = new StringBuilder();
-                        for(int i=0; i<error.size(); i++){
-                            sb.append(error.get(i)).append("\n");
-                        }
-                        //pd.dismiss();
-                        Utility.showSingleButtonDialog(Home.this,bannerVOresp.getDialogTitle(),sb.toString(),false);
-                    }else {
-                        volleyResponse.onSuccess(bannerVOresp);
-                    }
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-            ExceptionsNotification.ExceptionHandling(Home.this , Utility.getStackTrace(e));
-        }
-    }
 
 
 

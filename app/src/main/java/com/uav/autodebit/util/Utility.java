@@ -2037,7 +2037,7 @@ public class Utility {
                dialog.dismiss();
            }
        }catch (Exception e){
-           ExceptionsNotification.ExceptionHandling(context ,  Utility.getStackTrace(e), "0");
+          // ExceptionsNotification.ExceptionHandling(context ,  Utility.getStackTrace(e), "0");
        }
 
     }

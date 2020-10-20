@@ -339,8 +339,8 @@ public class Verify_OTP extends Base_Activity implements  TextWatcher,View.OnFoc
                             }
                             Utility.alertDialog(Verify_OTP.this,customerVO.getDialogTitle(),sb.toString(),"Ok");
                         }else {
-                            // update customer cache 04-04-2020
-                            Session.set_Data_Sharedprefence(Verify_OTP.this,Session.CACHE_CUSTOMER,new Gson().toJson(customerVO));
+                            //override Local Cache
+                            CustomerCacheUpdate.updateCustomerCache(Verify_OTP.this,customerVO);
                             customerVO.setLocalCache(null);
                             Intent intent12 = new Intent();
                             intent12.putExtra("key",customerVO.getStatus().getStatusId().toString());

@@ -7,6 +7,7 @@ import android.annotation.TargetApi;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -33,15 +34,23 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.squareup.picasso.Picasso;
 import com.uav.autodebit.BO.BannerBO;
+import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
+import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.constant.Content_Message;
 import com.uav.autodebit.exceptions.ExceptionsNotification;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.Utility;
+import com.uav.autodebit.vo.BannerVO;
 import com.uav.autodebit.vo.BaseVO;
 import com.uav.autodebit.vo.ConnectionVO;
+import com.uav.autodebit.vo.CustomerNotificationVO;
 import com.uav.autodebit.vo.CustomerVO;
+import com.uav.autodebit.vo.LocalCacheVO;
+import com.uav.autodebit.vo.ServiceTypeVO;
 import com.uav.autodebit.volley.VolleyResponseListener;
 import com.uav.autodebit.volley.VolleyUtils;
 
@@ -50,6 +59,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class BannerWebview extends AppCompatActivity implements View.OnClickListener, MyJavaScriptInterface.javascriptinterface {
     ImageView back_activity_button;
@@ -57,6 +67,7 @@ public class BannerWebview extends AppCompatActivity implements View.OnClickList
     ProgressDialog progressBar;
     TextView title;
     JSONObject intentWebviewData;
+    int bannerId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,20 +80,47 @@ public class BannerWebview extends AppCompatActivity implements View.OnClickList
         back_activity_button = findViewById(R.id.back_activity_button);
         title = findViewById(R.id.title);
         back_activity_button.setOnClickListener(this);
-
         try {
-            String data = getIntent().getStringExtra("webviewdata");
-            if (data != null) {
-                intentWebviewData = new JSONObject(data);
-                title.setText(intentWebviewData.getString("title"));
-                openWebView(intentWebviewData.getString("url") + "?user=" + Session.getCustomerId(this) + "&source=app");
-            } else {
-                Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
+
+            String notificationData =getIntent().getStringExtra(ApplicationConstant.NOTIFICATION_ACTION);
+            if(notificationData!=null){
+                JSONObject jsonObject = new JSONObject(notificationData);
+                if(jsonObject.has("value") &&   jsonObject.isNull("value")){
+                    Utility.showSingleButtonDialog(this,"Error !", Content_Message.error_message,true);
+                }else{
+                    BannerWebviewAPI.getBannerClickDetails(BannerWebview.this,jsonObject.getInt("value"),new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
+                        BannerVO bannerVO1 = (BannerVO) s;
+                        try {
+                            bannerId=jsonObject.getInt("value");
+                            String data = bannerVO1.getWebview();
+                            if (data != null) {
+                                intentWebviewData = new JSONObject(data);
+                                title.setText(intentWebviewData.getString("title"));
+                                openWebView(intentWebviewData.getString("url") + "?user=" + Session.getCustomerId(this) + "&source=app");
+                            } else {
+                                Toast.makeText(this, Content_Message.error_message, Toast.LENGTH_SHORT).show();
+                            }
+                        }catch (Exception e){
+                            ExceptionsNotification.ExceptionHandling(BannerWebview.this, Utility.getStackTrace(e));
+                        }
+                    }));
+                }
+            }else {
+                bannerId=getIntent().getIntExtra("bannerId",0);
+                String data = getIntent().getStringExtra("webviewdata");
+                if (data != null) {
+                    intentWebviewData = new JSONObject(data);
+                    title.setText(intentWebviewData.getString("title"));
+                    openWebView(intentWebviewData.getString("url") + "?user=" + Session.getCustomerId(this) + "&source=app");
+                } else {
+                    Toast.makeText(this, Content_Message.error_message, Toast.LENGTH_SHORT).show();
+                }
             }
         } catch (Exception e) {
             ExceptionsNotification.ExceptionHandling(BannerWebview.this, Utility.getStackTrace(e));
         }
     }
+
 
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -264,16 +302,18 @@ public class BannerWebview extends AppCompatActivity implements View.OnClickList
     @Override
     public void htmlresult(String result) {
         try {
-            Log.w("webviewResult", result);
             HashMap<String, Object> params = new HashMap<String, Object>();
             ConnectionVO connectionVO = BannerBO.setAddCampaignResponse();
 
             CustomerVO customerVO=new CustomerVO();
             customerVO.setCustomerId(Integer.valueOf(Session.getCustomerId(BannerWebview.this)));
             customerVO.setAnonymousString(result);
+            customerVO.setAnonymousInteger(bannerId);
             Gson gson =new Gson();
             String json = gson.toJson(customerVO);
             params.put("volley", json);
+
+            Log.w("htmlresultRequest", json);
             connectionVO.setParams(params);
 
             VolleyUtils.makeJsonObjectRequest(BannerWebview.this, connectionVO, new VolleyResponseListener() {
@@ -294,6 +334,14 @@ public class BannerWebview extends AppCompatActivity implements View.OnClickList
                         Utility.showSingleButtonDialog(BannerWebview.this,baseVO.getDialogTitle(),baseVO.getErrorMsgs().get(0),true);
                     }else {
                         try {
+                            if(baseVO.getAnonymousString()!=null){
+                                List<BannerVO> bannerVOS =  (ArrayList<BannerVO>) new Gson().fromJson(baseVO.getAnonymousString(), new TypeToken<ArrayList<BannerVO>>() { }.getType());
+                                if(bannerVOS.size()>0){
+                                    LocalCacheVO localCacheVO = gson.fromJson( Session.getSessionByKey(BannerWebview.this, Session.LOCAL_CACHE), LocalCacheVO.class);
+                                    localCacheVO.setBanners(bannerVOS);
+                                    Session.set_Data_Sharedprefence(BannerWebview.this, Session.LOCAL_CACHE, gson.toJson(localCacheVO));
+                                }
+                            }
                             if (intentWebviewData.has("callBackActivity")) {
                                 Class<?> clazz = Class.forName(getApplicationContext().getPackageName() + ".Activity." + intentWebviewData.getString("callBackActivity"));
                                 Intent intent = new Intent(getApplicationContext(), clazz);

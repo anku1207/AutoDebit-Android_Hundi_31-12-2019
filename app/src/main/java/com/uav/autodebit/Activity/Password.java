@@ -238,8 +238,8 @@ public class Password extends Base_Activity {
                     }
                     Utility.alertDialog(Password.this,customerVO.getDialogTitle(),sb.toString(),"Ok");
                 }else {
-                    String json = gson.toJson(customerVO);
-                    Session.set_Data_Sharedprefence(Password.this,Session.CACHE_CUSTOMER,json);
+                    //override Local Cache
+                    CustomerCacheUpdate.updateCustomerCache(Password.this,customerVO);
                     Intent intent =new Intent(Password.this, Home.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);

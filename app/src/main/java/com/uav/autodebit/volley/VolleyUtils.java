@@ -148,9 +148,6 @@ public class VolleyUtils {
     }
 
 
-
-
-
     public static   void showError(String title, String error, final Context context){
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage(error)

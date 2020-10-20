@@ -11,7 +11,8 @@ public class UAVTextView extends TextView {
     private String txtAssociatedValue;
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public UAVTextView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public UAVTextView(Context context, AttributeSet attrs,
+                       int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
 
     }

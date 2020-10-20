@@ -57,6 +57,13 @@ public class CustomerBO implements Serializable {
         return connectionVO;
     }
 
+    public static ConnectionVO getServiceOperatorList(){
+        ConnectionVO connectionVO = new ConnectionVO();
+        connectionVO.setMethodName("getMandateServiceListByCustomerIdOrServiceTypeId");
+        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
+        return connectionVO;
+    }
+
 
     public static ConnectionVO removeProfileImage(){
         ConnectionVO connectionVO = new ConnectionVO();
@@ -73,7 +80,12 @@ public class CustomerBO implements Serializable {
     }
 
 
-
+    public static ConnectionVO updateMandateRevoked(){
+        ConnectionVO connectionVO = new ConnectionVO();
+        connectionVO.setMethodName("revokeMandate");
+        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
+        return connectionVO;
+    }
 
 
 }
