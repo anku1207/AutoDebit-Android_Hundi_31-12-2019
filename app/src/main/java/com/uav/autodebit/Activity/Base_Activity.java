@@ -19,6 +19,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.uav.autodebit.constant.GlobalApplication;
 import com.uav.autodebit.util.ExceptionHandler;
 import com.uav.autodebit.util.Utility;
@@ -31,7 +32,7 @@ public class Base_Activity extends AppCompatActivity {
     IntentFilter intentFilter;
     CheckInternetReceiver receiver;
     AlertDialog alert;
-
+    FirebaseAnalytics firebaseAnalytics;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,10 +45,11 @@ public class Base_Activity extends AppCompatActivity {
         intentFilter = new IntentFilter();
         intentFilter.addAction(CONNECTIVITY_ACTION);
         receiver = new CheckInternetReceiver();
-
+        firebaseAnalytics =FirebaseAnalytics.getInstance(this);
         showInternetDialog();
 
     }
+
 
     private void showInternetDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(Base_Activity.this);
@@ -78,6 +80,7 @@ public class Base_Activity extends AppCompatActivity {
         super.onResume();
         Log.w("onResume","onResume");
         registerReceiver(receiver, intentFilter);
+
     }
 
     @Override

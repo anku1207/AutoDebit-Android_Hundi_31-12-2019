@@ -84,8 +84,6 @@ public class FCMService extends FirebaseMessagingService {
     private void handleDataMessage(JSONObject data) {
         Log.e(TAG, "push json: " + data.toString());
         try {
-
-
             CustomerNotificationVO customerNotificationVO = new Gson().fromJson(data.toString(), CustomerNotificationVO.class);
 
             //save notification in Cache
@@ -148,8 +146,6 @@ public class FCMService extends FirebaseMessagingService {
         } catch (Exception e) {
             Log.w("error",e.getMessage());
             ExceptionsNotification.ExceptionHandling(getApplicationContext() , Utility.getStackTrace(e));
-
-
         }
     }
     /**

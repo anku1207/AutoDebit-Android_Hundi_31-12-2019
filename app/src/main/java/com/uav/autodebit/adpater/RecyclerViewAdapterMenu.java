@@ -9,11 +9,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.uav.autodebit.Activity.Dmrc_NewAndExist_Card_Dialog;
 import com.uav.autodebit.R;
+import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.usersservices.ui.MandateRevokeServiceWiseActivity;
 import com.uav.autodebit.util.Utility;
@@ -73,9 +73,14 @@ public class RecyclerViewAdapterMenu extends RecyclerView.Adapter<RecyclerViewAd
         holder.mainlayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mctx, MandateRevokeServiceWiseActivity.class);
-                intent.putExtra("serviceID",pro.getServiceTypeId().intValue());
-                mctx.startActivity(intent);
+                Integer serviceTypeID = pro.getServiceTypeId();
+                if(serviceTypeID== ApplicationConstant.Dmrc){
+                    mctx.startActivity(new Intent(mctx, Dmrc_NewAndExist_Card_Dialog.class));
+                }else{
+                    Intent intent = new Intent(mctx, MandateRevokeServiceWiseActivity.class);
+                    intent.putExtra("serviceID",serviceTypeID);
+                    mctx.startActivity(intent);
+                }
             }
         });
     }

@@ -54,7 +54,8 @@ public class NotificatinDesc extends Base_Activity implements View.OnClickListen
             if(jsonObject.has("value") &&   jsonObject.isNull("value")){
                 Utility.showSingleButtonDialog(this,"Error !", Content_Message.error_message,true);
             }else{
-                getNotificationDetails(NotificatinDesc.this,jsonObject.getInt("value"),new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
+                getNotificationDetails(NotificatinDesc.this,jsonObject.getInt("value"),
+                        new VolleyResponse((VolleyResponse.OnSuccess)(success)->{
                     CustomerNotificationVO customerNotificationVO = (CustomerNotificationVO) success;
 
 

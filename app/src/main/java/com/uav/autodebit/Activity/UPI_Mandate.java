@@ -49,7 +49,7 @@ import org.json.JSONObject;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 
-public class UPI_Mandate extends AppCompatActivity  implements MyJavaScriptInterface.javascriptinterface{
+public class UPI_Mandate extends Base_Activity  implements MyJavaScriptInterface.javascriptinterface{
     ImageView imageview,back_activity_button;
     LinearLayout main_layout;
     WebView webview;

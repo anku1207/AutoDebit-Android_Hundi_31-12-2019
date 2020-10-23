@@ -22,7 +22,6 @@ import android.view.ViewGroup;
 import com.uav.autodebit.R;
 import com.uav.autodebit.adpater.RecyclerViewAdapterMenu;
 import com.uav.autodebit.vo.DataAdapterVO;
-
 import java.util.ArrayList;
 
 
@@ -43,15 +42,7 @@ public class Profile extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-
-
     }
-
-
-
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

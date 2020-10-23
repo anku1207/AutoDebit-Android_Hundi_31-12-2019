@@ -10,8 +10,6 @@ public class CustomerStatusVO implements Serializable {
     public static final Integer  CUSTOMER_VERFIED =4;
 
 
-
-
     public CustomerStatusVO(){
 
     }

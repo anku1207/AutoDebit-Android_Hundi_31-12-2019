@@ -105,7 +105,8 @@ public class History extends Base_Activity implements View.OnClickListener {
                         for(int i=0; i<error.size(); i++){
                             sb.append(error.get(i)).append("\n");
                         }
-                        Utility.showSingleButtonDialog(History.this,customerVO.getDialogTitle(),sb.toString(),false);
+                        Utility.showSingleButtonDialog(History.this,customerVO.getDialogTitle(),
+                                sb.toString(),false);
                     }else {
                           JSONArray jsonArray =new JSONArray(customerVO.getAnonymousString());
                           for(int i=0;i<jsonArray.length();i++) {

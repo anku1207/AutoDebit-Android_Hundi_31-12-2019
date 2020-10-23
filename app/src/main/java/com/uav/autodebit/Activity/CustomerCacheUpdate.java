@@ -31,4 +31,25 @@ public class CustomerCacheUpdate {
             Session.set_Data_Sharedprefence(context, Session.LOCAL_CACHE, gson.toJson(localCacheVO));
         }
     }
+
+    public static void updateLocalCache(Context context , String localCache){
+        Gson gson = new Gson();
+
+        if(localCache!=null){
+            LocalCacheVO customerVOLocalCache =  gson.fromJson(localCache, LocalCacheVO.class);
+            LocalCacheVO localCacheVO = gson.fromJson( Session.getSessionByKey(context, Session.LOCAL_CACHE), LocalCacheVO.class);
+
+            List<BannerVO> bannerVOS =customerVOLocalCache.getBanners();
+            if(bannerVOS!=null && bannerVOS.size()>0){
+                localCacheVO.setBanners(bannerVOS);
+            }
+            if(customerVOLocalCache.getUitiyServiceHomePage()!=null){
+                localCacheVO.setUitiyServiceHomePage(customerVOLocalCache.getUitiyServiceHomePage());
+            }
+            if(customerVOLocalCache.getServiceHomePage()!=null){
+                localCacheVO.setServiceHomePage(customerVOLocalCache.getServiceHomePage());
+            }
+            Session.set_Data_Sharedprefence(context, Session.LOCAL_CACHE, gson.toJson(localCacheVO));
+        }
+    }
 }

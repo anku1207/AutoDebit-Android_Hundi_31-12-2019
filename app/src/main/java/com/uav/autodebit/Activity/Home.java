@@ -35,6 +35,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
 import com.uav.autodebit.BO.BannerBO;
 import com.uav.autodebit.BO.MetroBO;
@@ -83,8 +84,6 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-
-
 public class Home extends Base_Activity
         implements View.OnClickListener {
 
@@ -95,7 +94,7 @@ public class Home extends Base_Activity
     BottomNavigationView navigation;
     /////19-10-2019
     //ViewPager viewPager;
-
+    FirebaseAnalytics mFirebaseAnalytics;
     ClickableViewPager viewPager;
 
     TabLayout bannerIndicator;
@@ -150,6 +149,8 @@ public class Home extends Base_Activity
 
         selectedService=null;
         level=null;
+
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         activityhasmap=new HashMap<>();
         activityhasmap.put("1",IRCTC.class);
@@ -279,6 +280,7 @@ public class Home extends Base_Activity
         // loadFragment(new Home_Menu());
         navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
 
         //show png image in bottom menu bar
         // navigation.setItemIconTintList(null);
@@ -1032,7 +1034,8 @@ public class Home extends Base_Activity
     }
 
 
-    BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
+    BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener =
+            new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             Fragment fragment = null;
@@ -1050,6 +1053,7 @@ public class Home extends Base_Activity
                     startActivity(new Intent(Home.this,History.class));
                     break;
                 case R.id.bottom_help:
+
                     startActivity(new Intent(Home.this,Help.class));
                     break;
             }

@@ -26,9 +26,10 @@ import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
 import com.uav.autodebit.util.Utility;
 
-public class Track_Dmrc_Card extends AppCompatActivity implements View.OnClickListener {
+public class Track_Dmrc_Card extends Base_Activity implements View.OnClickListener {
     ImageView back_activity_button;
     WebView webView;
+    ProgressDialog progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +37,13 @@ public class Track_Dmrc_Card extends AppCompatActivity implements View.OnClickLi
         setContentView(R.layout.activity_track__dmrc__card);
         getSupportActionBar().hide();
 
+        progressBar = ProgressDialog.show(Track_Dmrc_Card.this, null, " Please wait...", false, false);
+
+
         back_activity_button=findViewById(R.id.back_activity_button);
         back_activity_button.setOnClickListener(this);
+
+
 
         String cardId=getIntent().getStringExtra("cardId");
         openWebView(ApplicationConstant.getTrackingUrl()+"?cardId="+cardId);
@@ -74,6 +80,19 @@ public class Track_Dmrc_Card extends AppCompatActivity implements View.OnClickLi
             public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
                 android.util.Log.d("WebView", consoleMessage.message());
                 return true;
+            }
+            @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                super.onProgressChanged(view, newProgress);
+                if(!Track_Dmrc_Card.this.isFinishing() &&  progressBar!=null && !progressBar.isShowing()){
+                    try {
+                        progressBar.show();
+                    }catch (Exception e){
+                    }
+                }
+                if(newProgress==100){
+                    Utility.dismissDialog(Track_Dmrc_Card.this, progressBar);
+                }
             }
         });
 
@@ -113,7 +132,6 @@ public class Track_Dmrc_Card extends AppCompatActivity implements View.OnClickLi
 
 
     private class MyBrowser extends WebViewClient {
-        final ProgressDialog progressBar = ProgressDialog.show(Track_Dmrc_Card.this, null, " Please wait...", false, false);
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             Log.w("URL",url);
@@ -158,14 +176,8 @@ public class Track_Dmrc_Card extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.back_activity_button:
-                if (webView.canGoBack()) {
-                    webView.goBack();
-                } else {
-                    finish();
-                }
-                break;
+        if (view.getId() == R.id.back_activity_button) {
+            finish();
         }
     }
 

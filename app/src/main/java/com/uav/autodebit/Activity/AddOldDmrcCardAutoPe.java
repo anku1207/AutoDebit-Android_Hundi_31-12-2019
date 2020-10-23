@@ -94,7 +94,7 @@ import java.util.List;
 import io.branch.referral.util.BRANCH_STANDARD_EVENT;
 import io.branch.referral.util.BranchEvent;
 
-public class AddOldDmrcCardAutoPe extends AppCompatActivity implements View.OnClickListener ,PermissionUtils.PermissionResultCallback , ActivityCompat.OnRequestPermissionsResultCallback{
+public class AddOldDmrcCardAutoPe extends Base_Activity implements View.OnClickListener ,PermissionUtils.PermissionResultCallback , ActivityCompat.OnRequestPermissionsResultCallback{
 
     Button addCard;
 

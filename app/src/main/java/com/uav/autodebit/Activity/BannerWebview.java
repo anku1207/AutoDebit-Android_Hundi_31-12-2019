@@ -61,7 +61,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class BannerWebview extends AppCompatActivity implements View.OnClickListener, MyJavaScriptInterface.javascriptinterface {
+public class BannerWebview extends Base_Activity implements View.OnClickListener, MyJavaScriptInterface.javascriptinterface {
     ImageView back_activity_button;
     WebView webView, newWebView;
     ProgressDialog progressBar;
@@ -324,24 +324,18 @@ public class BannerWebview extends AppCompatActivity implements View.OnClickList
                 public void onResponse(Object resp) throws JSONException {
                     JSONObject response = (JSONObject) resp;
                     Gson gson = new Gson();
-                    BaseVO baseVO = gson.fromJson(response.toString(), BaseVO.class);
-                    if(baseVO.getStatusCode().equals("400")){
-                        ArrayList error = (ArrayList) baseVO.getErrorMsgs();
+                    CustomerVO customerVOresp = gson.fromJson(response.toString(), CustomerVO.class);
+                    if(customerVOresp.getStatusCode().equals("400")){
+                        ArrayList error = (ArrayList) customerVOresp.getErrorMsgs();
                         StringBuilder sb = new StringBuilder();
                         for(int i=0; i<error.size(); i++){
                             sb.append(error.get(i)).append("\n");
                         }
-                        Utility.showSingleButtonDialog(BannerWebview.this,baseVO.getDialogTitle(),baseVO.getErrorMsgs().get(0),true);
+                        Utility.showSingleButtonDialog(BannerWebview.this,customerVOresp.getDialogTitle(),customerVOresp.getErrorMsgs().get(0),true);
                     }else {
                         try {
-                            if(baseVO.getAnonymousString()!=null){
-                                List<BannerVO> bannerVOS =  (ArrayList<BannerVO>) new Gson().fromJson(baseVO.getAnonymousString(), new TypeToken<ArrayList<BannerVO>>() { }.getType());
-                                if(bannerVOS.size()>0){
-                                    LocalCacheVO localCacheVO = gson.fromJson( Session.getSessionByKey(BannerWebview.this, Session.LOCAL_CACHE), LocalCacheVO.class);
-                                    localCacheVO.setBanners(bannerVOS);
-                                    Session.set_Data_Sharedprefence(BannerWebview.this, Session.LOCAL_CACHE, gson.toJson(localCacheVO));
-                                }
-                            }
+                            //override Local Cache
+                            CustomerCacheUpdate.updateLocalCache(BannerWebview.this,customerVOresp.getLocalCache());
                             if (intentWebviewData.has("callBackActivity")) {
                                 Class<?> clazz = Class.forName(getApplicationContext().getPackageName() + ".Activity." + intentWebviewData.getString("callBackActivity"));
                                 Intent intent = new Intent(getApplicationContext(), clazz);

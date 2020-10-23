@@ -46,7 +46,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".usersservices.ui.MandateRevokeServiceWiseActivity"></activity>
+        <activity
+            android:name=".usersservices.ui.MandateRevokeServiceWiseActivity"
+            android:screenOrientation="portrait"
+            />
         <activity
             android:name=".Activity.BannerWebview"
             android:screenOrientation="portrait" />

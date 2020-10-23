@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.uav.autodebit.BO.SignUpBO;
@@ -64,6 +65,13 @@ public class Login extends Base_Activity implements View.OnClickListener, View.O
         }
 
     }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+ }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

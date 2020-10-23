@@ -72,7 +72,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
-public class Profile_Activity extends Base_Activity implements FileDownloadInterface , View.OnClickListener , PermissionUtils.PermissionResultCallback ,ActivityCompat.OnRequestPermissionsResultCallback{
+public class Profile_Activity extends Base_Activity implements FileDownloadInterface ,
+        View.OnClickListener , PermissionUtils.PermissionResultCallback ,ActivityCompat.OnRequestPermissionsResultCallback{
 
     BottomNavigationView navigation;
     TextView usename,pannumber,mobileno,email,address,citystate,pincode,creditscore,changepass;
@@ -101,7 +102,6 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
     File photofileurl;
 
     PermissionUtils permissionUtils;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -39,7 +39,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class PayBillByNotification extends AppCompatActivity implements View.OnClickListener {
+public class PayBillByNotification extends Base_Activity implements View.OnClickListener {
     LinearLayout dynamic_layout,fetchbilllayout;
     Button bill_pay;
     OxigenTransactionVO oxigenTransactionVOresp;
@@ -52,8 +52,6 @@ public class PayBillByNotification extends AppCompatActivity implements View.OnC
         fetchbilllayout=findViewById(R.id.fetchbilllayout);
         bill_pay=findViewById(R.id.bill_pay);
         bill_pay.setOnClickListener(this);
-
-
 
         try {
             JSONObject jsonObject =new JSONObject(getIntent().getStringExtra(ApplicationConstant.NOTIFICATION_ACTION));
@@ -193,7 +191,8 @@ public class PayBillByNotification extends AppCompatActivity implements View.OnC
 
         try{
             if(resultCode==RESULT_OK){
-               if(requestCode==200 || requestCode== ApplicationConstant.REQ_ENACH_MANDATE || requestCode==ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE){
+               if(requestCode==200 || requestCode== ApplicationConstant.REQ_ENACH_MANDATE ||
+                       requestCode==ApplicationConstant.REQ_MANDATE_FOR_FIRSTTIME_RECHARGE){
                     if(data !=null){
                         BillPayRequest.onActivityResult(this,data,requestCode);
                     }else {

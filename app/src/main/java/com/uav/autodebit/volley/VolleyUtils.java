@@ -102,7 +102,7 @@ public class VolleyUtils {
                     } else if (volleyError instanceof AuthFailureError) {
                         errorMessage = "Cannot connect to Internet...Please check your connection!";
                     } else if (volleyError instanceof ParseError) {
-                        errorMessage = "Parsing error! Please try again after some time!!";
+                        errorMessage = "Something went wrong! Please try again after some time!!";
                     } else if (volleyError instanceof NoConnectionError) {
                         errorMessage = "Cannot connect to Internet...Please check your connection!";
                     } else if (volleyError instanceof TimeoutError) {

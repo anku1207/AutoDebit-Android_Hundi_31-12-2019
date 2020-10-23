@@ -36,7 +36,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Mandate_Revoke_Dialog extends AppCompatActivity implements View.OnClickListener {
+public class Mandate_Revoke_Dialog extends Base_Activity implements View.OnClickListener {
     Button yesbtn,nobtn;
     TextView textview;
     CustomerVO customerVOresp;
