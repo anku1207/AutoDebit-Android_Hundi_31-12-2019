@@ -84,7 +84,6 @@ public class Mobile_Prepaid_Recharge_Service extends Base_Activity implements Vi
         getSupportActionBar().hide();
         setContentView(R.layout.activity_mobile__prepaid__recharge__service);
 
-
         mobilenumber=findViewById(R.id.mobilenumber);
         operator=findViewById(R.id.operator);
         amount=findViewById(R.id.amount);

@@ -16,6 +16,7 @@
 
     <!--<color name="btncolor">#1666A1</color>-->
    <color name="btncolor">#1666A1</color>
+    <color name="actions_bg_orange">#ED5733</color>
 
 
     <color name="grey">#B7464545</color>
@@ -25,6 +26,7 @@
 
     <color name="green">#7CB342</color>
 
+    <color name="blue_dark">#024DA1</color>
 
 
 

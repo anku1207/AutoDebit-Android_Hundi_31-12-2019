@@ -57,13 +57,24 @@ public class CustomerBO implements Serializable {
         return connectionVO;
     }
 
-    public static ConnectionVO getServiceOperatorList(){
+    public static ConnectionVO getServiceOperatorMandateList(){
         ConnectionVO connectionVO = new ConnectionVO();
         connectionVO.setMethodName("getMandateServiceListByCustomerIdOrServiceTypeId");
         connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
         return connectionVO;
     }
-
+    public static ConnectionVO getServiceMandateDetail(){
+        ConnectionVO connectionVO = new ConnectionVO();
+        connectionVO.setMethodName("getMandateDetailsByCSOId");
+        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
+        return connectionVO;
+    }
+    public static ConnectionVO updateMandateRevoked(){
+        ConnectionVO connectionVO = new ConnectionVO();
+        connectionVO.setMethodName("revokeMandate");
+        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
+        return connectionVO;
+    }
 
     public static ConnectionVO removeProfileImage(){
         ConnectionVO connectionVO = new ConnectionVO();
@@ -80,9 +91,17 @@ public class CustomerBO implements Serializable {
     }
 
 
-    public static ConnectionVO updateMandateRevoked(){
+    public static ConnectionVO getMandateSwapingType(){
         ConnectionVO connectionVO = new ConnectionVO();
-        connectionVO.setMethodName("revokeMandate");
+        connectionVO.setMethodName("getMandateSwapingType");
+        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
+        return connectionVO;
+    }
+
+
+    public static ConnectionVO saveMandateSwaping(){
+        ConnectionVO connectionVO = new ConnectionVO();
+        connectionVO.setMethodName("saveMandateSwaping");
         connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
         return connectionVO;
     }

@@ -1728,7 +1728,8 @@ public class Utility {
     }
 
 
-    public static void showSelectPaymentTypeDialog(Context context ,String title ,String paymentTypeString ,AlertSelectDialogClick alertSelectDialogClick) throws JSONException {
+    public static void showSelectPaymentTypeDialog(Context context ,String title ,String paymentTypeString ,
+                                                   AlertSelectDialogClick alertSelectDialogClick) throws JSONException {
         final Dialog dialog = new Dialog(context);
         dialog.requestWindowFeature(1);
         Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(0));
@@ -2052,6 +2053,19 @@ public class Utility {
         content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
         return content;
     }
+
+    public static  String getConvertedIntoDateFroms(long timeInMilliSeconds){
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(timeInMilliSeconds);
+        String s=c.get(Calendar.DAY_OF_MONTH)+"/"+c.get(Calendar.MONTH)+"/"+ c.get(Calendar.YEAR);
+        return s;
+       /* try {
+            date = (Date) dateFormat.parseObject(timeInMilliSeconds + "");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }*/
+    }
+
 
 }
 

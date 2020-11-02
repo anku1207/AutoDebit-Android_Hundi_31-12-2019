@@ -21,8 +21,6 @@ public class MetroBO implements Serializable {
     }
 
 
-
-
     public static ConnectionVO saveDmarcCards() {
         ConnectionVO connectionVO = new ConnectionVO();
         connectionVO.setMethodName("saveDmarcCards");

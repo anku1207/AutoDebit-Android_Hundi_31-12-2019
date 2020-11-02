@@ -144,12 +144,14 @@ public class CustomPagerAdapter extends PagerAdapter {
                     mSetLeftIn.setTarget(itemView.findViewById(R.id.card_back));
                     mSetRightOut.start();
                     mSetLeftIn.start();
+                    track.setClickable(false);
                     clickViewpager.put(position,true);
                  } else {
                     mSetRightOut.setTarget(itemView.findViewById(R.id.card_back));
                     mSetLeftIn.setTarget(itemView.findViewById(R.id.card_front));
                     mSetRightOut.start();
                     mSetLeftIn.start();
+                    track.setClickable(true);
                     clickViewpager.put(position,false);
                 }
                 view.postDelayed(new Runnable() {

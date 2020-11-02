@@ -456,6 +456,7 @@ public class Home extends Base_Activity
 
     }
 
+
     /*Banner slider*/
     private class SliderTimer extends TimerTask {
 
@@ -556,6 +557,8 @@ public class Home extends Base_Activity
 
 
     public void dmrcCardRequest(){
+
+
         try {
             HashMap<String, Object> params = new HashMap<String, Object>();
             ConnectionVO connectionVO = MetroBO.getDmrcCustomerList();

@@ -88,7 +88,8 @@ public class BannerWebview extends Base_Activity implements View.OnClickListener
                 if(jsonObject.has("value") &&   jsonObject.isNull("value")){
                     Utility.showSingleButtonDialog(this,"Error !", Content_Message.error_message,true);
                 }else{
-                    BannerWebviewAPI.getBannerClickDetails(BannerWebview.this,jsonObject.getInt("value"),new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
+                    BannerWebviewAPI.getBannerClickDetails(BannerWebview.this,jsonObject
+                            .getInt("value"),new VolleyResponse((VolleyResponse.OnSuccess)(s)->{
                         BannerVO bannerVO1 = (BannerVO) s;
                         try {
                             bannerId=jsonObject.getInt("value");

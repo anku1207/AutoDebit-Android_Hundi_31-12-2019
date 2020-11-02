@@ -11,7 +11,7 @@ public class BannerBO implements Serializable {
         ConnectionVO connectionVO = new ConnectionVO();
         connectionVO.setMethodName("getLocalCache");
         connectionVO.setLoaderAvoided(true);
-        connectionVO.setRequestType(ConnectionVO.REQUEST_GET);
+        connectionVO.setRequestType(ConnectionVO.REQUEST_POST);
 
         return connectionVO;
     }

@@ -612,9 +612,7 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
                         progressBar.setVisibility(View.GONE);
                         //imageView1.setImageBitmap(Utility.drawableToBitmap(getDrawable(R.drawable.noprofileimage)));
                         imageView1.setBackgroundResource(R.drawable.ava_user);
-
                     }
-
 
                     if(customerVO.getMobileVerified()==null){
                         mobileverify.setImageResource(R.drawable.warning);
@@ -633,7 +631,6 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
                         emailverify.setOnClickListener(null);
                     }
 
-
                     if(customerVO.getLevel().getLevelId()<=2){
                         creditscore.setText("---" );
                     }else {
@@ -651,7 +648,6 @@ public class Profile_Activity extends Base_Activity implements FileDownloadInter
             @Override
             public void doInBackGround() {
                 try {
-                    Gson gson =new Gson();
                     bankServiceList.clear();
                     addservice.clear();
 

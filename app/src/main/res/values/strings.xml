@@ -48,6 +48,17 @@
     <string name="user_registration_condition_msg">I agree to allow AutoPe to check my credit information with RBI approved credit bureaus.</string>
     <string name="agreeAndContinue"><![CDATA[Agree & Continue]]></string>
     <string name="mandates">Mandates</string>
-    <string name="modify">Modify</string>
+    <string name="mandate_detail">Mandate Details</string>
+
+    <string name="modify">Revoke</string>
+    <string name="title_activity_mandate_detail">MandateDetailActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 
 </resources>

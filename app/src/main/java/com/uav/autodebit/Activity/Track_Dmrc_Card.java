@@ -21,10 +21,18 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.uav.autodebit.Interface.VolleyResponse;
 import com.uav.autodebit.R;
 import com.uav.autodebit.constant.ApplicationConstant;
+import com.uav.autodebit.constant.Content_Message;
+import com.uav.autodebit.exceptions.ExceptionsNotification;
+import com.uav.autodebit.permission.Session;
 import com.uav.autodebit.util.Utility;
+import com.uav.autodebit.vo.BannerVO;
+
+import org.json.JSONObject;
 
 public class Track_Dmrc_Card extends Base_Activity implements View.OnClickListener {
     ImageView back_activity_button;
@@ -43,10 +51,22 @@ public class Track_Dmrc_Card extends Base_Activity implements View.OnClickListen
         back_activity_button=findViewById(R.id.back_activity_button);
         back_activity_button.setOnClickListener(this);
 
-
-
-        String cardId=getIntent().getStringExtra("cardId");
-        openWebView(ApplicationConstant.getTrackingUrl()+"?cardId="+cardId);
+        try {
+            String notificationData =getIntent().getStringExtra(ApplicationConstant.NOTIFICATION_ACTION);
+            if(notificationData!=null){
+                JSONObject jsonObject = new JSONObject(notificationData);
+                if(jsonObject.has("value") &&   jsonObject.isNull("value")){
+                    Utility.showSingleButtonDialog(this,"Error !", Content_Message.error_message,true);
+                }else{
+                    openWebView(ApplicationConstant.getTrackingUrl()+"?cardId="+ jsonObject.getInt("value"));
+                }
+            }else {
+                String cardId=getIntent().getStringExtra("cardId");
+                openWebView(ApplicationConstant.getTrackingUrl()+"?cardId="+cardId);
+            }
+        } catch (Exception e) {
+            ExceptionsNotification.ExceptionHandling(Track_Dmrc_Card.this, Utility.getStackTrace(e));
+        }
     }
 
     @SuppressLint("SetJavaScriptEnabled")

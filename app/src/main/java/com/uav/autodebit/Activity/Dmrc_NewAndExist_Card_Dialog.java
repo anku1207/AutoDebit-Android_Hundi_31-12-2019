@@ -173,6 +173,7 @@ public class Dmrc_NewAndExist_Card_Dialog extends Base_Activity implements View.
 
             cardTypeVO.setServiceTypeVO(serviceTypeVO);
             cardTypeVO.setStatusVO(statusVO);
+            cardTypeVO.setAnonymousInteger(Integer.parseInt(Session.getCustomerId(Dmrc_NewAndExist_Card_Dialog.this)));
             Gson gson =new Gson();
             String json = gson.toJson(cardTypeVO);
             params.put("volley", json);

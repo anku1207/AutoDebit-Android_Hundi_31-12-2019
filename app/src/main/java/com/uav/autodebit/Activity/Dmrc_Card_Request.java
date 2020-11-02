@@ -685,7 +685,6 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
 
     }
 
-
     public  void startUPIActivity(Context context ,  DMRC_Customer_CardVO  dmrc_customer_cardVO , String paymentType){
         try {
             Intent intent = new Intent(context,UPI_Mandate.class);
@@ -1124,7 +1123,6 @@ public class Dmrc_Card_Request extends Base_Activity implements View.OnClickList
                     }else{
                         Utility.showSingleButtonDialog(Dmrc_Card_Request.this,"Error !", Content_Message.error_message,false);
                     }
-
                 }else if(requestCode == ApplicationConstant.REQ_SI_MANDATE){
                     int SIMandateId=data.getIntExtra("mandateId",0);
                     if(SIMandateId!=0){
